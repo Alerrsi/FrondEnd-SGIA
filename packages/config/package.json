@@ -1,0 +1,20 @@
+{
+  "name": "@sgia/config",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./tsconfig/*": "./tsconfig/*.json",
+    "./eslint": "./eslint/eslint.config.mjs",
+    "./prettier": "./prettier.json"
+  },
+  "files": [
+    "tsconfig",
+    "eslint",
+    "prettier.json"
+  ],
+  "dependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint-config-prettier": "^10.0.1",
+    "typescript-eslint": "^8.18.1"
+  }
+}

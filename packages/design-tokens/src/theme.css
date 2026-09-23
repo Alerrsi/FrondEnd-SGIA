@@ -1,0 +1,20 @@
+/* Puente de tokens para Tailwind/NativeWind (web y mobile).
+   Mantener los valores en sincronía con src/tokens.json. */
+@theme {
+  --color-background: #0d0d0d;
+  --color-surface: #111113;
+  --color-surface-raised: #161618;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-text: #f5f5f5;
+  --color-text-muted: #a1a1a6;
+  --color-accent: #f97316;
+  --color-accent-muted: #fdba74;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --font-sans: 'Inter';
+  --font-mono: 'JetBrains Mono';
+  --radius-md: 8px;
+  --radius-lg: 10px;
+}

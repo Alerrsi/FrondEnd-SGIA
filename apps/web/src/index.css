@@ -1,0 +1,22 @@
+@import '@sgia/design-tokens/theme.css';
+@import 'tailwindcss';
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: theme(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+  .font-mono-tabular {
+    font-family: theme(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}

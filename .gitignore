@@ -9,6 +9,12 @@ dist/
 web-build/
 expo-env.d.ts
 
+# package manager
+.pnpm-store/
+
+# turbo
+.turbo/
+
 # Native
 .kotlin/
 *.orig.*
@@ -36,8 +42,6 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-example
-
 # generated native folders
-/ios
-/android
+ios/
+android/

@@ -1,0 +1,36 @@
+{
+  "name": "@sgia/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@sgia/api-client": "workspace:*",
+    "@sgia/design-tokens": "workspace:*",
+    "@sgia/types": "workspace:*",
+    "@tanstack/react-query": "^5.66.0",
+    "@tanstack/react-table": "^8.21.0",
+    "lucide-react": "^0.475.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.54.0",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^7.1.0"
+  },
+  "devDependencies": {
+    "@sgia/config": "workspace:*",
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^4.3.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "~6.0.3",
+    "vite": "^6.2.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  }
+}
