@@ -9,7 +9,7 @@ export const tokenStorage: TokenStorage = {
   clearToken: () => localStorage.removeItem(TOKEN_KEY),
 };
 
-const apiUrl = (import.meta.env.SGIA_API_URL as string | undefined) ?? '/api/v1';
+const apiUrl = (import.meta.env.SGIA_API_URL as string | undefined) ?? '/api';
 
 configureApiClient({ baseUrl: apiUrl, tokenStorage });
 

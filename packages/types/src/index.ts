@@ -1,13 +1,27 @@
-export type { RoleCode, Usuario, CreateUsuarioPayload, UpdateUsuarioPayload, UsuarioSinPassword } from './usuario';
-export { ROLES } from './usuario';
+export type {
+  RoleCode,
+  Usuario,
+  CreateUsuarioPayload,
+  UpdateUsuarioPayload,
+  UsuarioSinPassword,
+  UserQueryParams,
+} from './usuario';
+export { ROLES, ROLE_LABELS } from './usuario';
+
 export type {
   Producto,
   CreateProductoPayload,
+  UpdateProductoPayload,
   BorradorProducto,
+  InvoiceScanResponse,
   ProductoParams,
   Ubicacion,
+  ProductLocationPayload,
+  ProductBarcodeResponse,
+  CriticalStockAlert,
   ExtraerFacturaPayload,
 } from './producto';
+
 export { LoanStatus } from './prestamo';
 export type {
   LoanStatus as LoanStatusValue,
@@ -15,17 +29,42 @@ export type {
   Prestamo,
   ItemPrestamo,
   CreatePrestamoPayload,
+  RemoteLoanRequestPayload,
+  LoanCheckoutPayload,
+  LoanCheckinPayload,
   AprobarPrestamoPayload,
   RechazarPrestamoPayload,
   PrestamoParams,
 } from './prestamo';
-export { QuotationStatus } from './cotizacion';
+
+export { QuotationStatus, PurchaseStatus } from './cotizacion';
 export type {
   QuotationStatus as QuotationStatusValue,
+  PurchaseStatus as PurchaseStatusValue,
+  Supplier,
+  CreateSupplierPayload,
   Cotizacion,
   CotizacionItem,
   CreateCotizacionPayload,
   CotizacionParams,
+  PurchaseOrder,
+  CreatePurchasePayload,
 } from './cotizacion';
-export type { Equipo, FichaTecnica, Novedad, CreateNovedadPayload } from './equipo';
+
+export type {
+  EquipmentSpecs,
+  Equipo,
+  FichaTecnica,
+  IncidentSeverity,
+  IncidentStatus,
+  IncidentReport,
+  CreateIncidentReportPayload,
+  Novedad,
+  CreateNovedadPayload,
+  DashboardStats,
+  TopDemandedItem,
+  CareerDistribution,
+  TeacherLoanRanking,
+} from './equipo';
+
 export type { PaginatedResponse, ApiError, AuthResponse } from './pagination';

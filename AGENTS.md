@@ -55,11 +55,11 @@ sgia-frontend/
 ### Web (`apps/web`)
 
 **REQ-01 — Login (FU-01)**
-- [ ] Pantalla de login, manejo de token vía `api-client`, redirección por rol, rutas protegidas.
+- [x] Pantalla de login, manejo de token vía `api-client`, redirección por rol, rutas protegidas.
 
 **REQ-02 — Administración de usuarios (FU-01, AD-01)**
-- [ ] Tabla de usuarios con búsqueda/filtro/paginación (TanStack Table).
-- [ ] Formulario de alta/edición (React Hook Form) y activar/desactivar con confirmación.
+- [x] Tabla de usuarios con búsqueda/filtro/paginación (TanStack Table).
+- [x] Formulario de alta/edición (React Hook Form) y activar/desactivar con confirmación.
 
 **REQ-03 / REQ-04 — Alta y edición de productos (FU-02, DIR-01 y PAN-01)**
 - [ ] Flujo "subir factura → borrador extraído → confirmar/editar → guardar".

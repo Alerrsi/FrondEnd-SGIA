@@ -9,16 +9,21 @@ export interface TokenStorage {
 export interface ApiClientOptions {
   baseUrl: string;
   tokenStorage?: TokenStorage;
+  onUnauthorized?: () => void;
 }
 
 const defaultOptions: ApiClientOptions = {
-  baseUrl: '/api/v1',
+  baseUrl: '/api',
 };
 
 let clientOptions: ApiClientOptions = defaultOptions;
 
 export function configureApiClient(options: Partial<ApiClientOptions>): void {
-  clientOptions = { ...defaultOptions, ...options };
+  clientOptions = { ...clientOptions, ...options };
+}
+
+export function getApiClientOptions(): ApiClientOptions {
+  return clientOptions;
 }
 
 async function resolveToken(): Promise<string | null> {
@@ -28,7 +33,12 @@ async function resolveToken(): Promise<string | null> {
 
 function buildUrl(path: string): string {
   if (/^https?:\/\//.test(path)) return path;
-  return `${clientOptions.baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+  const base = clientOptions.baseUrl.replace(/\/$/, '');
+  const cleanPath = path.replace(/^\//, '');
+  if (base.endsWith('/api') && cleanPath.startsWith('api/')) {
+    return `${base.slice(0, -4)}/${cleanPath}`;
+  }
+  return `${base}/${cleanPath}`;
 }
 
 export class ApiRequestError extends Error {
@@ -69,6 +79,11 @@ export async function request<T>(
     } catch {
       body = null;
     }
+
+    if (response.status === 401 && clientOptions.onUnauthorized) {
+      clientOptions.onUnauthorized();
+    }
+
     throw new ApiRequestError(response.status, body);
   }
 
@@ -90,7 +105,7 @@ export const post = <TBody, TResponse>(
   request<TResponse>(path, {
     ...options,
     method: 'POST',
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
   });
 
 export const put = <TBody, TResponse>(
@@ -101,7 +116,7 @@ export const put = <TBody, TResponse>(
   request<TResponse>(path, {
     ...options,
     method: 'PUT',
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
   });
 
 export const patch = <TBody, TResponse>(
@@ -112,7 +127,7 @@ export const patch = <TBody, TResponse>(
   request<TResponse>(path, {
     ...options,
     method: 'PATCH',
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
   });
 
 export const del = <T>(path: string, options?: RequestInit) =>

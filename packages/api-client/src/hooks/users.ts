@@ -2,19 +2,21 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CreateUsuarioPayload,
   UpdateUsuarioPayload,
+  UserQueryParams,
   UsuarioSinPassword,
 } from '@sgia/types';
 import { createUsuario, fetchUser, fetchUsers, setUsuarioActivo, updateUsuario } from '../services/users';
 
 export const userKeys = {
-  all: ['usuarios'] as const,
-  detail: (id: number) => ['usuarios', 'detail', id] as const,
+  all: ['users'] as const,
+  list: (params?: UserQueryParams) => ['users', 'list', params] as const,
+  detail: (id: number) => ['users', 'detail', id] as const,
 };
 
-export function useUsers() {
+export function useUsers(params?: UserQueryParams) {
   return useQuery({
-    queryKey: userKeys.all,
-    queryFn: fetchUsers,
+    queryKey: userKeys.list(params),
+    queryFn: () => fetchUsers(params),
   });
 }
 

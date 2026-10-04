@@ -6,18 +6,33 @@ import type {
   PrestamoParams,
   RechazarPrestamoPayload,
 } from '@sgia/types';
-import { approbarPrestamo, createPrestamo, fetchLoan, fetchLoans, rechazarPrestamo } from '../services/loans';
+import {
+  approveLoan,
+  createLoanRequest,
+  fetchLoan,
+  fetchLoans,
+  fetchPendingLoans,
+  rejectLoan,
+} from '../services/loans';
 
 export const loanKeys = {
-  all: ['prestamos'] as const,
-  list: (params?: PrestamoParams) => ['prestamos', 'list', params] as const,
-  detail: (id: number) => ['prestamos', 'detail', id] as const,
+  all: ['loans'] as const,
+  list: (params?: PrestamoParams) => ['loans', 'list', params] as const,
+  pending: ['loans', 'pending'] as const,
+  detail: (id: number) => ['loans', 'detail', id] as const,
 };
 
 export function useLoans(params?: PrestamoParams) {
   return useQuery({
     queryKey: loanKeys.list(params),
     queryFn: () => fetchLoans(params),
+  });
+}
+
+export function usePendingLoans() {
+  return useQuery({
+    queryKey: loanKeys.pending,
+    queryFn: fetchPendingLoans,
   });
 }
 
@@ -32,15 +47,15 @@ export function useLoan(id: number | undefined) {
 export function useCreatePrestamo() {
   const queryClient = useQueryClient();
   return useMutation<Prestamo, Error, CreatePrestamoPayload>({
-    mutationFn: createPrestamo,
+    mutationFn: createLoanRequest,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: loanKeys.all }),
   });
 }
 
 export function useAprobarPrestamo() {
   const queryClient = useQueryClient();
-  return useMutation<Prestamo, Error, { id: number; payload: AprobarPrestamoPayload }>({
-    mutationFn: ({ id, payload }) => approbarPrestamo(id, payload),
+  return useMutation<Prestamo, Error, { id: number; payload?: AprobarPrestamoPayload }>({
+    mutationFn: ({ id, payload }) => approveLoan(id, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: loanKeys.all }),
   });
 }
@@ -48,7 +63,7 @@ export function useAprobarPrestamo() {
 export function useRechazarPrestamo() {
   const queryClient = useQueryClient();
   return useMutation<Prestamo, Error, { id: number; payload: RechazarPrestamoPayload }>({
-    mutationFn: ({ id, payload }) => rechazarPrestamo(id, payload),
+    mutationFn: ({ id, payload }) => rejectLoan(id, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: loanKeys.all }),
   });
 }
