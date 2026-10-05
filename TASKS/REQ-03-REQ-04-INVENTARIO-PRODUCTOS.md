@@ -31,33 +31,33 @@ Digitalizar la incorporación y mantenimiento del catálogo de productos y activ
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. Flujo de Extracción OCR de Factura (`REQ-03`)
-- [ ] **Componente de Carga de Factura:**
-  - [ ] Zona de arrastrar y soltar (Drag and drop) con soporte para PDF, JPG y PNG (máx. 10MB).
-  - [ ] Barra de progreso de carga y estado de procesamiento OCR.
-- [ ] **Revisión y Edición de Borradores:**
-  - [ ] Tabla interactiva para revisar los ítems extraídos por el OCR (`POST /api/invoices/scan`).
-  - [ ] Edición en línea de cada producto sugerido: nombre, cantidad, precio unitario, stock mínimo y proveedor sugerido.
-  - [ ] Botón de "Confirmar y Dar de Alta Todos" para crear en lote los productos confirmados vía `POST /api/products`.
+- [x] **Componente de Carga de Factura:**
+  - [x] Zona de arrastrar y soltar (Drag and drop) con soporte para PDF, JPG y PNG (máx. 10MB).
+  - [x] Barra de progreso de carga y estado de procesamiento OCR.
+- [x] **Revisión y Edición de Borradores:**
+  - [x] Tabla interactiva para revisar los ítems extraídos por el OCR (`POST /api/invoices/scan`).
+  - [x] Edición en línea de cada producto sugerido: nombre, cantidad, precio unitario, stock mínimo y proveedor sugerido.
+  - [x] Botón de "Confirmar y Dar de Alta Todos" para crear en lote los productos confirmados vía `POST /api/products`.
 
 ### 2. CRUD y Vista de Catálogo de Productos (`REQ-04`)
-- [ ] **Listado Principal de Inventario:**
-  - [ ] Grid/tabla con tarjetas o filas compactas estilo zed.dev.
-  - [ ] Buscador integrado para nombre, modelo o código de barras.
-  - [ ] Badge de stock disponible vs stock mínimo (resaltado si stock <= stock_minimo).
-  - [ ] Filtro por estado (`activo` / `inactivo`) y área académica.
-- [ ] **Formulario Manual de Creación y Edición:**
-  - [ ] Campos: Nombre, Descripción, Área/Carrera, Stock inicial, Stock mínimo, Proveedor, Ubicación (sala/cajón).
-  - [ ] Checkbox para autogenerar código de barras si no se ingresa uno existente.
-- [ ] **Ficha de Detalle de Producto:**
-  - [ ] Vista del producto con especificaciones, proveedor y ubicación física.
-  - [ ] Renderizado vectorial del código de barras en SVG (`GET /api/products/{id}/barcode`).
-  - [ ] Botón para imprimir etiquetas con código de barras en formato térmico/adhesivo.
-  - [ ] Acción de desactivación/activación (`PATCH /api/products/{id}/status`) sin eliminar el historial.
+- [x] **Listado Principal de Inventario:**
+  - [x] Grid/tabla con tarjetas o filas compactas estilo zed.dev.
+  - [x] Buscador integrado para nombre, modelo o código de barras.
+  - [x] Badge de stock disponible vs stock mínimo (resaltado si stock <= stock_minimo).
+  - [x] Filtro por estado (`activo` / `inactivo`) y área académica.
+- [x] **Formulario Manual de Creación y Edición:**
+  - [x] Campos: Nombre, Descripción, Área/Carrera, Stock inicial, Stock mínimo, Proveedor, Ubicación (sala/cajón).
+  - [x] Checkbox para autogenerar código de barras si no se ingresa uno existente.
+- [x] **Ficha de Detalle de Producto:**
+  - [x] Vista del producto con especificaciones, proveedor y ubicación física.
+  - [x] Renderizado vectorial del código de barras en SVG (`GET /api/products/{id}/barcode`).
+  - [x] Botón para imprimir etiquetas con código de barras en formato térmico/adhesivo.
+  - [x] Acción de desactivación/activación (`PATCH /api/products/{id}/status`) sin eliminar el historial.
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test: normalización de respuesta de producto (`normalizeProducto`).
-- [ ] Integration test: subida de factura y render de borradores extraídos.
-- [ ] Visual regression test: renderizado de código de barras SVG en modo oscuro.
+- [x] Unit test: normalización de respuesta de producto (`normalizeProducto`).
+- [x] Integration test: subida de factura y render de borradores extraídos.
+- [x] Visual regression test: renderizado de código de barras SVG en modo oscuro.

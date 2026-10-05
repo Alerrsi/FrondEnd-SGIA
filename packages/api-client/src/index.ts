@@ -39,7 +39,9 @@ export {
   useProductLocation,
   useCreateProducto,
   useUpdateProducto,
+  useDeleteProducto,
   useToggleProductoActivo,
+  useScanInvoice,
 } from './hooks/products';
 
 export {
@@ -110,6 +112,7 @@ export {
   useCreateUsuario,
   useUpdateUsuario,
   useToggleUsuarioActivo,
+  useDeleteUsuario,
 } from './hooks/users';
 
 export {

@@ -1,7 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CreateProductoPayload, Producto, ProductoParams, UpdateProductoPayload } from '@sgia/types';
+import type {
+  CreateProductoPayload,
+  InvoiceScanResponse,
+  Producto,
+  ProductoParams,
+  UpdateProductoPayload,
+} from '@sgia/types';
 import {
   createProducto,
+  deleteProducto,
+  extractFactura,
   fetchProduct,
   fetchProductBarcode,
   fetchProductLocation,
@@ -65,10 +73,24 @@ export function useUpdateProducto() {
   });
 }
 
+export function useDeleteProducto() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, number>({
+    mutationFn: (id) => deleteProducto(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+}
+
 export function useToggleProductoActivo() {
   const queryClient = useQueryClient();
   return useMutation<Producto, Error, { id: number; is_active: boolean }>({
     mutationFn: ({ id, is_active }) => setProductoActivo(id, is_active),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+}
+
+export function useScanInvoice() {
+  return useMutation<InvoiceScanResponse, Error, File>({
+    mutationFn: (file) => extractFactura(file) as Promise<InvoiceScanResponse>,
   });
 }

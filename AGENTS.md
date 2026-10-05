@@ -62,9 +62,9 @@ sgia-frontend/
 - [x] Formulario de alta/edición (React Hook Form) y activar/desactivar con confirmación.
 
 **REQ-03 / REQ-04 — Alta y edición de productos (FU-02, DIR-01 y PAN-01)**
-- [ ] Flujo "subir factura → borrador extraído → confirmar/editar → guardar".
-- [ ] Formulario de producto y vista de detalle con código de barras (SVG).
-- [ ] Activar/desactivar sin eliminar.
+- [x] Flujo "subir factura → borrador extraído → confirmar/editar → guardar".
+- [x] Formulario de producto y vista de detalle con código de barras (SVG).
+- [x] Activar/desactivar sin eliminar.
 
 **REQ-05 — Ubicación física (FU-02)**
 - [ ] Selector de sala/cajón en formulario y detalle; filtro de inventario por ubicación.

@@ -8,79 +8,38 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import {
+  AlertTriangle,
+  Barcode,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
   ChevronsUpDown,
   Loader2,
+  MapPin,
   Pencil,
   Power,
   Search,
   Trash2,
   X,
 } from 'lucide-react';
-import { ROLE_LABELS, ROLES, type RoleCode, type UsuarioSinPassword } from '@sgia/types';
+import type { PaginatedResponse, Producto } from '@sgia/types';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
-import { formatRun } from '../lib/run';
 
-const columnHelper = createColumnHelper<UsuarioSinPassword>();
+const columnHelper = createColumnHelper<Producto>();
 
-const accessorColumns = [
-  columnHelper.accessor('run', {
-    header: 'RUN',
-    cell: (info) => {
-      const val = info.getValue();
-      return (
-        <span className="font-mono-tabular text-xs text-text">
-          {val ? formatRun(val) : '—'}
-        </span>
-      );
-    },
-  }),
-  columnHelper.accessor('nombre', {
-    header: 'Nombre',
-    cell: (info) => <span className="text-sm font-medium text-text">{info.getValue()}</span>,
-  }),
-  columnHelper.accessor('email', {
-    header: 'Email',
-    cell: (info) => (
-      <span className="font-mono-tabular text-xs text-text-muted">{info.getValue()}</span>
-    ),
-  }),
-  columnHelper.accessor('rol', {
-    header: 'Rol',
-    cell: (info) => <Badge tone="neutral">{ROLE_LABELS[info.getValue()] ?? info.getValue()}</Badge>,
-  }),
-  columnHelper.accessor('activo', {
-    header: 'Estado',
-    cell: (info) =>
-      info.getValue() ? (
-        <Badge tone="success">activo</Badge>
-      ) : (
-        <Badge tone="danger">inactivo</Badge>
-      ),
-  }),
-  columnHelper.accessor('createdAt', {
-    header: 'Creado',
-    cell: (info) => {
-      const val = info.getValue();
-      if (!val) return <span className="font-mono-tabular text-xs text-text-muted">—</span>;
-      const date = new Date(val);
-      return (
-        <span className="font-mono-tabular text-xs text-text-muted">
-          {Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('es-CL')}
-        </span>
-      );
-    },
-  }),
-];
-
-const controlClasses =
-  'h-9 rounded-lg border border-border bg-surface-raised px-3 font-mono-tabular text-xs text-text transition-colors placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+export const AREAS_INACAP = [
+  'Informática',
+  'Ciberseguridad',
+  'Telecomunicaciones',
+  'Electricidad',
+  'Automatización',
+  'Electrónica',
+  'Redes',
+] as const;
 
 export const estadoOptions = [
   { value: 'todos', label: 'Todos los estados' },
@@ -90,123 +49,185 @@ export const estadoOptions = [
 
 export type EstadoFilter = (typeof estadoOptions)[number]['value'];
 
-export interface UsuariosTableProps {
-  usuarios: UsuarioSinPassword[];
-  meta?: {
-    currentPage: number;
-    lastPage: number;
-    perPage: number;
-    total: number;
-  };
+const controlClasses =
+  'h-9 rounded-lg border border-border bg-surface-raised px-3 font-mono-tabular text-xs text-text transition-colors placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+
+export interface InventarioTableProps {
+  productos: Producto[];
+  meta?: PaginatedResponse<Producto>['meta'];
   search?: string;
   onSearchChange?: (value: string) => void;
-  rolFilter?: RoleCode | '';
-  onRolFilterChange?: (role: RoleCode | '') => void;
+  areaFilter?: string;
+  onAreaFilterChange?: (area: string) => void;
   estadoFilter?: EstadoFilter;
   onEstadoFilterChange?: (estado: EstadoFilter) => void;
+  criticalOnly?: boolean;
+  onCriticalOnlyChange?: (critical: boolean) => void;
   page?: number;
   onPageChange?: (page: number) => void;
   pageSize?: number;
   onPageSizeChange?: (size: number) => void;
-  currentUserId?: number;
   isFetching?: boolean;
-  onEdit: (usuario: UsuarioSinPassword) => void;
-  onToggleActivo: (usuario: UsuarioSinPassword) => void;
-  onDelete?: (usuario: UsuarioSinPassword) => void;
+  canDelete?: boolean;
+  onViewDetail: (producto: Producto) => void;
+  onEdit: (producto: Producto) => void;
+  onToggleActivo: (producto: Producto) => void;
+  onDelete?: (producto: Producto) => void;
 }
 
-export function UsuariosTable({
-  usuarios,
+export function InventarioTable({
+  productos,
   meta,
   search = '',
   onSearchChange,
-  rolFilter = '',
-  onRolFilterChange,
+  areaFilter = '',
+  onAreaFilterChange,
   estadoFilter = 'todos',
   onEstadoFilterChange,
+  criticalOnly = false,
+  onCriticalOnlyChange,
   page = 1,
   onPageChange,
   pageSize = 10,
   onPageSizeChange,
-  currentUserId,
   isFetching = false,
+  canDelete = false,
+  onViewDetail,
   onEdit,
   onToggleActivo,
   onDelete,
-}: UsuariosTableProps) {
+}: InventarioTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const columns = useMemo(
     () => [
-      ...accessorColumns,
+      columnHelper.accessor('codigoBarras', {
+        header: 'Código de Barra',
+        cell: (info) => (
+          <div className="flex items-center gap-1.5 font-mono-tabular text-xs text-text">
+            <Barcode className="h-4 w-4 text-accent" />
+            <span>{info.getValue() || '—'}</span>
+          </div>
+        ),
+      }),
+      columnHelper.accessor('nombre', {
+        header: 'Producto',
+        cell: (info) => {
+          const prod = info.row.original;
+          return (
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm font-medium text-text">{prod.nombre}</span>
+              {prod.description && (
+                <span className="line-clamp-1 text-xs text-text-muted">{prod.description}</span>
+              )}
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('area', {
+        header: 'Área',
+        cell: (info) => {
+          const area = info.getValue();
+          return area ? <Badge tone="neutral">{area}</Badge> : <span className="text-xs text-text-muted">—</span>;
+        },
+      }),
+      columnHelper.accessor('ubicacion', {
+        header: 'Ubicación',
+        cell: (info) => {
+          const loc = info.getValue();
+          if (!loc || (!loc.sala && !loc.cajon)) {
+            return <span className="font-mono-tabular text-xs text-text-muted">Sin asignar</span>;
+          }
+          return (
+            <div className="flex items-center gap-1.5 font-mono-tabular text-xs text-text-muted">
+              <MapPin className="h-3.5 w-3.5 text-text-muted/70" />
+              <span>
+                {loc.sala || 'Sala —'} · {loc.cajon || 'Cajón —'}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('stock', {
+        header: 'Stock / Mínimo',
+        cell: (info) => {
+          const prod = info.row.original;
+          const isCritical = prod.stock <= prod.stockCritico;
+          return (
+            <div className="flex items-center gap-2">
+              {isCritical ? (
+                <Badge tone="danger">
+                  <AlertTriangle className="mr-1 h-3 w-3" />
+                  {prod.stock} / {prod.stockCritico} mín
+                </Badge>
+              ) : (
+                <Badge tone="success">
+                  {prod.stock} uds (mín {prod.stockCritico})
+                </Badge>
+              )}
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor('activo', {
+        header: 'Estado',
+        cell: (info) =>
+          info.getValue() ? (
+            <Badge tone="success">activo</Badge>
+          ) : (
+            <Badge tone="danger">inactivo</Badge>
+          ),
+      }),
       columnHelper.display({
         id: 'acciones',
         header: 'Acciones',
         cell: ({ row }) => {
-          const usuario = row.original;
-          const isSelf = currentUserId !== undefined && usuario.id === currentUserId;
-
+          const producto = row.original;
           return (
             <div className="flex items-center justify-end gap-1">
               <button
                 type="button"
-                onClick={() => onEdit(usuario)}
-                aria-label={`Editar a ${usuario.nombre}`}
-                title="Editar usuario"
+                onClick={() => onViewDetail(producto)}
+                aria-label={`Ver detalle y código de barra de ${producto.nombre}`}
+                title="Ver detalle y código de barras"
+                className="rounded-lg border border-border p-2 text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                <Barcode className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => onEdit(producto)}
+                aria-label={`Editar ${producto.nombre}`}
+                title="Editar producto"
                 className="rounded-lg border border-border p-2 text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <Pencil className="h-3.5 w-3.5" />
               </button>
               <button
                 type="button"
-                onClick={() => onToggleActivo(usuario)}
-                disabled={isSelf}
+                onClick={() => onToggleActivo(producto)}
                 aria-label={
-                  isSelf
-                    ? 'No puedes desactivar tu propia cuenta'
-                    : usuario.activo
-                      ? `Desactivar a ${usuario.nombre}`
-                      : `Activar a ${usuario.nombre}`
+                  producto.activo
+                    ? `Desactivar ${producto.nombre}`
+                    : `Activar ${producto.nombre}`
                 }
-                title={
-                  isSelf
-                    ? 'No puedes desactivar tu propia cuenta de administrador'
-                    : usuario.activo
-                      ? 'Desactivar usuario'
-                      : 'Activar usuario'
-                }
+                title={producto.activo ? 'Desactivar producto' : 'Activar producto'}
                 className={cn(
                   'rounded-lg border p-2 transition-colors focus-visible:outline-2 focus-visible:outline-accent',
-                  isSelf
-                    ? 'cursor-not-allowed border-border/40 text-text-muted/40'
-                    : usuario.activo
-                      ? 'border-border text-text-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger'
-                      : 'border-border text-accent-muted hover:border-success/30 hover:bg-success/10 hover:text-success',
+                  producto.activo
+                    ? 'border-border text-text-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger'
+                    : 'border-border text-accent-muted hover:border-success/30 hover:bg-success/10 hover:text-success',
                 )}
               >
                 <Power className="h-3.5 w-3.5" />
               </button>
-              {onDelete && (
+              {canDelete && onDelete && (
                 <button
                   type="button"
-                  onClick={() => onDelete(usuario)}
-                  disabled={isSelf}
-                  aria-label={
-                    isSelf
-                      ? 'No puedes eliminar tu propia cuenta'
-                      : `Eliminar a ${usuario.nombre}`
-                  }
-                  title={
-                    isSelf
-                      ? 'No puedes eliminar tu propia cuenta de administrador'
-                      : 'Eliminar usuario'
-                  }
-                  className={cn(
-                    'rounded-lg border p-2 transition-colors focus-visible:outline-2 focus-visible:outline-accent',
-                    isSelf
-                      ? 'cursor-not-allowed border-border/40 text-text-muted/40'
-                      : 'border-border text-text-muted hover:border-danger/40 hover:bg-danger/10 hover:text-danger',
-                  )}
+                  onClick={() => onDelete(producto)}
+                  aria-label={`Eliminar ${producto.nombre}`}
+                  title="Eliminar producto"
+                  className="rounded-lg border border-border p-2 text-text-muted transition-colors hover:border-danger/40 hover:bg-danger/10 hover:text-danger focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -216,11 +237,11 @@ export function UsuariosTable({
         },
       }),
     ],
-    [onEdit, onToggleActivo, onDelete, currentUserId],
+    [onViewDetail, onEdit, onToggleActivo, onDelete, canDelete],
   );
 
   const table = useReactTable({
-    data: usuarios,
+    data: productos,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -229,26 +250,28 @@ export function UsuariosTable({
   });
 
   const currentPage = meta?.currentPage ?? page;
-  const totalPages = meta?.lastPage ?? Math.max(1, Math.ceil((meta?.total ?? usuarios.length) / pageSize));
-  const totalRows = meta?.total ?? usuarios.length;
+  const totalPages =
+    meta?.lastPage ?? Math.max(1, Math.ceil((meta?.total ?? productos.length) / pageSize));
+  const totalRows = meta?.total ?? productos.length;
   const firstShown = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const lastShown = Math.min(currentPage * pageSize, totalRows);
 
   return (
     <section
-      aria-label="Listado de usuarios"
+      aria-label="Catálogo de inventario"
       className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4"
     >
-      {/* Toolbar: búsqueda y filtros */}
+      {/* Toolbar de búsqueda y filtros */}
       <div className="flex flex-wrap items-center gap-3">
+        {/* Buscador */}
         <div className="relative min-w-0 flex-1 sm:h-9 sm:w-72 sm:flex-none">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <input
             type="search"
             value={search}
             onChange={(event) => onSearchChange?.(event.target.value)}
-            placeholder="Buscar por nombre o correo…"
-            aria-label="Buscar usuarios"
+            placeholder="Buscar por nombre, código o descripción…"
+            aria-label="Buscar productos"
             className={cn(controlClasses, 'w-full py-2 pl-9 pr-9')}
           />
           {search && (
@@ -263,32 +286,46 @@ export function UsuariosTable({
           )}
         </div>
 
+        {/* Filtro de Área */}
         <select
-          value={rolFilter}
-          onChange={(event) => onRolFilterChange?.(event.target.value as RoleCode | '')}
-          aria-label="Filtrar por rol"
+          value={areaFilter}
+          onChange={(event) => onAreaFilterChange?.(event.target.value)}
+          aria-label="Filtrar por área"
           className={controlClasses}
         >
-          <option value="">Todos los roles</option>
-          {ROLES.map((rol) => (
-            <option key={rol} value={rol}>
-              {ROLE_LABELS[rol]}
+          <option value="">Todas las áreas</option>
+          {AREAS_INACAP.map((area) => (
+            <option key={area} value={area}>
+              {area}
             </option>
           ))}
         </select>
 
+        {/* Filtro de Estado */}
         <select
           value={estadoFilter}
           onChange={(event) => onEstadoFilterChange?.(event.target.value as EstadoFilter)}
           aria-label="Filtrar por estado"
           className={controlClasses}
         >
-          {estadoOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+          {estadoOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
             </option>
           ))}
         </select>
+
+        {/* Toggle Stock Crítico */}
+        <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-1.5 text-xs font-medium text-text select-none hover:border-accent">
+          <input
+            type="checkbox"
+            checked={criticalOnly}
+            onChange={(e) => onCriticalOnlyChange?.(e.target.checked)}
+            className="rounded border-border accent-accent focus:ring-accent"
+          />
+          <AlertTriangle className="h-3.5 w-3.5 text-warning" />
+          <span>Solo stock crítico</span>
+        </label>
 
         {isFetching && (
           <div className="flex items-center gap-1.5 text-xs text-text-muted">
@@ -334,13 +371,13 @@ export function UsuariosTable({
             ))}
           </thead>
           <tbody>
-            {usuarios.length === 0 ? (
+            {productos.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length}
                   className="px-4 py-12 text-center text-sm text-text-muted"
                 >
-                  No se encontraron usuarios con los filtros aplicados.
+                  No se encontraron productos en el inventario con los filtros aplicados.
                 </td>
               </tr>
             ) : (
@@ -364,10 +401,9 @@ export function UsuariosTable({
       {/* Paginación */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-sm text-text-muted">
-          Mostrando{' '}
-          <span className="font-mono-tabular text-text">{firstShown}</span>–
+          Mostrando <span className="font-mono-tabular text-text">{firstShown}</span>–
           <span className="font-mono-tabular text-text">{lastShown}</span> de{' '}
-          <span className="font-mono-tabular text-text">{totalRows}</span> usuarios
+          <span className="font-mono-tabular text-text">{totalRows}</span> productos
         </span>
 
         <div className="flex flex-wrap items-center gap-4">
@@ -375,7 +411,7 @@ export function UsuariosTable({
             Filas por página
             <select
               value={pageSize}
-              onChange={(event) => onPageSizeChange?.(Number(event.target.value))}
+              onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
               aria-label="Filas por página"
               className={controlClasses}
             >

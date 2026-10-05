@@ -94,9 +94,12 @@ export interface BorradorProducto {
 export interface InvoiceScanResponse {
   invoice_number?: string;
   numero_factura?: string;
+  supplier_name?: string;
+  supplier_id?: number;
   supplier?: { id?: number; name?: string };
   proveedor?: { id?: number; nombre?: string };
   products?: BorradorProducto[];
+  draft_products?: BorradorProducto[];
   productos?: BorradorProducto[];
   items?: BorradorProducto[];
 }
@@ -138,6 +141,4 @@ export interface CriticalStockAlert {
   product?: Producto;
   alert_type: 'warning' | 'critical';
   is_resolved: boolean;
-  created_at: string;
-  resolved_at?: string | null;
 }

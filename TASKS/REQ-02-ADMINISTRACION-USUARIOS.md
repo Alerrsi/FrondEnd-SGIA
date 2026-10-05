@@ -46,14 +46,14 @@ Proveer al rol Administrador (`AD-01`) una interfaz completa para dar de alta, c
   - [x] Modal de confirmación `ConfirmDialog` antes de cambiar el estado de un usuario.
   - [x] Disparo de mutación hacia `PATCH /api/users/{id}/status` con `{ is_active: boolean }`.
   - [x] Notificaciones toast de éxito o error descriptivo retornado por la API.
-- [ ] **Eliminación y Casos Borde:**
-  - [ ] Opción de borrado con alerta crítica (protección en UI contra auto-eliminación del propio admin conectado).
-  - [ ] Paginación en servidor conectada directamente a los query params de `GET /api/users`.
+- [x] **Eliminación y Casos Borde:**
+  - [x] Opción de borrado con alerta crítica (protección en UI contra auto-eliminación del propio admin conectado).
+  - [x] Paginación en servidor conectada directamente a los query params de `GET /api/users`.
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
 - [x] Unit test: algoritmo de validación de RUN chileno (`validateRun`, `normalizeStoredRun`, `formatRun`).
-- [ ] Integration test: render de tabla y filtrado de usuarios.
-- [ ] E2E: ciclo de alta de usuario, edición y cambio de estado activo/inactivo.
+- [x] Integration test: render de tabla y filtrado de usuarios (`usuarios-table.test.tsx`).
+- [x] E2E: ciclo de alta de usuario, edición y cambio de estado activo/inactivo (`usuarios-lifecycle.test.tsx`).

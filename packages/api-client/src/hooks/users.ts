@@ -5,7 +5,14 @@ import type {
   UserQueryParams,
   UsuarioSinPassword,
 } from '@sgia/types';
-import { createUsuario, fetchUser, fetchUsers, setUsuarioActivo, updateUsuario } from '../services/users';
+import {
+  createUsuario,
+  deleteUsuario,
+  fetchUser,
+  fetchUsers,
+  setUsuarioActivo,
+  updateUsuario,
+} from '../services/users';
 
 export const userKeys = {
   all: ['users'] as const,
@@ -30,10 +37,12 @@ export function useUser(id: number | undefined) {
 
 export function useCreateUsuario() {
   const queryClient = useQueryClient();
-  return useMutation<UsuarioSinPassword, Error, CreateUsuarioPayload>({
-    mutationFn: createUsuario,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
-  });
+  return useMutation<UsuarioSinPassword, Error, CreateUsuarioPayload>(
+    {
+      mutationFn: createUsuario,
+      onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
+    },
+  );
 }
 
 export function useUpdateUsuario() {
@@ -56,6 +65,14 @@ export function useToggleUsuarioActivo() {
     { id: number; activo: boolean }
   >({
     mutationFn: ({ id, activo }) => setUsuarioActivo(id, activo),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
+  });
+}
+
+export function useDeleteUsuario() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, number>({
+    mutationFn: (id: number) => deleteUsuario(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
   });
 }
