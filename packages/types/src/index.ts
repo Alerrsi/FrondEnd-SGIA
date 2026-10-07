@@ -39,6 +39,7 @@ export type {
   LoanOrigin,
   Prestamo,
   ItemPrestamo,
+  PrestamoEvento,
   CreatePrestamoPayload,
   RemoteLoanRequestPayload,
   LoanCheckoutPayload,
@@ -46,6 +47,7 @@ export type {
   AprobarPrestamoPayload,
   RechazarPrestamoPayload,
   PrestamoParams,
+  LoanExportParams,
 } from './prestamo';
 
 export { QuotationStatus, PurchaseStatus } from './cotizacion';

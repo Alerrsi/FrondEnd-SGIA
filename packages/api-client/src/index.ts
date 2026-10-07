@@ -100,15 +100,22 @@ export {
   checkoutLoan,
   checkinLoan,
   exportLoans,
+  normalizePrestamo,
 } from './services/loans';
 export {
   loanKeys,
   useLoans,
   usePendingLoans,
+  useMyLoanRequests,
   useLoan,
   useCreatePrestamo,
+  useCreateLoanRequest,
+  useCancelLoanRequest,
   useAprobarPrestamo,
   useRechazarPrestamo,
+  useCheckoutLoan,
+  useCheckinLoan,
+  useExportLoans,
 } from './hooks/loans';
 
 export {

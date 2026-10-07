@@ -6,6 +6,8 @@ import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import ProductosListPage from '@/features/inventario/pages/productos-list-page';
 import ColaPrestamosPage from '@/features/prestamos/pages/cola-prestamos-page';
+import MostradorPrestamosPage from '@/features/prestamos/pages/mostrador-prestamos-page';
+import HistorialPrestamosPage from '@/features/prestamos/pages/historial-prestamos-page';
 import UsuariosPage from '@/features/usuarios/pages/usuarios-page';
 import AppLayout from '@/layouts/app-layout';
 import LoginPage from '@/features/auth/pages/login';
@@ -77,6 +79,24 @@ export default function App() {
               element={
                 <RequireRole allowedRoles={['PAN-01']}>
                   <ColaPrestamosPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/prestamos/mostrador"
+              element={
+                <RequireRole allowedRoles={['PAN-01']}>
+                  <MostradorPrestamosPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/prestamos/historial"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                  <HistorialPrestamosPage />
                 </RequireRole>
               }
             />

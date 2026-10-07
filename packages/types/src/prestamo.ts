@@ -15,36 +15,90 @@ export type LoanStatus = (typeof LoanStatus)[keyof typeof LoanStatus];
 export type LoanOrigin = 'remoto' | 'presencial';
 
 export interface ItemPrestamo {
+  id?: number;
+  prestamoId?: number;
   productoId?: number;
   product_id?: number;
   cantidad?: number;
   quantity?: number;
+  nombre?: string;
+  name?: string;
+  productoNombre?: string;
+  codigoBarras?: string;
+  barcode?: string;
+  stockActual?: number;
+  current_stock?: number;
+  sala?: string;
+  cajon?: string;
+  devuelto?: boolean;
+}
+
+export interface PrestamoEvento {
+  id?: number | string;
+  titulo?: string;
+  evento?: string;
+  fecha: string;
+  usuario?: string | null;
+  rol?: string | null;
+  descripcion?: string | null;
+  tipo?: 'solicitud' | 'aprobacion' | 'entrega' | 'devolucion' | 'rechazo' | 'incidente';
 }
 
 export interface Prestamo {
   id: number;
   codigo?: string;
-  solicitanteId: number;
+  code?: string;
+  solicitanteId?: number;
   solicitanteNombre?: string;
+  solicitanteEmail?: string;
+  solicitanteRun?: string;
+  usuarioId?: number;
+  usuario?: { name?: string; email?: string } | null;
   user_id?: number;
-  items: Array<{ productoId: number; cantidad: number }>;
-  origen: LoanOrigin;
-  estado: LoanStatus;
+  tipo?: string;
+  items: Array<{
+    id?: number;
+    prestamoId?: number;
+    productoId: number;
+    product_id?: number;
+    cantidad: number;
+    quantity?: number;
+    nombre?: string;
+    productoNombre?: string;
+    codigoBarras?: string;
+    stockActual?: number;
+    sala?: string;
+    cajon?: string;
+    devuelto?: boolean;
+  }>;
+  origen: LoanOrigin | string;
+  estado: LoanStatus | string;
   asignatura?: string | null;
   subject?: string | null;
+  carrera?: string | null;
   sala?: string | null;
   room?: string | null;
+  bloqueHorario?: string | null;
+  fechaPrestamo?: string | null;
+  fechaSolicitud?: string | null;
   fechaSolicitada?: string | null;
   loan_date?: string | null;
   time_block?: string | null;
   fechaDevolucion?: string | null;
+  return_date?: string | null;
+  returned_at?: string | null;
+  fechaEntrega?: string | null;
   motivoRechazo?: string | null;
   rejection_reason?: string | null;
+  observaciones?: string | null;
   procesadoPorId?: number | null;
+  procesadoPorNombre?: string | null;
   tramitadoAt?: string | null;
-  createdAt: string;
+  diasAtraso?: number;
+  eventos?: PrestamoEvento[];
+  createdAt?: string;
   created_at?: string;
-  updatedAt: string;
+  updatedAt?: string;
   updated_at?: string;
 }
 
@@ -58,45 +112,73 @@ export interface CreatePrestamoPayload {
   fechaSolicitada?: string;
   loan_date?: string;
   time_block?: string;
-}
-
-export interface RemoteLoanRequestPayload {
-  items: Array<{ product_id: number; quantity: number }>;
-  subject: string;
-  room: string;
-  loan_date: string;
-  time_block: string;
-}
-
-export interface LoanCheckoutPayload {
-  user_id?: number;
-  credential_code?: string;
-  items: Array<{ barcode: string; product_id?: number; quantity?: number }>;
   notes?: string;
 }
 
-export interface LoanCheckinPayload {
-  items: Array<{ barcode: string; condition?: string; damaged?: boolean; notes?: string }>;
-}
+export type RemoteLoanRequestPayload = CreatePrestamoPayload;
 
 export interface AprobarPrestamoPayload {
-  fechaDevolucion?: string;
   return_date?: string;
+  fechaDevolucion?: string;
   notes?: string;
+  observaciones?: string;
 }
 
 export interface RechazarPrestamoPayload {
-  motivoRechazo?: string;
   rejection_reason?: string;
+  motivoRechazo?: string;
+  motivo?: string;
 }
 
-export interface PrestamoParams {
+export interface LoanCheckoutPayload {
+  docente_run: string;
+  credential_code?: string;
+  subject?: string;
+  room?: string;
+  notes?: string;
+  items: Array<{
+    barcode?: string;
+    product_id?: number;
+    quantity: number;
+  }>;
+}
+
+export interface LoanCheckinPayload {
+  loan_id: number;
+  general_notes?: string;
+  items: Array<{
+    product_id?: number;
+    productoId?: number;
+    item_id?: number;
+    condition?: 'bueno' | 'regular' | 'dañado';
+    damaged?: boolean;
+    dañado?: boolean;
+    notes?: string;
+    observaciones?: string;
+  }>;
+}
+
+export interface LoanExportParams {
+  start_date?: string;
+  end_date?: string;
+  format: 'pdf' | 'excel';
+}
+
+export interface LoanParams {
+  page?: number;
+  per_page?: number;
+  perPage?: number;
+  search?: string;
   estado?: LoanStatus | string;
-  origen?: LoanOrigin;
+  origen?: LoanOrigin | string;
+  run?: string;
   docente?: string;
   asignatura?: string;
   sala?: string;
-  page?: number;
-  perPage?: number;
-  per_page?: number;
+  start_date?: string;
+  end_date?: string;
+  fecha_desde?: string;
+  fecha_hasta?: string;
 }
+
+export type PrestamoParams = LoanParams;

@@ -5,6 +5,7 @@ import {
   Boxes,
   CalendarClock,
   ClipboardList,
+  History,
   Layers,
   LogOut,
   Moon,
@@ -56,6 +57,18 @@ const navigation: NavItem[] = [
     label: 'Cola de préstamos',
     icon: CalendarClock,
     roles: ['PAN-01'],
+  },
+  {
+    to: '/prestamos/mostrador',
+    label: 'Mesón / Mostrador',
+    icon: Layers,
+    roles: ['PAN-01'],
+  },
+  {
+    to: '/prestamos/historial',
+    label: 'Historial Préstamos',
+    icon: History,
+    roles: ['PAN-01', 'DIR-01', 'AD-01'],
   },
   {
     to: '/cotizaciones',
