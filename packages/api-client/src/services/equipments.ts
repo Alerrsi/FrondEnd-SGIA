@@ -3,6 +3,7 @@ import type {
   CreateIncidentReportPayload,
   CreateNovedadPayload,
   DashboardStats,
+  EquipmentQueryParams,
   EquipmentSpecs,
   Equipo,
   IncidentReport,
@@ -12,8 +13,9 @@ import type {
   PaginatedResponse,
   TeacherLoanRanking,
   TopDemandedItem,
+  UpdateEquipmentSpecsPayload,
 } from '@sgia/types';
-import { get, patch, post, put } from '../http';
+import { get, getBlob, patch, post, put } from '../http';
 
 // Fichas Técnicas de Equipos (FU-05 / REQ-12)
 export async function fetchEquipmentSpecs(id: number): Promise<EquipmentSpecs> {
@@ -23,22 +25,33 @@ export async function fetchEquipmentSpecs(id: number): Promise<EquipmentSpecs> {
 
 export async function updateEquipmentSpecs(
   id: number,
-  payload: Partial<EquipmentSpecs>,
+  payload: UpdateEquipmentSpecsPayload | Partial<EquipmentSpecs>,
 ): Promise<EquipmentSpecs> {
-  const response = await put<Partial<EquipmentSpecs>, any>(`/equipment/${id}/specs`, payload);
+  const response = await put<UpdateEquipmentSpecsPayload | Partial<EquipmentSpecs>, any>(
+    `/equipment/${id}/specs`,
+    payload,
+  );
   return response?.data ?? response;
 }
 
 export async function fetchEquipmentTechnicalSheet(id: number): Promise<Blob> {
-  return get<Blob>(`/equipment/${id}/technical-sheet`);
+  return getBlob(`/equipment/${id}/technical-sheet`);
 }
 
 export async function fetchEquipmentReports(id: number): Promise<Blob> {
-  return get<Blob>(`/equipment/${id}/reports`);
+  return getBlob(`/equipment/${id}/reports`);
 }
 
-export async function fetchEquipos(): Promise<Equipo[]> {
-  const response = await get<any>('/equipment');
+export async function fetchEquipos(params?: EquipmentQueryParams): Promise<Equipo[]> {
+  const query = new URLSearchParams();
+  if (params?.search) query.set('search', params.search);
+  if (params?.status && params.status !== 'todos') query.set('status', params.status);
+  if (params?.category) query.set('category', params.category);
+  if (params?.page) query.set('page', String(params.page));
+  if (params?.per_page) query.set('per_page', String(params.per_page));
+
+  const qs = query.toString();
+  const response = await get<any>(`/equipment${qs ? `?${qs}` : ''}`);
   return Array.isArray(response) ? response : response?.data ?? [];
 }
 

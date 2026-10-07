@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
@@ -77,7 +78,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-950 px-4 py-8 text-zinc-900 dark:text-zinc-100">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-950 px-4 py-8 text-zinc-900 dark:text-zinc-100">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle variant="segmented" />
+      </div>
+
       <div className="w-full max-w-sm">
         {/* Header / Logo */}
         <div className="mb-6 flex flex-col items-center text-center">

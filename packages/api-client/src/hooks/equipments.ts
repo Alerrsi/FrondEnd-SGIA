@@ -2,11 +2,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CreateIncidentReportPayload,
   CreateNovedadPayload,
+  EquipmentQueryParams,
   EquipmentSpecs,
   IncidentReport,
   IncidentSeverity,
   IncidentStatus,
   Novedad,
+  UpdateEquipmentSpecsPayload,
 } from '@sgia/types';
 import {
   createIncidentReport,
@@ -29,6 +31,7 @@ import {
 
 export const equipmentKeys = {
   all: ['equipment'] as const,
+  list: (params?: EquipmentQueryParams) => ['equipment', 'list', params] as const,
   specs: (id: number) => ['equipment', 'specs', id] as const,
   detail: (id: number) => ['equipment', 'detail', id] as const,
 };
@@ -48,10 +51,10 @@ export const dashboardKeys = {
   loansByTeacher: ['dashboard', 'loans-by-teacher'] as const,
 };
 
-export function useEquipos() {
+export function useEquipos(params?: EquipmentQueryParams) {
   return useQuery({
-    queryKey: equipmentKeys.all,
-    queryFn: fetchEquipos,
+    queryKey: equipmentKeys.list(params),
+    queryFn: () => fetchEquipos(params),
   });
 }
 
@@ -73,9 +76,16 @@ export function useEquipmentSpecs(id: number | undefined) {
 
 export function useUpdateEquipmentSpecs() {
   const queryClient = useQueryClient();
-  return useMutation<EquipmentSpecs, Error, { id: number; payload: Partial<EquipmentSpecs> }>({
+  return useMutation<
+    EquipmentSpecs,
+    Error,
+    { id: number; payload: UpdateEquipmentSpecsPayload | Partial<EquipmentSpecs> }
+  >({
     mutationFn: ({ id, payload }) => updateEquipmentSpecs(id, payload),
-    onSuccess: (_, { id }) => queryClient.invalidateQueries({ queryKey: equipmentKeys.specs(id) }),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: equipmentKeys.specs(id) });
+      queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
+    },
   });
 }
 
@@ -95,15 +105,33 @@ export function useEquipmentReports(id: number | undefined) {
   });
 }
 
+export function useDownloadTechnicalSheet() {
+  return useMutation<Blob, Error, number>({
+    mutationFn: (id: number) => fetchEquipmentTechnicalSheet(id),
+  });
+}
+
+export function useDownloadEquipmentReports() {
+  return useMutation<Blob, Error, number>({
+    mutationFn: (id: number) => fetchEquipmentReports(id),
+  });
+}
+
 export function useCreateNovedad() {
   const queryClient = useQueryClient();
-  return useMutation<IncidentReport | Novedad, Error, CreateIncidentReportPayload | CreateNovedadPayload>({
-    mutationFn: createIncidentReport,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: incidentKeys.all });
-      queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
+  return useMutation<
+    IncidentReport | Novedad,
+    Error,
+    CreateIncidentReportPayload | CreateNovedadPayload
+  >(
+    {
+      mutationFn: createIncidentReport,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: incidentKeys.all });
+        queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
+      },
     },
-  });
+  );
 }
 
 export function useIncidentReports(params?: {

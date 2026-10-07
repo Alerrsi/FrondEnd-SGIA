@@ -4,6 +4,7 @@ import { Toaster } from 'sileo';
 import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
+import EquiposPage from '@/features/equipos/pages/equipos-page';
 import ProductosListPage from '@/features/inventario/pages/productos-list-page';
 import ColaPrestamosPage from '@/features/prestamos/pages/cola-prestamos-page';
 import MostradorPrestamosPage from '@/features/prestamos/pages/mostrador-prestamos-page';
@@ -12,6 +13,7 @@ import UsuariosPage from '@/features/usuarios/pages/usuarios-page';
 import AppLayout from '@/layouts/app-layout';
 import LoginPage from '@/features/auth/pages/login';
 import { AuthProvider, useAuth } from '@/features/auth/context/auth-context';
+import { ThemeProvider, useTheme } from '@/contexts/theme-context';
 import {
   PublicOnlyRoute,
   RequireAuth,
@@ -30,10 +32,12 @@ function RootRoute() {
   return <Navigate to={getRoleDefaultPath(user.rol)} replace />;
 }
 
-export default function App() {
+function AppContent() {
+  const { resolvedTheme } = useTheme();
+
   return (
-    <AuthProvider>
-      <Toaster position="top-right" />
+    <>
+      <Toaster position="top-right" theme={resolvedTheme} />
       <BrowserRouter>
         <Routes>
           {/* Public login route */}
@@ -61,6 +65,24 @@ export default function App() {
               element={
                 <RequireRole allowedRoles={['PAN-01', 'DIR-01']}>
                   <ProductosListPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/equipos"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                  <EquiposPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/equipos/:id"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                  <EquiposPage />
                 </RequireRole>
               }
             />
@@ -124,6 +146,16 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

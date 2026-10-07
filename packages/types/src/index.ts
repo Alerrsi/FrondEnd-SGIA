@@ -65,7 +65,11 @@ export type {
 } from './cotizacion';
 
 export type {
+  EquipmentStatus,
   EquipmentSpecs,
+  UpdateEquipmentSpecsPayload,
+  EquipmentMaintenanceRecord,
+  EquipmentQueryParams,
   Equipo,
   FichaTecnica,
   IncidentSeverity,

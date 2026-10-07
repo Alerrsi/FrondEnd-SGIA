@@ -1,3 +1,10 @@
+export type EquipmentStatus =
+  | 'operativo'
+  | 'en_mantencion'
+  | 'critico'
+  | 'baja'
+  | 'en_prestamo';
+
 export interface EquipmentSpecs {
   id?: number;
   equipment_id?: number;
@@ -7,14 +14,56 @@ export interface EquipmentSpecs {
   lifespan_years?: number | null;
 }
 
+export interface UpdateEquipmentSpecsPayload {
+  specifications: Record<string, string | number | boolean>;
+  user_manual_url?: string | null;
+  purchase_date?: string | null;
+  lifespan_years?: number | null;
+}
+
+export interface EquipmentMaintenanceRecord {
+  id: number;
+  equipment_id: number;
+  date: string;
+  type: 'preventiva' | 'correctiva' | 'calibracion';
+  technician: string;
+  description: string;
+  cost?: number;
+}
+
+export interface EquipmentQueryParams {
+  search?: string;
+  status?: EquipmentStatus | 'todos' | '';
+  category?: string;
+  page?: number;
+  per_page?: number;
+}
+
 export interface Equipo {
   id: number;
   nombre: string;
   name?: string;
   codigo?: string;
+  sku?: string;
+  serial?: string;
+  serial_number?: string;
+  marca?: string;
+  brand?: string;
+  modelo?: string;
+  model?: string;
+  categoria?: string;
+  category?: string;
+  ubicacion?: string;
+  location?: string;
+  estado?: EquipmentStatus;
+  status?: EquipmentStatus;
+  purchase_date?: string | null;
+  lifespan_years?: number | null;
+  user_manual_url?: string | null;
   specs?: EquipmentSpecs;
   fichasTecnicas?: FichaTecnica[];
   novedades?: Novedad[];
+  maintenances?: EquipmentMaintenanceRecord[];
   createdAt: string;
   created_at?: string;
   updatedAt: string;

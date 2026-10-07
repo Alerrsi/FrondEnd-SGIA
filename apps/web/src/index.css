@@ -2,10 +2,13 @@
 @import '@sgia/design-tokens/theme.css';
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
 @layer base {
   /* Modo claro por defecto (Neutros cálidos institucionales INACAP) */
   :root,
-  html.light {
+  html.light,
+  :root[data-theme='light'] {
     color-scheme: light;
     /* Marca */
     --brand: #E1060D;

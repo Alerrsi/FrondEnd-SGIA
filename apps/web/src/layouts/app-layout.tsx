@@ -5,19 +5,20 @@ import {
   Boxes,
   CalendarClock,
   ClipboardList,
+  Cpu,
   History,
   Layers,
   LogOut,
-  Moon,
   PanelLeftClose,
   PanelLeftOpen,
-  Sun,
   Users,
 } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ROLE_LABELS, type RoleCode } from '@sgia/types';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { useTheme } from '@/contexts/theme-context';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/features/auth/context/auth-context';
 import type { WebRoleCode } from '@/features/auth/types/roles';
@@ -45,6 +46,12 @@ const navigation: NavItem[] = [
     label: 'Inventario',
     icon: Layers,
     roles: ['PAN-01', 'DIR-01'],
+  },
+  {
+    to: '/equipos',
+    label: 'Equipos y Fichas',
+    icon: Cpu,
+    roles: ['PAN-01', 'DIR-01', 'AD-01'],
   },
   {
     to: '/alertas',
@@ -92,10 +99,7 @@ const MAX_WIDTH = 420;
 export default function AppLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('sgia-theme') as 'light' | 'dark') || 'dark';
-  });
+  useTheme(); // Inicializa y asegura contexto activo
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     return localStorage.getItem('sgia-sidebar-collapsed') === 'true';
@@ -107,22 +111,6 @@ export default function AppLayout() {
   });
 
   const [isDragging, setIsDragging] = useState(false);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-    } else {
-      root.classList.add('light');
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('sgia-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
 
   useEffect(() => {
     localStorage.setItem('sgia-sidebar-collapsed', String(isCollapsed));
@@ -223,7 +211,7 @@ export default function AppLayout() {
                   onClick={() => setIsCollapsed(false)}
                   title="Expandir panel lateral"
                   aria-label="Expandir panel lateral"
-                  className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200"
+                  className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer"
                 >
                   <PanelLeftOpen className="h-3.5 w-3.5" />
                 </button>
@@ -249,7 +237,7 @@ export default function AppLayout() {
                   onClick={() => setIsCollapsed(true)}
                   title="Encoger panel lateral"
                   aria-label="Encoger panel lateral"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer"
                 >
                   <PanelLeftClose className="h-3.5 w-3.5" />
                 </button>
@@ -315,22 +303,14 @@ export default function AppLayout() {
                   </TooltipContent>
                 </Tooltip>
 
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                  aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                  className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200"
-                >
-                  {theme === 'dark' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-                </button>
+                <ThemeToggle variant="compact" />
 
                 <button
                   type="button"
                   onClick={handleLogout}
                   title="Cerrar sesión"
                   aria-label="Cerrar sesión"
-                  className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400"
+                  className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 cursor-pointer"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                 </button>
@@ -350,22 +330,14 @@ export default function AppLayout() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={toggleTheme}
-                      title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                      aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                      className="p-1 rounded text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
-                    >
-                      {theme === 'dark' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-                    </button>
+                  <div className="flex items-center gap-1.5">
+                    <ThemeToggle variant="segmented" />
                     <button
                       type="button"
                       onClick={handleLogout}
                       title="Cerrar sesión"
                       aria-label="Cerrar sesión"
-                      className="p-1 rounded text-zinc-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                      className="p-1 rounded text-zinc-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                     >
                       <LogOut className="h-3.5 w-3.5" />
                     </button>

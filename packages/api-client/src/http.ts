@@ -94,6 +94,40 @@ export async function request<T>(
   return (await response.json()) as T;
 }
 
+export async function getBlob(
+  path: string,
+  options?: RequestInit,
+): Promise<Blob> {
+  const token = await resolveToken();
+  const headers: Record<string, string> = {
+    Accept: 'application/pdf, application/octet-stream, */*',
+    ...(options?.headers as Record<string, string>),
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(buildUrl(path), { ...options, method: 'GET', headers });
+
+  if (!response.ok) {
+    let body: ApiError | null = null;
+    try {
+      body = (await response.json()) as ApiError;
+    } catch {
+      body = null;
+    }
+
+    if (response.status === 401 && clientOptions.onUnauthorized) {
+      clientOptions.onUnauthorized();
+    }
+
+    throw new ApiRequestError(response.status, body);
+  }
+
+  return response.blob();
+}
+
 export const get = <T>(path: string, options?: RequestInit) =>
   request<T>(path, { ...options, method: 'GET' });
 
