@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'sileo';
 
+import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import ProductosListPage from '@/features/inventario/pages/productos-list-page';
@@ -30,31 +31,7 @@ function RootRoute() {
 export default function App() {
   return (
     <AuthProvider>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: '#111113',
-            color: '#f5f5f5',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '13px',
-            borderRadius: '8px',
-          },
-          success: {
-            iconTheme: {
-              primary: '#22c55e',
-              secondary: '#111113',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#111113',
-            },
-          },
-        }}
-      />
+      <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
           {/* Public login route */}
@@ -75,10 +52,8 @@ export default function App() {
               </RequireAuth>
             }
           >
-            {/* Root route: Dashboard for DIR-01, redirect to default path for others */}
             <Route path="/" element={<RootRoute />} />
 
-            {/* Inventario: PAN-01 & DIR-01 */}
             <Route
               path="/inventario"
               element={
@@ -88,7 +63,15 @@ export default function App() {
               }
             />
 
-            {/* Cola de Préstamos: PAN-01 */}
+            <Route
+              path="/alertas"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                  <AlertasStockPage />
+                </RequireRole>
+              }
+            />
+
             <Route
               path="/prestamos/cola"
               element={
@@ -98,7 +81,6 @@ export default function App() {
               }
             />
 
-            {/* Cotizaciones: DIR-01 */}
             <Route
               path="/cotizaciones"
               element={
@@ -108,7 +90,6 @@ export default function App() {
               }
             />
 
-            {/* Usuarios: AD-01 */}
             <Route
               path="/usuarios"
               element={
@@ -119,7 +100,7 @@ export default function App() {
             />
           </Route>
 
-          {/* Catch-all */}
+          {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

@@ -38,10 +38,12 @@ vi.mock('@sgia/api-client', () => ({
   }),
 }));
 
-vi.mock('react-hot-toast', () => ({
-  default: {
+vi.mock('@/lib/toast', () => ({
+  toast: {
     success: vi.fn(),
     error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
   },
 }));
 

@@ -1,20 +1,27 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CreateProductoPayload,
+  CriticalStockAlert,
+  CriticalStockAlertQueryParams,
   InvoiceScanResponse,
+  ProductLocationPayload,
   Producto,
   ProductoParams,
+  Ubicacion,
   UpdateProductoPayload,
 } from '@sgia/types';
 import {
   createProducto,
   deleteProducto,
   extractFactura,
+  fetchCriticalStockAlerts,
   fetchProduct,
   fetchProductBarcode,
   fetchProductLocation,
   fetchProducts,
+  resolveStockAlert,
   setProductoActivo,
+  updateProductLocation,
   updateProducto,
 } from '../services/products';
 
@@ -30,6 +37,7 @@ export function useProducts(params?: ProductoParams) {
   return useQuery({
     queryKey: productKeys.list(params),
     queryFn: () => fetchProducts(params),
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -54,6 +62,17 @@ export function useProductLocation(id: number | undefined) {
     queryKey: productKeys.location(id!),
     queryFn: () => fetchProductLocation(id!),
     enabled: id !== undefined,
+  });
+}
+
+export function useUpdateProductLocation() {
+  const queryClient = useQueryClient();
+  return useMutation<Ubicacion, Error, { id: number; payload: ProductLocationPayload }>({
+    mutationFn: ({ id, payload }) => updateProductLocation(id, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+      queryClient.invalidateQueries({ queryKey: productKeys.location(variables.id) });
+    },
   });
 }
 
@@ -92,5 +111,30 @@ export function useToggleProductoActivo() {
 export function useScanInvoice() {
   return useMutation<InvoiceScanResponse, Error, File>({
     mutationFn: (file) => extractFactura(file) as Promise<InvoiceScanResponse>,
+  });
+}
+
+export const alertKeys = {
+  all: ['alerts'] as const,
+  list: (params?: CriticalStockAlertQueryParams) => ['alerts', 'list', params] as const,
+  criticalStock: (params?: CriticalStockAlertQueryParams) => ['alerts', 'critical-stock', params] as const,
+};
+
+export function useCriticalStockAlerts(params?: CriticalStockAlertQueryParams) {
+  return useQuery({
+    queryKey: alertKeys.criticalStock(params),
+    queryFn: () => fetchCriticalStockAlerts(params),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useResolveStockAlert() {
+  const queryClient = useQueryClient();
+  return useMutation<CriticalStockAlert, Error, number>({
+    mutationFn: (id) => resolveStockAlert(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: alertKeys.all });
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+    },
   });
 }

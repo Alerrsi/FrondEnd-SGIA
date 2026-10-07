@@ -1,6 +1,6 @@
 # AGENTS.md — SGIA Frontend Monorepo (Web + Mobile)
 
-Este archivo entrega contexto de negocio, técnico y de diseño para cualquier agente de IA (Claude Code u otro) que trabaje sobre este repositorio. Léelo antes de generar o modificar código.
+Este archivo entrega contexto de negocio, técnico y de diseño para cualquier agente de IA que trabaje sobre este repositorio. Léelo antes de generar o modificar código.
 
 ## 0. Alcance de este repositorio
 
@@ -14,154 +14,142 @@ Este archivo entrega contexto de negocio, técnico y de diseño para cualquier a
 
 ## 1. Contexto del proyecto
 
-**Nombre:** SGIA – Sistema de Gestión de Inventario y Activos (Frontend)
-**Cliente:** Área de Informática y Ciberseguridad, INACAP Sede Temuco
-**Problema que resuelve:** hoy el área gestiona el pañol con Excel, Word y papel, sin trazabilidad de stock, ubicación de equipos, ni historial de préstamos o cotizaciones. Este monorepo entrega las dos interfaces (web y móvil) que reemplazan esos procesos manuales por flujos digitales.
+**Nombre:** SGIA – Sistema de Gestión de Inventario y Activos (Frontend)  
+**Cliente:** Área de Informática y Ciberseguridad, INACAP Sede Temuco  
+**Problema que resuelve:** reemplaza la gestión manual del pañol (planillas y papel) por un sistema digital ágil, industrial y denso con trazabilidad física, préstamos en tiempo real, cotizaciones y control de activos.
 
-> Nota: el documento de formulación original del proyecto especifica Flutter para el componente móvil. Si el equipo migra a React Native, dejar constancia del cambio de stack en la documentación académica del proyecto.
+> Nota: el documento de formulación original especifica Flutter para el componente móvil. Al migrar a React Native/Expo, mantener la constancia en la documentación del proyecto.
 
 ## 2. Estructura del monorepo
 
 ```
 sgia-frontend/
 ├── apps/
-│   ├── web/              # Panel administrativo (Vite + React) — AD-01, DIR-01, PAN-01
-│   └── mobile/           # App móvil (Expo + React Native) — PRO-01
+│   ├── web/              # Panel administrativo y de pañol (Vite + React) — AD-01, DIR-01, PAN-01
+│   └── mobile/           # App móvil de solicitudes docentes (Expo + React Native) — PRO-01
 ├── packages/
 │   ├── api-client/       # Cliente HTTP tipado + hooks de TanStack Query hacia la API Laravel
 │   ├── types/            # Tipos/interfaces compartidos (Producto, Préstamo, Cotización, Usuario, Equipo...)
 │   ├── config/           # tsconfig, eslint, prettier compartidos
-│   └── design-tokens/    # Colores, tipografía, espaciado (JSON/TS) usados por web (Tailwind) y mobile (NativeWind)
+│   └── design-tokens/    # Colores, tipografía y tokens compartidos
 ├── turbo.json
 ├── pnpm-workspace.yaml
 └── package.json
 ```
 
-- `api-client` expone funciones y hooks (`useProducts`, `useLoans`, `useQuotations`, etc.) que ambas apps consumen — evita reescribir llamadas a la API en cada plataforma.
-- `types` es la fuente única de verdad de las formas de datos (idealmente generados o validados contra el contrato de la API del backend).
-- El manejo de sesión (token) usa una interfaz común definida en `api-client`, con implementación de almacenamiento distinta por plataforma (localStorage en web, SecureStore/AsyncStorage en mobile).
+- `api-client` expone funciones y hooks (`useProducts`, `useLoans`, `useQuotations`, etc.) consumidos por ambas apps.
+- `types` es la fuente única de verdad para las entidades y contratos de datos.
+- El manejo de sesión (token) usa una abstracción común en `api-client` (localStorage en web, SecureStore en mobile).
 
-## 3. Roles y qué app/pantalla les corresponde
+## 3. Roles y alcance de plataformas
 
 | Rol | App | Pantallas principales |
 |-----|-----|------------------------|
-| AD-01 | web | Gestión de usuarios (alta, edición, activar/desactivar). |
-| DIR-01 | web | Alta de productos vía escaneo de factura, cotizaciones, fichas técnicas/informes, dashboards. |
-| PAN-01 | web | Inventario, ubicación, stock, cola de préstamos, registro de préstamo presencial, historial. |
-| PRO-01 | mobile | Solicitud de préstamo remoto, listado de solicitudes propias, formulario de informe de novedades/reposición. |
+| **AD-01** (Administrador) | web | Gestión integral de usuarios (alta, edición, activar/desactivar), auditoría. |
+| **DIR-01** (Director/Coordinador) | web | Alta vía escaneo de facturas (OCR), cotizaciones a proveedores, fichas técnicas y dashboards analíticos. |
+| **PAN-01** (Pañolero) | web | Control de inventario, stock crítico, ubicaciones físicas, cola de préstamos remotos, registro presencial e historial. |
+| **PRO-01** (Profesor) | mobile | Solicitudes de préstamo remoto, seguimiento de estados e informe de novedades/fallas. |
 
-## 4. Tareas desglosadas por requisito
+## 4. Requisitos y especificaciones funcionales
 
-### Web (`apps/web`)
+> **Nota de arquitectura:** Cada requisito funcional y no funcional cuenta con su propio archivo de especificación detallada en el directorio [`TASKS/`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/README.md). Consulta cada archivo específico antes de implementar o modificar flujos:
 
-**REQ-01 — Login (FU-01)**
-- [x] Pantalla de login, manejo de token vía `api-client`, redirección por rol, rutas protegidas.
+- **Autenticación y Sesiones:** [`TASKS/REQ-01-AUTENTICACION-SESIONES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-01-AUTENTICACION-SESIONES.md)
+- **Administración de Usuarios:** [`TASKS/REQ-02-ADMINISTRACION-USUARIOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-02-ADMINISTRACION-USUARIOS.md)
+- **Inventario y Facturas OCR:** [`TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md)
+- **Ubicación Física:** [`TASKS/REQ-05-UBICACION-FISICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-05-UBICACION-FISICA.md)
+- **Alertas de Stock Crítico:** [`TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
+- **Cotizaciones y Proveedores:** [`TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md)
+- **Compras y Adquisiciones:** [`TASKS/REQ-08-COMPRAS-ADQUISICIONES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
+- **Préstamos Remotos:** [`TASKS/REQ-09-PRESTAMOS-REMOTOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
+- **Operación de Pañol Presencial:** [`TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
+- **Historial y Auditoría de Préstamos:** [`TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md)
+- **Fichas Técnicas de Equipos:** [`TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md)
+- **Informes de Novedades y Fallas:** [`TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md)
+- **Dashboards y Analítica:** [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+- **Requisitos No Funcionales (Calidad, Accesibilidad y Rendimiento):** [`TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md)
+- **Directrices de Interfaz y Sidebar:** [`TASKS/REQ-DISEÑO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-DISE%C3%91O.md)
 
-**REQ-02 — Administración de usuarios (FU-01, AD-01)**
-- [x] Tabla de usuarios con búsqueda/filtro/paginación (TanStack Table).
-- [x] Formulario de alta/edición (React Hook Form) y activar/desactivar con confirmación.
+## 5. Resumen Ejecutivo del Sistema de Diseño (UI Global SGIA)
 
-**REQ-03 / REQ-04 — Alta y edición de productos (FU-02, DIR-01 y PAN-01)**
-- [x] Flujo "subir factura → borrador extraído → confirmar/editar → guardar".
-- [x] Formulario de producto y vista de detalle con código de barras (SVG).
-- [x] Activar/desactivar sin eliminar.
+> Fuente canónica y especificación completa: [`SKILLS/Design.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/SKILLS/Design.md).
 
-**REQ-05 — Ubicación física (FU-02)**
-- [ ] Selector de sala/cajón en formulario y detalle; filtro de inventario por ubicación.
+El diseño del SGIA evita plantillas SaaS genéricas y adopta un **enfoque industrial, técnico, ágil y de alta densidad de información** (inspirado en Linear, Raycast y consolas de ingeniería):
 
-**REQ-06 — Alertas de stock crítico (FU-02)**
-- [ ] Badge de stock bajo en listados; centro de notificaciones para AD-01 y PAN-01.
+### 1. Canvas y Jerarquía de Superficies
+- **Fondo Canvas:** `bg-slate-50` (o `bg-zinc-50`). Prohibido usar fondos blanco puro extensos para prevenir fatiga en turnos largos.
+- **Paneles y Tarjetas:** `bg-white`, bordes finos de 1px (`border-slate-200/80`), elevación mínima (`shadow-xs` / `shadow-sm`) y bordes rectos o sutiles. Prohibidas tarjetas infladas o sombras difusas pesadas.
+- **Divisores:** `border-slate-100` o `divide-slate-100`.
 
-**REQ-07 / REQ-08 — Cotizaciones (FU-03, DIR-01)**
-- [ ] Selector múltiple de productos + cantidad.
-- [ ] Vista de estado (`pendiente`/`en camino`/`completa`) con badges; historial filtrable.
+### 2. Paleta Semántica y Acento Institucional
+- **Rojo Institucional (`#d9232a` / `bg-red-600` / `hover:bg-red-700`):**
+  - **Uso deliberado y exclusivo:** CTA principal culminante (ej. *"Dar de alta producto"*, *"Confirmar préstamo"*) o paradas críticas.
+  - **Prohibido:** fondos grandes, cabeceras completas o barras laterales rojas para evitar sobreestimulación visual.
+- **Escala Neutra:**
+  - Títulos: `text-slate-900 font-semibold`.
+  - Metadatos / secundarios: `text-slate-500 text-xs` o `text-slate-600 text-sm`.
+  - Bordes y campos: `border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400`.
+- **Badges Semánticos Técnicos (con icono + texto siempre):**
+  - **Disponible / Óptimo:** `bg-emerald-50 text-emerald-700 border-emerald-200/60`.
+  - **En Préstamo / Asignado:** `bg-blue-50 text-blue-700 border-blue-200/60`.
+  - **Stock Crítico / Umbral Mínimo:** `bg-rose-50 text-rose-700 border-rose-200/60`.
+  - **En Mantención / Revisión:** `bg-amber-50 text-amber-700 border-amber-200/60`.
+  - **De Baja / Retirado:** `bg-slate-100 text-slate-600 border-slate-200`.
 
-**REQ-09 / REQ-10 / REQ-11 — Préstamos (FU-04, PAN-01)**
-- [ ] Cola de solicitudes remotas (cantidad solicitada, disponible, ubicación).
-- [ ] Acciones aceptar/rechazar (motivo obligatorio en rechazo).
-- [ ] Formulario de préstamo presencial con captura desde pistola de código de barras (funciona como input de teclado, sin librería especial).
-- [ ] Historial con distinción visual `procesados` (atenuado) vs `en proceso` (destacado).
+### 3. Tipografía Técnica
+- `font-mono`: Obligatorio en identificadores técnicos (SKU, seriales, rotulado Code128, IP/MAC de equipos Cisco, gavetas `Cajon-A2`, RUT y cifras tabulares con `font-variant-numeric: tabular-nums`).
+- `font-sans`: Tipografía de lectura e interfaz (Inter o Geist) para navegación, formularios, descripciones y títulos.
 
-**REQ-12 / REQ-13 — Fichas técnicas y novedades (FU-05, DIR-01)**
-- [ ] Listado de equipos con ficha técnica descargable (PDF servido por la API).
-- [ ] Vista de informes de novedades por equipo.
+### 4. Tablas y Data Grids de Alta Densidad (TanStack Table)
+- Cabeceras compactas en mayúsculas atenuadas (`text-xs font-semibold uppercase tracking-wider text-slate-400`).
+- SKU en chip monoespaciado tenue (`font-mono text-xs text-slate-600 bg-slate-100/80 px-2 py-0.5 rounded border border-slate-200/60`).
+- Microbarra de nivel de stock compacto (40-60px) con coloración semántica.
+- Acciones por fila: 1 acción directa principal + menú contextual `DropdownMenu` (`MoreHorizontal`) de Radix UI para acciones secundarias.
 
-**REQ-14 — Dashboards (FU-06, DIR-01)**
-- [ ] Gráficos de productos/insumos más solicitados, distribución por carrera, menos demandados, ranking de profesores (react-chartjs-2).
+### 5. Formularios y Operatoria de Mesón
+- **React Hook Form + Zod** con validación estricta y mensajes correctivos.
+- Agrupación en fieldsets técnicos (`"Identificación de Hardware"`, `"Ubicación en Pañol"`, `"Parámetros de Stock"`).
+- **Drawers laterales (Radix Sheet):** Para operaciones frecuentes (fichas técnicas, asignación rápida) manteniendo la tabla visible de fondo.
+- **Modales centrados (Radix Dialog):** Reservados para confirmaciones destructivas o acciones aisladas.
+- **Ergonomía de Lector Code128:** Soporte de escaneo continuo con listener de eventos `keydown` terminado en `Enter` sin requerir clic previo.
+- **Feedback fluido:** Notificaciones y alertas operativas con Sileo (`toast.success`, `toast.warning`, `toast.error`).
 
-**REQ-NF-03 / REQ-NF-04 (web)**
-- [ ] Contraste AA, navegación por teclado, foco visible.
-- [ ] Paginación/virtualización en tablas largas, lazy loading de imágenes, code-splitting por ruta.
+## 6. Arquitectura y Manejo de Datos
 
-### Mobile (`apps/mobile`)
+- **Data Fetching:** TanStack Query consumiendo `packages/api-client`. Caché centralizada, revalidación y sincronización de estado.
+- **Formularios:** React Hook Form tipado en modo estricto.
+- **Autenticación:** Tokens persistidos con interceptor HTTP en `api-client`.
+- **Regla de oro:** Ambas apps son clientes de la API; ninguna regla de negocio final ni mutación se asume sin confirmación del backend.
 
-**REQ-09 — Solicitud de préstamo remoto (FU-04, PRO-01)**
-- [ ] Pantalla de nueva solicitud (insumo/producto, cantidad, asignatura, sala, fecha) con selector nativo.
-- [ ] Confirmación visual "solicitud enviada" tras el envío.
-- [ ] Listado de solicitudes propias con estado (`en proceso` / `procesada`).
+## 7. Convenciones de Código para Agentes
 
-**REQ-13 — Informe de novedades / reposición (FU-05, PRO-01)**
-- [ ] Formulario con adjunto opcional (foto/documento) usando el picker nativo de Expo.
+- **TypeScript estricto:** Cero `any`, tipado exhaustivo mediante `packages/types`.
+- **Modularidad:** Un componente/hook por archivo, agrupado por funcionalidad técnica.
+- **Llamadas a API:** Centralizadas en `packages/api-client` (nunca llamadas `fetch` o `axios` dispersas dentro de componentes UI).
+- **Estados compartidos:** Enums y tipos de estado sincronizados en `packages/types`.
 
-**REQ-NF-04 (mobile)**
-- [ ] Manejo de estados de carga/offline (la app debe avisar si no hay conexión, no fallar en silencio).
-- [ ] Uso de `FlatList` para listados largos (no `ScrollView` con `.map`).
+## 8. Stack Tecnológico
 
-## 5. Arquitectura y manejo de datos
+- **Monorepo:** Turborepo + pnpm workspaces.
+- **Web (`apps/web`):**
+  - React 19 + TypeScript + Vite.
+  - Tailwind CSS + Radix UI / Shadcn primitives.
+  - TanStack Table para data grids densos.
+  - React Hook Form + Zod.
+  - Sileo para notificaciones y alertas de escaneo.
+  - Lucide React para iconografía consistente.
+  - Chart.js / react-chartjs-2 para analítica FU-06.
+- **Mobile (`apps/mobile`):**
+  - React Native con Expo.
+  - NativeWind (Tailwind CSS nativo).
+  - React Navigation.
+  - Lucide React Native.
+- **Testing:**
+  - Vitest + React Testing Library (web).
+  - Jest + React Native Testing Library (mobile).
 
-- **Data fetching:** TanStack Query en ambas apps, consumiendo `packages/api-client`. Da cache, reintentos y estados de carga/error consistentes en web y mobile con la misma API de hooks.
-- **Formularios:** React Hook Form en ambas apps (misma librería, misma curva de aprendizaje para el equipo).
-- **Autenticación:** token guardado vía la interfaz común de `api-client`; implementación concreta de almacenamiento resuelta por plataforma dentro de cada app.
-- **Ambas apps son solo clientes de la API:** ninguna decisión de negocio (stock, permisos, estados) se resuelve localmente sin confirmación del backend.
+## 9. Referencias y Fuentes
 
-## 6. Estética — inspirada en zed.dev (aplica principalmente a web)
-
-Referencia: https://zed.dev/. Se toma el lenguaje visual "developer tool" (oscuro, alto contraste, preciso), sin el peso de animaciones/video propio de un sitio de marketing, priorizando velocidad percibida.
-
-**Qué sí replicar:**
-- Fondo casi negro (`#0d0d0d`–`#111113`), texto casi blanco (`#f5f5f5`), un único color de acento (naranja/rojo) para botones primarios, links y estados activos. Definido en `packages/design-tokens` para reusar en Tailwind (web) y NativeWind (mobile).
-- Bordes finos translúcidos en vez de sombras difusas.
-- Mono (JetBrains Mono / Fira Code) para IDs, códigos de barras, badges de estado, timestamps. Sans (Inter) para el resto.
-- Radios de borde moderados (8–10px), espaciado generoso, micro-interacciones vía transiciones CSS simples.
-
-**Qué NO replicar:**
-- Videos autoplay, parallax, animaciones de scroll complejas.
-- En mobile, no forzar el mismo layout de grilla web: respetar convenciones nativas (safe areas, gestos, tamaños táctiles) manteniendo solo la paleta y tipografía.
-
-## 7. Convenciones de código sugeridas para agentes
-
-- Un solo componente/hook por archivo, agrupado por módulo (`inventario/`, `prestamos/`, `cotizaciones/`, `usuarios/`, `dashboard/`) en ambas apps, siguiendo la nomenclatura FU-01 a FU-06.
-- Toda llamada a la API pasa por `packages/api-client`, nunca `fetch` disperso dentro de componentes de `apps/web` o `apps/mobile`.
-- Los tipos de dominio (Producto, Préstamo, Cotización, Usuario, Equipo) viven únicamente en `packages/types`; no redefinir localmente en cada app.
-- Estados de préstamo/cotización como enum/const compartido en `packages/types`, no strings sueltos, para que los badges de color sean consistentes entre web y mobile.
-- TypeScript estricto en todo el monorepo.
-
-## 8. Tecnologías
-
-- **Gestor de monorepo:** Turborepo + pnpm workspaces (liviano, sin la curva de Nx, suficiente para el tamaño de este proyecto).
-- **Web:**
-  - **Build/framework:** Vite + React (SPA, sin necesidad de SSR al ser un panel interno autenticado).
-  - **Routing:** React Router.
-  - **CSS:** Tailwind CSS.
-  - **Componentes headless/accesibles:** Radix UI (Dialog, Select, Tabs, Dropdown) — sin estilos propios, encajan con la estética minimalista de la sección 6.
-  - **Tablas:** TanStack Table (headless, liviana, se integra nativamente con React y con TanStack Query).
-  - **Fecha:** react-day-picker.
-  - **Toasts:** react-hot-toast (liviano, reemplaza confirmaciones simples).
-  - **Gráficos (dashboards, FU-06):** Chart.js + react-chartjs-2, tema oscuro con el acento definido en design-tokens.
-  - **Iconos:** lucide-react.
-  - **Syntax highlight** (si se muestra JSON/logs): Shiki.
-- **Mobile:**
-  - **Framework:** React Native con Expo (mayor velocidad de desarrollo/build para el plazo del proyecto de título; opción de eject si se necesita más adelante).
-  - **Estilos:** NativeWind (Tailwind para React Native, reusa los mismos tokens que la web).
-  - **Navegación:** React Navigation (o Expo Router).
-  - **Iconos:** lucide-react-native.
-  - **Cámara/adjuntos:** `expo-image-picker` / `expo-document-picker` para el formulario de novedades.
-- **Compartido:**
-  - **Data fetching:** TanStack Query.
-  - **Formularios:** React Hook Form.
-  - **Lenguaje:** TypeScript en todo el monorepo.
-- **Testing:** Vitest + React Testing Library (web), Jest + React Native Testing Library (mobile).
-
-## 9. Referencias del documento fuente
-
-Este archivo se basa en "Formulación del Proyecto de Título - SGIA (Sistema Gestión de Inventario y Activos)", INACAP Sede Temuco, sección TIHI84, entregado 09-09-2026, y en la referencia visual https://zed.dev/ para la estética del panel web. Consultar el documento de formulación para el detalle completo de requisitos, matriz RACI, cronograma y presupuesto.
+- Formulación del Proyecto de Título - SGIA, INACAP Sede Temuco (Sección TIHI84).
+- Especificación de diseño y patrones de componentes: [`SKILLS/Design.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/SKILLS/Design.md).
+- Índice de requisitos detallados: [`TASKS/README.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/README.md).

@@ -7,18 +7,16 @@ import {
 import type { Producto, ProductoParams } from '@sgia/types';
 import {
   AlertCircle,
-  AlertTriangle,
-  CheckCircle2,
   FileUp,
-  Package,
   Plus,
 } from 'lucide-react';
-import toast from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
+import { cn } from '@/lib/cn';
+import { toast } from '@/lib/toast';
 import { FacturaUploadModal } from '../components/factura-upload-modal';
 import {
   InventarioTable,
@@ -26,6 +24,7 @@ import {
 } from '../components/inventario-table';
 import { ProductoDetailDialog } from '../components/producto-detail-dialog';
 import { ProductoFormDialog } from '../components/producto-form-dialog';
+import { ReubicarProductoModal } from '../components/reubicar-producto-modal';
 
 export default function ProductosListPage() {
   const { user } = useAuth();
@@ -42,6 +41,8 @@ export default function ProductosListPage() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [areaFilter, setAreaFilter] = useState('');
+  const [salaFilter, setSalaFilter] = useState('');
+  const [cajonFilter, setCajonFilter] = useState('');
   const [estadoFilter, setEstadoFilter] = useState<EstadoFilter>('todos');
   const [criticalOnly, setCriticalOnly] = useState(false);
 
@@ -49,6 +50,7 @@ export default function ProductosListPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Producto | null>(null);
   const [detailProduct, setDetailProduct] = useState<Producto | null>(null);
+  const [reubicarTarget, setReubicarTarget] = useState<Producto | null>(null);
   const [facturaModalOpen, setFacturaModalOpen] = useState(false);
   const [toggleTarget, setToggleTarget] = useState<Producto | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Producto | null>(null);
@@ -62,13 +64,63 @@ export default function ProductosListPage() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  // Listener ergonómico para pistola lectora Code128 / escáner
+  useEffect(() => {
+    let barcodeBuffer = '';
+    let lastKeyTime = Date.now();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignorar si el usuario está tipeando activamente en un input o modal
+      const activeEl = document.activeElement;
+      if (
+        activeEl instanceof HTMLInputElement ||
+        activeEl instanceof HTMLTextAreaElement ||
+        activeEl instanceof HTMLSelectElement
+      ) {
+        return;
+      }
+
+      // Atajo para enfocar buscador
+      if (e.key === '/') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement;
+        searchInput?.focus();
+        return;
+      }
+
+      const currentTime = Date.now();
+      if (currentTime - lastKeyTime > 100) {
+        barcodeBuffer = '';
+      }
+      lastKeyTime = currentTime;
+
+      if (e.key === 'Enter') {
+        if (barcodeBuffer.length >= 4) {
+          e.preventDefault();
+          setSearch(barcodeBuffer);
+          setDebouncedSearch(barcodeBuffer);
+          setPage(1);
+          toast.success(`Código Code128 detectado: ${barcodeBuffer}`);
+          barcodeBuffer = '';
+        }
+      } else if (e.key.length === 1) {
+        barcodeBuffer += e.key;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const queryParams: ProductoParams = {
     page,
-    per_page: perPage,
+    perPage,
     search: debouncedSearch.trim() || undefined,
     area: areaFilter || undefined,
+    sala: salaFilter || undefined,
+    cajon: cajonFilter || undefined,
     is_active:
-      estadoFilter === 'todos' ? undefined : estadoFilter === 'activo',
+      estadoFilter === 'todos' ? undefined : estadoFilter === 'activos',
     critical_only: criticalOnly ? true : undefined,
   };
 
@@ -122,126 +174,128 @@ export default function ProductosListPage() {
     }
   };
 
-  if (isLoading) {
-    return <p className="text-sm text-text-muted">Cargando catálogo de inventario…</p>;
-  }
-
-  if (isError || !data) {
-    return (
-      <div className="flex items-center gap-2 rounded-lg border border-danger/30 bg-danger/10 p-4 text-sm text-danger">
-        <AlertCircle className="h-5 w-5 shrink-0" />
-        <span>No se pudo conectar con el catálogo de inventario.</span>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col gap-4">
-      {/* Encabezado y acciones principales */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-col gap-3.5">
+      {/* 1. Encabezado Técnico Compacto y Acciones */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
         <div>
-          <h1 className="font-mono-tabular text-xl font-bold tracking-tight text-text">
-            Catálogo de Inventario
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              SEDE TEMUCO · PAÑOL TI
+            </span>
+            <span className="text-zinc-400 dark:text-zinc-600 text-xs font-mono">/ Módulo FU-02</span>
+          </div>
+          <h1 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+            Control de Inventario y Activos
           </h1>
-          <p className="text-xs text-text-muted">
-            Control de insumos, herramientas y activos de pañol con código de barras Code128.
-          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           {canScanInvoice && (
             <Button
-              variant="ghost"
+              variant="outline"
+              size="sm"
               onClick={() => setFacturaModalOpen(true)}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1.5 text-xs h-8"
             >
-              <FileUp className="h-4 w-4 text-accent" />
+              <FileUp className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
               <span>Subir Factura (OCR)</span>
             </Button>
           )}
 
-          <Button onClick={handleOpenCreate} className="flex items-center gap-1.5">
-            <Plus className="h-4 w-4" />
-            <span>Nuevo producto</span>
+          {/* CTA Principal: Monocromático de alto contraste técnico */}
+          <Button onClick={handleOpenCreate} size="sm" className="flex items-center gap-1.5 text-xs h-8">
+            <Plus className="h-3.5 w-3.5" />
+            <span>+ Dar de alta producto</span>
           </Button>
         </div>
       </div>
 
-      {/* Tarjetas de estado rápido */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-3 shadow-sm">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-raised text-accent">
-            <Package className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="text-xs text-text-muted">Total de referencias</span>
-            <p className="font-mono-tabular text-lg font-bold text-text">
-              {totalItems} <span className="text-xs font-normal text-text-muted">productos</span>
-            </p>
-          </div>
+      {/* 2. Barra métrica horizontal compacta (Sustituye tarjetas gigantes de 150px) */}
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6 px-4 py-2.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs shadow-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-500 dark:text-zinc-400">Total Referencias:</span>
+          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
+            {totalItems}
+          </span>
         </div>
-
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-3 shadow-sm">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-warning/10 text-warning">
-            <AlertTriangle className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="text-xs text-text-muted">Stock en umbral crítico</span>
-            <p className="font-mono-tabular text-lg font-bold text-warning">
-              {criticalItemsCount}{' '}
-              <span className="text-xs font-normal text-text-muted">en esta página</span>
-            </p>
-          </div>
+        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-500 dark:text-zinc-400">Stock Crítico:</span>
+          <span
+            className={cn(
+              'font-mono font-medium',
+              criticalItemsCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400',
+            )}
+          >
+            {criticalItemsCount} {criticalItemsCount === 1 ? 'ítem bajo mínimo' : 'bajo mínimo'}
+          </span>
         </div>
-
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-3 shadow-sm">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10 text-success">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="text-xs text-text-muted">Estado del pañol</span>
-            <p className="text-sm font-semibold text-text">Operativo y Sincronizado</p>
-          </div>
+        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-500 dark:text-zinc-400">Lector Code128:</span>
+          <span className="font-mono text-zinc-600 dark:text-zinc-400">Listo (Presiona /)</span>
         </div>
       </div>
 
-      {/* Tabla de Inventario con búsqueda, filtros y paginación en servidor */}
+      {/* Error state */}
+      {isError && (
+        <div className="flex items-center gap-2 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 p-3 text-xs text-rose-700 dark:text-rose-400">
+          <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
+          <span>Error de conexión con el catálogo de pañol. Reintentando sincronización…</span>
+        </div>
+      )}
+
+      {/* 3. Marco unificado: Toolbar + Tabla de Datos */}
       <InventarioTable
-        productos={data.data}
-        meta={data.meta}
+        productos={data?.data ?? []}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        canDelete={canDelete}
         search={search}
         onSearchChange={setSearch}
         areaFilter={areaFilter}
-        onAreaFilterChange={(a) => {
-          setAreaFilter(a);
+        onAreaFilterChange={(val) => {
+          setAreaFilter(val);
+          setPage(1);
+        }}
+        salaFilter={salaFilter}
+        onSalaFilterChange={(val) => {
+          setSalaFilter(val);
+          setPage(1);
+        }}
+        cajonFilter={cajonFilter}
+        onCajonFilterChange={(val) => {
+          setCajonFilter(val);
           setPage(1);
         }}
         estadoFilter={estadoFilter}
-        onEstadoFilterChange={(e) => {
-          setEstadoFilter(e);
+        onEstadoFilterChange={(val) => {
+          setEstadoFilter(val);
           setPage(1);
         }}
         criticalOnly={criticalOnly}
-        onCriticalOnlyChange={(c) => {
-          setCriticalOnly(c);
+        onCriticalOnlyChange={(val) => {
+          setCriticalOnly(val);
           setPage(1);
         }}
-        page={page}
-        onPageChange={setPage}
-        pageSize={perPage}
-        onPageSizeChange={(s) => {
-          setPerPage(s);
-          setPage(1);
-        }}
-        isFetching={isFetching}
-        canDelete={canDelete}
         onViewDetail={setDetailProduct}
         onEdit={handleOpenEdit}
+        onReubicar={setReubicarTarget}
         onToggleActivo={setToggleTarget}
         onDelete={setDeleteTarget}
+        page={page}
+        pageSize={perPage}
+        onPageChange={setPage}
+        onPageSizeChange={(size) => {
+          setPerPage(size);
+          setPage(1);
+        }}
+        meta={data?.meta}
       />
 
-      {/* Modal de Creación / Edición */}
+      {/* Modales y Drawers */}
       <ProductoFormDialog
         open={formOpen}
         onClose={() => {
@@ -251,7 +305,6 @@ export default function ProductosListPage() {
         producto={editingProduct}
       />
 
-      {/* Modal de Detalle con Código de Barras SVG e Impresión */}
       <ProductoDetailDialog
         open={detailProduct !== null}
         onClose={() => setDetailProduct(null)}
@@ -262,23 +315,30 @@ export default function ProductosListPage() {
         }}
       />
 
-      {/* Modal de Subida OCR de Factura */}
-      <FacturaUploadModal
-        open={facturaModalOpen}
-        onClose={() => setFacturaModalOpen(false)}
-        onSuccess={() => refetch()}
+      <ReubicarProductoModal
+        open={reubicarTarget !== null}
+        onClose={() => setReubicarTarget(null)}
+        producto={reubicarTarget}
       />
 
-      {/* Diálogo de Confirmación de Activación/Desactivación */}
+      {canScanInvoice && (
+        <FacturaUploadModal
+          open={facturaModalOpen}
+          onClose={() => setFacturaModalOpen(false)}
+          onSuccess={() => refetch()}
+        />
+      )}
+
+      {/* Modal de confirmación para activar/desactivar */}
       <ConfirmDialog
         open={toggleTarget !== null}
         title={toggleTarget?.activo ? 'Desactivar producto' : 'Activar producto'}
         description={
           toggleTarget
-            ? `¿Deseas ${toggleTarget.activo ? 'desactivar' : 'activar'} "${toggleTarget.nombre}"? ${
+            ? `¿Seguro que deseas ${toggleTarget.activo ? 'desactivar' : 'activar'} "${toggleTarget.nombre}"? ${
                 toggleTarget.activo
-                  ? 'El producto no podrá ser seleccionado en nuevas solicitudes de préstamos.'
-                  : 'El producto volverá a estar disponible para el pañol y solicitudes de docentes.'
+                  ? 'El activo no aparecerá en búsquedas de nuevos préstamos.'
+                  : 'El producto volverá a estar disponible en pañol.'
               }`
             : ''
         }
@@ -289,13 +349,13 @@ export default function ProductosListPage() {
         onCancel={() => setToggleTarget(null)}
       />
 
-      {/* Diálogo Crítico de Eliminación de Producto */}
+      {/* Modal de confirmación crítica de eliminación */}
       <ConfirmDialog
         open={deleteTarget !== null}
         title="Eliminar producto del inventario"
         description={
           deleteTarget
-            ? `¿Estás seguro de que deseas eliminar permanentemente "${deleteTarget.nombre}"? Esta acción borrará el registro de inventario.`
+            ? `¿Confirmas la eliminación permanente de "${deleteTarget.nombre}"? Esta acción solo se permite si el producto no tiene préstamos activos asociados.`
             : ''
         }
         confirmLabel="Eliminar producto"

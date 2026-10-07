@@ -5,6 +5,34 @@ import type { Producto } from '@sgia/types';
 
 import { InventarioTable } from './components/inventario-table';
 
+vi.mock('@sgia/api-client', () => ({
+  useLocations: () => ({
+    data: {
+      data: [
+        { id: 10, nombre: 'Lab 201', tipo: 'sala' },
+        { id: 11, nombre: 'Pañol 1', tipo: 'panol' },
+      ],
+    },
+    isLoading: false,
+  }),
+  useCajones: (params?: { location_id?: number }) => {
+    if (params?.location_id === 10) {
+      return {
+        data: {
+          data: [{ id: 101, codigo: 'Rack B', location_id: 10 }],
+        },
+        isLoading: false,
+      };
+    }
+    return {
+      data: {
+        data: [],
+      },
+      isLoading: false,
+    };
+  },
+}));
+
 const mockProductos: Producto[] = [
   {
     id: 1,
@@ -71,6 +99,10 @@ describe('InventarioTable', () => {
     expect(screen.getByText('SGIA-CISCO-4321')).toBeDefined();
     expect(screen.getByText('SGIA-SW-2960')).toBeDefined();
 
+    // Ubicación badges
+    expect(screen.getByText(/Lab 201 · Rack B/i)).toBeDefined();
+    expect(screen.getByText(/Pañol 1 · Estante 4/i)).toBeDefined();
+
     // Critical stock badge
     expect(screen.getByText(/Crítico/i)).toBeDefined();
 
@@ -97,6 +129,27 @@ describe('InventarioTable', () => {
     await user.click(viewButtons[0]!);
 
     expect(handleViewDetail).toHaveBeenCalledWith(mockProductos[0]);
+  });
+
+  it('triggers onReubicar callback when clicking on the relocation button', async () => {
+    const user = userEvent.setup();
+    const handleReubicar = vi.fn();
+
+    render(
+      <InventarioTable
+        productos={mockProductos}
+        onViewDetail={vi.fn()}
+        onEdit={vi.fn()}
+        onReubicar={handleReubicar}
+        onToggleActivo={vi.fn()}
+      />,
+    );
+
+    const reubicarButtons = screen.getAllByTitle(/Reubicar en pañol/i);
+    expect(reubicarButtons.length).toBeGreaterThan(0);
+    await user.click(reubicarButtons[0]!);
+
+    expect(handleReubicar).toHaveBeenCalledWith(mockProductos[0]);
   });
 
   it('triggers onEdit, onToggleActivo and onDelete callbacks', async () => {
@@ -132,10 +185,11 @@ describe('InventarioTable', () => {
     expect(handleDelete).toHaveBeenCalledWith(mockProductos[0]);
   });
 
-  it('handles search input and filter changes', async () => {
+  it('handles search input and filter changes including sala and cajon dropdowns', async () => {
     const user = userEvent.setup();
     const handleSearchChange = vi.fn();
     const handleAreaChange = vi.fn();
+    const handleSalaChange = vi.fn();
     const handleCriticalChange = vi.fn();
 
     render(
@@ -144,6 +198,7 @@ describe('InventarioTable', () => {
         search=""
         onSearchChange={handleSearchChange}
         onAreaFilterChange={handleAreaChange}
+        onSalaFilterChange={handleSalaChange}
         onCriticalOnlyChange={handleCriticalChange}
         onViewDetail={vi.fn()}
         onEdit={vi.fn()}
@@ -158,5 +213,41 @@ describe('InventarioTable', () => {
     const criticalCheckbox = screen.getByLabelText(/Solo stock crítico/i);
     await user.click(criticalCheckbox);
     expect(handleCriticalChange).toHaveBeenCalledWith(true);
+
+    const salaSelect = screen.getByLabelText(/Filtrar por sala/i);
+    await user.selectOptions(salaSelect, 'Lab 201');
+    expect(handleSalaChange).toHaveBeenCalledWith('Lab 201');
+  });
+
+  it('renders loading indicators inside the table without crashing or unmounting', () => {
+    // When loading with no products yet (e.g. initial or search with empty cache)
+    const { rerender } = render(
+      <InventarioTable
+        productos={[]}
+        isLoading={true}
+        onViewDetail={vi.fn()}
+        onEdit={vi.fn()}
+        onToggleActivo={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/Buscando y cargando productos en pañol/i)).toBeDefined();
+    expect(screen.getByRole('progressbar', { name: /Cargando productos/i })).toBeDefined();
+
+    // When fetching while keeping existing products in table
+    rerender(
+      <InventarioTable
+        productos={mockProductos}
+        isLoading={false}
+        isFetching={true}
+        onViewDetail={vi.fn()}
+        onEdit={vi.fn()}
+        onToggleActivo={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Buscando...')).toBeDefined();
+    expect(screen.getByText('Router Cisco ISR 4321')).toBeDefined();
+    expect(screen.getByRole('progressbar', { name: /Cargando productos/i })).toBeDefined();
   });
 });

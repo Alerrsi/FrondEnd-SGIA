@@ -5,6 +5,81 @@ export interface Ubicacion {
   descripcion?: string | null;
 }
 
+export type LocationTipo = 'sala' | 'panol' | 'taller' | 'bodega';
+
+export interface LocationEntity {
+  id: number;
+  nombre: string;
+  tipo: LocationTipo | string;
+  sala?: string;
+  cajon?: string | null;
+  descripcion?: string | null;
+  cajones_count?: number;
+  cajones?: CajonEntity[];
+  created_by?: number | null;
+  updated_by?: number | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CajonEntity {
+  id: number;
+  codigo: string;
+  descripcion?: string | null;
+  location_id: number;
+  location?: LocationEntity;
+  products_count?: number;
+  created_by?: number | null;
+  updated_by?: number | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LocationQueryParams {
+  search?: string;
+  tipo?: LocationTipo | string;
+  per_page?: number;
+  page?: number;
+}
+
+export interface CajonQueryParams {
+  location_id?: number;
+  search?: string;
+  per_page?: number;
+  page?: number;
+}
+
+export interface CreateLocationPayload {
+  nombre: string;
+  tipo?: LocationTipo | string;
+  descripcion?: string;
+}
+
+export interface UpdateLocationPayload {
+  nombre?: string;
+  tipo?: LocationTipo | string;
+  descripcion?: string;
+}
+
+export interface CreateCajonPayload {
+  location_id: number;
+  codigo: string;
+  descripcion?: string;
+}
+
+export interface UpdateCajonPayload {
+  location_id?: number;
+  codigo?: string;
+  descripcion?: string;
+}
+
+export interface ProductLocationDetailResponse {
+  product_id: number;
+  product_name: string;
+  cajon?: CajonEntity | null;
+  location?: LocationEntity | null;
+}
+
 export interface Producto {
   id: number;
   nombre: string;
@@ -20,9 +95,12 @@ export interface Producto {
   stockCritico: number;
   stock_minimo?: number;
   ubicacion: Ubicacion;
-  location?: Ubicacion;
+  location?: LocationEntity | Ubicacion | null;
   location_id?: number | null;
+  cajon_id?: number | null;
+  cajon?: CajonEntity | null;
   supplier_id?: number | null;
+  supplier?: { id?: number; name?: string } | null;
   area?: string | null;
   photo_url?: string | null;
   activo: boolean;
@@ -38,12 +116,13 @@ export interface CreateProductoPayload {
   nombre?: string;
   description?: string;
   barcode?: string;
-  codigoBarras?: string;
   quantity?: number;
   stock?: number;
   stock_minimo?: number;
   stockCritico?: number;
   supplier_id?: number;
+  location_id?: number;
+  cajon_id?: number;
   sala?: string;
   cajon?: string;
   area?: string;
@@ -65,6 +144,8 @@ export interface UpdateProductoPayload {
   stock_minimo?: number;
   stockCritico?: number;
   supplier_id?: number;
+  location_id?: number;
+  cajon_id?: number;
   sala?: string;
   cajon?: string;
   area?: string;
@@ -123,6 +204,7 @@ export interface ProductoParams {
 
 export interface ProductLocationPayload {
   location_id?: number;
+  cajon_id?: number;
   sala?: string;
   cajon?: string;
   descripcion?: string;
@@ -139,6 +221,21 @@ export interface CriticalStockAlert {
   id: number;
   product_id: number;
   product?: Producto;
+  producto?: Producto;
+  product_name?: string;
+  stock?: number;
+  stock_minimo?: number;
   alert_type: 'warning' | 'critical';
   is_resolved: boolean;
+  resolved_at?: string | null;
+  resolved_by?: number | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CriticalStockAlertQueryParams {
+  alert_type?: 'warning' | 'critical';
+  is_resolved?: boolean;
+  per_page?: number;
+  page?: number;
 }

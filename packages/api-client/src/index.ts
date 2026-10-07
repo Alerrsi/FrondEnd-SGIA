@@ -1,4 +1,13 @@
-export { configureApiClient, getApiClientOptions, ApiRequestError } from './http';
+export {
+  configureApiClient,
+  getApiClientOptions,
+  ApiRequestError,
+  del,
+  get,
+  patch,
+  post,
+  put,
+} from './http';
 export type { ApiClientOptions, TokenStorage } from './http';
 
 export {
@@ -30,6 +39,7 @@ export {
   fetchCriticalStockAlerts,
   resolveStockAlert,
   normalizeProducto,
+  normalizeUbicacion,
 } from './services/products';
 export {
   productKeys,
@@ -37,12 +47,43 @@ export {
   useProduct,
   useProductBarcode,
   useProductLocation,
+  useUpdateProductLocation,
   useCreateProducto,
   useUpdateProducto,
   useDeleteProducto,
   useToggleProductoActivo,
   useScanInvoice,
+  alertKeys,
+  useCriticalStockAlerts,
+  useResolveStockAlert,
 } from './hooks/products';
+
+export {
+  fetchLocations,
+  fetchLocation,
+  createLocation,
+  updateLocation,
+  deleteLocation,
+  fetchCajones,
+  fetchCajon,
+  createCajon,
+  updateCajon,
+  deleteCajon,
+} from './services/locations';
+export {
+  locationKeys,
+  cajonKeys,
+  useLocations,
+  useLocation,
+  useCreateLocation,
+  useUpdateLocation,
+  useDeleteLocation,
+  useCajones,
+  useCajon,
+  useCreateCajon,
+  useUpdateCajon,
+  useDeleteCajon,
+} from './hooks/locations';
 
 export {
   fetchLoans,

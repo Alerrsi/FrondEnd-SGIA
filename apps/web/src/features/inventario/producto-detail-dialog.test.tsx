@@ -7,16 +7,13 @@ import { ProductoDetailDialog } from './components/producto-detail-dialog';
 
 const mockProducto: Producto = {
   id: 42,
-  nombre: 'Cisco Router 2901',
-  name: 'Cisco Router 2901',
   codigoBarras: 'SGIA-2026-CISCO',
   barcode: 'SGIA-2026-CISCO',
-  description: 'Router de acceso con módulos EHWIC',
-  categoria: 'Networking',
-  stock: 3,
-  quantity: 3,
-  stockCritico: 5,
+  nombre: 'Cisco Router 2901',
+  categoria: 'Equipos de Red',
+  stock: 12,
   stock_minimo: 5,
+  stockCritico: 5,
   area: 'Redes',
   activo: true,
   is_active: true,
@@ -53,86 +50,62 @@ vi.mock('@sgia/api-client', () => ({
   }),
 }));
 
-vi.mock('react-hot-toast', () => ({
-  default: {
+vi.mock('@/lib/toast', () => ({
+  toast: {
     success: vi.fn(),
     error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
 describe('ProductoDetailDialog (REQ-04)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    if (typeof window.print !== 'function') {
+      window.print = vi.fn();
+    }
   });
 
   it('renders product specifications, location and stock status', () => {
-    render(
-      <ProductoDetailDialog
-        open={true}
-        onClose={vi.fn()}
-        producto={mockProducto}
-        onEdit={vi.fn()}
-      />,
-    );
+    render(<ProductoDetailDialog open={true} onClose={vi.fn()} producto={mockProducto} />);
 
     expect(screen.getByText('Cisco Router 2901')).toBeDefined();
-    expect(screen.getByText(/Router de acceso con módulos EHWIC/i)).toBeDefined();
-    expect(screen.getByText(/Lab Redes 204/i)).toBeDefined();
-    expect(screen.getByText(/Rack Principal #2/i)).toBeDefined();
-    expect(screen.getAllByText(/Redes/i).length).toBeGreaterThan(0);
-  });
-
-  it('renders Code128 vector SVG barcode inside a high-contrast container', () => {
-    render(
-      <ProductoDetailDialog
-        open={true}
-        onClose={vi.fn()}
-        producto={mockProducto}
-        onEdit={vi.fn()}
-      />,
-    );
-
-    // Monospace barcode display
     expect(screen.getAllByText('SGIA-2026-CISCO').length).toBeGreaterThan(0);
-
-    // Vector SVG rendered inside container
-    const svgElement = document.querySelector('svg[data-testid="code128-svg"]');
-    expect(svgElement).toBeDefined();
+    expect(screen.getByText('Lab Redes 204')).toBeDefined();
+    expect(screen.getByText('Rack Principal #2')).toBeDefined();
+    expect(screen.getByText('Equipos de Red')).toBeDefined();
+    expect(screen.getByText('Normal')).toBeDefined();
   });
 
-  it('handles label printing when print button is clicked', async () => {
-    const user = userEvent.setup();
-    const mockPrintWindow = {
-      document: {
-        write: vi.fn(),
-        close: vi.fn(),
-      },
-      focus: vi.fn(),
-      close: vi.fn(),
-    };
+  it('renders Code128 barcode container and allows thermal print dispatch', async () => {
+    const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {});
 
-    const windowOpenSpy = vi
-      .spyOn(window, 'open')
-      .mockReturnValue(mockPrintWindow as any);
+    render(<ProductoDetailDialog open={true} onClose={vi.fn()} producto={mockProducto} />);
 
+    expect(screen.getByTestId('code128-svg')).toBeDefined();
+
+    const printBtn = screen.getByRole('button', { name: /Imprimir etiqueta térmica/i });
+    await userEvent.click(printBtn);
+
+    expect(printSpy).toHaveBeenCalled();
+    printSpy.mockRestore();
+  });
+
+  it('handles reubicar button trigger', async () => {
+    const handleReubicar = vi.fn();
     render(
       <ProductoDetailDialog
         open={true}
         onClose={vi.fn()}
         producto={mockProducto}
-        onEdit={vi.fn()}
+        onReubicar={handleReubicar}
       />,
     );
 
-    const printButton = screen.getByText(/Imprimir Etiqueta/i);
-    await user.click(printButton);
+    const reubicarBtn = screen.getByRole('button', { name: /Reubicar/i });
+    await userEvent.click(reubicarBtn);
 
-    expect(windowOpenSpy).toHaveBeenCalled();
-    expect(mockPrintWindow.document.write).toHaveBeenCalledWith(
-      expect.stringContaining('window.print()'),
-    );
-    expect(mockPrintWindow.document.close).toHaveBeenCalled();
-
-    windowOpenSpy.mockRestore();
+    expect(handleReubicar).toHaveBeenCalledWith(mockProducto);
   });
 });

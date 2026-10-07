@@ -1,0 +1,6 @@
+- [x] Panel lateral responsivo y encogible:
+  - [x] Boton de que haga expand y collapse 
+  - [x] Que se pueda ajustar el tamaño y todas las interfaces se adapten al tamaño de este, cambiando el estado del cursor (`col-resize`)
+  - [x] Solo mostrar rol como nombre "Pañol" / "Administrador" segun sea el caso (sin códigos técnicos AD-01 / PAN-01)
+- [x] El sidebar debe poder quedar como en modo encogido con la opción de mostrar los logos de las opciones para acceder a ellos
+- [x] Opcion en sidebar de cambiar el modo entre claro y oscuro

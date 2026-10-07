@@ -2,7 +2,7 @@
 
 > **Código:** `REQ-06` | **Módulo:** `FU-02` (Gestión de Inventario y Almacenamiento)  
 > **Plataforma:** Web (`apps/web`)  
-> **Roles:** Administrador (`AD-01`) y Pañolero (`PAN-01`)
+> **Roles:** Administrador (`AD-01`), Director (`DIR-01`) y Pañolero (`PAN-01`)
 
 ---
 
@@ -24,23 +24,23 @@ Monitorear en tiempo real los niveles de existencias para anticipar quiebres de 
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. Interfaz y Componentes Web (`apps/web`)
-- [ ] **Indicadores Visuales en Catálogo de Inventario:**
-  - [ ] Badge en rojo tenue/destacado para stock en nivel crítico (`<= stock_minimo`).
-  - [ ] Badge en amarillo/ámbar para nivel de advertencia (`stock_minimo + 5`).
-  - [ ] Filtro rápido en la barra de inventario: "Solo stock crítico" (`critical_only=1`).
-- [ ] **Centro de Notificaciones en Barra Superior (Header):**
-  - [ ] Icono de campana con contador flotante (badge) indicando la cantidad de alertas no resueltas.
-  - [ ] Menú desplegable tipo popover con las alertas más recientes y su severidad.
-  - [ ] Enlace directo desde la alerta hacia la ficha del producto afectado.
-- [ ] **Bandeja Completa de Alertas de Stock:**
-  - [ ] Vista dedicada `/alertas` para administradores y pañoleros.
-  - [ ] Filtros por tipo de alerta (`warning` vs `critical`) y estado (`resueltas` vs `activas`).
-  - [ ] Botón de acción "Marcar como resuelta / Atendida" (`PATCH /api/alerts/{id}/resolve`).
-  - [ ] Botón de acción directa "Iniciar Cotización" para solicitar reposición hacia `REQ-07`.
+- [x] **Indicadores Visuales en Catálogo de Inventario:**
+  - [x] Badge en rojo tenue/destacado para stock en nivel crítico (`<= stock_minimo`).
+  - [x] Badge en amarillo/ámbar para nivel de advertencia (`stock_minimo + 5`).
+  - [x] Filtro rápido en la barra de inventario: "Solo stock crítico" (`critical_only=1`).
+- [x] **Centro de Notificaciones en Barra Superior (Header):**
+  - [x] Icono de campana con contador flotante (badge) indicando la cantidad de alertas no resueltas.
+  - [x] Menú desplegable tipo popover con las alertas más recientes y su severidad.
+  - [x] Enlace directo desde la alerta hacia la bandeja y ficha técnica del producto afectado.
+- [x] **Bandeja Completa de Alertas de Stock:**
+  - [x] Vista dedicada `/alertas` para administradores, directores y pañoleros.
+  - [x] Filtros por tipo de alerta (`warning` vs `critical`) y estado (`resueltas` vs `activas`).
+  - [x] Botón de acción "Marcar como resuelta / Atendida" (`PATCH /api/alerts/{id}/resolve`).
+  - [x] Botón de acción directa "Iniciar Cotización" para solicitar reposición hacia `REQ-07`.
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test: hooks `useCriticalStockAlerts` y mutación `useResolveStockAlert`.
-- [ ] Integration test: cálculo visual del badge de alerta según stock y stock_minimo.
+- [x] Unit test: hooks `useCriticalStockAlerts` y mutación `useResolveStockAlert`.
+- [x] Integration test: cálculo visual del badge de alerta según stock y stock_minimo, renderizado de campana, filtrado y resolución de alertas.
