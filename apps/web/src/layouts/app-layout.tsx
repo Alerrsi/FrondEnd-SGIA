@@ -237,7 +237,7 @@ export default function AppLayout() {
                   onClick={() => setIsCollapsed(true)}
                   title="Encoger panel lateral"
                   aria-label="Encoger panel lateral"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer"
                 >
                   <PanelLeftClose className="h-3.5 w-3.5" />
                 </button>
@@ -245,7 +245,10 @@ export default function AppLayout() {
             )}
 
             {/* Navigation Links */}
-            <nav aria-label="Navegación principal" className="flex flex-col gap-1">
+            <nav
+              aria-label="Navegación principal"
+              className={cn('flex flex-col', isCollapsed ? 'items-center gap-2' : 'gap-1')}
+            >
               {allowedNavItems.map(({ to, label, icon: Icon, end }) => {
                 const linkContent = (
                   <NavLink
@@ -255,21 +258,32 @@ export default function AppLayout() {
                     title={isCollapsed ? undefined : label}
                     aria-label={label}
                     className={({ isActive }) =>
-                      cn(
-                        'relative flex items-center rounded-md text-xs font-medium',
-                        'transition-colors duration-150',
-                        isCollapsed ? 'justify-center p-2' : 'gap-2.5 px-2.5 py-1.5',
-                        isActive
-                          ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold'
-                          : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
-                        isActive &&
-                          !isCollapsed &&
-                          'before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-red-600 dark:before:bg-red-500',
-                      )
+                      isCollapsed
+                        ? cn(
+                            'flex h-7 w-7 items-center justify-center rounded border transition-colors cursor-pointer',
+                            isActive
+                              ? 'border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-semibold shadow-xs'
+                              : 'border-zinc-200 dark:border-zinc-800 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200',
+                          )
+                        : cn(
+                            'relative flex items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
+                            isActive
+                              ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-red-600 dark:before:bg-red-500'
+                              : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
+                          )
                     }
                   >
-                    <Icon className="h-4 w-4 shrink-0 text-zinc-500 dark:text-zinc-400" />
-                    {!isCollapsed && <span className="truncate">{label}</span>}
+                    {({ isActive }) => (
+                      <>
+                        <Icon
+                          className={cn(
+                            isCollapsed ? 'h-3.5 w-3.5 shrink-0' : 'h-4 w-4 shrink-0',
+                            !isCollapsed && (isActive ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-400'),
+                          )}
+                        />
+                        {!isCollapsed && <span className="truncate">{label}</span>}
+                      </>
+                    )}
                   </NavLink>
                 );
 
@@ -293,7 +307,7 @@ export default function AppLayout() {
               <div className="flex flex-col items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300">
+                    <div className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300">
                       {userInitials}
                     </div>
                   </TooltipTrigger>
@@ -310,7 +324,7 @@ export default function AppLayout() {
                   onClick={handleLogout}
                   title="Cerrar sesión"
                   aria-label="Cerrar sesión"
-                  className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 cursor-pointer"
+                  className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900/50 cursor-pointer"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                 </button>

@@ -82,7 +82,7 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
           title={tooltipText}
           aria-label={tooltipText}
           className={cn(
-            'flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer',
+            'flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer',
             isSystem && 'text-red-600 dark:text-red-400',
             className,
           )}
