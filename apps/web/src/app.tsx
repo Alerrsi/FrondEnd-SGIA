@@ -14,6 +14,7 @@ import AppLayout from '@/layouts/app-layout';
 import LoginPage from '@/features/auth/pages/login';
 import { AuthProvider, useAuth } from '@/features/auth/context/auth-context';
 import { ThemeProvider, useTheme } from '@/contexts/theme-context';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import {
   PublicOnlyRoute,
   RequireAuth,
@@ -154,7 +155,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AppContent />
+        <TooltipProvider delayDuration={200}>
+          <AppContent />
+        </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>
   );

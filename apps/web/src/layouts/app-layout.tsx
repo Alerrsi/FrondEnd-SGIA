@@ -190,7 +190,7 @@ export default function AppLayout() {
         <aside
           style={{ width: `${currentSidebarWidth}px` }}
           className={cn(
-            'relative flex flex-shrink-0 flex-col justify-between border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 py-4 shadow-xs',
+            'relative flex flex-shrink-0 flex-col justify-between border-r border-zinc-200 dark:border-zinc-800 border-l-0 bg-white dark:bg-zinc-900 py-4 shadow-xs',
             isCollapsed ? 'px-2' : 'px-3',
             !isDragging && 'transition-[width] duration-150 ease-in-out',
           )}
@@ -204,7 +204,7 @@ export default function AppLayout() {
                   className="flex h-8 w-8 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100"
                   title="SGIA · Pañol Informática INACAP"
                 >
-                  <Boxes className="h-4 w-4 text-red-600 dark:text-red-500" />
+                  <Boxes className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
                 </div>
                 <button
                   type="button"
@@ -220,7 +220,7 @@ export default function AppLayout() {
               <div className="flex items-center justify-between px-1.5">
                 <div className="flex items-center gap-2.5 overflow-hidden">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-                    <Boxes className="h-4 w-4 text-red-600 dark:text-red-500" />
+                    <Boxes className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
                   </div>
                   <div className="flex flex-col min-w-0">
                     <span className="font-mono text-xs font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
@@ -268,7 +268,7 @@ export default function AppLayout() {
                         : cn(
                             'relative flex items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
                             isActive
-                              ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-red-600 dark:before:bg-red-500'
+                              ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-zinc-900 dark:before:bg-zinc-100'
                               : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
                           )
                     }
@@ -324,7 +324,7 @@ export default function AppLayout() {
                   onClick={handleLogout}
                   title="Cerrar sesión"
                   aria-label="Cerrar sesión"
-                  className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900/50 cursor-pointer"
+                  className="flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                 </button>
@@ -351,7 +351,7 @@ export default function AppLayout() {
                       onClick={handleLogout}
                       title="Cerrar sesión"
                       aria-label="Cerrar sesión"
-                      className="p-1 rounded text-zinc-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                      className="p-1 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                     >
                       <LogOut className="h-3.5 w-3.5" />
                     </button>
