@@ -13,7 +13,7 @@ import {
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -67,6 +67,8 @@ export function FacturaUploadModal({
     resetModal();
     onClose();
   };
+
+  const hasUnsavedChanges = Boolean(scanResult) || draftItems.length > 0;
 
   const handleFileSelect = async (selectedFile: File) => {
     // Validar tamaño: máx 10MB
@@ -210,6 +212,9 @@ export function FacturaUploadModal({
     <Dialog
       open={open}
       onClose={handleClose}
+      hasUnsavedChanges={hasUnsavedChanges}
+      confirmExitTitle="¿Descartar factura y productos?"
+      confirmExitDescription="Se han detectado productos de la factura. Si sales ahora, se descartará el lote sin registrarlo en inventario."
       title="Alta de productos vía Factura (OCR)"
       description="Sube una factura de compra electrónica (PDF o imagen) para extraer automáticamente los ítems y dar de alta el stock en pañol."
       className="max-w-4xl"
@@ -242,9 +247,9 @@ export function FacturaUploadModal({
             />
 
             {scanInvoice.isPending ? (
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-10 w-10 animate-spin text-zinc-400" />
-                <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              <div className="flex flex-col items-center gap-2 py-4">
+                <Loader2 className="h-8 w-8 animate-spin text-zinc-600 dark:text-zinc-400" />
+                <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
                   Extrayendo datos de la factura con OCR…
                 </span>
                 <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
@@ -493,16 +498,12 @@ export function FacturaUploadModal({
               </span>
 
               <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClose}
+                <DialogCloseButton
                   disabled={isSubmittingBatch}
                   className="text-xs"
                 >
                   Cancelar
-                </Button>
+                </DialogCloseButton>
                 <Button
                   type="button"
                   size="sm"
@@ -518,7 +519,7 @@ export function FacturaUploadModal({
                   ) : (
                     <>
                       <Check className="h-3.5 w-3.5" />
-                      <span>Confirmar y dar de alta ({draftItems.length})</span>
+                      <span>Confirmar y dar de alta en inventario</span>
                     </>
                   )}
                 </Button>

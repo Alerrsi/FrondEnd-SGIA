@@ -17,7 +17,7 @@ import type {
 import { Barcode, Loader2, MapPin, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -88,7 +88,7 @@ export function ProductoFormDialog({
     reset,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(productoSchema),
     defaultValues: {
@@ -238,6 +238,7 @@ export function ProductoFormDialog({
     <Dialog
       open={open}
       onClose={onClose}
+      hasUnsavedChanges={isDirty}
       title={esEdicion ? 'Editar producto' : 'Nuevo producto en pañol'}
       description={
         esEdicion
@@ -442,9 +443,9 @@ export function ProductoFormDialog({
         </fieldset>
 
         <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-          <Button type="button" variant="ghost" onClick={onClose} disabled={isPending} size="sm">
+          <DialogCloseButton disabled={isPending}>
             Cancelar
-          </Button>
+          </DialogCloseButton>
           <Button type="submit" disabled={isPending} size="sm" className="min-w-28">
             {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Dar de alta producto'}

@@ -207,7 +207,7 @@ export default function ProductosListPage() {
           {/* CTA Principal: Monocromático de alto contraste técnico */}
           <Button onClick={handleOpenCreate} size="sm" className="flex items-center gap-1.5 text-xs h-8">
             <Plus className="h-3.5 w-3.5" />
-            <span>+ Dar de alta producto</span>
+            <span>Dar de alta producto</span>
           </Button>
         </div>
       </div>

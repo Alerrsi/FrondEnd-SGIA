@@ -3,7 +3,7 @@ import { Plus, Trash2, Save, X, ExternalLink } from 'lucide-react';
 import type { Equipo, UpdateEquipmentSpecsPayload } from '@sgia/types';
 import { useUpdateEquipmentSpecs } from '@sgia/api-client';
 
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
 
@@ -23,11 +23,12 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
   const [lifespanYears, setLifespanYears] = useState(5);
   const [manualUrl, setManualUrl] = useState('');
   const [specRows, setSpecRows] = useState<SpecRow[]>([]);
+  const [isDirty, setIsDirty] = useState(false);
 
   const updateSpecsMutation = useUpdateEquipmentSpecs();
 
   useEffect(() => {
-    if (equipo) {
+    if (equipo && open) {
       const pDate = equipo.purchase_date ?? equipo.specs?.purchase_date ?? '';
       setPurchaseDate(pDate ? (pDate.split('T')[0] ?? '') : '');
       setLifespanYears(equipo.lifespan_years ?? equipo.specs?.lifespan_years ?? 5);
@@ -51,21 +52,25 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
       } else {
         setSpecRows(rows);
       }
+      setIsDirty(false);
     }
   }, [equipo, open]);
 
   const handleAddRow = () => {
     setSpecRows((prev) => [...prev, { key: '', value: '' }]);
+    setIsDirty(true);
   };
 
   const handleRemoveRow = (index: number) => {
     setSpecRows((prev) => prev.filter((_, i) => i !== index));
+    setIsDirty(true);
   };
 
   const handleRowChange = (index: number, field: 'key' | 'value', val: string) => {
     setSpecRows((prev) =>
       prev.map((row, i) => (i === index ? { ...row, [field]: val } : row)),
     );
+    setIsDirty(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,6 +98,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
         id: equipo.id,
         payload,
       });
+      setIsDirty(false);
       toast.success('Especificaciones técnicas actualizadas correctamente');
       onClose();
     } catch {
@@ -106,6 +112,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
     <Dialog
       open={open}
       onClose={onClose}
+      hasUnsavedChanges={isDirty}
       title="Editar Ficha Técnica y Especificaciones"
       description={`Modificando parámetros técnicos y ciclo de vida para ${equipo.nombre} (${equipo.codigo ?? `ID: ${equipo.id}`})`}
       className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
@@ -124,7 +131,10 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
               id="edit-purchase-date"
               type="date"
               value={purchaseDate}
-              onChange={(e) => setPurchaseDate(e.target.value)}
+              onChange={(e) => {
+                setPurchaseDate(e.target.value);
+                setIsDirty(true);
+              }}
               className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
             />
           </div>
@@ -142,7 +152,10 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
               min={1}
               max={30}
               value={lifespanYears}
-              onChange={(e) => setLifespanYears(Number(e.target.value))}
+              onChange={(e) => {
+                setLifespanYears(Number(e.target.value));
+                setIsDirty(true);
+              }}
               className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
             />
           </div>
@@ -171,7 +184,10 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
               type="url"
               placeholder="https://sgia-assets.s3.amazonaws.com/manuals/cisco-catalyst.pdf"
               value={manualUrl}
-              onChange={(e) => setManualUrl(e.target.value)}
+              onChange={(e) => {
+                setManualUrl(e.target.value);
+                setIsDirty(true);
+              }}
               className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
             />
           </div>
@@ -236,15 +252,12 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
 
         {/* Botones de acción modal */}
         <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onClose}
+          <DialogCloseButton
             disabled={updateSpecsMutation.isPending}
           >
             <X className="h-4 w-4" />
             <span>Cancelar</span>
-          </Button>
+          </DialogCloseButton>
           <Button
             type="submit"
             variant="primary"

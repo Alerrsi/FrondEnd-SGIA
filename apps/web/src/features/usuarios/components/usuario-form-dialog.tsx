@@ -11,7 +11,7 @@ import {
 import { Loader2, Lock, Shield, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { normalizeStoredRun, validateRun } from '../lib/run';
@@ -61,7 +61,7 @@ export function UsuarioFormDialog({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
       run: '',
@@ -141,6 +141,7 @@ export function UsuarioFormDialog({
     <Dialog
       open={open}
       onClose={onClose}
+      hasUnsavedChanges={isDirty}
       title={esEdicion ? 'Editar usuario' : 'Nuevo usuario'}
       description={
         esEdicion
@@ -317,9 +318,9 @@ export function UsuarioFormDialog({
         </fieldset>
 
         <div className="mt-1 flex justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-          <Button type="button" variant="ghost" onClick={onClose} disabled={isPending} className="text-xs">
+          <DialogCloseButton disabled={isPending} className="text-xs">
             Cancelar
-          </Button>
+          </DialogCloseButton>
           <Button type="submit" variant="primary" disabled={isPending} className="min-w-28 text-xs">
             {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Crear usuario'}

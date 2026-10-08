@@ -78,7 +78,10 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
 
 ### F. Escáner Code128 y Ergonomía de Operador
 - Listener global para eventos `keydown` en vistas de mesón: capturar ráfagas continuas de caracteres de pistola lectora que finalizan en `Enter`, sin necesidad de obligar al operador a hacer clic manual en el campo de búsqueda.
-
+### G. Togle de modo oscuro
+- componente llamado 'toggle' sacado de benco.dev que debe ser usado en el sidebar para activar/ desactivar modo oscuro 
+### H. Sidebar Icon
+- componente llamado 'iconbar' usado para el estado del sidebar de forma comprimida debe ser modificado para que sea horizontal puesto que el actual es vertical.
 ---
 
 ## 4. Patrón de Componente de Referencia (Dual Theme)

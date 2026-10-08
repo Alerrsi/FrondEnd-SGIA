@@ -8,7 +8,7 @@ import type { LocationEntity, Producto } from '@sgia/types';
 import { Loader2, MapPin, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
@@ -73,6 +73,24 @@ export function ReubicarProductoModal({
   const currentCajon = producto.ubicacion?.cajon;
   const hasCurrentLocation = currentSala || currentCajon;
 
+  const initialLocId =
+    producto.location_id ??
+    (producto.location && 'id' in producto.location
+      ? (producto.location as LocationEntity).id
+      : null);
+  const initialCajonId = producto.cajon_id ?? producto.cajon?.id ?? null;
+  const initialSala = producto.ubicacion?.sala || '';
+  const initialCajon = producto.ubicacion?.cajon || '';
+  const initialDesc = producto.ubicacion?.descripcion || '';
+
+  const hasUnsavedChanges = manualMode
+    ? customSala.trim() !== initialSala.trim() ||
+      customCajon.trim() !== initialCajon.trim() ||
+      descripcion.trim() !== initialDesc.trim()
+    : selectedLocationId !== initialLocId ||
+      selectedCajonId !== initialCajonId ||
+      descripcion.trim() !== initialDesc.trim();
+
   const handleLocationChange = (locIdStr: string) => {
     if (locIdStr === 'manual') {
       setManualMode(true);
@@ -134,6 +152,7 @@ export function ReubicarProductoModal({
     <Dialog
       open={open}
       onClose={onClose}
+      hasUnsavedChanges={hasUnsavedChanges}
       title="Reubicar producto en pañol"
       description={`Asigna o cambia la ubicación física de almacenamiento para ${producto.nombre || producto.name}.`}
       className="max-w-lg"
@@ -295,9 +314,9 @@ export function ReubicarProductoModal({
 
         {/* Botones de acción */}
         <div className="mt-2 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-          <Button type="button" variant="ghost" size="sm" onClick={onClose} disabled={isPending} className="text-xs">
+          <DialogCloseButton size="sm" disabled={isPending} className="text-xs">
             Cancelar
-          </Button>
+          </DialogCloseButton>
           <Button type="submit" size="sm" disabled={isPending} className="min-w-32 text-xs">
             {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Confirmar reubicación

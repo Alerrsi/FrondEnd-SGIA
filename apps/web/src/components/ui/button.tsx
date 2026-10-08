@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 
 type ButtonVariant = 'primary' | 'ghost' | 'secondary' | 'danger' | 'outline';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: 'sm' | 'md' | 'lg' | 'icon';
 }
@@ -23,31 +23,33 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-rose-600 text-white hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700 font-medium shadow-xs focus-visible:ring-rose-500',
 };
 
-const sizeClasses = {
-  sm: 'h-8 px-2.5 text-xs rounded',
-  md: 'h-9 px-3.5 py-1.5 text-sm rounded-md',
-  lg: 'h-10 px-4 py-2 text-sm rounded-md',
-  icon: 'h-8 w-8 p-0 rounded',
+const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
+  sm: 'h-8 px-3 text-xs gap-1.5',
+  md: 'h-8.5 px-3.5 text-xs gap-2',
+  lg: 'h-10 px-4 text-sm gap-2',
+  icon: 'h-8 w-8 p-0',
 };
 
 export function Button({
   variant = 'primary',
   size = 'md',
   className,
+  children,
+  type = 'button',
   ...props
 }: ButtonProps) {
   return (
     <button
+      type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-1.5 font-sans',
-        'transition-all duration-150 active:scale-[0.98]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
-        'disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer',
+        'inline-flex items-center justify-center rounded-md font-sans transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-1 cursor-pointer',
         variantClasses[variant],
         sizeClasses[size],
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 }
