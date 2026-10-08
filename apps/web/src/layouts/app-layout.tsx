@@ -190,7 +190,7 @@ export default function AppLayout() {
     <TooltipProvider>
       {/* Canvas unificado bg-zinc-50 dark:bg-zinc-950 para que el área de iconbars flote sobre el mismo fondo exacto de la tabla */}
       <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
-        {/* Sidebar: En modo comprimido se remueve el fondo de sidebar sólido y queda una columna de iconbars flotantes sobre el canvas */}
+        {/* Sidebar: En modo comprimido se remueve el fondo de sidebar sólido y queda una columna de 3 iconbars flotantes con la misma anchura unificada */}
         <aside
           style={{ width: `${isCollapsed ? COLLAPSED_WIDTH : width}px` }}
           className={cn(
@@ -203,10 +203,10 @@ export default function AppLayout() {
           aria-label="Panel lateral de navegación"
         >
           {isCollapsed ? (
-            /* Modo Comprimido: 3 IconBars flotantes (Top: Logo/Expand, Mid: Opciones, Bottom: Usuario/Toggle/Logout) */
+            /* Modo Comprimido: 3 IconBars flotantes con EXACTAMENTE la misma anchura (w-[48px]) */
             <>
-              {/* IconBar 1: Logo y Botón de Expandir */}
-              <div className="bar-well flex flex-col items-center gap-1 p-1">
+              {/* IconBar 1: Logo y Botón de Expandir (w-[48px]) */}
+              <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
@@ -240,7 +240,7 @@ export default function AppLayout() {
                 </Tooltip>
               </div>
 
-              {/* IconBar 2: Opciones de navegación autorizadas con indicador elástico */}
+              {/* IconBar 2: Opciones de navegación autorizadas con indicador elástico (w-[48px]) */}
               <div className="flex justify-center w-full my-auto">
                 <GlassIconBar
                   axis="column"
@@ -253,12 +253,12 @@ export default function AppLayout() {
                   }))}
                   glyph={18}
                   hug={4}
-                  className="w-full flex justify-center"
+                  className="w-[48px] flex justify-center"
                 />
               </div>
 
-              {/* IconBar 3: Usuario, Toggle modo claro/oscuro y Cerrar sesión */}
-              <div className="bar-well flex flex-col items-center gap-1.5 p-1.5">
+              {/* IconBar 3: Usuario, Botón de Tema (ocultando toggle en encogido) y Cerrar sesión (w-[48px]) */}
+              <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
@@ -275,17 +275,22 @@ export default function AppLayout() {
                   </TooltipContent>
                 </Tooltip>
 
-                {/* Liquid Toggle para alternar modo claro/oscuro (Right=Sun/Claro, Left=Moon/Oscuro) */}
+                {/* Botón de tema en modo encogido: oculta el toggle y usa un botón con icono adaptativo */}
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="py-0.5 flex items-center justify-center">
-                      <Toggle
-                        size="sm"
-                        checked={isLight}
-                        onCheckedChange={(light) => setTheme(light ? 'light' : 'dark')}
-                        aria-label={isLight ? 'Modo Claro activo, cambiar a Oscuro' : 'Modo Oscuro activo, cambiar a Claro'}
-                      />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setTheme(isLight ? 'dark' : 'light')}
+                      title={isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+                      aria-label={isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
+                      className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
+                    >
+                      {isLight ? (
+                        <Moon size={18} strokeWidth={2} className="text-zinc-600 dark:text-zinc-400" />
+                      ) : (
+                        <Sun size={18} strokeWidth={2} className="text-amber-400" />
+                      )}
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <span className="text-xs font-medium">

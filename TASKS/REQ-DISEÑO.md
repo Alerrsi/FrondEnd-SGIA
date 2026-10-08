@@ -7,3 +7,5 @@
 - [x] Cada formulario modal si el usuario ingreso datos y por cualquier motivo quiere salir del formulario ya sea usando esc o hacer click en otra parte que haga eso, se debe mostrar un panel de confirmación para que este confirme si realmente quiere salir, SOLO SI TIENE DATOS ESCRITOS
 - [x] usar componente 'toggle' para cambiar entre modo claro y modo oscuro
 - [x] usar componente 'iconbar' el cual solo cuando este en modo comprimido con el boton de collapse, actualmente esta en modo vertical y debe quedar modo horizontal con los iconos en fila vertical, debe ser adaptable al modo oscuro
+- [x] Unificar anchura de todos los iconbars en modo encogido para que tengan exactamente la misma dimensión visual (w-[48px]) sin discrepancias
+- [x] En modo encogido, ocultar el toggle y utilizar un botón con icono adaptativo (sol/luna) para alternar entre modo claro y oscuro
