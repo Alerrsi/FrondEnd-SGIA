@@ -9,3 +9,4 @@
 - [x] usar componente 'iconbar' el cual solo cuando este en modo comprimido con el boton de collapse, actualmente esta en modo vertical y debe quedar modo horizontal con los iconos en fila vertical, debe ser adaptable al modo oscuro
 - [x] Unificar anchura de todos los iconbars en modo encogido para que tengan exactamente la misma dimensión visual (w-[48px]) sin discrepancias
 - [x] En modo encogido, ocultar el toggle y utilizar un botón con icono adaptativo (sol/luna) para alternar entre modo claro y oscuro
+- [x] El header debe ser del mismo color que el body, sin descrepansias

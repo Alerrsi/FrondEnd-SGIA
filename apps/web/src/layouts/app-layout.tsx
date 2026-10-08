@@ -460,8 +460,8 @@ export default function AppLayout() {
 
         {/* Workspace Central */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          {/* Top Header / Bar */}
-          <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 transition-colors">
+          {/* Top Header: Unificado con el mismo color del body (bg-zinc-50 dark:bg-zinc-950) sin discrepancias */}
+          <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-6 transition-colors">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
                 Módulo Activo
