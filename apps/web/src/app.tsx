@@ -9,6 +9,7 @@ import ProductosListPage from '@/features/inventario/pages/productos-list-page';
 import ColaPrestamosPage from '@/features/prestamos/pages/cola-prestamos-page';
 import MostradorPrestamosPage from '@/features/prestamos/pages/mostrador-prestamos-page';
 import HistorialPrestamosPage from '@/features/prestamos/pages/historial-prestamos-page';
+import ProveedoresPage from '@/features/proveedores/pages/proveedores-page';
 import UsuariosPage from '@/features/usuarios/pages/usuarios-page';
 import AppLayout from '@/layouts/app-layout';
 import LoginPage from '@/features/auth/pages/login';
@@ -125,9 +126,18 @@ function AppContent() {
             />
 
             <Route
+              path="/proveedores"
+              element={
+                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                  <ProveedoresPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
               path="/cotizaciones"
               element={
-                <RequireRole allowedRoles={['DIR-01']}>
+                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
                   <CotizacionesPage />
                 </RequireRole>
               }

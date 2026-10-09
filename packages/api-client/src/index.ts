@@ -143,7 +143,13 @@ export {
   useCreateCotizacion,
   useSuppliers,
   useSupplier,
+  useCreateSupplier,
+  useUpdateSupplier,
+  useSetSupplierStatus,
   usePurchases,
+  usePurchase,
+  useCreatePurchase,
+  useUpdatePurchaseStatus,
 } from './hooks/quotations';
 
 export {

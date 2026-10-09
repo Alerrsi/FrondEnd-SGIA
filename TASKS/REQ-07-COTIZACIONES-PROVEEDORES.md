@@ -36,28 +36,28 @@ Digitalizar la solicitud de cotizaciones de insumos y equipos. Permitir seleccio
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. CRUD de Proveedores (`apps/web`)
-- [ ] **Módulo de Proveedores (`/proveedores`):**
-  - [ ] Tabla de proveedores con nombre, contacto, correo, teléfono y categoría.
-  - [ ] Formulario modal de creación y edición (`CreateSupplierPayload`).
-  - [ ] Activación/suspensión con confirmación visual.
-  - [ ] Selector rápido de proveedores para usar en cotizaciones y órdenes de compra.
+- [x] **Módulo de Proveedores (`/proveedores`):**
+  - [x] Tabla de proveedores con nombre, contacto, correo, teléfono y categoría.
+  - [x] Formulario modal de creación y edición (`CreateSupplierPayload`).
+  - [x] Activación/suspensión con confirmación visual.
+  - [x] Selector rápido de proveedores para usar en cotizaciones y órdenes de compra.
 
 ### 2. Flujo de Nueva Cotización Múltiple (`apps/web`)
-- [ ] **Selector Dinámico de Productos:**
-  - [ ] Buscador de productos existentes en pañol con sugerencia de stock actual.
-  - [ ] Lista dinámica de ítems con selector de cantidades a cotizar.
-- [ ] **Selector de Proveedores Obligatorio (Mínimo 3):**
-  - [ ] Componente multi-select con validación en formulario: exige la selección de al menos 3 proveedores para habilitar el envío (regla institucional INACAP).
-  - [ ] Mensaje explicativo visual si se seleccionan menos de 3.
-  - [ ] Campo de notas o especificaciones adicionales para los proveedores.
-- [ ] **Historial y Detalle de Cotizaciones (`/cotizaciones`):**
-  - [ ] Listado con badges de estado (`pendiente`, `en_camino`, `completa`).
-  - [ ] Vista detallada de cada cotización mostrando ítems y proveedores contactados.
-  - [ ] Botón de acción para "Aprobar y Generar Orden de Compra" hacia `REQ-08`.
+- [x] **Selector Dinámico de Productos:**
+  - [x] Buscador de productos existentes en pañol con sugerencia de stock actual.
+  - [x] Lista dinámica de ítems con selector de cantidades a cotizar.
+- [x] **Selector de Proveedores Obligatorio (Mínimo 3):**
+  - [x] Componente multi-select con validación en formulario: exige la selección de al menos 3 proveedores para habilitar el envío (regla institucional INACAP).
+  - [x] Mensaje explicativo visual si se seleccionan menos de 3.
+  - [x] Campo de notas o especificaciones adicionales para los proveedores.
+- [x] **Historial y Detalle de Cotizaciones (`/cotizaciones`):**
+  - [x] Listado con badges de estado (`pendiente`, `en_camino`, `completa`).
+  - [x] Vista detallada de cada cotización mostrando ítems y proveedores contactados.
+  - [x] Botón de acción para "Aprobar y Generar Orden de Compra" hacia `REQ-08`.
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test: validación del formulario de cotizaciones (restricción `>= 3` proveedores).
-- [ ] Integration test: hook `useCreateCotizacion` y manejo de errores cuando el backend rechaza por proveedores insuficientes.
+- [x] Unit test: validación del formulario de cotizaciones (restricción `>= 3` proveedores).
+- [x] Integration test: hook `useCreateCotizacion` y manejo de errores cuando el backend rechaza por proveedores insuficientes.

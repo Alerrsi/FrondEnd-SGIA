@@ -3,6 +3,7 @@ import {
   BarChart3,
   Bell,
   Boxes,
+  Building2,
   CalendarClock,
   ClipboardList,
   Cpu,
@@ -81,10 +82,16 @@ const navigation: NavItem[] = [
     roles: ['PAN-01', 'DIR-01', 'AD-01'],
   },
   {
+    to: '/proveedores',
+    label: 'Proveedores',
+    icon: Building2,
+    roles: ['DIR-01', 'AD-01'],
+  },
+  {
     to: '/cotizaciones',
     label: 'Cotizaciones',
     icon: ClipboardList,
-    roles: ['DIR-01'],
+    roles: ['DIR-01', 'AD-01'],
   },
   {
     to: '/usuarios',
