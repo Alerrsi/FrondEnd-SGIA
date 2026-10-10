@@ -93,7 +93,11 @@
   }
 
   /* ==========================================================================
-     Paleta B1 Alternativa (Azul Acero & Indigo Industrial) - SKILLS/Design.md
+     Paleta B1 Alternativa (Azul Acero & Indigo Industrial)
+     NOTA AGENTS.md (L100): Se deben mantener como colores de fondo ya sea el
+     blanco y negro (variación sutil permitida según la paleta elegida).
+     Los colores se reflejan en los tonos de botones, letras específicas y
+     estados de entidades sin perder la estética y densidad principal.
      Smart Blue #0466c8 | Steel Azure #0353a4 | Regal Navy #023e7d
      Prussian Blue #002855 / #001845 / #001233 | Twilight Indigo #33415c
      Blue Slate #5c677d | Slate Grey #7d8597 | Cool Steel #979dac
@@ -101,17 +105,29 @@
   :root[data-palette='b1'],
   html.light[data-palette='b1'],
   :root[data-theme='light'][data-palette='b1'] {
-    --brand: #0466c8;
-    --brand-strong: #0353a4;
-    --brand-soft: #e8f1fa;
+    /* Fondos neutros blanco/claro con descanso visual */
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --surface-alt: #EDF2F7;
+    --line: #CBD5E1;
+
+    /* Botones y acentos técnicos de la paleta B1 */
+    --brand: #0466c8; /* Smart Blue para botones principales y CTA */
+    --brand-strong: #0353a4; /* Steel Azure */
+    --brand-soft: rgba(4, 102, 200, 0.12);
     --info: #0466c8;
 
-    --ink: #001233;
-    --ink-muted: #5c677d;
-    --bg: #f4f6fa;
-    --surface: #ffffff;
-    --surface-alt: #e9edf5;
-    --line: #d3dbe8;
+    /* Tipografía y letras específicas */
+    --ink: #0F172A;
+    --ink-muted: #5c677d; /* Blue Slate */
+
+    /* Estados de entidades adaptados con balance técnico */
+    --ok: #059669;
+    --ok-bg: #ECFDF5;
+    --warn: #D97706;
+    --warn-bg: #FFFBEB;
+    --danger: #DC2626;
+    --danger-bg: #FEF2F2;
 
     --color-background: var(--bg);
     --color-surface: var(--surface);
@@ -126,17 +142,29 @@
 
   html.dark[data-palette='b1'],
   :root[data-theme='dark'][data-palette='b1'] {
-    --brand: #0466c8;
-    --brand-strong: #0353a4;
-    --brand-soft: rgba(4, 102, 200, 0.2);
-    --info: #0466c8;
+    /* Fondos neutros negro/carbón (variación técnica oscura sutil) */
+    --bg: #0B0F17;
+    --surface: #121824;
+    --surface-alt: #1A2234;
+    --line: rgba(151, 157, 172, 0.22); /* Cool Steel border */
 
-    --ink: #f4f6fa;
-    --ink-muted: #979dac;
-    --bg: #001233;
-    --surface: #002855;
-    --surface-alt: #001845;
-    --line: rgba(151, 157, 172, 0.24);
+    /* Botones y acentos técnicos B1 */
+    --brand: #0466c8; /* Smart Blue */
+    --brand-strong: #0353a4; /* Steel Azure */
+    --brand-soft: rgba(4, 102, 200, 0.25);
+    --info: #38BDF8;
+
+    /* Letras específicas y metadatos */
+    --ink: #F8FAFC;
+    --ink-muted: #979dac; /* Cool Steel */
+
+    /* Estados de entidades técnicos */
+    --ok: #10B981;
+    --ok-bg: rgba(16, 185, 129, 0.15);
+    --warn: #F59E0B;
+    --warn-bg: rgba(245, 158, 11, 0.15);
+    --danger: #EF4444;
+    --danger-bg: rgba(239, 68, 68, 0.15);
 
     --color-background: var(--bg);
     --color-surface: var(--surface);
@@ -158,33 +186,114 @@
   }
 }
 
-/* Clases de apoyo ambiental para B1 */
-html.dark[data-palette='b1'] body {
-  background-color: #001233;
+/* ==========================================================================
+   Reflejo de Paleta B1 en Botones, Letras Específicas y Estados (AGENTS.md L100)
+   ========================================================================== */
+[data-palette='b1'] .btn-primary,
+[data-palette='b1'] button[data-variant='primary'] {
+  background-color: #0466c8;
+  color: #ffffff;
 }
 
-html.dark[data-palette='b1'] aside {
-  background-color: #001845;
-  border-color: #33415c;
+[data-palette='b1'] .btn-primary:hover,
+[data-palette='b1'] button[data-variant='primary']:hover {
+  background-color: #0353a4;
 }
 
-html.dark[data-palette='b1'] header {
-  background-color: #001845;
-  border-color: #33415c;
+/* Letras específicas e indicadores de navegación activos */
+[data-palette='b1'] nav a[aria-current='page'],
+[data-palette='b1'] nav a.active {
+  color: #0466c8;
 }
 
-html.light[data-palette='b1'] body {
-  background-color: #f4f6fa;
+html.dark[data-palette='b1'] nav a[aria-current='page'],
+html.dark[data-palette='b1'] nav a.active {
+  color: #38bdf8;
 }
 
-html.light[data-palette='b1'] aside {
-  background-color: #ffffff;
-  border-color: #d3dbe8;
+[data-palette='b1'] nav a[aria-current='page']::before,
+[data-palette='b1'] nav a.active::before {
+  background-color: #0466c8 !important;
 }
 
-html.light[data-palette='b1'] header {
-  background-color: #ffffff;
-  border-color: #d3dbe8;
+/* Micro-línea de acento superior */
+[data-palette='b1'] .accent-top-line {
+  border-top-color: #0466c8;
+}
+
+/* ==========================================================================
+   Micro-etiquetas Institucionales de la Sede (SEDE TEMUCO · ...)
+   - Paleta Principal: Rojo institucional INACAP (#b91c1c / #f87171)
+   - Paleta B1: Smart Blue (#0466c8 / #38bdf8)
+   ========================================================================== */
+[data-palette='b1'] [data-sede-badge],
+[data-palette='b1'] .sede-badge {
+  background-color: rgba(4, 102, 200, 0.08) !important;
+  color: #0466c8 !important;
+  border-color: rgba(4, 102, 200, 0.28) !important;
+}
+
+html.dark[data-palette='b1'] [data-sede-badge],
+html.dark[data-palette='b1'] .sede-badge,
+:root[data-theme='dark'][data-palette='b1'] [data-sede-badge],
+:root[data-theme='dark'][data-palette='b1'] .sede-badge {
+  background-color: rgba(4, 102, 200, 0.18) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(4, 102, 200, 0.38) !important;
+}
+
+[data-palette='b1'] [data-sede-badge] span:first-child,
+[data-palette='b1'] .sede-badge-dot {
+  background-color: #0466c8 !important;
+}
+
+html.dark[data-palette='b1'] [data-sede-badge] span:first-child,
+html.dark[data-palette='b1'] .sede-badge-dot {
+  background-color: #38bdf8 !important;
+}
+
+/* Texto de la Sede en barra lateral y encabezados */
+[data-palette='b1'] .sede-text {
+  color: #0466c8 !important;
+}
+
+html.dark[data-palette='b1'] .sede-text,
+:root[data-theme='dark'][data-palette='b1'] .sede-text {
+  color: #38bdf8 !important;
+}
+
+/* ==========================================================================
+   Estado "activo" de cada registro en las tablas (TanStack Table & Badges)
+   - Paleta Principal: Verde Esmeralda (text-emerald-700 / dark:text-emerald-300)
+   - Paleta B1: Smart Blue (#0466c8 / #38bdf8)
+   ========================================================================== */
+[data-palette='b1'] [data-status='activo'],
+[data-palette='b1'] [data-tone='available'],
+[data-palette='b1'] span.badge-status-activo {
+  background-color: rgba(4, 102, 200, 0.08) !important;
+  color: #0466c8 !important;
+  border-color: rgba(4, 102, 200, 0.28) !important;
+}
+
+html.dark[data-palette='b1'] [data-status='activo'],
+html.dark[data-palette='b1'] [data-tone='available'],
+html.dark[data-palette='b1'] span.badge-status-activo,
+:root[data-theme='dark'][data-palette='b1'] [data-status='activo'],
+:root[data-theme='dark'][data-palette='b1'] [data-tone='available'] {
+  background-color: rgba(4, 102, 200, 0.18) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(4, 102, 200, 0.38) !important;
+}
+
+/* Indicador de punto (status dot) en B1 para activo */
+[data-palette='b1'] [data-status='activo'] span[aria-hidden='true'],
+[data-palette='b1'] [data-tone='available'] span[aria-hidden='true'] {
+  background-color: #0466c8 !important;
+}
+
+html.dark[data-palette='b1'] [data-status='activo'] span[aria-hidden='true'],
+html.dark[data-palette='b1'] [data-tone='available'] span[aria-hidden='true'] {
+  background-color: #38bdf8 !important;
 }
 
 @layer components {

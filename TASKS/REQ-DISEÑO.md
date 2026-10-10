@@ -10,3 +10,5 @@
 - [x] Unificar anchura de todos los iconbars en modo encogido para que tengan exactamente la misma dimensión visual (w-[48px]) sin discrepancias
 - [x] En modo encogido, ocultar el toggle y utilizar un botón con icono adaptativo (sol/luna) para alternar entre modo claro y oscuro
 - [x] El header debe ser del mismo color que el body, sin descrepansias
+- [x] Margen de respiración lateral en iconbars: Espacio de separación respecto a los bordes izquierdo y derecho del sidebar para evitar sensación de saturación o estar pegados a los límites (ancho del panel colapsado ajustado a 64px, con padding horizontal px-2 y centrado balanceado).
+- [x] Centrado vertical y horizontal permanente del iconbar de módulos/funciones: El bloque central de navegación permanece perfectamente centrado en el eje vertical y horizontal dentro del viewport, independientemente de la cantidad de enlaces.

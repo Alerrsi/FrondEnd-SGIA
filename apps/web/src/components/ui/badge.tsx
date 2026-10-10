@@ -75,8 +75,12 @@ export function Badge({
   className,
   ...props
 }: BadgeProps) {
+  const statusStr = typeof children === 'string' ? children.toLowerCase().trim() : undefined;
+
   return (
     <span
+      data-tone={tone}
+      data-status={statusStr}
       className={cn(
         'inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-xs font-medium transition-colors',
         mono ? 'font-mono tracking-tight text-[11px]' : 'font-sans',
@@ -119,7 +123,8 @@ export function LoanStatusBadge({ estado }: { estado: string }) {
       break;
     case 'devuelto':
     case 'procesada':
-      tone = 'success';
+    case 'finalizado':
+      tone = 'available';
       label = 'Devuelto';
       break;
     case 'atrasado':
@@ -128,6 +133,7 @@ export function LoanStatusBadge({ estado }: { estado: string }) {
       break;
     case 'rechazada':
     case 'rechazado':
+    case 'cancelado':
       tone = 'danger';
       label = 'Rechazado';
       break;
@@ -136,7 +142,11 @@ export function LoanStatusBadge({ estado }: { estado: string }) {
       break;
   }
 
-  return <Badge tone={tone}>{label}</Badge>;
+  return (
+    <Badge tone={tone} dot>
+      {label}
+    </Badge>
+  );
 }
 
 export function QuotationStatusBadge({ estado }: { estado: QuotationStatus }) {

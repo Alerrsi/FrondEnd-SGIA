@@ -71,8 +71,15 @@ export default function AppLayout() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return;
-      const newWidth = Math.min(Math.max(e.clientX, MIN_WIDTH), MAX_WIDTH);
-      setSidebarWidth(newWidth);
+      requestAnimationFrame(() => {
+        const COLLAPSE_THRESHOLD = 130;
+        if (e.clientX < COLLAPSE_THRESHOLD) {
+          setIsCollapsed(true);
+        } else {
+          setIsCollapsed(false);
+          setSidebarWidth(Math.min(Math.max(e.clientX, MIN_WIDTH), MAX_WIDTH));
+        }
+      });
     };
 
     const handleMouseUp = () => {
@@ -120,10 +127,13 @@ export default function AppLayout() {
       <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 antialiased overflow-hidden">
         {/* Barra Lateral / Sidebar */}
         <aside
-          style={{ width: isCollapsed ? 48 : sidebarWidth }}
+          style={{ width: isCollapsed ? 64 : sidebarWidth }}
           className={cn(
-            'relative flex flex-col justify-between border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-[width] duration-200 select-none overflow-hidden z-20',
-            isCollapsed ? 'p-0 items-center' : 'p-3',
+            'relative flex flex-col justify-between select-none overflow-hidden z-20',
+            isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
+            isCollapsed
+              ? 'py-3 px-2 items-center bg-transparent border-none shadow-none'
+              : 'p-3 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800',
           )}
         >
           {isCollapsed ? (
@@ -139,7 +149,7 @@ export default function AppLayout() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">SGIA · Pañol</p>
-                    <p className="text-[10px] text-zinc-400">INACAP Sede Temuco</p>
+                    <p className="text-[10px] sede-text text-zinc-400">INACAP Sede Temuco</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -161,8 +171,8 @@ export default function AppLayout() {
                 </Tooltip>
               </div>
 
-              {/* IconBar 2: Enlaces de Módulos (Navegación Vertical w-[48px]) */}
-              <div className="flex-1 w-full overflow-y-auto no-scrollbar flex flex-col items-center py-2">
+              {/* IconBar 2: Enlaces de Módulos (Navegación Vertical w-[48px], siempre centrado) */}
+              <div className="flex-1 w-full overflow-y-auto no-scrollbar flex flex-col items-center justify-center py-2">
                 <GlassIconBar
                   axis="column"
                   items={allowedNavItems.map(({ to, label, icon: Icon, end }) => ({
@@ -272,7 +282,7 @@ export default function AppLayout() {
                       <span className="font-mono text-xs font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
                         SGIA · Pañol
                       </span>
-                      <span className="truncate text-[10px] text-zinc-400 dark:text-zinc-500">
+                      <span className="truncate text-[10px] sede-text text-zinc-400 dark:text-zinc-500">
                         INACAP Sede Temuco
                       </span>
                     </div>
@@ -405,6 +415,7 @@ export default function AppLayout() {
           className={cn(
             'relative flex w-1 items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-col-resize z-30 group',
             isDragging && 'bg-zinc-400 dark:bg-zinc-600',
+            isCollapsed && 'opacity-0 hover:opacity-100'
           )}
         >
           <div className="h-6 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-zinc-500 dark:group-hover:bg-zinc-400 transition-colors" />
@@ -415,7 +426,7 @@ export default function AppLayout() {
           {/* Top Header: Unificado con el mismo color del body (bg-zinc-50 dark:bg-zinc-950) sin discrepancias */}
           <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-6 transition-colors">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+              <span className="font-mono text-xs uppercase tracking-wider sede-text text-zinc-400 dark:text-zinc-500">
                 Módulo Activo
               </span>
               <span className="text-zinc-300 dark:text-zinc-700">/</span>

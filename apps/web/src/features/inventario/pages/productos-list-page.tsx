@@ -180,7 +180,7 @@ export default function ProductosListPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
+            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
               SEDE TEMUCO · PAÑOL TI
             </span>
