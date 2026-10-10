@@ -2,7 +2,7 @@
 @import '@sgia/design-tokens/theme.css';
 @import 'tailwindcss';
 
-@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"] *, [data-theme="dark"]));
 
 @layer base {
   /* Modo claro por defecto (Neutros cálidos institucionales INACAP) */
@@ -92,6 +92,63 @@
     --color-danger: var(--danger);
   }
 
+  /* ==========================================================================
+     Paleta B1 Alternativa (Azul Acero & Indigo Industrial) - SKILLS/Design.md
+     Smart Blue #0466c8 | Steel Azure #0353a4 | Regal Navy #023e7d
+     Prussian Blue #002855 / #001845 / #001233 | Twilight Indigo #33415c
+     Blue Slate #5c677d | Slate Grey #7d8597 | Cool Steel #979dac
+     ========================================================================== */
+  :root[data-palette='b1'],
+  html.light[data-palette='b1'],
+  :root[data-theme='light'][data-palette='b1'] {
+    --brand: #0466c8;
+    --brand-strong: #0353a4;
+    --brand-soft: #e8f1fa;
+    --info: #0466c8;
+
+    --ink: #001233;
+    --ink-muted: #5c677d;
+    --bg: #f4f6fa;
+    --surface: #ffffff;
+    --surface-alt: #e9edf5;
+    --line: #d3dbe8;
+
+    --color-background: var(--bg);
+    --color-surface: var(--surface);
+    --color-surface-raised: var(--surface-alt);
+    --color-border: var(--line);
+    --color-border-strong: var(--line);
+    --color-text: var(--ink);
+    --color-text-muted: var(--ink-muted);
+    --color-accent: var(--brand);
+    --color-accent-muted: var(--brand-strong);
+  }
+
+  html.dark[data-palette='b1'],
+  :root[data-theme='dark'][data-palette='b1'] {
+    --brand: #0466c8;
+    --brand-strong: #0353a4;
+    --brand-soft: rgba(4, 102, 200, 0.2);
+    --info: #0466c8;
+
+    --ink: #f4f6fa;
+    --ink-muted: #979dac;
+    --bg: #001233;
+    --surface: #002855;
+    --surface-alt: #001845;
+    --line: rgba(151, 157, 172, 0.24);
+
+    --color-background: var(--bg);
+    --color-surface: var(--surface);
+    --color-surface-raised: var(--surface-alt);
+    --color-border: var(--line);
+    --color-border-strong: var(--line);
+    --color-text: var(--ink);
+    --color-text-muted: var(--ink-muted);
+    --color-accent: var(--brand);
+    --color-accent-muted: var(--brand-strong);
+  }
+
   body {
     background-color: var(--bg);
     color: var(--ink);
@@ -99,6 +156,35 @@
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
   }
+}
+
+/* Clases de apoyo ambiental para B1 */
+html.dark[data-palette='b1'] body {
+  background-color: #001233;
+}
+
+html.dark[data-palette='b1'] aside {
+  background-color: #001845;
+  border-color: #33415c;
+}
+
+html.dark[data-palette='b1'] header {
+  background-color: #001845;
+  border-color: #33415c;
+}
+
+html.light[data-palette='b1'] body {
+  background-color: #f4f6fa;
+}
+
+html.light[data-palette='b1'] aside {
+  background-color: #ffffff;
+  border-color: #d3dbe8;
+}
+
+html.light[data-palette='b1'] header {
+  background-color: #ffffff;
+  border-color: #d3dbe8;
 }
 
 @layer components {

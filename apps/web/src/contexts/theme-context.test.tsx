@@ -6,17 +6,20 @@ import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 function TestConsumer() {
-  const { theme, resolvedTheme, setTheme, toggleTheme, isSystem } = useTheme();
+  const { theme, resolvedTheme, setTheme, toggleTheme, isSystem, palette, setPalette } = useTheme();
 
   return (
     <div>
       <span data-testid="current-theme">{theme}</span>
       <span data-testid="resolved-theme">{resolvedTheme}</span>
       <span data-testid="is-system">{String(isSystem)}</span>
+      <span data-testid="current-palette">{palette}</span>
       <button onClick={() => setTheme('light')}>Set Light</button>
       <button onClick={() => setTheme('dark')}>Set Dark</button>
       <button onClick={() => setTheme('system')}>Set System</button>
       <button onClick={toggleTheme}>Toggle</button>
+      <button onClick={() => setPalette('b1')}>Set Palette B1</button>
+      <button onClick={() => setPalette('default')}>Set Palette Default</button>
       <ThemeToggle variant="segmented" />
     </div>
   );
@@ -34,6 +37,7 @@ describe('Theme System & Automatic Dark Mode (Dual Theme SGIA)', () => {
     // Reset document element
     document.documentElement.className = '';
     document.documentElement.removeAttribute('data-theme');
+    document.documentElement.removeAttribute('data-palette');
 
     window.matchMedia = vi.fn().mockImplementation((query: string) => ({
       matches: matchesMock,
@@ -167,5 +171,38 @@ describe('Theme System & Automatic Dark Mode (Dual Theme SGIA)', () => {
 
     expect(screen.getByTestId('current-theme').textContent).toBe('system');
     expect(screen.getByTestId('is-system').textContent).toBe('true');
+  });
+
+  it('administra la paleta cromática por defecto e intercambia a la paleta B1 de AGENTS.md persistiendo la selección', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TooltipProvider>
+        <ThemeProvider>
+          <TestConsumer />
+        </ThemeProvider>
+      </TooltipProvider>,
+    );
+
+    // Paleta por defecto
+    expect(screen.getByTestId('current-palette').textContent).toBe('default');
+    expect(document.documentElement.getAttribute('data-palette')).toBe('default');
+    expect(document.documentElement.classList.contains('palette-b1')).toBe(false);
+
+    // Activar paleta B1
+    await user.click(screen.getByText('Set Palette B1'));
+
+    expect(screen.getByTestId('current-palette').textContent).toBe('b1');
+    expect(document.documentElement.getAttribute('data-palette')).toBe('b1');
+    expect(document.documentElement.classList.contains('palette-b1')).toBe(true);
+    expect(localStorage.getItem('sgia-palette')).toBe('b1');
+
+    // Regresar a paleta por defecto
+    await user.click(screen.getByText('Set Palette Default'));
+
+    expect(screen.getByTestId('current-palette').textContent).toBe('default');
+    expect(document.documentElement.getAttribute('data-palette')).toBe('default');
+    expect(document.documentElement.classList.contains('palette-b1')).toBe(false);
+    expect(localStorage.getItem('sgia-palette')).toBe('default');
   });
 });

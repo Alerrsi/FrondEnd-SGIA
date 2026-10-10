@@ -67,6 +67,7 @@ sgia-frontend/
 - **Fichas Técnicas de Equipos:** [`TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md)
 - **Informes de Novedades y Fallas:** [`TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md)
 - **Dashboards y Analítica:** [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+- **Configuración y Paletas de Color:** [`TASKS/REQ-CONFIG.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-CONFIG.md)
 - **Requisitos No Funcionales (Calidad, Accesibilidad y Rendimiento):** [`TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md)
 - **Directrices de Interfaz y Sidebar:** [`TASKS/REQ-DISEÑO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-DISE%C3%91O.md)
 
@@ -96,6 +97,7 @@ El diseño del SGIA evita plantillas SaaS genéricas y adopta un **enfoque indus
   - **En Mantención / Revisión:** `bg-amber-50 text-amber-700 border-amber-200/60`.
   - **De Baja / Retirado:** `bg-slate-100 text-slate-600 border-slate-200`.
 
+NOTA: Para cada paleta alternativa dentro de las opciones se deben mantener como colores de fondo ya sea el blanco y negro(Este puede variar un poco segun paleta elegida) los colores deben verse reflejados en los tonos de botones letras especificas como estados de entidades entre otros sin perder la estetica principal y enfoque de la paleta princiapal
 ### 3. Tipografía Técnica
 - `font-mono`: Obligatorio en identificadores técnicos (SKU, seriales, rotulado Code128, IP/MAC de equipos Cisco, gavetas `Cajon-A2`, RUT y cifras tabulares con `font-variant-numeric: tabular-nums`).
 - `font-sans`: Tipografía de lectura e interfaz (Inter o Geist) para navegación, formularios, descripciones y títulos.

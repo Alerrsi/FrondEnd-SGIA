@@ -13,6 +13,7 @@ import {
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
+  Settings,
   Sun,
   Users,
 } from 'lucide-react';
@@ -28,6 +29,7 @@ import { useAuth } from '@/features/auth/context/auth-context';
 import type { WebRoleCode } from '@/features/auth/types/roles';
 import { toast } from '@/lib/toast';
 import { NotificationBell } from '@/features/alertas/components/notification-bell';
+import { SettingsModal } from '@/components/settings/settings-modal';
 
 interface NavItem {
   to: string;
@@ -38,194 +40,106 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
-  {
-    to: '/',
-    label: 'Dashboard',
-    icon: BarChart3,
-    end: true,
-    roles: ['DIR-01'],
-  },
-  {
-    to: '/inventario',
-    label: 'Inventario',
-    icon: Layers,
-    roles: ['PAN-01', 'DIR-01'],
-  },
-  {
-    to: '/equipos',
-    label: 'Equipos y Fichas',
-    icon: Cpu,
-    roles: ['PAN-01', 'DIR-01', 'AD-01'],
-  },
-  {
-    to: '/alertas',
-    label: 'Alertas de Stock',
-    icon: Bell,
-    roles: ['PAN-01', 'DIR-01', 'AD-01'],
-  },
-  {
-    to: '/prestamos/cola',
-    label: 'Cola de préstamos',
-    icon: CalendarClock,
-    roles: ['PAN-01'],
-  },
-  {
-    to: '/prestamos/mostrador',
-    label: 'Mesón / Mostrador',
-    icon: Layers,
-    roles: ['PAN-01'],
-  },
-  {
-    to: '/prestamos/historial',
-    label: 'Historial Préstamos',
-    icon: History,
-    roles: ['PAN-01', 'DIR-01', 'AD-01'],
-  },
-  {
-    to: '/proveedores',
-    label: 'Proveedores',
-    icon: Building2,
-    roles: ['DIR-01', 'AD-01'],
-  },
-  {
-    to: '/cotizaciones',
-    label: 'Cotizaciones',
-    icon: ClipboardList,
-    roles: ['DIR-01', 'AD-01'],
-  },
-  {
-    to: '/usuarios',
-    label: 'Usuarios',
-    icon: Users,
-    roles: ['AD-01'],
-  },
+  { to: '/', label: 'Dashboards', icon: BarChart3, end: true, roles: ['AD-01', 'DIR-01'] },
+  { to: '/inventario', label: 'Inventario', icon: Boxes, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
+  { to: '/prestamos', label: 'Préstamos', icon: CalendarClock, roles: ['AD-01', 'PAN-01'] },
+  { to: '/ubicaciones', label: 'Ubicaciones', icon: Layers, roles: ['AD-01', 'PAN-01'] },
+  { to: '/equipos', label: 'Fichas Técnicas', icon: Cpu, roles: ['AD-01', 'DIR-01'] },
+  { to: '/cotizaciones', label: 'Cotizaciones', icon: ClipboardList, roles: ['AD-01', 'DIR-01'] },
+  { to: '/proveedores', label: 'Proveedores', icon: Building2, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
+  { to: '/historial', label: 'Historial', icon: History, roles: ['AD-01', 'PAN-01'] },
+  { to: '/alertas', label: 'Stock Crítico', icon: Bell, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
+  { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['AD-01'] },
 ];
-
-const COLLAPSED_WIDTH = 64;
-const DEFAULT_WIDTH = 256;
-const MIN_WIDTH = 180;
-const MAX_WIDTH = 420;
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
+  const navigate = useNavigate();
 
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    return localStorage.getItem('sgia-sidebar-collapsed') === 'true';
-  });
-
-  const [width, setWidth] = useState<number>(() => {
-    const saved = localStorage.getItem('sgia-sidebar-width');
-    return saved ? Number(saved) : DEFAULT_WIDTH;
-  });
-
+  // Estados de barra lateral
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(256);
   const [isDragging, setIsDragging] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
+  const MIN_WIDTH = 180;
+  const MAX_WIDTH = 420;
+  const isLight = resolvedTheme === 'light';
+
+  // Manejo de redimensionamiento manual por arrastre
   useEffect(() => {
-    localStorage.setItem('sgia-sidebar-collapsed', String(isCollapsed));
-  }, [isCollapsed]);
-
-  useEffect(() => {
-    if (!isCollapsed) {
-      localStorage.setItem('sgia-sidebar-width', String(width));
-    }
-  }, [width, isCollapsed]);
-
-  useEffect(() => {
-    if (!isDragging) return;
-
     const handleMouseMove = (e: MouseEvent) => {
-      const newWidth = e.clientX;
-      if (newWidth < 120) {
-        setIsCollapsed(true);
-      } else {
-        setIsCollapsed(false);
-        setWidth(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, newWidth)));
-      }
+      if (!isDragging) return;
+      const newWidth = Math.min(Math.max(e.clientX, MIN_WIDTH), MAX_WIDTH);
+      setSidebarWidth(newWidth);
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
     };
 
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging]);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      toast.success('Sesión cerrada correctamente');
-      navigate('/login', { replace: true });
-    } catch {
-      toast.error('Error al cerrar sesión');
-    }
+  const handleLogout = () => {
+    logout();
+    toast.info('Sesión cerrada correctamente');
+    navigate('/login');
   };
 
-  const userRole = (user?.rol as WebRoleCode) ?? 'AD-01';
-  const roleLabel = user?.rol
-    ? ROLE_LABELS[user.rol as RoleCode] || 'Usuario'
-    : 'Usuario';
+  const userRole = (user?.rol as WebRoleCode) ?? 'PAN-01';
+  const roleLabel = ROLE_LABELS[userRole as RoleCode] ?? userRole;
 
   const allowedNavItems = navigation.filter((item) =>
     item.roles.includes(userRole),
   );
 
-  const userInitials = user?.nombre
-    ? user.nombre
-        .split(' ')
-        .slice(0, 2)
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-    : 'U';
-
-  const isLight = resolvedTheme === 'light';
+  const userInitials = (user?.nombre ?? 'U')
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
   return (
     <TooltipProvider>
-      {/* Canvas unificado bg-zinc-50 dark:bg-zinc-950 para que el área de iconbars flote sobre el mismo fondo exacto de la tabla */}
-      <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors">
-        {/* Sidebar: En modo comprimido se remueve el fondo de sidebar sólido y queda una columna de 3 iconbars flotantes con la misma anchura unificada */}
+      <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 antialiased overflow-hidden">
+        {/* Barra Lateral / Sidebar */}
         <aside
-          style={{ width: `${isCollapsed ? COLLAPSED_WIDTH : width}px` }}
+          style={{ width: isCollapsed ? 48 : sidebarWidth }}
           className={cn(
-            'relative flex flex-shrink-0 flex-col justify-between py-4 select-none',
-            isCollapsed
-              ? 'bg-transparent border-r-0 shadow-none px-1 items-center z-10'
-              : 'border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 shadow-xs',
-            !isDragging && 'transition-[width] duration-150 ease-in-out',
+            'relative flex flex-col justify-between border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-[width] duration-200 select-none overflow-hidden z-20',
+            isCollapsed ? 'p-0 items-center' : 'p-3',
           )}
-          aria-label="Panel lateral de navegación"
         >
           {isCollapsed ? (
-            /* Modo Comprimido: 3 IconBars flotantes con EXACTAMENTE la misma anchura (w-[48px]) */
+            /* Modo Encogido (48px): 3 IconBars compactos según directriz de diseño */
             <>
-              {/* IconBar 1: Logo y Botón de Expandir (w-[48px]) */}
+              {/* IconBar 1: Brand Logo y Botón para desplegar (w-[48px]) */}
               <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div
-                      className="gnav-item flex items-center justify-center cursor-default text-zinc-900 dark:text-zinc-100"
-                      title="SGIA · Pañol Informática INACAP"
-                      aria-label="SGIA · Pañol Informática INACAP"
-                    >
-                      <Boxes size={18} strokeWidth={2} />
+                    <div className="gnav-item flex items-center justify-center text-zinc-900 dark:text-zinc-100 cursor-default">
+                      <Boxes size={20} strokeWidth={2.2} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    <span className="text-xs font-semibold">SGIA · Pañol Informática</span>
+                    <p className="font-semibold text-xs">SGIA · Pañol</p>
+                    <p className="text-[10px] text-zinc-400">INACAP Sede Temuco</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -242,21 +156,22 @@ export default function AppLayout() {
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    <span className="text-xs font-medium">Expandir panel lateral</span>
+                    <span className="text-xs font-medium">Expandir menú</span>
                   </TooltipContent>
                 </Tooltip>
               </div>
 
-              {/* IconBar 2: Opciones de navegación autorizadas con indicador elástico (w-[48px]) */}
-              <div className="flex justify-center w-full my-auto">
+              {/* IconBar 2: Enlaces de Módulos (Navegación Vertical w-[48px]) */}
+              <div className="flex-1 w-full overflow-y-auto no-scrollbar flex flex-col items-center py-2">
                 <GlassIconBar
                   axis="column"
-                  items={allowedNavItems.map((item) => ({
-                    key: item.to,
-                    label: item.label,
-                    Icon: item.icon,
-                    to: item.to,
-                    end: item.end,
+                  items={allowedNavItems.map(({ to, label, icon: Icon, end }) => ({
+                    key: to,
+                    to,
+                    Icon,
+                    label,
+                    end,
+                    onClick: () => navigate(to),
                   }))}
                   glyph={18}
                   hug={4}
@@ -264,7 +179,7 @@ export default function AppLayout() {
                 />
               </div>
 
-              {/* IconBar 3: Usuario, Botón de Tema (ocultando toggle en encogido) y Cerrar sesión (w-[48px]) */}
+              {/* IconBar 3: Usuario, Ajustes, Botón de Tema y Cerrar sesión (w-[48px]) */}
               <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -279,6 +194,24 @@ export default function AppLayout() {
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">{user?.nombre ?? 'Usuario'}</p>
                     <p className="text-[10px] text-zinc-400 font-mono">{roleLabel}</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                {/* Botón de Ajustes en modo encogido */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={() => setSettingsOpen(true)}
+                      title="Ajustes de usuario y apariencia"
+                      aria-label="Ajustes de usuario y apariencia"
+                      className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
+                    >
+                      <Settings size={18} strokeWidth={2} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <span className="text-xs font-medium">Ajustes</span>
                   </TooltipContent>
                 </Tooltip>
 
@@ -394,51 +327,67 @@ export default function AppLayout() {
 
               {/* User Profile and Bottom Controls */}
               <div className="border-t border-zinc-200 dark:border-zinc-800 pt-3">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-2">
-                    <div className="flex items-center gap-2 min-w-0">
+                <div className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-2.5">
+                  {/* Fila Superior: Perfil del Usuario + Botón de Ajustes + Botón Logout */}
+                  <div className="flex items-center justify-between gap-1.5 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
                       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 shadow-xs">
                         {userInitials}
                       </div>
-                      <div className="flex flex-col min-w-0">
+                      <div className="flex flex-col min-w-0 flex-1 pr-1">
                         <span className="truncate text-xs font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
                           {user?.nombre ?? 'Usuario'}
                         </span>
-                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">{roleLabel}</span>
+                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate">{roleLabel}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
-                      {/* Liquid Toggle con Moon a la izquierda y Sun a la derecha */}
-                      <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-2xs">
-                        <Moon
-                          className={cn(
-                            'h-3 w-3 transition-colors',
-                            !isLight ? 'text-indigo-400 font-bold' : 'text-zinc-400 dark:text-zinc-500',
-                          )}
-                        />
-                        <Toggle
-                          size="sm"
-                          checked={isLight}
-                          onCheckedChange={(light) => setTheme(light ? 'light' : 'dark')}
-                          aria-label={isLight ? 'Modo Claro activo, cambiar a Oscuro' : 'Modo Oscuro activo, cambiar a Claro'}
-                        />
-                        <Sun
-                          className={cn(
-                            'h-3 w-3 transition-colors',
-                            isLight ? 'text-amber-500 font-bold' : 'text-zinc-400 dark:text-zinc-500',
-                          )}
-                        />
-                      </div>
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setSettingsOpen(true)}
+                        title="Ajustes de usuario y apariencia"
+                        aria-label="Ajustes de usuario y apariencia"
+                        className="p-1 shrink-0 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+                      >
+                        <Settings className="h-3.5 w-3.5" />
+                      </button>
                       <button
                         type="button"
                         onClick={handleLogout}
                         title="Cerrar sesión"
                         aria-label="Cerrar sesión"
-                        className="p-1 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+                        className="p-1 shrink-0 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Fila Inferior: Toggle de Modo Oscuro con etiqueta e iconografía */}
+                  <div className="flex items-center justify-between border-t border-zinc-200/60 dark:border-zinc-800/80 pt-2">
+                    <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 select-none">
+                      Tema {isLight ? 'Claro' : 'Oscuro'}
+                    </span>
+                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-2xs shrink-0">
+                      <Moon
+                        className={cn(
+                          'h-3 w-3 transition-colors',
+                          !isLight ? 'text-indigo-400 font-bold' : 'text-zinc-400 dark:text-zinc-500',
+                        )}
+                      />
+                      <Toggle
+                        size="sm"
+                        checked={isLight}
+                        onCheckedChange={(light) => setTheme(light ? 'light' : 'dark')}
+                        aria-label={isLight ? 'Modo Claro activo, cambiar a Oscuro' : 'Modo Oscuro activo, cambiar a Claro'}
+                      />
+                      <Sun
+                        className={cn(
+                          'h-3 w-3 transition-colors',
+                          isLight ? 'text-amber-500 font-bold' : 'text-zinc-400 dark:text-zinc-500',
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
@@ -454,12 +403,8 @@ export default function AppLayout() {
           aria-label="Ajustar tamaño de panel lateral"
           onMouseDown={() => setIsDragging(true)}
           className={cn(
-            'group relative flex w-1 flex-shrink-0 cursor-col-resize items-center justify-center transition-colors select-none z-20',
-            isDragging
-              ? 'bg-zinc-400 dark:bg-zinc-600'
-              : isCollapsed
-                ? 'opacity-0 pointer-events-none'
-                : 'hover:bg-zinc-300 dark:hover:bg-zinc-700 bg-transparent',
+            'relative flex w-1 items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-col-resize z-30 group',
+            isDragging && 'bg-zinc-400 dark:bg-zinc-600',
           )}
         >
           <div className="h-6 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-zinc-500 dark:group-hover:bg-zinc-400 transition-colors" />
@@ -491,6 +436,9 @@ export default function AppLayout() {
             </div>
           </main>
         </div>
+
+        {/* Modal de Ajustes del Sistema y Paleta de Colores (REQ-CONFIG) */}
+        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       </div>
     </TooltipProvider>
   );

@@ -1,9 +1,6 @@
-# Plan Maestro de Tareas — Monorepo Frontend SGIA
+# Índice Maestro de Requisitos y Especificaciones Técnicas (SGIA Frontend)
 
-> **Proyecto:** Sistema de Gestión de Inventario y Activos (SGIA)  
-> **Cliente:** Área de Informática y Ciberseguridad, INACAP Sede Temuco  
-> **Arquitectura:** Monorepo con Turborepo, pnpm, React (Vite SPA) y React Native (Expo)  
-> **Documentos de Referencia:** [`AGENTS.md`](../AGENTS.md) y [`ENDPOINTS.md`](../ENDPOINTS.md)
+Este directorio contiene las especificaciones detalladas para cada módulo funcional y no funcional del frontend de SGIA (Web y Mobile), desglosadas en tareas técnicas implementables para agentes y desarrolladores.
 
 ---
 
@@ -24,22 +21,5 @@
 | [REQ-12](./REQ-12-FICHAS-TECNICAS-EQUIPOS.md) | `REQ-12` | Fichas Técnicas y Manuales PDF | Web | DIR-01, AD-01, PAN-01 | 🔴 Pendiente |
 | [REQ-13](./REQ-13-INFORMES-NOVEDADES-FALLAS.md) | `REQ-13` | Reportes de Novedades e Incidentes | Mobile + Web | PRO-01, PAN-01, DIR-01 | 🔴 Pendiente |
 | [REQ-14](./REQ-14-DASHBOARDS-ANALITICA.md) | `REQ-14` | Analítica y Dashboards Ejecutivos | Web | DIR-01, AD-01 | 🔴 Pendiente |
+| [REQ-CONFIG](./REQ-CONFIG.md) | `REQ-CONFIG` | Configuración de Sistema y Paletas de Color | Web | Todos | 🟢 Completado (100%) |
 | [REQ-NF](./REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md) | `REQ-NF` | Accesibilidad AA, Performance y Offline | Web + Mobile | Todos | 🟡 En Progreso (60%) |
-
----
-
-## 👥 Matriz de Roles y Accesos
-
-- **AD-01 (Administrador):** Acceso total al panel web, gestión de usuarios, auditoría, catálogos y configuración.
-- **DIR-01 (Director de Carrera / Asesor):** Carga de facturas, cotizaciones con proveedores, compras, hojas de vida y dashboards de analítica.
-- **PAN-01 (Pañolero / Encargado):** Operación diaria de pañol, inventario físico, asignación de salas/cajones, préstamos presenciales/remotos con pistola lectora y recepción con inspección de fallas.
-- **PRO-01 (Docente / Profesor):** Acceso exclusivo vía aplicación móvil (Expo/React Native) para pre-reserva de materiales y reporte fotográfico de fallas.
-
----
-
-## 🛠️ Convenciones de Implementación
-
-1. **Rutas API:** Todas las rutas deben coincidir 1:1 con las documentadas en [`ENDPOINTS.md`](../ENDPOINTS.md). Base URL: `/api`.
-2. **Consumo de Datos:** Todo fetch debe realizarse a través de `packages/api-client` con TanStack Query y hooks tipados.
-3. **Modelos y Tipos:** Los contratos de datos residen en `packages/types`.
-5. **Estilo Visual:** Inspirado en [zed.dev](https://zed.dev/), fondo oscuro (`#0d0d0d`), bordes delgados, fuentes mono para códigos/IDs y acento rojo/naranja definido en `packages/design-tokens`.

@@ -158,6 +158,66 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     expect(resizeHandle.className).toContain('cursor-col-resize');
   });
 
+  it('abre el modal de ajustes al pulsar el botón de engranaje al costado del nombre de usuario', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Test</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    // Botón con forma de engranaje al costado del nombre de usuario
+    const settingsButton = screen.getByRole('button', {
+      name: /ajustes de usuario y apariencia/i,
+    });
+    expect(settingsButton).toBeDefined();
+
+    // Modal no abierto inicialmente
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    // Pulsar botón de ajustes
+    await user.click(settingsButton);
+
+    // Modal de ajustes abierto
+    expect(screen.getByRole('dialog')).toBeDefined();
+    expect(screen.getByText('Ajustes del Sistema')).toBeDefined();
+    expect(screen.getByText('Paleta de Colores de Interfaz')).toBeDefined();
+    expect(screen.getByText('Paleta Principal (Industrial INACAP)')).toBeDefined();
+    expect(screen.getByText('Paleta B1 (Azul Acero & Indigo)')).toBeDefined();
+  });
+
+  it('abre el modal de ajustes desde el sidebar en modo encogido', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Test</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    // Encoger sidebar
+    const collapseButton = screen.getByTitle('Encoger panel lateral');
+    await user.click(collapseButton);
+
+    // Botón de ajustes en modo encogido en IconBar 3
+    const settingsButton = screen.getByRole('button', {
+      name: /ajustes de usuario y apariencia/i,
+    });
+    await user.click(settingsButton);
+
+    expect(screen.getByRole('dialog')).toBeDefined();
+    expect(screen.getByText('Ajustes del Sistema')).toBeDefined();
+  });
+
   it('calls logout and redirects when logout button is clicked', async () => {
     const user = userEvent.setup();
 
