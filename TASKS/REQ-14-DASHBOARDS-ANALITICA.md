@@ -1,4 +1,4 @@
-# REQ-14: Dashboards Analíticos y Métricas de Gestión Institucional
+# REQ-14: Dashboards Analíticos y Métricas Dinámicas con GraphQL
 
 > **Código:** `REQ-14` | **Módulo:** `FU-06` (Reportes, Dashboards y Analítica)  
 > **Plataforma:** Web (`apps/web`)  
@@ -8,55 +8,179 @@
 
 ## 🎯 Objetivo
 
-Entregar visibilidad estratégica y operativa sobre el rendimiento y uso del inventario del pañol. Ofrecer gráficos interactivos en tema oscuro (acorde a la estética zed.dev) con Chart.js para identificar insumos de alta demanda, inventario ocioso, distribución por carrera y hábitos de préstamo docente para la toma de decisiones presupuestarias y académicas.
+Entregar visibilidad estratégica y operativa sobre el rendimiento y uso del inventario del pañol mediante **dashboards dinámicos e interactivos en tema oscuro (estética zed.dev) impulsados exclusivamente por GraphQL**.
+
+A través del endpoint unificado `/api/metrics`, los directores (`DIR-01`) y administradores (`AD-01`) pueden consultar métricas analíticas flexibles y visualizarlas con Chart.js (`react-chartjs-2`). El sistema permite conmutar entre 3 plantillas predeterminadas de análisis y componer plantillas personalizadas a medida, seleccionando entidad, métrica, tipo de visualización y rango temporal.
 
 ---
 
-## 📡 Endpoints del Backend (`ENDPOINTS.md`)
+## 📡 Endpoint de la API (`ENDPOINTS.md`)
+
+Este módulo sustituye los endpoints REST convencionales por un único endpoint **GraphQL** para todas sus consultas analíticas, agregaciones y métricas:
 
 | Método | Endpoint | Roles | Descripción | Estado API |
 |---|---|---|---|:---:|
-| `GET` | `/api/dashboard/stats` | `DIR-01`, `AD-01` | Resumen general: productos por estado, préstamos activos vs atrasados, alertas críticas y rotación mensual. | 🟡 Planificado |
-| `GET` | `/api/dashboard/top-products` | `DIR-01`, `AD-01` | Ranking de los 10 productos/equipos con mayor demanda histórica y semestral. | 🟡 Planificado |
-| `GET` | `/api/dashboard/top-supplies` | `DIR-01`, `AD-01` | Ranking de insumos fungibles más consumidos (cables, conectores, soldadura). | 🟡 Planificado |
-| `GET` | `/api/dashboard/careers-distribution` | `DIR-01`, `AD-01` | Consumo de insumos y préstamos desglosado por carrera académica. | 🟡 Planificado |
-| `GET` | `/api/dashboard/least-demanded` | `DIR-01`, `AD-01` | Inventario ocioso o sin uso en los últimos 6 meses. | 🟡 Planificado |
-| `GET` | `/api/dashboard/top-teachers` | `DIR-01`, `AD-01` | Docentes con mayor frecuencia y volumen de solicitudes. | 🟡 Planificado |
-| `GET` | `/api/dashboard/loans-by-teacher` | `DIR-01`, `AD-01` | Préstamos agrupados por docente y asignatura para análisis curricular. | 🟡 Planificado |
+| `POST` | `/api/metrics` | `DIR-01`, `AD-01` | Endpoint unificado GraphQL para consultas analíticas dinámicas y generación de métricas personalizadas. | 🟡 Planificado |
+
+### Esquema GraphQL (`/api/metrics`)
+
+```graphql
+"""
+Entidad o dominio de datos sobre el cual se calculan las métricas
+"""
+enum MetricEntity {
+  EQUIPMENT
+  SUPPLIES
+  LOANS
+  ALERTS
+  MAINTENANCE
+  CAREERS
+  TEACHERS
+}
+
+"""
+Tipo de agregación o cálculo estadístico aplicado
+"""
+enum MetricAggregation {
+  TOTAL
+  AVERAGE
+  COUNT
+  RATE
+}
+
+"""
+Ventana temporal para el análisis de los datos
+"""
+enum TimeRange {
+  LAST_7_DAYS
+  LAST_30_DAYS
+  SEMESTER_CURRENT
+  SEMESTER_PREVIOUS
+  YEAR_TO_DATE
+  CUSTOM
+}
+
+"""
+Tipo de visualización gráfica compatible con react-chartjs-2
+"""
+enum ChartType {
+  BAR
+  LINE
+  DOUGHNUT
+  POLAR_AREA
+}
+
+input MetricQueryInput {
+  entity: MetricEntity!
+  metric: MetricAggregation!
+  timeRange: TimeRange!
+  groupBy: String
+  dateFrom: String
+  dateTo: String
+  limit: Int
+}
+
+type MetricDataPoint {
+  label: String!
+  value: Float!
+  secondaryValue: Float
+  category: String
+}
+
+type MetricResult {
+  entity: MetricEntity!
+  metric: MetricAggregation!
+  timeRange: TimeRange!
+  chartType: ChartType
+  points: [MetricDataPoint!]!
+  summary: Float
+}
+
+type ExecutiveKpis {
+  activosDisponibles: Int!
+  activosEnPrestamo: Int!
+  activosEnTaller: Int!
+  activosDeBaja: Int!
+  prestamosActivosHoy: Int!
+  tasaAtrasosPct: Float!
+  alertasCriticasNoResueltas: Int!
+  tasaRotacionMensualPct: Float!
+}
+
+type Query {
+  """
+  Indicadores clave ejecutivos para la cinta métrica superior
+  """
+  executiveKpis(timeRange: TimeRange): ExecutiveKpis!
+
+  """
+  Consulta flexible de métricas analíticas para gráficos individuales
+  """
+  customMetric(input: MetricQueryInput!): MetricResult!
+
+  """
+  Consulta en batch de múltiples métricas para renderizar una plantilla completa
+  """
+  batchMetrics(inputs: [MetricQueryInput!]!): [MetricResult!]!
+}
+```
 
 ---
 
 ## 📋 Lista de Tareas Desglosada
 
-### 1. Indicadores Clave de Desempeño (KPIs) (`apps/web`)
-- [ ] **Tarjetas de Resumen Ejecutivo (`/`):**
-  - [ ] Total de activos disponibles vs en préstamo vs en taller vs dados de baja.
-  - [ ] Préstamos activos en el día y tasa de atrasos.
-  - [ ] Contador de alertas de stock crítico no resueltas.
-  - [ ] Tasa de rotación mensual del pañol en porcentaje.
+### 1. Cliente GraphQL y Capa de Datos (`apps/web` & `@sgia/api-client`)
+- [ ] **Configuración del Cliente GraphQL hacia `/api/metrics`:**
+  - [ ] Función de transporte GraphQL autenticada con Bearer Token (reutilizando credenciales Sanctum).
+  - [ ] Tipos TypeScript para operaciones GraphQL (`MetricEntity`, `MetricAggregation`, `TimeRange`, `ChartType`, `MetricResult`, `ExecutiveKpis`).
+  - [ ] Hooks TanStack Query especializados (`useExecutiveKpis`, `useCustomMetric`, `useBatchMetrics`).
 
-### 2. Gráficos Interactivos con Chart.js (`react-chartjs-2`)
-- [ ] **Configuración del Tema Oscuro:**
-  - [ ] Paleta institucional integrada desde `packages/design-tokens` (fondo `#111113`, grid lines translúcidas `#222`, acento rojo/naranja `#ef4444`).
-- [ ] **Top 10 Productos y Equipos Más Solicitados:**
-  - [ ] Gráfico de barras horizontales mostrando cantidad de préstamos por equipo.
-- [ ] **Insumos Fungibles de Mayor Consumo:**
-  - [ ] Gráfico de barras con proyección de agotamiento.
-- [ ] **Distribución de Uso por Carrera Académica:**
-  - [ ] Gráfico de dona (Doughnut chart) con porcentajes por especialidad (ej. Ciberseguridad, Telecomunicaciones, Informática).
-- [ ] **Inventario Ocioso (Equipos Menos Demandados):**
-  - [ ] Tabla destacando equipos sin movimiento para reasignación o dar de baja.
-- [ ] **Ranking de Docentes y Préstamos por Asignatura:**
-  - [ ] Gráfico comparativo de docentes con mayor volumen de horas/equipos solicitados.
+### 2. Cinta Métrica de KPIs Ejecutivos (GraphQL `executiveKpis`)
+- [ ] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo Design.md):**
+  - [ ] Consulta vía GraphQL `executiveKpis(timeRange: $range)`.
+  - [ ] Estado de inventario: activos disponibles, en préstamo, en taller y de baja.
+  - [ ] Operación diaria: préstamos activos hoy y tasa porcentual de atrasos.
+  - [ ] Salud y rotación: alertas de stock crítico pendientes y porcentaje de rotación mensual.
 
-### 3. Filtros Temporales
-- [ ] **Selector de Rango de Período:**
-  - [ ] Filtro por Semestre Actual (ej. "2026-1", "2026-2"), Año Completo o Rango Personalizado.
-  - [ ] Refresco automático de todas las consultas de analítica.
+### 3. Configuración Visual Chart.js con Tema Oscuro (`react-chartjs-2`)
+- [ ] **Tokens de Diseño y Paleta Zed.dev:**
+  - [ ] Fondo `#111113`, superficies `#18181b`, líneas de cuadrícula translúcidas `#27272a`.
+  - [ ] Paleta semántica institucional: acentos rojo `#ef4444`, ámbar `#f59e0b`, esmeralda `#10b981`, violeta `#8b5cf6` y cian `#06b6d4`.
+  - [ ] Tooltips interactivos con contraste alto, tipografía monoespaciada compacta y badges legibles.
+  - [ ] Componente envolvente genérico `DynamicChartCard` que recibe `MetricResult` y lo traduce a configuración de `react-chartjs-2`.
+
+### 4. Sistema de Plantillas y Dashboards Dinámicos
+- [ ] **Selector de Plantillas Predefinidas (3 Plantillas por Defecto):**
+  - [ ] *Plantilla 1: Operaciones y Movimiento de Pañol:*
+    - Préstamos diarios (Línea: `LOANS` + `COUNT` + `LAST_30_DAYS`).
+    - Estado y atrasos de préstamos (Dona: `LOANS` + `RATE`).
+    - Alertas críticas por categoría (Barras: `ALERTS` + `COUNT`).
+  - [ ] *Plantilla 2: Demanda y Desgaste por Carrera:*
+    - Insumos consumidos por especialidad (Barras: `SUPPLIES` + `TOTAL` agrupado por `CAREER`).
+    - Ranking de equipos más solicitados (Barras horizontales: `EQUIPMENT` + `COUNT`).
+    - Préstamos por docente y asignatura (Dona / Polar: `TEACHERS` + `COUNT`).
+  - [ ] *Plantilla 3: Salud del Inventario y Ciclo de Vida:*
+    - Inventario ocioso / sin rotación (Barras: `EQUIPMENT` + `COUNT` en estado ocioso).
+    - Incidencias y mantenciones por equipo (Línea: `MAINTENANCE` + `COUNT`).
+    - Tasa de rotación semestral de insumos (Barras: `SUPPLIES` + `RATE`).
+- [ ] **Constructor de Gráficos Personalizados (GraphQL Query Builder Modal):**
+  - [ ] Formulario interactivo con selección de:
+    - **Entidad:** `EQUIPMENT`, `SUPPLIES`, `LOANS`, `ALERTS`, `MAINTENANCE`, `CAREERS`, `TEACHERS`.
+    - **Métrica:** `TOTAL`, `AVERAGE`, `COUNT`, `RATE`.
+    - **Tipo de Gráfico:** `BAR`, `LINE`, `DOUGHNUT`, `POLAR_AREA`.
+    - **Rango Temporal:** `LAST_7_DAYS`, `LAST_30_DAYS`, `SEMESTER_CURRENT`, `SEMESTER_PREVIOUS`, `YEAR_TO_DATE`, `CUSTOM`.
+  - [ ] Previsualización en vivo ejecutando la consulta GraphQL hacia `/api/metrics`.
+- [ ] **Reglas de Negocio y Restricciones Obligatorias:**
+  - [ ] **Límite máximo:** Máximo 5 gráficos simultáneos por plantilla (bloquea la adición si se alcanza el cupo).
+  - [ ] **Prevención de duplicados:** Validación que prohíbe agregar 2 gráficos idénticos (mismo conjunto de `entity`, `metric`, `chartType` y `timeRange`).
+  - [ ] **Eliminación con confirmación:** Cada tarjeta de gráfico incluye botón de eliminar con `ConfirmDialog` antes de su retiro.
+  - [ ] **Persistencia:** Guardado local (`localStorage`) y/o remoto del estado de plantillas del director.
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test: hooks `useDashboardStats`, `useTopProducts` y `useCareersDistribution`.
-- [ ] Visual regression test: renderizado de gráficos Chart.js en tema oscuro con tooltip legible.
+- [ ] Unit test: servicio de consultas GraphQL y hooks `useExecutiveKpis`, `useCustomMetric` y `useBatchMetrics`.
+- [ ] Unit test: validaciones del builder dinámico (máximo 5 gráficos, rechazo de duplicados idénticos).
+- [ ] Component test: interacción de eliminación con modal de confirmación (`ConfirmDialog`).
+- [ ] Integration test: renderizado de gráficos dinámicos `react-chartjs-2` a partir de respuestas GraphQL.
