@@ -80,3 +80,29 @@
 - **Verificación:**
   - `git grep -n "\\\\n" apps/web/src/` no devuelve ocurrencias indebidas.
   - Tests del módulo de inventario pasando con éxito.
+
+---
+
+## FIX-006: Habilitación de Rutas para Pañol (Préstamos, Ubicaciones, Historial) y Ocultación de Proveedores
+
+- **Fecha:** 2026-10-11
+- **Módulo:** Enrutamiento y Navegación (`apps/web`) — [REQ-05, REQ-10, REQ-11]
+- **Archivos Modificados / Creados:**
+  - [`apps/web/src/app.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/app.tsx)
+  - [`apps/web/src/layouts/app-layout.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/layouts/app-layout.tsx)
+  - [`apps/web/src/features/auth/types/roles.ts`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/auth/types/roles.ts)
+  - [`apps/web/src/features/ubicaciones/pages/ubicaciones-page.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/ubicaciones/pages/ubicaciones-page.tsx)
+  - [`apps/web/src/features/ubicaciones/pages/ubicaciones-page.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/ubicaciones/pages/ubicaciones-page.test.tsx)
+  - [`apps/web/src/features/prestamos/pages/prestamos-menu-page.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/prestamos/pages/prestamos-menu-page.tsx)
+  - [`apps/web/src/features/prestamos/pages/prestamos-menu-page.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/prestamos/pages/prestamos-menu-page.test.tsx)
+- **Problema Solucionado:**
+  1. Al hacer clic en el sidebar en las opciones de **Préstamos** (`/prestamos`), **Ubicaciones** (`/ubicaciones`) e **Historial** (`/historial`), el router no tenía declaradas las rutas exactas correspondientes o los permisos en `roles.ts`, cayendo en el catch-all `*` y redirigiendo a la ruta por defecto del rol PAN-01 (`/inventario`).
+  2. La opción **Proveedores** aparecía en la barra lateral para el rol Pañolero (`PAN-01`) cuando solo corresponde a Dirección (`DIR-01`) y Administración (`AD-01`).
+- **Solución Implementada:**
+  1. **Ruta `/prestamos`:** Creado `PrestamosMenuPage` como centro operativo de mesón, permitiendo acceder a Mostrador y Devoluciones (`/prestamos/mostrador`), Cola de Solicitudes Remotas (`/prestamos/cola`) e Historial (`/prestamos/historial`).
+  2. **Ruta `/ubicaciones`:** Creada la página completa de Ubicaciones Físicas y Cajones (`UbicacionesPage`) conectada con los endpoints de API (`useLocations` y `useCajones` de REQ-05).
+  3. **Ruta `/historial`:** Agregada ruta en `app.tsx` apuntando directamente a `HistorialPrestamosPage` (REQ-11).
+  4. **Ocultación de Proveedores para PAN-01:** Removido `'PAN-01'` del array de roles de la ruta `/proveedores` en `navigation` de `app-layout.tsx`.
+- **Verificación:**
+  - 30 archivos de prueba pasados, 137 tests aprobados (100% éxito).
+  - Verificación de tipos aprobada con cero errores en Turborepo.

@@ -6,9 +6,11 @@ import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import EquiposPage from '@/features/equipos/pages/equipos-page';
 import ProductosListPage from '@/features/inventario/pages/productos-list-page';
+import PrestamosMenuPage from '@/features/prestamos/pages/prestamos-menu-page';
 import ColaPrestamosPage from '@/features/prestamos/pages/cola-prestamos-page';
 import MostradorPrestamosPage from '@/features/prestamos/pages/mostrador-prestamos-page';
 import HistorialPrestamosPage from '@/features/prestamos/pages/historial-prestamos-page';
+import UbicacionesPage from '@/features/ubicaciones/pages/ubicaciones-page';
 import ProveedoresPage from '@/features/proveedores/pages/proveedores-page';
 import UsuariosPage from '@/features/usuarios/pages/usuarios-page';
 import AppLayout from '@/layouts/app-layout';
@@ -72,6 +74,15 @@ function AppContent() {
             />
 
             <Route
+              path="/ubicaciones"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
+                  <UbicacionesPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
               path="/equipos"
               element={
                 <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
@@ -99,6 +110,15 @@ function AppContent() {
             />
 
             <Route
+              path="/prestamos"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
+                  <PrestamosMenuPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
               path="/prestamos/cola"
               element={
                 <RequireRole allowedRoles={['PAN-01']}>
@@ -117,7 +137,21 @@ function AppContent() {
             />
 
             <Route
+              path="/prestamos/registro-presencial"
+              element={<Navigate to="/prestamos/mostrador" replace />}
+            />
+
+            <Route
               path="/prestamos/historial"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                  <HistorialPrestamosPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/historial"
               element={
                 <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
                   <HistorialPrestamosPage />

@@ -46,7 +46,7 @@ const navigation: NavItem[] = [
   { to: '/ubicaciones', label: 'Ubicaciones', icon: Layers, roles: ['AD-01', 'PAN-01'] },
   { to: '/equipos', label: 'Fichas Técnicas', icon: Cpu, roles: ['AD-01', 'DIR-01'] },
   { to: '/cotizaciones', label: 'Cotizaciones', icon: ClipboardList, roles: ['AD-01', 'DIR-01'] },
-  { to: '/proveedores', label: 'Proveedores', icon: Building2, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
+  { to: '/proveedores', label: 'Proveedores', icon: Building2, roles: ['AD-01', 'DIR-01'] },
   { to: '/historial', label: 'Historial', icon: History, roles: ['AD-01', 'PAN-01'] },
   { to: '/alertas', label: 'Stock Crítico', icon: Bell, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['AD-01'] },
