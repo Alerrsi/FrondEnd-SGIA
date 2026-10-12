@@ -1,0 +1,132 @@
+{
+  "executiveKpis": {
+    "activosDisponibles": 842,
+    "activosEnPrestamo": 128,
+    "activosEnTaller": 23,
+    "activosDeBaja": 14,
+    "prestamosActivosHoy": 46,
+    "tasaAtrasosPct": 4.8,
+    "alertasCriticasNoResueltas": 7,
+    "tasaRotacionMensualPct": 28.5
+  },
+  "metrics": {
+    "LOANS_COUNT_LAST_30_DAYS": {
+      "entity": "LOANS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "LINE",
+      "points": [
+        { "label": "Semana 1", "value": 112 },
+        { "label": "Semana 2", "value": 148 },
+        { "label": "Semana 3", "value": 195 },
+        { "label": "Semana 4", "value": 164 }
+      ],
+      "summary": 619
+    },
+    "LOANS_RATE_LAST_30_DAYS": {
+      "entity": "LOANS",
+      "metric": "RATE",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "DOUGHNUT",
+      "points": [
+        { "label": "Devuelto a Tiempo", "value": 78.5 },
+        { "label": "En Préstamo Activo", "value": 16.7 },
+        { "label": "Atrasado / En Mora", "value": 4.8 }
+      ],
+      "summary": 100
+    },
+    "ALERTS_COUNT_LAST_30_DAYS": {
+      "entity": "ALERTS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Redes & Cisco", "value": 4 },
+        { "label": "Electrónica & Soldadura", "value": 8 },
+        { "label": "Cables & Conectores", "value": 14 },
+        { "label": "Herramientas de Precisión", "value": 3 }
+      ],
+      "summary": 29
+    },
+    "SUPPLIES_TOTAL_SEMESTER_CURRENT": {
+      "entity": "SUPPLIES",
+      "metric": "TOTAL",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Ing. en Informática", "value": 340 },
+        { "label": "Ciberseguridad", "value": 290 },
+        { "label": "Telecomunicaciones", "value": 410 },
+        { "label": "Analista Programador", "value": 180 }
+      ],
+      "summary": 1220
+    },
+    "EQUIPMENT_COUNT_SEMESTER_CURRENT": {
+      "entity": "EQUIPMENT",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Router Cisco 4321", "value": 84 },
+        { "label": "Switch Catalyst 2960", "value": 72 },
+        { "label": "Multímetro Digital Fluke", "value": 65 },
+        { "label": "Osciloscopio Digital Rigol", "value": 48 },
+        { "label": "Kit Arduino Mega IoT", "value": 42 }
+      ],
+      "summary": 311
+    },
+    "TEACHERS_COUNT_SEMESTER_CURRENT": {
+      "entity": "TEACHERS",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "POLAR_AREA",
+      "points": [
+        { "label": "Redes de Datos II", "value": 42 },
+        { "label": "Seguridad Ofensiva", "value": 35 },
+        { "label": "IoT y Microcontroladores", "value": 29 },
+        { "label": "Infraestructura Cloud", "value": 24 },
+        { "label": "Taller de Hardware", "value": 18 }
+      ],
+      "summary": 148
+    },
+    "EQUIPMENT_COUNT_YEAR_TO_DATE": {
+      "entity": "EQUIPMENT",
+      "metric": "COUNT",
+      "timeRange": "YEAR_TO_DATE",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Módulos SFP Fibra", "value": 38 },
+        { "label": "Pach Panels Cat6", "value": 26 },
+        { "label": "Cables Consola DB9", "value": 45 },
+        { "label": "Fuentes Poder Regulables", "value": 19 }
+      ],
+      "summary": 128
+    },
+    "MAINTENANCE_COUNT_LAST_30_DAYS": {
+      "entity": "MAINTENANCE",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "LINE",
+      "points": [
+        { "label": "Semana 1", "value": 3 },
+        { "label": "Semana 2", "value": 7 },
+        { "label": "Semana 3", "value": 4 },
+        { "label": "Semana 4", "value": 2 }
+      ],
+      "summary": 16
+    },
+    "SUPPLIES_RATE_SEMESTER_CURRENT": {
+      "entity": "SUPPLIES",
+      "metric": "RATE",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Estaño p/ Soldar 60/40", "value": 85.0 },
+        { "label": "Conectores RJ45 Cat6", "value": 92.4 },
+        { "label": "Cable UTP Bobina", "value": 74.0 },
+        { "label": "Termocontraíble", "value": 46.2 }
+      ],
+      "summary": 74.4
+    }
+  }
+}

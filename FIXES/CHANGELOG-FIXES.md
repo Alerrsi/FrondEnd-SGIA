@@ -106,3 +106,38 @@
 - **Verificación:**
   - 30 archivos de prueba pasados, 137 tests aprobados (100% éxito).
   - Verificación de tipos aprobada con cero errores en Turborepo.
+
+---
+
+## FIX-007: Implementación de Dashboards Analíticos (REQ-14) con Mock Data Contextual y Chart.js
+
+- **Fecha:** 2026-10-12
+- **Módulo:** Dashboards, Analítica y Métricas (`apps/web`) — [REQ-14]
+- **Archivos Modificados / Creados:**
+  - [`apps/web/src/features/dashboard/data/mock-metrics.json`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/data/mock-metrics.json)
+  - [`apps/web/src/features/dashboard/types/metrics.ts`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/types/metrics.ts)
+  - [`apps/web/src/features/dashboard/hooks/use-metrics.ts`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/hooks/use-metrics.ts)
+  - [`apps/web/src/features/dashboard/components/metric-strip.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/components/metric-strip.tsx)
+  - [`apps/web/src/features/dashboard/components/dynamic-chart-card.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/components/dynamic-chart-card.tsx)
+  - [`apps/web/src/features/dashboard/components/chart-builder-modal.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/components/chart-builder-modal.tsx)
+  - [`apps/web/src/features/dashboard/pages/dashboard-page.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/pages/dashboard-page.tsx)
+  - [`apps/web/src/features/dashboard/dashboard-page.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/dashboard-page.test.tsx)
+  - [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+- **Requerimientos Implementados:**
+  1. **Generación de Mock Data Contextual (`mock-metrics.json`):** Archivo JSON con datos del pañol TI (Routers Cisco 4321, Switches Catalyst 2960, Multímetros Fluke, kits Arduino/IoT, etc.), respetando el disclaimer de desarrollo previo a la API GraphQL.
+  2. **Cinta Métrica Ejecutiva (`MetricStrip`):** Con 8 indicadores estratégicos compactos (activos disponibles, en préstamo, en taller, de baja, préstamos hoy, tasa de atrasos, alertas críticas y rotación mensual).
+  3. **Visualización con Chart.js y react-chartjs-2:** Integración con estilos zed.dev dual-theme para gráficos de Barras (`Bar`), Líneas (`Line`), Donas (`Doughnut`) y Áreas Polares (`PolarArea`).
+  4. **3 Plantillas Predeterminadas:**
+     - *Plantilla 1:* Operaciones y Movimiento de Pañol.
+     - *Plantilla 2:* Demanda y Desgaste por Carrera.
+     - *Plantilla 3:* Salud del Inventario y Ciclo de Vida.
+  5. **Constructor Dinámico de Gráficos (`ChartBuilderModal`):**
+     - Permite seleccionar Entidad, Métrica/Agregación, Tipo de Gráfico y Rango Temporal.
+     - Validación obligatoria de máximo 5 gráficos por plantilla.
+     - Detección y rechazo de gráficos duplicados idénticos.
+     - Eliminación asistida con confirmación (`ConfirmDialog`).
+     - Persistencia en `localStorage`.
+  6. **Notación `[p]` de Parcial:** Se actualizaron las tareas en `REQ-14-DASHBOARDS-ANALITICA.md` con la marca `[p]` indicando su estado simulado con mock data hasta la conexión del backend GraphQL.
+- **Verificación:**
+  - 31 archivos de prueba pasados, 140 tests aprobados en Vitest (100%).
+  - `pnpm typecheck` validado en los 5 paquetes con 0 errores.

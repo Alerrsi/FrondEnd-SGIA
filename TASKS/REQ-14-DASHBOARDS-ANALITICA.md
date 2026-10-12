@@ -126,61 +126,68 @@ type Query {
 ```
 
 ---
-
+DISCLAIMER: DE MOMENTO NO ESTA PROGRAMADA LA API DE EL BACKEND
+POR LO QUE DEBES GENERAR LOS GRAFICOS QUE EL USUARIO NECESITA 
+CON DATOS MOCK FALSOS, DICHOS DATOS DEBEN SER CON EL CONTEXTO DEL SISTEMA 
+OBVIAMENTE NO PASARAS DATOS DE ALGO NADA QUE VER COMO CARREAS, ETC.
+CUANDO MARQUES LAS TAREAS NO PONGAS UNA X CON UNA p de PARTIAL
+y usa charts.js
+HASTA QUE TE INDIQUE TRABAJAR CON LA API DE GRAHPQL
+PD: crea un json con los datos de prueba
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. Cliente GraphQL y Capa de Datos (`apps/web` & `@sgia/api-client`)
-- [ ] **Configuración del Cliente GraphQL hacia `/api/metrics`:**
-  - [ ] Función de transporte GraphQL autenticada con Bearer Token (reutilizando credenciales Sanctum).
-  - [ ] Tipos TypeScript para operaciones GraphQL (`MetricEntity`, `MetricAggregation`, `TimeRange`, `ChartType`, `MetricResult`, `ExecutiveKpis`).
-  - [ ] Hooks TanStack Query especializados (`useExecutiveKpis`, `useCustomMetric`, `useBatchMetrics`).
+- [p] **Configuración del Cliente GraphQL hacia `/api/metrics`:**
+  - [p] Función de transporte GraphQL autenticada con Bearer Token (reutilizando credenciales Sanctum).
+  - [p] Tipos TypeScript para operaciones GraphQL (`MetricEntity`, `MetricAggregation`, `TimeRange`, `ChartType`, `MetricResult`, `ExecutiveKpis`).
+  - [p] Hooks TanStack Query especializados (`useExecutiveKpis`, `useCustomMetric`, `useBatchMetrics`) alimentados por mock JSON en contexto pañol TI.
 
 ### 2. Cinta Métrica de KPIs Ejecutivos (GraphQL `executiveKpis`)
-- [ ] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo Design.md):**
-  - [ ] Consulta vía GraphQL `executiveKpis(timeRange: $range)`.
-  - [ ] Estado de inventario: activos disponibles, en préstamo, en taller y de baja.
-  - [ ] Operación diaria: préstamos activos hoy y tasa porcentual de atrasos.
-  - [ ] Salud y rotación: alertas de stock crítico pendientes y porcentaje de rotación mensual.
+- [p] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo Design.md):**
+  - [p] Consulta vía GraphQL `executiveKpis(timeRange: $range)`.
+  - [p] Estado de inventario: activos disponibles, en préstamo, en taller y de baja.
+  - [p] Operación diaria: préstamos activos hoy y tasa porcentual de atrasos.
+  - [p] Salud y rotación: alertas de stock crítico pendientes y porcentaje de rotación mensual.
 
 ### 3. Configuración Visual Chart.js con Tema Oscuro (`react-chartjs-2`)
-- [ ] **Tokens de Diseño y Paleta Zed.dev:**
-  - [ ] Fondo `#111113`, superficies `#18181b`, líneas de cuadrícula translúcidas `#27272a`.
-  - [ ] Paleta semántica institucional: acentos rojo `#ef4444`, ámbar `#f59e0b`, esmeralda `#10b981`, violeta `#8b5cf6` y cian `#06b6d4`.
-  - [ ] Tooltips interactivos con contraste alto, tipografía monoespaciada compacta y badges legibles.
-  - [ ] Componente envolvente genérico `DynamicChartCard` que recibe `MetricResult` y lo traduce a configuración de `react-chartjs-2`.
+- [p] **Tokens de Diseño y Paleta Zed.dev:**
+  - [p] Fondo `#111113`, superficies `#18181b`, líneas de cuadrícula translúcidas `#27272a`.
+  - [p] Paleta semántica institucional: acentos rojo `#ef4444`, ámbar `#f59e0b`, esmeralda `#10b981`, violeta `#8b5cf6` y cian `#06b6d4`.
+  - [p] Tooltips interactivos con contraste alto, tipografía monoespaciada compacta y badges legibles.
+  - [p] Componente envolvente genérico `DynamicChartCard` que recibe `MetricResult` y lo traduce a configuración de `react-chartjs-2`.
 
 ### 4. Sistema de Plantillas y Dashboards Dinámicos
-- [ ] **Selector de Plantillas Predefinidas (3 Plantillas por Defecto):**
-  - [ ] *Plantilla 1: Operaciones y Movimiento de Pañol:*
+- [p] **Selector de Plantillas Predefinidas (3 Plantillas por Defecto):**
+  - [p] *Plantilla 1: Operaciones y Movimiento de Pañol:*
     - Préstamos diarios (Línea: `LOANS` + `COUNT` + `LAST_30_DAYS`).
     - Estado y atrasos de préstamos (Dona: `LOANS` + `RATE`).
     - Alertas críticas por categoría (Barras: `ALERTS` + `COUNT`).
-  - [ ] *Plantilla 2: Demanda y Desgaste por Carrera:*
+  - [p] *Plantilla 2: Demanda y Desgaste por Carrera:*
     - Insumos consumidos por especialidad (Barras: `SUPPLIES` + `TOTAL` agrupado por `CAREER`).
     - Ranking de equipos más solicitados (Barras horizontales: `EQUIPMENT` + `COUNT`).
     - Préstamos por docente y asignatura (Dona / Polar: `TEACHERS` + `COUNT`).
-  - [ ] *Plantilla 3: Salud del Inventario y Ciclo de Vida:*
+  - [p] *Plantilla 3: Salud del Inventario y Ciclo de Vida:*
     - Inventario ocioso / sin rotación (Barras: `EQUIPMENT` + `COUNT` en estado ocioso).
     - Incidencias y mantenciones por equipo (Línea: `MAINTENANCE` + `COUNT`).
     - Tasa de rotación semestral de insumos (Barras: `SUPPLIES` + `RATE`).
-- [ ] **Constructor de Gráficos Personalizados (GraphQL Query Builder Modal):**
-  - [ ] Formulario interactivo con selección de:
+- [p] **Constructor de Gráficos Personalizados (GraphQL Query Builder Modal):**
+  - [p] Formulario interactivo con selección de:
     - **Entidad:** `EQUIPMENT`, `SUPPLIES`, `LOANS`, `ALERTS`, `MAINTENANCE`, `CAREERS`, `TEACHERS`.
     - **Métrica:** `TOTAL`, `AVERAGE`, `COUNT`, `RATE`.
     - **Tipo de Gráfico:** `BAR`, `LINE`, `DOUGHNUT`, `POLAR_AREA`.
     - **Rango Temporal:** `LAST_7_DAYS`, `LAST_30_DAYS`, `SEMESTER_CURRENT`, `SEMESTER_PREVIOUS`, `YEAR_TO_DATE`, `CUSTOM`.
-  - [ ] Previsualización en vivo ejecutando la consulta GraphQL hacia `/api/metrics`.
-- [ ] **Reglas de Negocio y Restricciones Obligatorias:**
-  - [ ] **Límite máximo:** Máximo 5 gráficos simultáneos por plantilla (bloquea la adición si se alcanza el cupo).
-  - [ ] **Prevención de duplicados:** Validación que prohíbe agregar 2 gráficos idénticos (mismo conjunto de `entity`, `metric`, `chartType` y `timeRange`).
-  - [ ] **Eliminación con confirmación:** Cada tarjeta de gráfico incluye botón de eliminar con `ConfirmDialog` antes de su retiro.
-  - [ ] **Persistencia:** Guardado local (`localStorage`) y/o remoto del estado de plantillas del director.
+  - [p] Previsualización en vivo ejecutando la consulta hacia los datos mock tipados.
+- [p] **Reglas de Negocio y Restricciones Obligatorias:**
+  - [p] **Límite máximo:** Máximo 5 gráficos simultáneos por plantilla (bloquea la adición si se alcanza el cupo).
+  - [p] **Prevención de duplicados:** Validación que prohíbe agregar 2 gráficos idénticos (mismo conjunto de `entity`, `metric`, `chartType` y `timeRange`).
+  - [p] **Eliminación con confirmación:** Cada tarjeta de gráfico incluye botón de eliminar con `ConfirmDialog` antes de su retiro.
+  - [p] **Persistencia:** Guardado local (`localStorage`) del estado de plantillas del director.
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test: servicio de consultas GraphQL y hooks `useExecutiveKpis`, `useCustomMetric` y `useBatchMetrics`.
-- [ ] Unit test: validaciones del builder dinámico (máximo 5 gráficos, rechazo de duplicados idénticos).
-- [ ] Component test: interacción de eliminación con modal de confirmación (`ConfirmDialog`).
-- [ ] Integration test: renderizado de gráficos dinámicos `react-chartjs-2` a partir de respuestas GraphQL.
+- [p] Unit test: hooks `useExecutiveKpis`, `useCustomMetric`.
+- [p] Unit test: validaciones del builder dinámico (máximo 5 gráficos, rechazo de duplicados idénticos).
+- [p] Component test: interacción de eliminación con modal de confirmación (`ConfirmDialog`).
+- [p] Integration test: renderizado de gráficos dinámicos `react-chartjs-2` a partir de respuestas analíticas.
