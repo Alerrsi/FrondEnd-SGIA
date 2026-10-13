@@ -79,7 +79,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
 
     // Abrir paleta lateral
-    const paletteBtn = screen.getByRole('button', { name: /Paleta de Formas/i });
+    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
     await user.click(paletteBtn);
 
     // Se muestran las 4 formas genéricas
@@ -215,7 +215,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     expect(parsed[0].groupBy).toBe('location');
   });
 
-  it('permite reordenar gráficos arrastrando de una posición a otra', async () => {
+  it('permite reordenar gráficos arrastrando de una posición a otra en DropZones', async () => {
     const user = userEvent.setup();
     renderWithClient(<DashboardPage />);
 
@@ -232,6 +232,43 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     });
 
     // Las tarjetas deben seguir siendo 3
+    const cards = screen.getAllByTestId(/^chart-card-/);
+    expect(cards.length).toBe(3);
+  });
+
+  it('permite cambiar de lugar gráficos arrastrando directamente una tarjeta sobre otra', async () => {
+    const user = userEvent.setup();
+    renderWithClient(<DashboardPage />);
+
+    // Entrar en modo edición
+    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+
+    const card0 = screen.getByTestId('chart-card-0');
+    const card2 = screen.getByTestId('chart-card-2');
+
+    // Drag start en card 2
+    fireEvent.dragStart(card2, {
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: 'move',
+      },
+    });
+
+    // Drag over card 0
+    fireEvent.dragOver(card0, {
+      dataTransfer: { dropEffect: 'move' },
+    });
+    expect(card0.textContent).toContain('Soltar para mover a posición #1');
+
+    // Drop card 2 directly onto card 0
+    fireEvent.drop(card0, {
+      dataTransfer: {
+        getData: () =>
+          JSON.stringify({ type: 'REORDER', sourceIndex: 2 }),
+      },
+    });
+
+    // El número de gráficos sigue siendo 3 y las posiciones se intercambian
     const cards = screen.getAllByTestId(/^chart-card-/);
     expect(cards.length).toBe(3);
   });

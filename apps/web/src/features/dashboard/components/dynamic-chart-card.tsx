@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,11 +14,11 @@ import {
   Filler,
 } from 'chart.js';
 import { Bar, Line, Doughnut, PolarArea } from 'react-chartjs-2';
-import { Trash2, GripVertical } from 'lucide-react';
+import { Trash2, GripVertical, ArrowLeftRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCustomMetric } from '../hooks/use-metrics';
-import type { MetricQueryInput } from '../types/metrics';
+import type { DragItemPayload, MetricQueryInput } from '../types/metrics';
 import { useTheme } from '@/contexts/theme-context';
 
 ChartJS.register(
@@ -42,6 +42,7 @@ interface DynamicChartCardProps {
   onDelete?: () => void;
   onDragStart?: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
   onDragEnd?: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDropPayload?: (targetIndex: number, payload: DragItemPayload) => void;
 }
 
 export function DynamicChartCard({
@@ -51,10 +52,12 @@ export function DynamicChartCard({
   onDelete,
   onDragStart,
   onDragEnd,
+  onDropPayload,
 }: DynamicChartCardProps) {
   const { data, isLoading } = useCustomMetric(input);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
+  const [isDragOverCard, setIsDragOverCard] = useState(false);
 
   const chartData = useMemo(() => {
     if (!data?.points) {
@@ -177,25 +180,68 @@ export function DynamicChartCard({
     onDragStart?.(e, index);
   };
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!isEditMode) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!isDragOverCard) setIsDragOverCard(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOverCard(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!isEditMode) return;
+    e.preventDefault();
+    setIsDragOverCard(false);
+
+    try {
+      const dataStr = e.dataTransfer.getData('text/plain');
+      if (!dataStr) return;
+      const parsed = JSON.parse(dataStr) as DragItemPayload;
+      onDropPayload?.(index, parsed);
+    } catch {
+      // Ignorar errores de parsing
+    }
+  };
+
   return (
     <Card
       draggable={isEditMode}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       data-testid={`chart-card-${index}`}
-      className={`flex flex-col p-4 shadow-xs transition-all ${
+      className={`flex flex-col p-4 shadow-xs transition-all relative ${
         isEditMode
-          ? 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-red-500/70'
+          ? isDragOverCard
+            ? 'cursor-grabbing border-2 border-red-500 ring-2 ring-red-500/30 bg-red-50/20 dark:bg-red-950/30 scale-[1.01]'
+            : 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-red-500/70'
           : ''
       }`}
     >
+      {/* Overlay feedback cuando se arrastra un gráfico encima para intercambiar lugar */}
+      {isEditMode && isDragOverCard && (
+        <div className="absolute inset-0 bg-red-500/10 dark:bg-red-500/20 rounded-lg flex items-center justify-center z-10 pointer-events-none backdrop-blur-2xs">
+          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-red-400 dark:border-red-600 px-3 py-1.5 rounded-md shadow-md text-red-600 dark:text-red-400 font-mono text-xs font-semibold">
+            <ArrowLeftRight className="h-4 w-4 animate-pulse" />
+            <span>Soltar para mover a posición #{index + 1}</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-3">
         <div className="flex items-center gap-2">
           {isEditMode && (
             <div
               className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing"
-              title="Arrastrar para reordenar"
-              aria-label="Arrastrar para reordenar"
+              title="Arrastrar para mover o cambiar de lugar"
+              aria-label="Arrastrar para mover o cambiar de lugar"
               data-testid={`drag-handle-${index}`}
             >
               <GripVertical className="h-4 w-4" />

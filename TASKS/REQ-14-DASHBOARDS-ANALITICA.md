@@ -215,9 +215,10 @@ PD: crea un json con los datos de prueba
 - [p] **Validación y Persistencia del Layout Editado:**
   - [p] Validación automática anti-duplicados (rechazo si ya existe un gráfico con idéntica entidad, cálculo, tipo y agrupación).
   - [p] Botón "Guardar y Salir" que consolida el nuevo orden y composición en `localStorage` y notifica el éxito mediante toast de Sileo.
+- [p] Reemplazar botón de añadir gráfico sin modo de edición: solo se pueden añadir mediante "Abrir catálogo de widgets".
+- [p] En modo edición los gráficos pueden cambiar de lugar si es que se arrastran.
 
 ---
-
 
 
 ## 🧪 Pruebas Requeridas

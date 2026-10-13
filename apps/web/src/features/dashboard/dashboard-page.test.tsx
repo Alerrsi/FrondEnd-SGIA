@@ -60,13 +60,21 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
     expect(screen.getByText('Ranking de Equipos Más Solicitados')).toBeDefined();
   });
 
-  it('opens chart builder modal and limits charts up to 5', async () => {
+  it('reemplaza botón de nuevo gráfico: solo se pueden añadir mediante Abrir Catálogo de Widgets', async () => {
     const user = userEvent.setup();
     renderWithClient(<DashboardPage />);
 
-    const newChartBtn = screen.getByRole('button', { name: /Nuevo Gráfico/i });
-    await user.click(newChartBtn);
+    // El botón tradicional "Nuevo Gráfico" ya no existe
+    expect(screen.queryByRole('button', { name: /Nuevo Gráfico/i })).toBeNull();
 
-    expect(screen.getByText(/Constructor de Gráficos Analíticos/i)).toBeDefined();
+    // El acceso a agregar gráficos es mediante "Abrir Catálogo de Widgets"
+    const catalogBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    expect(catalogBtn).toBeDefined();
+
+    await user.click(catalogBtn);
+
+    // Al hacer clic, se activa el modo edición y se abre el catálogo lateral
+    expect(screen.getByText(/Formas Gráficas Genéricas/i)).toBeDefined();
+    expect(screen.getByTestId('edit-mode-banner')).toBeDefined();
   });
 });
