@@ -127,6 +127,251 @@
         { "label": "Termocontraíble", "value": 46.2 }
       ],
       "summary": 74.4
+    },
+    "LOANS_COUNT_status": {
+      "entity": "LOANS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "DOUGHNUT",
+      "points": [
+        { "label": "Devuelto a Tiempo", "value": 385 },
+        { "label": "En Préstamo Activo", "value": 128 },
+        { "label": "Atrasado / En Mora", "value": 24 },
+        { "label": "En Renovación", "value": 18 }
+      ],
+      "summary": 555
+    },
+    "LOANS_COUNT_teacher": {
+      "entity": "LOANS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Prof. Carlos Muñoz", "value": 82 },
+        { "label": "Prof. Andrea Soto", "value": 67 },
+        { "label": "Prof. Felipe Rivas", "value": 54 },
+        { "label": "Prof. Marcela Vega", "value": 49 },
+        { "label": "Prof. Roberto Díaz", "value": 38 }
+      ],
+      "summary": 290
+    },
+    "LOANS_COUNT_subject": {
+      "entity": "LOANS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Redes de Datos II", "value": 95 },
+        { "label": "Seguridad Ofensiva", "value": 78 },
+        { "label": "IoT y Microcontroladores", "value": 64 },
+        { "label": "Taller de Hardware", "value": 52 }
+      ],
+      "summary": 289
+    },
+    "LOANS_COUNT_item_type": {
+      "entity": "LOANS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "DOUGHNUT",
+      "points": [
+        { "label": "Equipamiento de Redes", "value": 198 },
+        { "label": "Instrumentación de Medida", "value": 142 },
+        { "label": "Kits y Sensores", "value": 115 },
+        { "label": "Herramientas de Mano", "value": 85 }
+      ],
+      "summary": 540
+    },
+    "SUPPLIES_TOTAL_career": {
+      "entity": "SUPPLIES",
+      "metric": "TOTAL",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Telecomunicaciones", "value": 420 },
+        { "label": "Ing. en Informática", "value": 350 },
+        { "label": "Ciberseguridad", "value": 310 },
+        { "label": "Analista Programador", "value": 190 }
+      ],
+      "summary": 1270
+    },
+    "SUPPLIES_TOTAL_category": {
+      "entity": "SUPPLIES",
+      "metric": "TOTAL",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Conectores RJ45 / Keystone", "value": 520 },
+        { "label": "Estaño y Químicos", "value": 380 },
+        { "label": "Cables y Patch Cords", "value": 450 },
+        { "label": "Termocontraíbles y Amarres", "value": 290 }
+      ],
+      "summary": 1640
+    },
+    "SUPPLIES_TOTAL_turnover": {
+      "entity": "SUPPLIES",
+      "metric": "TOTAL",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "DOUGHNUT",
+      "points": [
+        { "label": "Alta Rotación (>70%)", "value": 680 },
+        { "label": "Media Rotación (40-70%)", "value": 410 },
+        { "label": "Baja Rotación (<40%)", "value": 190 }
+      ],
+      "summary": 1280
+    },
+    "EQUIPMENT_COUNT_hardware_category": {
+      "entity": "EQUIPMENT",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Routers Cisco Serie 4000", "value": 48 },
+        { "label": "Switches Catalyst 2960", "value": 56 },
+        { "label": "Multímetros Digitales Fluke", "value": 32 },
+        { "label": "Osciloscopios Rigol DS1054Z", "value": 24 },
+        { "label": "Estaciones de Soldar Hakko", "value": 28 }
+      ],
+      "summary": 188
+    },
+    "EQUIPMENT_COUNT_location": {
+      "entity": "EQUIPMENT",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Rack Principal Pañol", "value": 92 },
+        { "label": "Gavetero Central A", "value": 145 },
+        { "label": "Taller Electrónica L-102", "value": 68 },
+        { "label": "Armario Ciberseguridad L-204", "value": 42 }
+      ],
+      "summary": 347
+    },
+    "EQUIPMENT_COUNT_physical_condition": {
+      "entity": "EQUIPMENT",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "DOUGHNUT",
+      "points": [
+        { "label": "Operativo Óptimo", "value": 780 },
+        { "label": "Operativo con Desgaste", "value": 62 },
+        { "label": "Requiere Calibración", "value": 23 },
+        { "label": "En Taller / Reparación", "value": 14 }
+      ],
+      "summary": 879
+    },
+    "ALERTS_COUNT_criticality": {
+      "entity": "ALERTS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Crítica (<10% Stock)", "value": 7 },
+        { "label": "Media (<25% Stock)", "value": 15 },
+        { "label": "Preventiva (<50% Stock)", "value": 22 }
+      ],
+      "summary": 44
+    },
+    "ALERTS_COUNT_specialty_area": {
+      "entity": "ALERTS",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Redes y Conectividad", "value": 14 },
+        { "label": "Electrónica y Microcontroladores", "value": 18 },
+        { "label": "Herramientas de Precisión", "value": 12 }
+      ],
+      "summary": 44
+    },
+    "MAINTENANCE_COUNT_equipment": {
+      "entity": "MAINTENANCE",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Switch Cisco 2960-X", "value": 5 },
+        { "label": "Generador Señales Rigol", "value": 4 },
+        { "label": "Estación Soldar Baku", "value": 3 },
+        { "label": "Tester Red Fluke MicroScanner", "value": 2 }
+      ],
+      "summary": 14
+    },
+    "MAINTENANCE_COUNT_failure_type": {
+      "entity": "MAINTENANCE",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "DOUGHNUT",
+      "points": [
+        { "label": "Puerto RJ45 / SFP Dañado", "value": 6 },
+        { "label": "Falla de Fuente de Poder", "value": 4 },
+        { "label": "Descalibración de Instrumento", "value": 3 },
+        { "label": "Cable o Conector Roto", "value": 5 }
+      ],
+      "summary": 18
+    },
+    "MAINTENANCE_COUNT_workshop": {
+      "entity": "MAINTENANCE",
+      "metric": "COUNT",
+      "timeRange": "LAST_30_DAYS",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Taller Interno Pañol TI", "value": 12 },
+        { "label": "Servicio Técnico Autorizado", "value": 4 },
+        { "label": "Garantía Fabricante", "value": 2 }
+      ],
+      "summary": 18
+    },
+    "CAREERS_COUNT_specialty": {
+      "entity": "CAREERS",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Ingeniería en Ciberseguridad", "value": 164 },
+        { "label": "Ingeniería en Telecomunicaciones", "value": 188 },
+        { "label": "Ingeniería en Informática", "value": 210 },
+        { "label": "Analista Programador", "value": 120 }
+      ],
+      "summary": 682
+    },
+    "CAREERS_COUNT_level": {
+      "entity": "CAREERS",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Semestre 1 - 2 (Inicial)", "value": 140 },
+        { "label": "Semestre 3 - 4 (Intermedio)", "value": 215 },
+        { "label": "Semestre 5 - 6 (Avanzado)", "value": 245 },
+        { "label": "Semestre 7 - 8 (Especialidad)", "value": 180 }
+      ],
+      "summary": 780
+    },
+    "TEACHERS_COUNT_subject": {
+      "entity": "TEACHERS",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "POLAR_AREA",
+      "points": [
+        { "label": "Redes de Datos II", "value": 42 },
+        { "label": "Seguridad Ofensiva", "value": 35 },
+        { "label": "IoT y Microcontroladores", "value": 29 },
+        { "label": "Infraestructura Cloud", "value": 24 },
+        { "label": "Taller de Hardware", "value": 18 }
+      ],
+      "summary": 148
+    },
+    "TEACHERS_COUNT_department": {
+      "entity": "TEACHERS",
+      "metric": "COUNT",
+      "timeRange": "SEMESTER_CURRENT",
+      "chartType": "BAR",
+      "points": [
+        { "label": "Área Redes & Ciberseguridad", "value": 68 },
+        { "label": "Área Software & Datos", "value": 45 },
+        { "label": "Área Hardware & IoT", "value": 52 }
+      ],
+      "summary": 165
     }
   }
 }

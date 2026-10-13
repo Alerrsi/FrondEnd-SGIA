@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
-import type {
-  ChartType,
-  MetricAggregation,
-  MetricEntity,
-  MetricQueryInput,
-  TimeRange,
+import {
+  type ChartType,
+  type MetricAggregation,
+  type MetricEntity,
+  type MetricQueryInput,
+  type TimeRange,
+  GROUP_BY_OPTIONS_BY_ENTITY,
+  generateDefaultChartTitle,
 } from '../types/metrics';
 
 interface ChartBuilderModalProps {
@@ -29,6 +31,14 @@ export function ChartBuilderModal({
   const [metric, setMetric] = useState<MetricAggregation>('COUNT');
   const [chartType, setChartType] = useState<ChartType>('BAR');
   const [timeRange, setTimeRange] = useState<TimeRange>('LAST_30_DAYS');
+  const [groupBy, setGroupBy] = useState<string>('hardware_category');
+
+  useEffect(() => {
+    const validGroupOptions = GROUP_BY_OPTIONS_BY_ENTITY[entity] || [];
+    if (validGroupOptions.length > 0) {
+      setGroupBy(validGroupOptions[0]?.value || '');
+    }
+  }, [entity]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +55,8 @@ export function ChartBuilderModal({
         c.entity === entity &&
         c.metric === metric &&
         c.chartType === chartType &&
-        c.timeRange === timeRange,
+        c.timeRange === timeRange &&
+        (c.groupBy === groupBy || (!c.groupBy && !groupBy)),
     );
 
     if (isDuplicate) {
@@ -55,12 +66,16 @@ export function ChartBuilderModal({
       return;
     }
 
+    const finalTitle =
+      title.trim() || generateDefaultChartTitle(entity, metric, groupBy);
+
     const newChart: MetricQueryInput = {
-      title: title.trim() || `${entity} - ${metric}`,
+      title: finalTitle,
       entity,
       metric,
       chartType,
       timeRange,
+      groupBy,
     };
 
     onAddChart(newChart);
@@ -68,6 +83,8 @@ export function ChartBuilderModal({
     setTitle('');
     onClose();
   };
+
+  const groupOptions = GROUP_BY_OPTIONS_BY_ENTITY[entity] || [];
 
   return (
     <Dialog
@@ -79,10 +96,11 @@ export function ChartBuilderModal({
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2 text-xs font-mono">
         {/* Título opcional */}
         <div className="flex flex-col gap-1">
-          <label className="font-semibold text-zinc-700 dark:text-zinc-300">
+          <label htmlFor="builder-title" className="font-semibold text-zinc-700 dark:text-zinc-300">
             Título Personalizado del Gráfico
           </label>
           <input
+            id="builder-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -94,10 +112,11 @@ export function ChartBuilderModal({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Entidad */}
           <div className="flex flex-col gap-1">
-            <label className="font-semibold text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="builder-entity" className="font-semibold text-zinc-700 dark:text-zinc-300">
               Entidad de Datos (Entity) *
             </label>
             <select
+              id="builder-entity"
               value={entity}
               onChange={(e) => setEntity(e.target.value as MetricEntity)}
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
@@ -114,10 +133,11 @@ export function ChartBuilderModal({
 
           {/* Métrica / Agregación */}
           <div className="flex flex-col gap-1">
-            <label className="font-semibold text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="builder-metric" className="font-semibold text-zinc-700 dark:text-zinc-300">
               Cálculo / Agregación *
             </label>
             <select
+              id="builder-metric"
               value={metric}
               onChange={(e) => setMetric(e.target.value as MetricAggregation)}
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
@@ -131,10 +151,11 @@ export function ChartBuilderModal({
 
           {/* Tipo de Gráfico */}
           <div className="flex flex-col gap-1">
-            <label className="font-semibold text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="builder-chart-type" className="font-semibold text-zinc-700 dark:text-zinc-300">
               Tipo de Visualización *
             </label>
             <select
+              id="builder-chart-type"
               value={chartType}
               onChange={(e) => setChartType(e.target.value as ChartType)}
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
@@ -146,12 +167,32 @@ export function ChartBuilderModal({
             </select>
           </div>
 
-          {/* Rango Temporal */}
+          {/* Agrupar por */}
           <div className="flex flex-col gap-1">
-            <label className="font-semibold text-zinc-700 dark:text-zinc-300">
+            <label htmlFor="builder-group-by" className="font-semibold text-zinc-700 dark:text-zinc-300">
+              Agrupar por (Group By) *
+            </label>
+            <select
+              id="builder-group-by"
+              value={groupBy}
+              onChange={(e) => setGroupBy(e.target.value)}
+              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
+            >
+              {groupOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Rango Temporal */}
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <label htmlFor="builder-time-range" className="font-semibold text-zinc-700 dark:text-zinc-300">
               Ventana Temporal *
             </label>
             <select
+              id="builder-time-range"
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value as TimeRange)}
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"

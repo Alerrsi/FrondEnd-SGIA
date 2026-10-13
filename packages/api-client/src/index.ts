@@ -213,6 +213,18 @@ export {
   useLoansByTeacher,
 } from './hooks/equipments';
 
+export {
+  executeGraphQL,
+  fetchExecutiveKpis,
+  fetchCustomMetric,
+} from './services/metrics';
+export {
+  metricKeys,
+  useExecutiveKpis as useApiClientExecutiveKpis,
+  useCustomMetric as useApiClientCustomMetric,
+  useBatchMetrics as useApiClientBatchMetrics,
+} from './hooks/metrics';
+
 export { createSgiaQueryClient } from './query-client';
 
 export * as authApi from './services/auth';
@@ -221,3 +233,4 @@ export * as loansApi from './services/loans';
 export * as quotationsApi from './services/quotations';
 export * as usersApi from './services/users';
 export * as equipmentsApi from './services/equipments';
+export * as metricsApi from './services/metrics';

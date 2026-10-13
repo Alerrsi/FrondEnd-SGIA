@@ -183,7 +183,42 @@ PD: crea un json con los datos de prueba
   - [p] **Eliminación con confirmación:** Cada tarjeta de gráfico incluye botón de eliminar con `ConfirmDialog` antes de su retiro.
   - [p] **Persistencia:** Guardado local (`localStorage`) del estado de plantillas del director.
 
+### 5. Interacción con los Gráficos y Composición Drag & Drop (Modo Edición)
+- [p] **Modo de Edición del Dashboard (Edit Mode Toggle):**
+  - [p] Interruptor/botón en la barra de controles para alternar entre "Modo Visualización" y "Modo Edición del Dashboard".
+  - [p] En Modo Visualización: bloqueo de reordenamiento y arrastre para garantizar ergonomía de lectura y tooltips sin saltos accidentales.
+  - [p] En Modo Edición: habilitación de zonas de soltado (Drop Zones), indicadores de arrastre (drag handles) en gráficos existentes y despliegue del panel lateral de widgets.
+- [p] **Panel Lateral de Formas Gráficas Genéricas (Widget Palette Drawer):**
+  - [p] Panel lateral retráctil (Drawer / Sheet zed.dev) con catálogo de formas genéricas disponibles:
+    - **Gráfico de Barras (BAR):** Miniatura representativa para comparativas discretas o rankings categóricos.
+    - **Gráfico de Torta / Dona (DOUGHNUT):** Miniatura para proporciones relativas y cuotas porcentuales del pañol.
+    - **Gráfico de Series de Tiempo / Línea (LINE):** Miniatura para tendencias cronológicas continuas (semanal/mensual).
+    - **Gráfico de Área Polar (POLAR_AREA):** Miniatura para frecuencias multivariables y ciclos de asignaturas.
+  - [p] Cada elemento del lote es arrastrable (`draggable={true}`) con cursor `grab`/`grabbing` y ghost preview de arrastre con badges descriptivos.
+- [p] **Zonas de Soltado y Lienzo Interactivo (Drag & Drop Canvas):**
+  - [p] Ranuras de soltado visuales (`DropZone`) entre tarjetas y al final del grid de hasta 5 elementos, con estilo dashed tenue y realce reactivo (`dragover`).
+  - [p] Prevención y feedback visual si se intenta arrastrar habiendo alcanzado el cupo máximo de 5 gráficos (desactivación del drag con tooltip explicativo).
+  - [p] Posibilidad de reordenar la cuadrícula arrastrando gráficos ya existentes hacia nuevas posiciones en modo edición.
+- [p] **Asistente Contextual Post-Drop (Configurador Inmediato al Soltar):**
+  - [p] Al soltar una forma gráfica en una DropZone, apertura inmediata del modal/asistente de configuración analítica:
+    - **Tipo de Gráfico preasignado:** Bloqueado y determinado automáticamente por la forma arrastrada (ej. si arrastró "Series de tiempo", el tipo es estrictamente `LINE`).
+    - **Entidad:** Selección de dominio del pañol (`EQUIPMENT`, `SUPPLIES`, `LOANS`, `ALERTS`, `MAINTENANCE`, `CAREERS`, `TEACHERS`).
+    - **Métrica / Agregación:** Selección de cálculo matemático (`COUNT`, `TOTAL`, `AVERAGE`, `RATE`, etc.).
+    - **Agrupar por (Group By Contextual y Coherente):** Menú dinámico dependiente de la entidad elegida con relaciones semánticas válidas:
+      - Para `LOANS`: agrupar por Estado de Préstamo, Docente solicitante, Asignatura o Tipo de Insumo.
+      - Para `SUPPLIES`: agrupar por Especialidad/Carrera, Categoría técnica o Rotación.
+      - Para `EQUIPMENT`: agrupar por Categoría de Hardware, Sala/Ubicación o Estado físico.
+      - Para `ALERTS`: agrupar por Criticidad o Especialidad/Área.
+      - Para `MAINTENANCE`: agrupar por Equipo, Tipo de Falla o Taller.
+    - **Título personalizado:** Pre-generación automática de título coherente con opción de sobreescritura manual por el director.
+  - [p] Cancelación limpia: si el usuario cancela el asistente modal, la acción de drop se revierte sin añadir elementos vacíos ni romper el layout.
+- [p] **Validación y Persistencia del Layout Editado:**
+  - [p] Validación automática anti-duplicados (rechazo si ya existe un gráfico con idéntica entidad, cálculo, tipo y agrupación).
+  - [p] Botón "Guardar y Salir" que consolida el nuevo orden y composición en `localStorage` y notifica el éxito mediante toast de Sileo.
+
 ---
+
+
 
 ## 🧪 Pruebas Requeridas
 
@@ -191,3 +226,7 @@ PD: crea un json con los datos de prueba
 - [p] Unit test: validaciones del builder dinámico (máximo 5 gráficos, rechazo de duplicados idénticos).
 - [p] Component test: interacción de eliminación con modal de confirmación (`ConfirmDialog`).
 - [p] Integration test: renderizado de gráficos dinámicos `react-chartjs-2` a partir de respuestas analíticas.
+- [p] Unit & Component test: activación del modo de edición y bloqueo/desbloqueo de controles de arrastre.
+- [p] Component test: arrastre de forma gráfica genérica desde el panel lateral y activación de DropZone.
+- [p] Integration test: apertura del asistente post-drop con tipo de gráfico bloqueado al arrastrado y selectores dependientes de `groupBy`.
+- [p] Integration test: cancelación y confirmación del drop, verificación de persistencia en `localStorage`.

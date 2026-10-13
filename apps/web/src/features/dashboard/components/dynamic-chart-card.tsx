@@ -14,7 +14,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Bar, Line, Doughnut, PolarArea } from 'react-chartjs-2';
-import { Trash2 } from 'lucide-react';
+import { Trash2, GripVertical } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCustomMetric } from '../hooks/use-metrics';
@@ -37,10 +37,21 @@ ChartJS.register(
 
 interface DynamicChartCardProps {
   input: MetricQueryInput;
+  index?: number;
+  isEditMode?: boolean;
   onDelete?: () => void;
+  onDragStart?: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
+  onDragEnd?: (e: React.DragEvent<HTMLDivElement>) => void;
 }
 
-export function DynamicChartCard({ input, onDelete }: DynamicChartCardProps) {
+export function DynamicChartCard({
+  input,
+  index = 0,
+  isEditMode = false,
+  onDelete,
+  onDragStart,
+  onDragEnd,
+}: DynamicChartCardProps) {
   const { data, isLoading } = useCustomMetric(input);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
@@ -156,16 +167,57 @@ export function DynamicChartCard({ input, onDelete }: DynamicChartCardProps) {
     };
   }, [isDark, input.chartType]);
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!isEditMode) return;
+    e.dataTransfer.setData(
+      'text/plain',
+      JSON.stringify({ type: 'REORDER', sourceIndex: index }),
+    );
+    e.dataTransfer.effectAllowed = 'move';
+    onDragStart?.(e, index);
+  };
+
   return (
-    <Card className="flex flex-col p-4 shadow-xs">
+    <Card
+      draggable={isEditMode}
+      onDragStart={handleDragStart}
+      onDragEnd={onDragEnd}
+      data-testid={`chart-card-${index}`}
+      className={`flex flex-col p-4 shadow-xs transition-all ${
+        isEditMode
+          ? 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-red-500/70'
+          : ''
+      }`}
+    >
       <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-3">
-        <div className="flex flex-col">
-          <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
-            {input.title || `${input.entity} (${input.metric})`}
-          </span>
-          <span className="font-mono text-[10px] text-zinc-400">
-            {input.timeRange} · {input.chartType}
-          </span>
+        <div className="flex items-center gap-2">
+          {isEditMode && (
+            <div
+              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing"
+              title="Arrastrar para reordenar"
+              aria-label="Arrastrar para reordenar"
+              data-testid={`drag-handle-${index}`}
+            >
+              <GripVertical className="h-4 w-4" />
+            </div>
+          )}
+
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                {input.title || `${input.entity} (${input.metric})`}
+              </span>
+              {isEditMode && (
+                <span className="font-mono text-[9px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-1 py-0.2 rounded border border-zinc-200 dark:border-zinc-700">
+                  #{index + 1}
+                </span>
+              )}
+            </div>
+            <span className="font-mono text-[10px] text-zinc-400">
+              {input.timeRange} · {input.chartType}
+              {input.groupBy ? ` · ${input.groupBy}` : ''}
+            </span>
+          </div>
         </div>
 
         {onDelete && (

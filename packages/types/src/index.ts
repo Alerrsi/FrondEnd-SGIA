@@ -84,4 +84,16 @@ export type {
   TeacherLoanRanking,
 } from './equipo';
 
+export type {
+  MetricEntity,
+  MetricAggregation,
+  TimeRange,
+  ChartType,
+  MetricQueryInput,
+  MetricDataPoint,
+  MetricResult,
+  ExecutiveKpis,
+  DashboardTemplate,
+} from './metric';
+
 export type { PaginatedResponse, ApiError, AuthResponse } from './pagination';
