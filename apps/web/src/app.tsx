@@ -29,7 +29,7 @@ function RootRoute() {
   const { user } = useAuth();
   if (!user) return null;
 
-  if (user.rol === 'DIR-01') {
+  if (user.rol === 'DIR-01' || user.rol === 'AD-01') {
     return <DashboardPage />;
   }
 
@@ -63,6 +63,15 @@ function AppContent() {
             }
           >
             <Route path="/" element={<RootRoute />} />
+
+            <Route
+              path="/dashboard"
+              element={
+                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                  <DashboardPage />
+                </RequireRole>
+              }
+            />
 
             <Route
               path="/inventario"
@@ -198,11 +207,11 @@ function AppContent() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider delayDuration={200}>
+      <TooltipProvider>
+        <AuthProvider>
           <AppContent />
-        </TooltipProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </TooltipProvider>
     </ThemeProvider>
   );
 }

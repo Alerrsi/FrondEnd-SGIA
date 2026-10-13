@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
@@ -109,6 +109,100 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
       dataTransfer: { dropEffect: 'copy' },
     });
     expect(dropZone0.textContent).toContain('Soltar aquí para ubicar en posición #1');
+  });
+
+  it('cuando el usuario agarre un gráfico y salga del menú de widgets, quita el menú y enfoca las zonas de inserción', async () => {
+    vi.useFakeTimers();
+    renderWithClient(<DashboardPage />);
+
+    // Abrir catálogo de widgets
+    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    fireEvent.click(paletteBtn);
+
+    // El catálogo está desplegado
+    expect(screen.getByText(/Formas Gráficas Genéricas/i)).toBeDefined();
+
+    // El usuario agarra el widget de línea (dragStart)
+    const lineWidget = screen.getByTestId('widget-item-line');
+    fireEvent.dragStart(lineWidget, {
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: 'copy',
+      },
+    });
+
+    // Avanzar temporizador para que el drawer se cierre inmediatamente al iniciar el arrastre
+    act(() => {
+      vi.advanceTimersByTime(10);
+    });
+
+    // Se enfoca la zona donde se pueden poner los widgets
+    expect(screen.getByTestId('drag-focus-banner')).toBeDefined();
+    const dropZone0 = screen.getByTestId('drop-zone-0');
+    expect(dropZone0.getAttribute('data-focused')).toBe('true');
+
+    vi.useRealTimers();
+  });
+
+  it('al estar en la zona de enfoque arrastrando el gráfico fuera de widgets, se visualiza el movimiento del gráfico con el mouse hasta soltarlo y no se quita si no se ha soltado', async () => {
+    renderWithClient(<DashboardPage />);
+
+    // Abrir catálogo de widgets
+    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    fireEvent.click(paletteBtn);
+
+    // El usuario inicia arrastre de un gráfico BAR
+    const barWidget = screen.getByTestId('widget-item-bar');
+    fireEvent.dragStart(barWidget, {
+      clientX: 200,
+      clientY: 300,
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: 'copy',
+      },
+    });
+
+    // Se activan las zonas de enfoque
+    expect(screen.getByTestId('drag-focus-banner')).toBeDefined();
+    const dropZone0 = screen.getByTestId('drop-zone-0');
+    expect(dropZone0.getAttribute('data-focused')).toBe('true');
+
+    // Visualización del gráfico en movimiento que sigue el mouse (DragGhostPreview)
+    const ghost = screen.getByTestId('drag-ghost-preview');
+    expect(ghost).toBeDefined();
+    expect(ghost.getAttribute('data-chart-type')).toBe('BAR');
+    expect(screen.getByTestId('drag-ghost-status').textContent).toContain('Arrastrando gráfico...');
+
+    // Simular movimiento continuo del mouse por la zona de enfoque
+    fireEvent.dragOver(window, {
+      clientX: 450,
+      clientY: 550,
+    });
+
+    // El gráfico NO debe quitarse si el usuario no ha soltado
+    expect(screen.getByTestId('drag-ghost-preview')).toBeDefined();
+    expect(ghost.style.left).not.toBeNull();
+    expect(ghost.style.top).not.toBeNull();
+
+    // Otro movimiento de mouse
+    fireEvent.dragOver(window, {
+      clientX: 600,
+      clientY: 350,
+    });
+    expect(screen.getByTestId('drag-ghost-preview')).toBeDefined();
+    expect(ghost.style.left).not.toBeNull();
+    expect(ghost.style.top).not.toBeNull();
+
+    // Finalmente, el usuario suelta en dropZone0
+    fireEvent.drop(dropZone0, {
+      dataTransfer: {
+        getData: () => JSON.stringify({ type: 'NEW_WIDGET', chartType: 'BAR' }),
+      },
+    });
+
+    // Al soltar, se retira el preview de arrastre y se abre el asistente de configuración
+    expect(screen.queryByTestId('drag-ghost-preview')).toBeNull();
+    expect(screen.getByText(/Asistente de Configuración Analítica/i)).toBeDefined();
   });
 
   it('abre el asistente post-drop con tipo de gráfico bloqueado y selectores dependientes de groupBy', async () => {
@@ -271,6 +365,136 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     // El número de gráficos sigue siendo 3 y las posiciones se intercambian
     const cards = screen.getAllByTestId(/^chart-card-/);
     expect(cards.length).toBe(3);
+  });
+
+  it('muestra la zona de soltado destacada que resalta de las demás y al soltar añade y fija el gráfico de inmediato', async () => {
+    renderWithClient(<DashboardPage />);
+
+    // Abrir catálogo de widgets
+    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    fireEvent.click(paletteBtn);
+
+    // Iniciar arrastre de widget DOUGHNUT
+    const doughnutWidget = screen.getByTestId('widget-item-doughnut');
+    fireEvent.dragStart(doughnutWidget, {
+      clientX: 200,
+      clientY: 300,
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: 'copy',
+      },
+    });
+
+    // Se muestra la zona destacada de soltado con alta visibilidad
+    const prominentDropZone = screen.getByTestId('prominent-drop-zone');
+    expect(prominentDropZone).toBeDefined();
+    expect(prominentDropZone.textContent).toContain('Zona Principal de Soltado Destacada');
+
+    // Hover sobre la zona destacada
+    fireEvent.dragOver(prominentDropZone, {
+      dataTransfer: { dropEffect: 'copy' },
+    });
+    expect(prominentDropZone.textContent).toContain('¡Suelta aquí para añadir de inmediato a tu Plantilla Personalizada!');
+
+    // Soltar dentro de la zona destacada
+    fireEvent.drop(prominentDropZone, {
+      dataTransfer: {
+        getData: () => JSON.stringify({ type: 'NEW_WIDGET', chartType: 'DOUGHNUT' }),
+      },
+    });
+
+    // El gráfico queda añadido en el lienzo (de 3 pasa a 4)
+    const cardsAfter = screen.getAllByTestId(/^chart-card-/);
+    expect(cardsAfter.length).toBe(4);
+
+    // Y el gráfico añadido se visualiza inmediatamente
+    expect(screen.getByText('Distribución de Alertas por Criticidad')).toBeDefined();
+  });
+
+  it('si el usuario está dentro de una plantilla por defecto, al añadir un gráfico crea automáticamente una plantilla personalizada con ese gráfico añadido', async () => {
+    const user = userEvent.setup();
+    renderWithClient(<DashboardPage />);
+
+    // Seleccionar la plantilla por defecto "Demanda y Desgaste por Carrera"
+    const demandaBtn = screen.getByRole('button', { name: /Demanda y Desgaste por Carrera/i });
+    await user.click(demandaBtn);
+    expect(screen.getByText('Insumos Consumidos por Especialidad')).toBeDefined();
+
+    // Abrir catálogo y arrastrar un widget LINE
+    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    await user.click(paletteBtn);
+
+    const lineWidget = screen.getByTestId('widget-item-line');
+    fireEvent.dragStart(lineWidget, {
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: 'copy',
+      },
+    });
+
+    const prominentDropZone = screen.getByTestId('prominent-drop-zone');
+    fireEvent.drop(prominentDropZone, {
+      dataTransfer: {
+        getData: () => JSON.stringify({ type: 'NEW_WIDGET', chartType: 'LINE' }),
+      },
+    });
+
+    // Se crea la Plantilla Personalizada activa con 4 gráficos
+    const customTemplateBtn = screen.getByRole('button', { name: /Plantilla Personalizada \(4\)/i });
+    expect(customTemplateBtn).toBeDefined();
+
+    // Los gráficos de la plantilla por defecto anterior se preservan junto al nuevo gráfico
+    expect(screen.getByText('Insumos Consumidos por Especialidad')).toBeDefined();
+    expect(screen.getByText('Ranking de Equipos Más Solicitados')).toBeDefined();
+    expect(screen.getByText('Tendencia de Préstamos Semanales')).toBeDefined();
+
+    // El usuario puede volver a la plantilla por defecto sin perder su plantilla personalizada
+    const operacionesBtn = screen.getByRole('button', { name: /Operaciones y Movimiento de Pañol/i });
+    await user.click(operacionesBtn);
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
+
+    // Y puede regresar a la Plantilla Personalizada con sus 4 gráficos intactos
+    const returnToCustomBtn = screen.getByRole('button', { name: /Plantilla Personalizada/i });
+    await user.click(returnToCustomBtn);
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
+    expect(screen.getByText('Tendencia de Préstamos Semanales')).toBeDefined();
+  });
+
+  it('permite añadir gráficos directamente desde el catálogo con botón Añadir y los guarda en localStorage dentro de la plantilla', async () => {
+    const user = userEvent.setup();
+    renderWithClient(<DashboardPage />);
+
+    // Conteo inicial: 3 gráficos
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
+
+    // Abrir catálogo de widgets
+    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    await user.click(paletteBtn);
+
+    // Añadir directamente Gráfico de Barras usando el botón Añadir
+    const barWidget = screen.getByTestId('widget-item-bar');
+    const addBarBtn = within(barWidget).getByRole('button', { name: /Añadir/i });
+    await user.click(addBarBtn);
+
+    // Ahora hay 4 gráficos y se creó Plantilla Personalizada
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
+    expect(screen.getByRole('button', { name: /Plantilla Personalizada/i })).toBeDefined();
+
+    // Comprobar persistencia en localStorage
+    const savedTemplates = JSON.parse(localStorage.getItem('sgia_dashboard_templates_v2') || '[]');
+    const customTmpl = savedTemplates.find((t: any) => t.id === 'template-custom');
+    expect(customTmpl).toBeDefined();
+    expect(customTmpl.charts.length).toBe(4);
+
+    // Conmutar a otra plantilla por defecto (Demanda y Desgaste por Carrera)
+    const demandaBtn = screen.getByRole('button', { name: /Demanda y Desgaste por Carrera/i });
+    await user.click(demandaBtn);
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
+
+    // Regresar a Plantilla Personalizada y verificar que los 4 gráficos siguen guardados intactos
+    const returnCustomBtn = screen.getByRole('button', { name: /Plantilla Personalizada/i });
+    await user.click(returnCustomBtn);
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
   });
 
   it('resuelve métricas con mock context-aware de Pañol TI', () => {

@@ -141,6 +141,7 @@ NOTA: Para cada paleta alternativa dentro de las opciones se deben mantener como
   - Sileo para notificaciones y alertas de escaneo.
   - Lucide React para iconografía consistente.
   - Chart.js / react-chartjs-2 para analítica FU-06.
+  - Tesseract para OCR y escanero de documentos
 - **Mobile (`apps/mobile`):**
   - React Native con Expo.
   - NativeWind (Tailwind CSS nativo).

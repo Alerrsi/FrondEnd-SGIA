@@ -31,6 +31,7 @@ Digitalizar la incorporación y mantenimiento del catálogo de productos y activ
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. Flujo de Extracción OCR de Factura (`REQ-03`)
+  - Se DEBE UTILIZAR TECNOLOGIA tesseract para js
 - [x] **Componente de Carga de Factura:**
   - [x] Zona de arrastrar y soltar (Drag and drop) con soporte para PDF, JPG y PNG (máx. 10MB).
   - [x] Barra de progreso de carga y estado de procesamiento OCR.

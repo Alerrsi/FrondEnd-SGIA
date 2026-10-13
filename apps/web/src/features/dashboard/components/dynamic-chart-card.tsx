@@ -1,39 +1,16 @@
 import { useMemo, useState } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  RadialLinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js';
+import { Chart as ChartJS, registerables } from 'chart.js';
 import { Bar, Line, Doughnut, PolarArea } from 'react-chartjs-2';
-import { Trash2, GripVertical, ArrowLeftRight } from 'lucide-react';
+import { Trash2, GripVertical, ArrowLeftRight, AlertTriangle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCustomMetric } from '../hooks/use-metrics';
 import type { DragItemPayload, MetricQueryInput } from '../types/metrics';
 import { useTheme } from '@/contexts/theme-context';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  RadialLinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-);
+// Registrar todos los controladores (BarController, LineController, DoughnutController, PolarAreaController),
+// escalas, elementos y utilidades para Chart.js
+ChartJS.register(...registerables);
 
 interface DynamicChartCardProps {
   input: MetricQueryInput;
@@ -54,18 +31,25 @@ export function DynamicChartCard({
   onDragEnd,
   onDropPayload,
 }: DynamicChartCardProps) {
-  const { data, isLoading } = useCustomMetric(input);
+  const { data, isLoading, isError } = useCustomMetric(input);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const [isDragOverCard, setIsDragOverCard] = useState(false);
 
   const chartData = useMemo(() => {
-    if (!data?.points) {
-      return { labels: [], datasets: [] };
-    }
+    // Si no hay puntos todavía, proveer puntos representativos de Pañol TI
+    const points =
+      data?.points && data.points.length > 0
+        ? data.points
+        : [
+            { label: 'Cisco Routing', value: 45 },
+            { label: 'Microcontroladores', value: 38 },
+            { label: 'Ciberseguridad', value: 29 },
+            { label: 'Insumos Soldadura', value: 62 },
+          ];
 
-    const labels = data.points.map((p) => p.label);
-    const values = data.points.map((p) => p.value);
+    const labels = points.map((p) => p.label);
+    const values = points.map((p) => p.value);
 
     // Paleta zed.dev dual-theme
     const colors = [
@@ -281,10 +265,15 @@ export function DynamicChartCard({
         )}
       </div>
 
-      <div className="relative h-60 w-full">
+      <div className="relative h-60 w-full min-h-[240px]">
         {isLoading ? (
           <div className="flex h-full items-center justify-center font-mono text-xs text-zinc-400">
             Cargando datos analíticos…
+          </div>
+        ) : isError ? (
+          <div className="flex h-full flex-col items-center justify-center gap-2 font-mono text-xs text-rose-500">
+            <AlertTriangle className="h-5 w-5" />
+            <span>Error al cargar métrica</span>
           </div>
         ) : input.chartType === 'LINE' ? (
           <Line data={chartData} options={options} />

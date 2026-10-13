@@ -6,7 +6,9 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
-import { BarChart3, PieChart, TrendingUp, Compass, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BarChart3, PieChart, TrendingUp, Compass, AlertCircle, Plus } from 'lucide-react';
+import { cn } from '@/lib/cn';
 import type { ChartType } from '../types/metrics';
 
 interface WidgetShapeItem {
@@ -57,12 +59,20 @@ interface WidgetPaletteDrawerProps {
   open: boolean;
   onClose: () => void;
   currentChartsCount: number;
+  onWidgetDragStart?: (chartType: ChartType, clientPos?: { x: number; y: number }) => void;
+  onWidgetDragEnd?: () => void;
+  onSelectWidget?: (chartType: ChartType) => void;
+  isDraggingWidget?: boolean;
 }
 
 export function WidgetPaletteDrawer({
   open,
   onClose,
   currentChartsCount,
+  onWidgetDragStart,
+  onWidgetDragEnd,
+  onSelectWidget,
+  isDraggingWidget = false,
 }: WidgetPaletteDrawerProps) {
   const isMaxCapacity = currentChartsCount >= 5;
 
@@ -76,14 +86,32 @@ export function WidgetPaletteDrawer({
       'text/plain',
       JSON.stringify({ type: 'NEW_WIDGET', chartType }),
     );
+    try {
+      e.dataTransfer.setData(
+        'application/json',
+        JSON.stringify({ type: 'NEW_WIDGET', chartType }),
+      );
+    } catch {
+      // Ignorar navegadores antiguos
+    }
     e.dataTransfer.effectAllowed = 'copy';
+
+    // Reportamos las coordenadas iniciales del cursor al iniciar el arrastre
+    onWidgetDragStart?.(chartType, { x: e.clientX, y: e.clientY });
   };
 
   return (
-    <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+    <Sheet open={open} modal={false} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 flex flex-col p-6 overflow-y-auto"
+        overlayClassName={cn(
+          'pointer-events-none transition-opacity duration-300',
+          isDraggingWidget ? 'opacity-0' : 'opacity-100 bg-black/20 backdrop-blur-2xs',
+        )}
+        className={cn(
+          'w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 flex flex-col p-6 overflow-y-auto transition-transform duration-300',
+          isDraggingWidget && 'translate-x-[92%] opacity-30 shadow-none',
+        )}
       >
         <SheetHeader className="pb-3 border-b border-zinc-200 dark:border-zinc-800">
           <div className="flex items-center gap-2 text-xs font-mono text-red-600 dark:text-red-500 font-semibold uppercase tracking-wider">
@@ -95,7 +123,7 @@ export function WidgetPaletteDrawer({
             Formas Gráficas Genéricas
           </SheetTitle>
           <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
-            Arrastra una forma hacia el lienzo para abrir el asistente de configuración analítica.
+            Arrastra una forma hacia el lienzo o pulsa «Añadir» para integrarla y fijarla directamente en tu plantilla activa.
           </SheetDescription>
         </SheetHeader>
 
@@ -105,7 +133,7 @@ export function WidgetPaletteDrawer({
             className="flex items-center gap-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-mono"
           >
             <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-            <span>Límite de 5 gráficos alcanzado. Retira un gráfico del panel para arrastrar nuevos.</span>
+            <span>Límite de 5 gráficos alcanzado. Retira un gráfico del panel para añadir nuevos.</span>
           </div>
         )}
 
@@ -118,6 +146,12 @@ export function WidgetPaletteDrawer({
                 data-testid={`widget-item-${shape.type.toLowerCase()}`}
                 draggable={!isMaxCapacity}
                 onDragStart={(e) => handleDragStart(e, shape.type)}
+                onDragEnd={() => onWidgetDragEnd?.()}
+                onClick={() => {
+                  if (!isMaxCapacity && onSelectWidget) {
+                    onSelectWidget(shape.type);
+                  }
+                }}
                 className={`flex flex-col gap-2 rounded-lg border p-3.5 transition-all select-none ${
                   isMaxCapacity
                     ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 opacity-60 cursor-not-allowed'
@@ -130,67 +164,52 @@ export function WidgetPaletteDrawer({
                       <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                      <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                         {shape.title}
-                      </h4>
-                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
+                      </div>
+                      <div className="text-xs text-zinc-500 dark:text-zinc-400">
                         {shape.subtitle}
-                      </p>
+                      </div>
                     </div>
                   </div>
-
-                  <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider">
-                    {isMaxCapacity ? 'Bloqueado' : 'Arrastrable'}
-                  </span>
+                  <Badge tone="neutral" className="text-[10px] font-mono">
+                    {shape.type}
+                  </Badge>
                 </div>
 
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   {shape.description}
                 </p>
 
-                {/* Previsualización miniatura vectorizada */}
-                <div className="h-14 w-full rounded bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-center p-2 overflow-hidden">
-                  {shape.type === 'BAR' && (
-                    <div className="flex items-end gap-2 h-full w-3/4 justify-center">
-                      <div className="w-3 bg-red-500/80 rounded-t h-[40%]" />
-                      <div className="w-3 bg-red-500/80 rounded-t h-[75%]" />
-                      <div className="w-3 bg-red-500/80 rounded-t h-[55%]" />
-                      <div className="w-3 bg-red-500/80 rounded-t h-[90%]" />
-                    </div>
-                  )}
-                  {shape.type === 'DOUGHNUT' && (
-                    <div className="h-10 w-10 rounded-full border-4 border-red-500 border-t-cyan-500 border-r-amber-500 border-b-emerald-500" />
-                  )}
-                  {shape.type === 'LINE' && (
-                    <svg className="h-8 w-4/5 text-red-500" viewBox="0 0 100 30" fill="none">
-                      <path
-                        d="M 5 22 Q 25 5, 50 18 T 95 8"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        fill="none"
-                      />
-                    </svg>
-                  )}
-                  {shape.type === 'POLAR_AREA' && (
-                    <div className="relative h-10 w-10 flex items-center justify-center">
-                      <div className="absolute h-10 w-10 rounded-full border border-dashed border-zinc-400/40" />
-                      <div className="absolute h-8 w-8 rounded-full bg-red-500/30" />
-                      <div className="absolute h-5 w-5 rounded-full bg-cyan-500/50" />
-                    </div>
-                  )}
-                </div>
-
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {shape.badges.map((b) => (
-                    <Badge
+                    <span
                       key={b}
-                      tone="neutral"
-                      mono
-                      className="text-[10px] py-0 px-1.5 bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
+                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/60"
                     >
                       {b}
-                    </Badge>
+                    </span>
                   ))}
+                </div>
+
+                <div className="flex items-center justify-between gap-2 mt-1 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+                  <span className="text-[10px] text-zinc-400 font-mono">
+                    Arrastra o pulsa Añadir
+                  </span>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={isMaxCapacity}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectWidget?.(shape.type);
+                    }}
+                    className="h-6 text-[11px] px-2.5 gap-1 border-red-300 dark:border-red-900/60 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 font-medium"
+                  >
+                    <Plus className="h-3 w-3" />
+                    <span>Añadir</span>
+                  </Button>
                 </div>
               </div>
             );

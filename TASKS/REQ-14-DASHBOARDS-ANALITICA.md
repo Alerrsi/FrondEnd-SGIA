@@ -217,9 +217,12 @@ PD: crea un json con los datos de prueba
   - [p] Botón "Guardar y Salir" que consolida el nuevo orden y composición en `localStorage` y notifica el éxito mediante toast de Sileo.
 - [p] Reemplazar botón de añadir gráfico sin modo de edición: solo se pueden añadir mediante "Abrir catálogo de widgets".
 - [p] En modo edición los gráficos pueden cambiar de lugar si es que se arrastran.
+- [p] Cuando el usuario agarre un gráfico y salga del menú de widgets se debe enfocar la zona donde se pueden poner los widgets quitando el menú de widgets.
+- [p] Al estar en la zona de enfoque arrastrando el grafico fuera de la zona de widgets aun se debe visualizar el movimiento del grafico con el mouse hasta soltarlo en la zona, si el usuario no ha soltado no quites el grafico, OBLIGATORIO
+- [p] Cuando se salga arrastrando el grafico se debe mostrar una zona clara donde soltar el grafico que resalte de las demas, una vez la suelte dentro el grafico se tiene que añadir y quedar
+- [p] Si el usuario esta dentro de una plantilla por defecto al añadir un grafico se debe crear una personalizada con ese grafico añadido
 
 ---
-
 
 ## 🧪 Pruebas Requeridas
 
