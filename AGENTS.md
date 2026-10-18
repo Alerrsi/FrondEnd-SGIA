@@ -82,7 +82,9 @@ El diseño del SGIA evita plantillas SaaS genéricas y adopta un **enfoque indus
 - **Paneles y Tarjetas:** `bg-white`, bordes finos de 1px (`border-slate-200/80`), elevación mínima (`shadow-xs` / `shadow-sm`) y bordes rectos o sutiles. Prohibidas tarjetas infladas o sombras difusas pesadas.
 - **Divisores:** `border-slate-100` o `divide-slate-100`.
 
-### 2. Paleta Semántica y Acento Institucional
+### 2. Paleta Semántica, Acento Institucional y Paletas Alternativas
+
+#### A. Paleta Principal Institucional INACAP
 - **Rojo Institucional (`#d9232a` / `bg-red-600` / `hover:bg-red-700`):**
   - **Uso deliberado y exclusivo:** CTA principal culminante (ej. *"Dar de alta producto"*, *"Confirmar préstamo"*) o paradas críticas.
   - **Prohibido:** fondos grandes, cabeceras completas o barras laterales rojas para evitar sobreestimulación visual.
@@ -97,7 +99,65 @@ El diseño del SGIA evita plantillas SaaS genéricas y adopta un **enfoque indus
   - **En Mantención / Revisión:** `bg-amber-50 text-amber-700 border-amber-200/60`.
   - **De Baja / Retirado:** `bg-slate-100 text-slate-600 border-slate-200`.
 
-NOTA: Para cada paleta alternativa dentro de las opciones se deben mantener como colores de fondo ya sea el blanco y negro(Este puede variar un poco segun paleta elegida) los colores deben verse reflejados en los tonos de botones letras especificas como estados de entidades entre otros sin perder la estetica principal y enfoque de la paleta princiapal
+> **NOTA DE PRESERVACIÓN DE FONDOS (Regla de Oro para todas las paletas alternativas):**  
+> Para cada paleta alternativa dentro de las opciones se deben mantener como colores de fondo ya sea el blanco y negro (este puede variar un poco según paleta elegida). Los colores deben verse reflejados en los tonos de botones, letras específicas como estados de entidades entre otros sin perder la estética principal y enfoque de la paleta principal. Prohibido teñir canvas completos o tarjetas con fondos saturados.
+
+#### B. Paleta B1: Industrial Steel & Aerospace Azure (SKILLS/Design.md)
+- Esquema de alta concentración técnica con tonos `Smart Blue` (`#0466c8`), `Steel Azure` (`#0353a4`), `Regal Navy` (`#023e7d`), `Twilight Indigo` (`#33415c`), `Blue Slate` (`#5c677d`) y `Cool Steel` (`#979dac`).
+
+#### C. Paletas Alternativas Tipo Pastel (Soft Technical Pastels)
+Paletas suaves de baja saturación diseñadas para reducir la fatiga ocular en jornadas extensas de mesón y pañol, manteniendo siempre la rigurosidad industrial, la legibilidad y los fondos neutros intactos:
+
+1. **Sage Mint (Menta Salvia Suave) — `palette-sage`:**
+   - **Concepto:** Tono sereno, orgánico y técnico, óptimo para gestión de laboratorio y ergonomía de lectura sostenida.
+   - **Color de Acento / Botones:** Salvia suave (`#62929e` / hover `#4d7c8a` en light; `#83c5be` en dark). Botón secundario con borde sutil `#b2c9ab`.
+   - **Letras y Tipografía Específica:** Links activos y titulares de módulo en Verde Salvia Profundo (`#284b40` en light; `#a7c4bc` en dark). Micro-etiqueta de Sede en Salvia técnico.
+   - **Estados de Entidades:**
+     - *Disponible / Activo:* `bg-emerald-50/70 text-emerald-800 border-emerald-200/70` (dot `#52b788`).
+     - *En Préstamo:* `bg-teal-50/80 text-teal-800 border-teal-200/70` (dot `#62929e`).
+     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#e07a5f`).
+     - *Mantención:* `bg-amber-50/70 text-amber-800 border-amber-200/60` (dot `#d4a373`).
+
+2. **Lavender Mist (Lavanda / Violeta Empolvado) — `palette-lavender`:**
+   - **Concepto:** Atmósfera analítica, reflexiva y de alta concentración para módulos de auditoría y reportes.
+   - **Color de Acento / Botones:** Lavanda Iris (`#7c69d8` / hover `#6855c4` en light; `#9b87f5` en dark). Anillo de foco (`ring`) en `#c8b6ff`.
+   - **Letras y Tipografía Específica:** Enlaces activos y micro-etiqueta institucional en Púrpura Pizarra (`#3c3169` en light; `#c8b6ff` en dark).
+   - **Estados de Entidades:**
+     - *Disponible / Activo:* `bg-violet-50/80 text-violet-800 border-violet-200/70` (dot `#8f80c7`).
+     - *En Préstamo:* `bg-indigo-50/80 text-indigo-800 border-indigo-200/70` (dot `#6b7280`).
+     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#f472b6`).
+     - *Mantención:* `bg-purple-50/70 text-purple-800 border-purple-200/60` (dot `#c084fc`).
+
+3. **Nordic Ice (Celeste Glaciar / Sky Pastel) — `palette-nordic`:**
+   - **Concepto:** Estilo telecomunicaciones e infraestructura de redes, frío, ultra limpio y preciso.
+   - **Color de Acento / Botones:** Hielo Glaciar (`#4682b4` / hover `#36648b` en light; `#64b5f6` en dark). Bordes de acción en `#a2d2ff`.
+   - **Letras y Tipografía Específica:** Navegación activa y texto de Sede en Azul Ártico Técnico (`#1d4e89` en light; `#90caf9` en dark).
+   - **Estados de Entidades:**
+     - *Disponible / Activo:* `bg-sky-50/80 text-sky-800 border-sky-200/70` (dot `#38bdf8`).
+     - *En Préstamo:* `bg-cyan-50/80 text-cyan-800 border-cyan-200/70` (dot `#0284c7`).
+     - *Alerta / Stock Crítico:* `bg-red-50/70 text-red-800 border-red-200/60` (dot `#fb7185`).
+     - *Mantención:* `bg-blue-50/80 text-blue-800 border-blue-200/60` (dot `#93c5fd`).
+
+4. **Peach & Sand (Melocotón / Arcilla Suave Pastel) — `palette-peach`:**
+   - **Concepto:** Calidez sutil y visualmente relajada para logística de inventario rápido sin estridencias.
+   - **Color de Acento / Botones:** Terracota Suave (`#d97757` / hover `#be6143` en light; `#f4978e` en dark). Foco suave en `#ffc6a5`.
+   - **Letras y Tipografía Específica:** Identificadores y enlaces activos en Marrón Arcilla (`#6b3a2e` en light; `#f8ad9d` en dark). Sede en Melocotón técnico.
+   - **Estados de Entidades:**
+     - *Disponible / Activo:* `bg-amber-50/80 text-stone-800 border-stone-200/70` (dot `#e07a5f`).
+     - *En Préstamo:* `bg-orange-50/80 text-orange-800 border-orange-200/70` (dot `#f4978e`).
+     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#e63946`).
+     - *Mantención:* `bg-yellow-50/70 text-yellow-800 border-yellow-200/60` (dot `#f6bd60`).
+
+5. **Chamomile Honey (Manzanilla / Ocre Suave Pastel) — `palette-chamomile`:**
+   - **Concepto:** Gama cálida de bajísimo contraste fotópico, diseñada para turnos vespertinos y control de activos bajo luz tenue.
+   - **Color de Acento / Botones:** Ámbar Mate (`#b5832b` / hover `#9c6d1f` en light; `#e2b866` en dark). Bordes en `#f6df9d`.
+   - **Letras y Tipografía Específica:** Indicadores de navegación y texto de Sede en Ocre Mineral (`#5c4015` en light; `#f6df9d` en dark).
+   - **Estados de Entidades:**
+     - *Disponible / Activo:* `bg-amber-50/80 text-amber-900 border-amber-200/70` (dot `#d4a34b`).
+     - *En Préstamo:* `bg-stone-50/80 text-stone-800 border-stone-200/70` (dot `#a8a29e`).
+     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#f87171`).
+     - *Mantención:* `bg-yellow-50/70 text-yellow-800 border-yellow-200/60` (dot `#facc15`).
+
 ### 3. Tipografía Técnica
 - `font-mono`: Obligatorio en identificadores técnicos (SKU, seriales, rotulado Code128, IP/MAC de equipos Cisco, gavetas `Cajon-A2`, RUT y cifras tabulares con `font-variant-numeric: tabular-nums`).
 - `font-sans`: Tipografía de lectura e interfaz (Inter o Geist) para navegación, formularios, descripciones y títulos.
