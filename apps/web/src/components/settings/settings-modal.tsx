@@ -52,6 +52,91 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Cool Steel', hex: '#979dac', role: 'Detalle Técnico' },
     ],
   },
+  {
+    id: 'sage',
+    name: 'Sage Mint (Menta Salvia Suave)',
+    badge: 'Pastel Técnico',
+    description:
+      'Tono sereno, orgánico y técnico de baja fatiga visual, óptimo para gestión de laboratorio y lectura sostenida.',
+    swatches: [
+      { name: 'Salvia Suave', hex: '#62929e', role: 'Acento / Botón' },
+      { name: 'Salvia Profundo', hex: '#4d7c8a', role: 'Hover / Primario' },
+      { name: 'Menta Suave', hex: '#83c5be', role: 'Modo Oscuro' },
+      { name: 'Salvia Bosque', hex: '#284b40', role: 'Texto Activo' },
+      { name: 'Borde Menta', hex: '#b2c9ab', role: 'Borde Técnico' },
+      { name: 'Disponible / Activo', hex: '#52b788', role: 'Óptimo' },
+      { name: 'En Préstamo', hex: '#62929e', role: 'Asignado' },
+      { name: 'Stock Crítico', hex: '#e07a5f', role: 'Alerta' },
+    ],
+  },
+  {
+    id: 'lavender',
+    name: 'Lavender Mist (Lavanda Empolvado)',
+    badge: 'Pastel Analítico',
+    description:
+      'Atmósfera analítica, reflexiva y de alta concentración para módulos de auditoría, trazabilidad y reportes.',
+    swatches: [
+      { name: 'Lavanda Iris', hex: '#7c69d8', role: 'Acento / Botón' },
+      { name: 'Púrpura Pizarra', hex: '#6855c4', role: 'Hover / Primario' },
+      { name: 'Lavanda Suave', hex: '#9b87f5', role: 'Modo Oscuro' },
+      { name: 'Púrpura Profundo', hex: '#3c3169', role: 'Texto Activo' },
+      { name: 'Anillo Foco', hex: '#c8b6ff', role: 'Foco / Borde' },
+      { name: 'Disponible / Activo', hex: '#8f80c7', role: 'Óptimo' },
+      { name: 'En Préstamo', hex: '#6b7280', role: 'Asignado' },
+      { name: 'Stock Crítico', hex: '#f472b6', role: 'Alerta' },
+    ],
+  },
+  {
+    id: 'nordic',
+    name: 'Nordic Ice (Celeste Glaciar)',
+    badge: 'Pastel Redes / Telecom',
+    description:
+      'Estilo telecomunicaciones e infraestructura de redes: frío, ultra limpio, equilibrado y de alta precisión.',
+    swatches: [
+      { name: 'Hielo Glaciar', hex: '#4682b4', role: 'Acento / Botón' },
+      { name: 'Azul Glaciar Fuerte', hex: '#36648b', role: 'Hover / Primario' },
+      { name: 'Hielo Claro', hex: '#64b5f6', role: 'Modo Oscuro' },
+      { name: 'Azul Ártico', hex: '#1d4e89', role: 'Texto Activo' },
+      { name: 'Borde Glaciar', hex: '#a2d2ff', role: 'Borde Técnico' },
+      { name: 'Disponible / Activo', hex: '#38bdf8', role: 'Óptimo' },
+      { name: 'En Préstamo', hex: '#0284c7', role: 'Asignado' },
+      { name: 'Stock Crítico', hex: '#fb7185', role: 'Alerta' },
+    ],
+  },
+  {
+    id: 'peach',
+    name: 'Peach & Sand (Melocotón Pastel)',
+    badge: 'Pastel Cálido',
+    description:
+      'Calidez sutil y visualmente relajada para logística de inventario rápido sin estridencias ni saturación.',
+    swatches: [
+      { name: 'Terracota Suave', hex: '#d97757', role: 'Acento / Botón' },
+      { name: 'Terracota Fuerte', hex: '#be6143', role: 'Hover / Primario' },
+      { name: 'Melocotón Claro', hex: '#f4978e', role: 'Modo Oscuro' },
+      { name: 'Marrón Arcilla', hex: '#6b3a2e', role: 'Texto Activo' },
+      { name: 'Foco Melocotón', hex: '#ffc6a5', role: 'Foco / Borde' },
+      { name: 'Disponible / Activo', hex: '#e07a5f', role: 'Óptimo' },
+      { name: 'En Préstamo', hex: '#f4978e', role: 'Asignado' },
+      { name: 'Stock Crítico', hex: '#e63946', role: 'Alerta' },
+    ],
+  },
+  {
+    id: 'chamomile',
+    name: 'Chamomile Honey (Manzanilla Suave)',
+    badge: 'Pastel Descanso',
+    description:
+      'Gama suave de bajísimo contraste fotópico, diseñada para turnos vespertinos y control de activos bajo luz tenue.',
+    swatches: [
+      { name: 'Ámbar Mate', hex: '#b5832b', role: 'Acento / Botón' },
+      { name: 'Ámbar Profundo', hex: '#9c6d1f', role: 'Hover / Primario' },
+      { name: 'Miel Clara', hex: '#e2b866', role: 'Modo Oscuro' },
+      { name: 'Ocre Mineral', hex: '#5c4015', role: 'Texto Activo' },
+      { name: 'Borde Manzanilla', hex: '#f6df9d', role: 'Borde Técnico' },
+      { name: 'Disponible / Activo', hex: '#d4a34b', role: 'Óptimo' },
+      { name: 'En Préstamo', hex: '#a8a29e', role: 'Asignado' },
+      { name: 'Stock Crítico', hex: '#f87171', role: 'Alerta' },
+    ],
+  },
 ];
 
 const THEME_OPTIONS: Array<{ id: ThemePreference; label: string; icon: typeof Sun }> = [
@@ -69,9 +154,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       onClose={onClose}
       title="Ajustes del Sistema"
       description="Personaliza las preferencias cromáticas y la apariencia visual de la consola SGIA."
-      className="max-w-2xl w-full"
+      className="max-w-3xl w-full max-h-[90vh] flex flex-col"
     >
-      <div className="flex flex-col gap-6 py-2">
+      <div className="flex flex-col gap-6 py-2 overflow-y-auto pr-1 max-h-[calc(90vh-140px)]">
         {/* Apartado 1: Paleta de Colores */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
@@ -82,8 +167,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           </div>
 
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Selecciona la identidad cromática del sistema. Ambas configuraciones cumplen con normas de
-            ergonomía visual para jornadas de alta densidad operativa.
+            Selecciona la identidad cromática del sistema. Todas las configuraciones preservan los fondos neutros
+            y cumplen con normas de ergonomía visual para jornadas de alta densidad operativa.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
@@ -201,12 +286,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             })}
           </div>
         </div>
-      </div>
-
-      <div className="mt-4 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-        <Button variant="outline" size="sm" onClick={onClose}>
-          Cerrar
-        </Button>
       </div>
     </Dialog>
   );

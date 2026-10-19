@@ -25,7 +25,7 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
-  it('renderiza título, sección de paletas y opciones de paleta Principal y B1', () => {
+  it('renderiza título, sección de paletas y opciones de paleta Principal, B1 y pasteles', () => {
     render(
       <TooltipProvider>
         <ThemeProvider>
@@ -46,6 +46,13 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
     // Paleta B1 (Azul Acero & Indigo) de AGENTS.md / Design.md
     expect(screen.getByText('Paleta B1 (Azul Acero & Indigo)')).toBeDefined();
     expect(screen.getByText('Alternativa B1')).toBeDefined();
+
+    // Paletas Pastel añadidas
+    expect(screen.getByText('Sage Mint (Menta Salvia Suave)')).toBeDefined();
+    expect(screen.getByText('Lavender Mist (Lavanda Empolvado)')).toBeDefined();
+    expect(screen.getByText('Nordic Ice (Celeste Glaciar)')).toBeDefined();
+    expect(screen.getByText('Peach & Sand (Melocotón Pastel)')).toBeDefined();
+    expect(screen.getByText('Chamomile Honey (Manzanilla Suave)')).toBeDefined();
 
     // Controles de Modo de Visualización (Claro, Oscuro, Sistema)
     expect(screen.getByRole('button', { name: 'Claro' })).toBeDefined();
@@ -80,6 +87,46 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
 
     expect(document.documentElement.getAttribute('data-palette')).toBe('default');
     expect(localStorage.getItem('sgia-palette')).toBe('default');
+  });
+
+  it('permite seleccionar paletas pastel (Sage Mint, Lavender, Nordic, Peach, Chamomile) y persiste', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TooltipProvider>
+        <ThemeProvider>
+          <SettingsModal open={true} onClose={vi.fn()} />
+        </ThemeProvider>
+      </TooltipProvider>,
+    );
+
+    // Seleccionar Sage Mint
+    const sageOption = screen.getByRole('button', {
+      name: /Seleccionar Sage Mint \(Menta Salvia Suave\)/i,
+    });
+    await user.click(sageOption);
+    expect(document.documentElement.getAttribute('data-palette')).toBe('sage');
+    expect(document.documentElement.classList.contains('palette-sage')).toBe(true);
+    expect(localStorage.getItem('sgia-palette')).toBe('sage');
+
+    // Seleccionar Lavender Mist
+    const lavenderOption = screen.getByRole('button', {
+      name: /Seleccionar Lavender Mist \(Lavanda Empolvado\)/i,
+    });
+    await user.click(lavenderOption);
+    expect(document.documentElement.getAttribute('data-palette')).toBe('lavender');
+    expect(document.documentElement.classList.contains('palette-lavender')).toBe(true);
+    expect(document.documentElement.classList.contains('palette-sage')).toBe(false);
+    expect(localStorage.getItem('sgia-palette')).toBe('lavender');
+
+    // Seleccionar Nordic Ice
+    const nordicOption = screen.getByRole('button', {
+      name: /Seleccionar Nordic Ice \(Celeste Glaciar\)/i,
+    });
+    await user.click(nordicOption);
+    expect(document.documentElement.getAttribute('data-palette')).toBe('nordic');
+    expect(document.documentElement.classList.contains('palette-nordic')).toBe(true);
+    expect(localStorage.getItem('sgia-palette')).toBe('nordic');
   });
 
   it('ejecuta onClose al hacer clic en el botón Cerrar', async () => {

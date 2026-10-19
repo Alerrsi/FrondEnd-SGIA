@@ -10,7 +10,7 @@ import {
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type ResolvedTheme = 'light' | 'dark';
-export type ColorPalette = 'default' | 'b1';
+export type ColorPalette = 'default' | 'b1' | 'sage' | 'lavender' | 'nordic' | 'peach' | 'chamomile';
 
 export interface ThemeContextValue {
   theme: ThemePreference;
@@ -24,6 +24,16 @@ export interface ThemeContextValue {
 
 const STORAGE_KEY = 'sgia-theme';
 const PALETTE_STORAGE_KEY = 'sgia-palette';
+
+export const VALID_PALETTES: ColorPalette[] = [
+  'default',
+  'b1',
+  'sage',
+  'lavender',
+  'nordic',
+  'peach',
+  'chamomile',
+];
 
 const defaultThemeValue: ThemeContextValue = {
   theme: 'system',
@@ -49,7 +59,7 @@ function getInitialPreference(): ThemePreference {
 function getInitialPalette(): ColorPalette {
   if (typeof window === 'undefined') return 'default';
   const saved = localStorage.getItem(PALETTE_STORAGE_KEY) as ColorPalette | null;
-  if (saved === 'default' || saved === 'b1') {
+  if (saved && VALID_PALETTES.includes(saved)) {
     return saved;
   }
   return 'default';
@@ -108,10 +118,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (typeof window === 'undefined') return;
     const root = document.documentElement;
     root.setAttribute('data-palette', palette);
-    if (palette === 'b1') {
-      root.classList.add('palette-b1');
-    } else {
-      root.classList.remove('palette-b1');
+
+    VALID_PALETTES.forEach((p) => {
+      if (p !== 'default') {
+        root.classList.remove(`palette-${p}`);
+      }
+    });
+
+    if (palette !== 'default') {
+      root.classList.add(`palette-${palette}`);
     }
   }, [palette]);
 
