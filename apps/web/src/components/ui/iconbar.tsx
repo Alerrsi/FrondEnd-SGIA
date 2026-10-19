@@ -62,7 +62,7 @@ export function IconNav({
   activeKey,
   onSelect,
   glyph = 18,
-  axis = "row",
+  axis = "column",
   dilate = 100,
   bounce = 50,
   speed = 50,
@@ -189,7 +189,7 @@ export function IconNav({
   return (
     <nav
       ref={trackRef as React.RefObject<HTMLElement>}
-      className={cn("gnav", className)}
+      className={cn("gnav", vertical ? "flex flex-col items-center" : "flex flex-row items-center", className)}
       data-orientation={vertical ? "vertical" : "horizontal"}
       style={vars}
       aria-label="Navegación principal"
@@ -270,15 +270,22 @@ export interface GlassIconBarProps {
 export function GlassIconBar({
   items = DEFAULT_BAR,
   corner = NAV_CORNER,
+  axis = "column",
   className,
   ...props
 }: GlassIconBarProps) {
+  const isVertical = axis === "column";
   return (
     <div
-      className={cn("bar-well", className)}
+      className={cn(
+        "bar-well",
+        isVertical ? "flex flex-col items-center" : "flex flex-row items-center",
+        className,
+      )}
+      data-orientation={isVertical ? "vertical" : "horizontal"}
       style={{ "--gnav-r": `${clamp(corner, 0, 26)}px` } as React.CSSProperties}
     >
-      <IconNav items={items} {...props} />
+      <IconNav items={items} axis={axis} {...props} />
     </div>
   );
 }

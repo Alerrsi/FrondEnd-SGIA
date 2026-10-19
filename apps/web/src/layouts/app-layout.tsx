@@ -185,7 +185,7 @@ export default function AppLayout() {
                   }))}
                   glyph={18}
                   hug={4}
-                  className="w-[48px] flex justify-center"
+                  className="w-[48px] flex flex-col items-center justify-center"
                 />
               </div>
 

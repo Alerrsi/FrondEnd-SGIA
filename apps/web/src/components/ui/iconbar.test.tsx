@@ -28,6 +28,20 @@ describe('GlassIconBar Component (REQ-DISEÑO)', () => {
     expect(nav.getAttribute('data-orientation')).toBe('vertical');
   });
 
+  it('defaults to vertical orientation (column) when axis is omitted', () => {
+    render(
+      <MemoryRouter initialEntries={['/inventario']}>
+        <TooltipProvider>
+          <GlassIconBar items={testItems} />
+        </TooltipProvider>
+      </MemoryRouter>,
+    );
+
+    const nav = screen.getByRole('navigation', { name: 'Navegación principal' });
+    expect(nav).toBeDefined();
+    expect(nav.getAttribute('data-orientation')).toBe('vertical');
+  });
+
   it('renders all items as accessible links with aria-labels', () => {
     render(
       <MemoryRouter initialEntries={['/inventario']}>

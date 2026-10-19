@@ -176,6 +176,11 @@ Paletas suaves de baja saturación diseñadas para reducir la fatiga ocular en j
 - **Ergonomía de Lector Code128:** Soporte de escaneo continuo con listener de eventos `keydown` terminado en `Enter` sin requerir clic previo.
 - **Feedback fluido:** Notificaciones y alertas operativas con Sileo (`toast.success`, `toast.warning`, `toast.error`).
 
+### 6. Barra Lateral y Restricción Estricta del IconBar Encogido (Siempre Vertical)
+> **RESTRICCIÓN OBLIGATORIA (Sidebar Encogido / IconBar Vertical):**  
+> Cuando la barra lateral izquierda está en modo encogido/comprimido (`isCollapsed === true`, ancho `64px`, muelles de iconos `w-[48px]`), el componente `IconBar` (`GlassIconBar` / `IconNav`) y todos los muelles de iconos del lateral izquierdo **DEBEN PERMANECER SIEMPRE EN ORIENTACIÓN VERTICAL ESTRICTA** (`axis="column"`, `data-orientation="vertical"` y clases `flex flex-col items-center`).  
+> **Queda terminantemente PROHIBIDO** que el iconbar del panel lateral encogido se renderice o se configure en orientación horizontal (`row`). Todos los iconos de navegación de módulos y acciones deben estar apilados en una columna vertical centrada.
+
 ## 6. Arquitectura y Manejo de Datos
 
 - **Data Fetching:** TanStack Query consumiendo `packages/api-client`. Caché centralizada, revalidación y sincronización de estado.

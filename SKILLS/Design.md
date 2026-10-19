@@ -106,7 +106,7 @@ Cool, steely blue with a hint of mist, conjuring high-tech chic, creative clarit
 ### G. Togle de modo oscuro
 - componente llamado 'toggle' sacado de benco.dev que debe ser usado en el sidebar para activar/ desactivar modo oscuro 
 ### H. Sidebar Icon
-- componente llamado 'iconbar' usado para el estado del sidebar de forma comprimida debe ser modificado para que sea horizontal puesto que el actual es vertical.
+- componente llamado 'iconbar' en el estado del sidebar comprimido (costado izquierdo) SIEMPRE debe ser estrictamente vertical (`axis="column"`, con los iconos apilados en columna vertical centrada, prohibido en horizontal).
 ---
 
 ## 4. Patrón de Componente de Referencia (Dual Theme)
