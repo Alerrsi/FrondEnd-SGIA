@@ -141,3 +141,16 @@
 - **Verificación:**
   - 31 archivos de prueba pasados, 140 tests aprobados en Vitest (100%).
   - `pnpm typecheck` validado en los 5 paquetes con 0 errores.
+
+---
+
+## REWORK-F2: Conflictos de diseño AGENTS.md vs SKILLS/Design.md resueltos
+
+- **Fecha:** 2026-10-27
+- **Módulo:** Documentación de diseño
+- **Archivos Modificados:** `AGENTS.md`, `SKILLS/Design.md`, `.claude/skills/sgia-design/SKILL.md`, `CLAUDE.md`, `rework.md`
+- **Decisiones (según el código existente en `apps/web`):**
+  1. **Canvas:** `bg-zinc-100 dark:bg-zinc-950` (27 archivos; ninguno usa `slate-50`).
+  2. **Rojo en CTA:** no. `Button` `primary` es monocromo; el rojo queda para etiqueta de sede y paradas críticas.
+  3. **Badges:** componente `Badge` (pastilla tintada con borde + `dot` opcional).
+  4. **Paletas alternativas:** la nota de preservación de fondos sigue vigente.

@@ -48,12 +48,12 @@ Motivo: sin esta línea base no se puede saber si un cambio rompió algo.
 
 Estas decisiones no las puede tomar Claude por su cuenta. Hay que elegir una opción en cada caso y dejarla escrita en `SKILLS/Design.md` y en `AGENTS.md` (la misma en los dos).
 
-- [ ] **Color del canvas:** `bg-slate-50` (AGENTS §5) o `bg-zinc-100` (Design.md §2A).
-- [ ] **Uso del rojo institucional en botones:** permitido en CTAs como "Dar de alta producto" (AGENTS) o prohibido, con CTA monocromo (Design.md).
-- [ ] **Estilo de badges de estado:** pastilla con fondo de color (AGENTS §5) o punto de 6px sobre fondo neutro (Design.md).
-- [ ] **Paletas alternativas:** confirmar si la nota de "preservación de fondos" de AGENTS sigue vigente.
+- [x] **Color del canvas:** `bg-slate-50` (AGENTS §5) o `bg-zinc-100` (Design.md §2A).
+- [x] **Uso del rojo institucional en botones:** permitido en CTAs como "Dar de alta producto" (AGENTS) o prohibido, con CTA monocromo (Design.md).
+- [x] **Estilo de badges de estado:** pastilla con fondo de color (AGENTS §5) o punto de 6px sobre fondo neutro (Design.md).
+- [x] **Paletas alternativas:** confirmar si la nota de "preservación de fondos" de AGENTS sigue vigente.
 
-Criterio: los dos archivos dicen lo mismo en esos cuatro puntos.
+Resuelto el 2026-10-27 según el código existente (canvas zinc-100, CTA monocromo, `Badge` tintado + dot opcional, nota de fondos vigente). Criterio: los dos archivos dicen lo mismo en esos cuatro puntos.
 
 ---
 

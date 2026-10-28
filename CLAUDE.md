@@ -38,14 +38,11 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - **Formularios:** React Hook Form + Zod.
 - **Tablas densas:** TanStack Table. Los identificadores técnicos (SKU, seriales, RUT, IP/MAC) van en `font-mono`.
 - **Sidebar colapsado (`isCollapsed === true`):** el `IconBar` debe permanecer siempre en orientación vertical (`axis="column"`, `flex flex-col items-center`). Nunca en horizontal.
-- **Rojo institucional (`#d9232a`)** solo para CTAs críticos o paradas. Nunca como fondo grande ni cabecera.
+- **Rojo institucional (`#d9232a`)** solo para paradas, alertas críticas y la etiqueta de sede. El CTA principal es monocromo. Nunca como fondo grande ni cabecera.
 
-## Conflictos conocidos
+## Decisiones de diseño
 
-`AGENTS.md` y `SKILLS/Design.md` no coinciden en algunos puntos de diseño (color del canvas, uso del rojo en botones, estilo de badges). Mientras no se resuelvan (ver `rework.md`):
-
-- **No elijas una de las dos versiones por tu cuenta.** Pregunta cuál aplica.
-- Para código nuevo, sigue la regla que se use en los componentes vecinos del mismo módulo.
+Resueltas en Fase 2 de `rework.md` según el código existente (detalle en `SKILLS/Design.md`): canvas `bg-zinc-100 dark:bg-zinc-950`; CTA principal monocromo (sin rojo); badges con el componente `Badge`; paletas alternativas no tiñen canvas ni tarjetas.
 
 ## Convenciones de trabajo
 

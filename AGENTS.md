@@ -78,26 +78,26 @@ sgia-frontend/
 El diseño del SGIA evita plantillas SaaS genéricas y adopta un **enfoque industrial, técnico, ágil y de alta densidad de información** (inspirado en Linear, Raycast y consolas de ingeniería):
 
 ### 1. Canvas y Jerarquía de Superficies
-- **Fondo Canvas:** `bg-slate-50` (o `bg-zinc-50`). Prohibido usar fondos blanco puro extensos para prevenir fatiga en turnos largos.
+- **Fondo Canvas:** `bg-zinc-100 dark:bg-zinc-950`. Prohibido usar fondos blanco puro extensos para prevenir fatiga en turnos largos.
 - **Paneles y Tarjetas:** `bg-white`, bordes finos de 1px (`border-slate-200/80`), elevación mínima (`shadow-xs` / `shadow-sm`) y bordes rectos o sutiles. Prohibidas tarjetas infladas o sombras difusas pesadas.
 - **Divisores:** `border-slate-100` o `divide-slate-100`.
 
 ### 2. Paleta Semántica, Acento Institucional y Paletas Alternativas
 
 #### A. Paleta Principal Institucional INACAP
-- **Rojo Institucional (`#d9232a` / `bg-red-600` / `hover:bg-red-700`):**
-  - **Uso deliberado y exclusivo:** CTA principal culminante (ej. *"Dar de alta producto"*, *"Confirmar préstamo"*) o paradas críticas.
-  - **Prohibido:** fondos grandes, cabeceras completas o barras laterales rojas para evitar sobreestimulación visual.
+- **Rojo Institucional (`#d9232a` / `red-600`):**
+  - **Uso exclusivo:** micro-etiqueta institucional (`SEDE TEMUCO · PAÑOL TI`) y paradas o alertas críticas reales.
+  - **Prohibido:** CTAs cotidianos (el CTA principal es monocromo: `bg-zinc-900 text-white` / `dark:bg-zinc-100 dark:text-zinc-900`), fondos grandes, cabeceras completas o barras laterales rojas.
 - **Escala Neutra:**
   - Títulos: `text-slate-900 font-semibold`.
   - Metadatos / secundarios: `text-slate-500 text-xs` o `text-slate-600 text-sm`.
   - Bordes y campos: `border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400`.
-- **Badges Semánticos Técnicos (con icono + texto siempre):**
+- **Badges Semánticos Técnicos:** usar `Badge` (`apps/web/src/components/ui/badge.tsx`): pastilla tintada suave con borde, icono + texto, punto de 6px opcional (`dot`).
   - **Disponible / Óptimo:** `bg-emerald-50 text-emerald-700 border-emerald-200/60`.
   - **En Préstamo / Asignado:** `bg-blue-50 text-blue-700 border-blue-200/60`.
   - **Stock Crítico / Umbral Mínimo:** `bg-rose-50 text-rose-700 border-rose-200/60`.
   - **En Mantención / Revisión:** `bg-amber-50 text-amber-700 border-amber-200/60`.
-  - **De Baja / Retirado:** `bg-slate-100 text-slate-600 border-slate-200`.
+  - **De Baja / Retirado:** `bg-zinc-100 text-zinc-700 border-zinc-200/80`.
 
 > **NOTA DE PRESERVACIÓN DE FONDOS (Regla de Oro para todas las paletas alternativas):**  
 > Para cada paleta alternativa dentro de las opciones se deben mantener como colores de fondo ya sea el blanco y negro (este puede variar un poco según paleta elegida). Los colores deben verse reflejados en los tonos de botones, letras específicas como estados de entidades entre otros sin perder la estética principal y enfoque de la paleta principal. Prohibido teñir canvas completos o tarjetas con fondos saturados.
