@@ -1,0 +1,74 @@
+
+> sgia-frontend@1.0.0 lint /home/korossuh/Projects/SGIA/FrondEnd-SGIA
+> turbo run lint
+
+• turbo 2.11.3
+
+   • Packages in scope: @sgia/api-client, @sgia/config, @sgia/design-tokens, @sgia/mobile, @sgia/types, @sgia/web
+   • Running lint in 6 packages
+   • Remote caching disabled
+
+@sgia/web:lint: cache miss, executing 4badeffc726f18a8
+@sgia/mobile:lint: cache miss, executing 317870dae787a2d4
+@sgia/mobile:lint: 
+@sgia/mobile:lint: > @sgia/mobile@1.0.0 lint /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/mobile
+@sgia/mobile:lint: > expo lint
+@sgia/mobile:lint: 
+@sgia/web:lint: 
+@sgia/web:lint: > @sgia/web@1.0.0 lint /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web
+@sgia/web:lint: > eslint .
+@sgia/web:lint: 
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/components/ui/iconbar.tsx
+@sgia/web:lint:   137:5  error  Definition for rule 'react-hooks/exhaustive-deps' was not found  react-hooks/exhaustive-deps
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/alertas/alertas-stock.test.tsx
+@sgia/web:lint:   89:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/cotizaciones/pages/cotizaciones-page.tsx
+@sgia/web:lint:   18:32  error  '_cotizacion' is defined but never used  @typescript-eslint/no-unused-vars
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/dashboard-dnd.test.tsx
+@sgia/web:lint:   485:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/hooks/use-metrics.ts
+@sgia/web:lint:   15:3   error  '_query' is defined but never used        @typescript-eslint/no-unused-vars
+@sgia/web:lint:   16:3   error  '_variables' is defined but never used    @typescript-eslint/no-unused-vars
+@sgia/web:lint:   27:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/inventario/components/factura-upload-modal.tsx
+@sgia/web:lint:    87:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:    88:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:    97:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   101:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   132:80  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   296:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   305:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/prestamos/pages/cola-prestamos-page.tsx
+@sgia/web:lint:    51:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   107:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/prestamos/pages/mostrador-prestamos-page.tsx
+@sgia/web:lint:   391:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   391:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/features/usuarios/components/usuario-form-dialog.tsx
+@sgia/web:lint:   95:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web/src/lib/audio.ts
+@sgia/web:lint:   4:76  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint:   9:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+@sgia/web:lint: 
+@sgia/web:lint: ✖ 21 problems (21 errors, 0 warnings)
+@sgia/web:lint: 
+@sgia/web:lint:  ELIFECYCLE  Command failed with exit code 1.
+@sgia/web#lint:  ERROR  command (/home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web) /home/korossuh/.local/share/pnpm/.tools/pnpm/9.15.4/bin/pnpm run lint exited (1)
+
+ Tasks:    0 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    5.986s 
+Failed:    @sgia/web#lint
+
+ ERROR  run failed: command  exited (1)
+ ELIFECYCLE  Command failed with exit code 1.

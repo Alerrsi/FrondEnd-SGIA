@@ -1,0 +1,17 @@
+
+> @sgia/web@1.0.0 test /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web
+> vitest run
+
+
+ RUN  v5.0.1 /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web
+
+
+ Test Files  32 passed (32)
+      Tests  155 passed (155)
+   Start at  21:32:51
+   Duration  22.34s (import 41%, tests 27%, environment 26%, transform 5%, worker 1%)
+
+Environment  happy-dom was created 32 times · 33.89s total, 26% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
