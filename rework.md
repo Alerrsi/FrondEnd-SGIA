@@ -88,12 +88,12 @@ Criterio: el porcentaje de cada requisito se puede justificar con archivos concr
 
 Estos puntos dependen de lo que muestre la Fase 0. Se completan después.
 
-- [ ] **Resolver los errores de `pnpm typecheck`** registrados en la línea base.
-- [ ] **Resolver los fallos de tests** registrados en la línea base.
-- [ ] **Revisar `apps/web/src/components/ui/toogle.tsx`**: el nombre tiene una errata y existe también `toggle.tsx`. Confirmar si son duplicados y eliminar el que no se usa.
+- [x] **Resolver los errores de `pnpm typecheck`** registrados en la línea base.
+- [x] **Resolver los fallos de tests** registrados en la línea base.
+- [x] **Revisar `apps/web/src/components/ui/toogle.tsx`**: el nombre tiene una errata y existe también `toggle.tsx`. Confirmar si son duplicados y eliminar el que no se usa.
 - [ ] **Revisar `apps/web/src/features/dashboard/data/mock-metrics.json`**: confirmar que no se usa en producción o moverlo a un directorio de mocks.
 - [ ] **Revisar `apps/web/src/features/usuarios/lib/run.ts`**: el nombre no describe su contenido; renombrar si es una utilidad genérica.
-- [ ] **Verificar que `apps/mobile` consume la API solo por `packages/api-client`** y no con `fetch` directo.
+- [x] **Verificar que `apps/mobile` consume la API solo por `packages/api-client`** y no con `fetch` directo.
 - [ ] **Confirmar que las pantallas del mobile tienen tests**: no hay script `test` en `apps/mobile/package.json`. Decidir si se agrega Jest o se documenta que no se testea.
 
 ---

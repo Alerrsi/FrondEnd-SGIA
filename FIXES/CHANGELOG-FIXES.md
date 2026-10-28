@@ -175,3 +175,17 @@
 - **Fecha:** 2026-10-27
 - **Archivos Modificados:** `TASKS/README.md`, `rework.md`
 - **Cambios:** estados recalculados con las casillas de cada `TASKS/REQ-*.md` y el código de `apps/` y `packages/`. REQ-03 a REQ-07 y REQ-10 a REQ-12 pasan de Pendiente a Completado; REQ-01 baja de 80% a 48%; REQ-09 pasa a Parcial; REQ-14 a En Progreso; REQ-NF baja de 60% a 17%.
+
+---
+
+## REWORK-F5: Limpieza de código (lint y duplicados)
+
+- **Fecha:** 2026-10-27
+- **Cambios:**
+  1. `toogle.tsx` (implementación) y `toggle.tsx` (reexportación de 2 líneas) fusionados en `toggle.tsx`.
+  2. ESLint compartido: parámetros y variables con prefijo `_` no cuentan como no usados.
+  3. Eliminados todos los `any` de `apps/web` (lint web: 29 → 0), usando los tipos de `@sgia/types` que ya existían (`BorradorProducto`, `InvoiceScanResponse`, `UpdateUsuarioPayload`, `Cajon`). `UpdateUsuarioPayload.area` acepta `null`.
+  4. `iconbar.tsx`: quitado un `eslint-disable` de una regla no cargada.
+  5. `cola-prestamos-page.tsx`: `usePendingLoans` ya devuelve `PaginatedResponse`, se quitó la rama de array.
+- **Verificación:** typecheck 5/5, 155 tests pasan, `pnpm --filter @sgia/web lint` sin errores.
+- **Pendiente:** el lint móvil (6 errores, ver `FIXES/baseline-lint-mobile.txt`) no corría antes porque Turbo se detenía en el fallo de web.
