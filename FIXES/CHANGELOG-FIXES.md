@@ -207,3 +207,21 @@
 - **Fecha:** 2026-10-27
 - **Resultado:** `pnpm install` sin errores; typecheck 5/5; 155 tests pasan (igual que la línea base); lint web y móvil 0 errores (el móvil tenía 6 en `FIXES/baseline-lint-mobile.txt`, corregidos).
 - **Lint móvil (6 → 0):** en `explore.tsx` e `index.tsx` el estado de carga arranca en `true` en vez de activarse dentro del `useEffect` (`react-hooks/set-state-in-effect`); `explore.tsx` hace el fetch inicial directo en el efecto; comillas escapadas con `&quot;` (`react/no-unescaped-entities`).
+
+---
+
+## REQ-01 móvil: login nativo
+
+- **Fecha:** 2026-10-27
+- **Cambios:** pantalla de login (`features/auth/login-screen.tsx`, RHF, `device_name: 'mobile'`), `AuthProvider` con restauración de sesión y rechazo de roles distintos de `PRO-01`, `TokenStorage` con `expo-secure-store` (`config/api.ts`), gate de autenticación en `_layout.tsx` y botón "Cerrar sesión" en Mis Solicitudes.
+- **Dependencias nuevas en móvil:** `expo-secure-store`, `@tanstack/react-query`, `react-hook-form`.
+- **Pendiente:** NativeWind no está instalado, se usó `StyleSheet`; sin test de integración del login; URL de API vía `EXPO_PUBLIC_SGIA_API_URL`.
+
+---
+
+## REQ-01 móvil: login nativo
+
+- **Fecha:** 2026-10-27
+- **Cambios:** pantalla de login (`features/auth/login-screen.tsx`, RHF, `device_name: 'mobile'`), `AuthProvider` con restauración de sesión y rechazo de roles distintos de `PRO-01`, `TokenStorage` con `expo-secure-store` (`config/api.ts`), gate de autenticación en `_layout.tsx` y botón "Cerrar sesión" en Mis Solicitudes.
+- **Dependencias nuevas en móvil:** `expo-secure-store`, `@tanstack/react-query`, `react-hook-form`.
+- **Pendiente:** NativeWind no está instalado, se usó `StyleSheet`; sin test de integración del login; la URL de la API se toma de `EXPO_PUBLIC_SGIA_API_URL`.

@@ -56,15 +56,15 @@ Implementar un flujo de autenticación seguro, centralizado y persistente vía L
   - [ ] Botón para cerrar sesiones en otros dispositivos (`POST /api/tokens/revoke-others`).
 
 ### 2. App Móvil (`apps/mobile`)
-- [ ] **Pantalla de Login Nativa:**
-  - [ ] Formulario con NativeWind adaptado a teclado táctil (`KeyboardAvoidingView`).
-  - [ ] Envío explícito de `device_name: 'mobile'` (vigencia de token de 60 días).
-  - [ ] Validación de que solo usuarios con rol `PRO-01` puedan iniciar sesión en la app.
-- [ ] **Almacenamiento Seguro Móvil:**
-  - [ ] Implementar `TokenStorage` usando `expo-secure-store`.
-  - [ ] Restauración automática de sesión al abrir la app.
-- [ ] **Cierre de Sesión:**
-  - [ ] Botón de cierre de sesión en drawer/perfil que llama a `POST /api/logout` y limpia el SecureStore.
+- [x] **Pantalla de Login Nativa:**
+  - [x] Formulario (StyleSheet, sin NativeWind: no está instalado en la app) adaptado a teclado táctil (`KeyboardAvoidingView`).
+  - [x] Envío explícito de `device_name: 'mobile'` (vigencia de token de 60 días).
+  - [x] Validación de que solo usuarios con rol `PRO-01` puedan iniciar sesión en la app.
+- [x] **Almacenamiento Seguro Móvil:**
+  - [x] Implementar `TokenStorage` usando `expo-secure-store`.
+  - [x] Restauración automática de sesión al abrir la app.
+- [x] **Cierre de Sesión:**
+  - [x] Botón de cierre de sesión en drawer/perfil que llama a `POST /api/logout` y limpia el SecureStore.
 
 ---
 
