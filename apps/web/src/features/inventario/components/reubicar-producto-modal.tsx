@@ -58,7 +58,7 @@ export function ReubicarProductoModal({
       const currentCajonId =
         producto.cajon_id ??
         (producto.cajon && typeof producto.cajon === 'object' && 'id' in producto.cajon
-          ? (producto.cajon as any).id
+          ? producto.cajon.id
           : null);
 
       setSelectedLocationId(currentLocId ?? null);
@@ -85,7 +85,7 @@ export function ReubicarProductoModal({
   const initialCajonId =
     producto.cajon_id ??
     (producto.cajon && typeof producto.cajon === 'object' && 'id' in producto.cajon
-      ? (producto.cajon as any).id
+      ? producto.cajon.id
       : null);
   const initialSala = producto.ubicacion?.sala || '';
   const initialCajon = producto.ubicacion?.cajon || '';

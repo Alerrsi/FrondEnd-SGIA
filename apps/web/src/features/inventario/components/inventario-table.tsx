@@ -80,6 +80,18 @@ export interface InventarioTableProps {
 
 const columnHelper = createColumnHelper<Producto>();
 
+// La API puede devolver texto u objeto ({nombre, ...}) según el endpoint.
+function labelOf(value: unknown, ...keys: string[]): string {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object') {
+    for (const key of keys) {
+      const found = (value as Record<string, unknown>)[key];
+      if (typeof found === 'string') return found;
+    }
+  }
+  return '';
+}
+
 export function InventarioTable({
   productos,
   isLoading = false,
@@ -175,7 +187,7 @@ export function InventarioTable({
           const display =
             typeof val === 'string'
               ? val
-              : (val as any)?.nombre ?? (val as any)?.name ?? '—';
+              : labelOf(val, 'nombre', 'name') || '—';
           return (
             <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
               {display}
@@ -198,8 +210,8 @@ export function InventarioTable({
               </div>
             );
           }
-          const salaStr = typeof loc.sala === 'string' ? loc.sala : (loc.sala as any)?.nombre ?? (loc.sala as any)?.sala ?? '';
-          const cajonStr = typeof loc.cajon === 'string' ? loc.cajon : (loc.cajon as any)?.codigo ?? (loc.cajon as any)?.nombre ?? '';
+          const salaStr = labelOf(loc.sala, 'nombre', 'sala');
+          const cajonStr = labelOf(loc.cajon, 'codigo', 'nombre');
           return (
             <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
               <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />

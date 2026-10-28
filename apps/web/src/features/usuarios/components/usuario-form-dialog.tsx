@@ -6,6 +6,7 @@ import {
   ROLE_LABELS,
   type CreateUsuarioPayload,
   type RoleCode,
+  type UpdateUsuarioPayload,
   type UsuarioSinPassword,
 } from '@sgia/types';
 import { Loader2, Lock, Shield, User } from 'lucide-react';
@@ -92,7 +93,7 @@ export function UsuarioFormDialog({
     async (values) => {
       try {
         if (esEdicion && usuario) {
-          const updatePayload: Record<string, any> = {
+          const updatePayload: UpdateUsuarioPayload = {
             nombre: values.nombre.trim(),
             name: values.nombre.trim(),
             email: values.email.trim(),

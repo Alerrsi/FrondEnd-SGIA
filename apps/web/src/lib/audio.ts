@@ -1,12 +1,14 @@
 // Audio feedback utility for barcode scanner and kiosk operations
 
+type WebkitWindow = Window & { webkitAudioContext?: typeof AudioContext };
+
 export function playScannerBeep(type: 'success' | 'error' | 'warn' = 'success') {
-  if (typeof window === 'undefined' || !window.AudioContext && !(window as any).webkitAudioContext) {
+  if (typeof window === 'undefined' || !window.AudioContext && !(window as WebkitWindow).webkitAudioContext) {
     return;
   }
 
   try {
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioCtx = window.AudioContext || (window as WebkitWindow).webkitAudioContext!;
     const ctx = new AudioCtx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();

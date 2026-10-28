@@ -24,7 +24,7 @@ export async function executeMetricsGraphQL<TData = unknown>(
  * Resuelve una métrica mock context-aware respetando entidad, métrica, rango temporal y agrupación
  */
 export function resolveMockMetric(input: MetricQueryInput): MetricResult {
-  const metricsMap = mockData.metrics as Record<string, any>;
+  const metricsMap = mockData.metrics as Record<string, Partial<MetricResult>>;
 
   // 1. Búsqueda por entidad, métrica y agrupación si existe
   if (input.groupBy) {

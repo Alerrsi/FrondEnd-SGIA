@@ -482,7 +482,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
 
     // Comprobar persistencia en localStorage
     const savedTemplates = JSON.parse(localStorage.getItem('sgia_dashboard_templates_v2') || '[]');
-    const customTmpl = savedTemplates.find((t: any) => t.id === 'template-custom');
+    const customTmpl = savedTemplates.find((t: { id: string }) => t.id === 'template-custom');
     expect(customTmpl).toBeDefined();
     expect(customTmpl.charts.length).toBe(4);
 

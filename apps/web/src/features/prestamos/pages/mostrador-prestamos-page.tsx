@@ -388,7 +388,7 @@ export default function MostradorPrestamosPage() {
                         setDocenteRun(val);
                         // Autocompletar nombre si coincide con docente en lista
                         const matched = teachers.find(
-                          (t) => (t as any).run === val || (t as any).rut === val,
+                          (t) => t.run === val,
                         );
                         if (matched) setDocenteName(matched.nombre);
                       }}
