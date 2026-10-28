@@ -15,7 +15,7 @@ Este directorio contiene las especificaciones detalladas para cada módulo funci
 | [REQ-06](./REQ-06-ALERTAS-STOCK-CRITICO.md) | `REQ-06` | Alertas de Stock Crítico y Preventivo | Web | AD-01, PAN-01 | 🟢 Completado (15/15) — `features/alertas/` y 2 tests |
 | [REQ-07](./REQ-07-COTIZACIONES-PROVEEDORES.md) | `REQ-07` | Proveedores y Cotizaciones Múltiples | Web | DIR-01, AD-01 | 🟢 Completado (18/18) — `features/cotizaciones/` y `proveedores/` con tests |
 | [REQ-08](./REQ-08-COMPRAS-ADQUISICIONES.md) | `REQ-08` | Órdenes de Compra y Recepción | Web | DIR-01, PAN-01, AD-01 | 🔴 Pendiente (0/14) — solo hooks de compras en `api-client`, sin UI |
-| [REQ-09](./REQ-09-PRESTAMOS-REMOTOS.md) | `REQ-09` | Pre-reservas Remotas de Préstamos | Mobile + Web | PRO-01, PAN-01 | 🟡 Parcial — `api-client` y cola web; sin pantallas en `apps/mobile` |
+| [REQ-09](./REQ-09-PRESTAMOS-REMOTOS.md) | `REQ-09` | Pre-reservas Remotas de Préstamos | Mobile + Web | PRO-01, PAN-01 | 🟡 Parcial (5/18) — `api-client` y cola web; sin pantallas en `apps/mobile` |
 | [REQ-10](./REQ-10-OPERACION-PRESTAMOS-PANOL.md) | `REQ-10` | Operación en Pañol (Pistola Barcode) | Web | PAN-01 | 🟢 Completado (22/22) — `prestamos/mostrador` y `cola` con tests |
 | [REQ-11](./REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md) | `REQ-11` | Historial y Auditoría de Préstamos | Web | PAN-01, DIR-01, AD-01 | 🟢 Completado (20/20) — `prestamos/historial` con test |
 | [REQ-12](./REQ-12-FICHAS-TECNICAS-EQUIPOS.md) | `REQ-12` | Fichas Técnicas y Manuales PDF | Web | DIR-01, AD-01, PAN-01 | 🟢 Completado (16/16) — `features/equipos/` con tests |

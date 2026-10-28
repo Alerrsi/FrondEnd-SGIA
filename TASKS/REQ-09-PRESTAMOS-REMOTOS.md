@@ -25,23 +25,23 @@ Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. App Móvil Docente (`apps/mobile`)
-- [x] **Pantalla de Nueva Solicitud de Préstamo:**
-  - [x] Buscador de productos del catálogo disponibles para préstamo.
-  - [x] Selector interactivo de cantidad por ítem agregado al carrito de solicitud.
-  - [x] Campos requeridos:
+- [ ] **Pantalla de Nueva Solicitud de Préstamo:**
+  - [ ] Buscador de productos del catálogo disponibles para préstamo.
+  - [ ] Selector interactivo de cantidad por ítem agregado al carrito de solicitud.
+  - [ ] Campos requeridos:
     - Asignatura / Carrera.
     - Sala, Taller o Laboratorio de destino.
     - Fecha requerida (Selector de fecha y campo nativo).
     - Bloque horario de clase (ej. "Bloque 1-2: 08:30 - 10:00").
-  - [x] Validación antes de enviar: al menos 1 ítem y datos de aula completos.
-- [x] **Confirmación Visual:**
-  - [x] Pantalla o modal de éxito "Solicitud enviada a Pañol" con número de solicitud generado.
-  - [x] Indicación de que el pañolero preparará los insumos antes del inicio del bloque.
-- [x] **Historial y Estado de Mis Solicitudes:**
-  - [x] Renderizado con `FlatList` optimizado para rendimiento en móvil.
-  - [x] Badges de estado: `pendiente` (amarillo), `preparado` (azul), `entregado` (verde), `rechazado` (rojo).
-  - [x] Visualización del motivo de rechazo si la solicitud fue declinada por pañol.
-  - [x] Botón para cancelar solicitud si aún está `pendiente` (`DELETE /api/loans/requests/{id}`).
+  - [ ] Validación antes de enviar: al menos 1 ítem y datos de aula completos.
+- [ ] **Confirmación Visual:**
+  - [ ] Pantalla o modal de éxito "Solicitud enviada a Pañol" con número de solicitud generado.
+  - [ ] Indicación de que el pañolero preparará los insumos antes del inicio del bloque.
+- [ ] **Historial y Estado de Mis Solicitudes:**
+  - [ ] Renderizado con `FlatList` optimizado para rendimiento en móvil.
+  - [ ] Badges de estado: `pendiente` (amarillo), `preparado` (azul), `entregado` (verde), `rechazado` (rojo).
+  - [ ] Visualización del motivo de rechazo si la solicitud fue declinada por pañol.
+  - [ ] Botón para cancelar solicitud si aún está `pendiente` (`DELETE /api/loans/requests/{id}`).
 
 ### 2. Panel Web Pañol (`apps/web`)
 - [x] **Notificación de Solicitudes Entrantes:**
