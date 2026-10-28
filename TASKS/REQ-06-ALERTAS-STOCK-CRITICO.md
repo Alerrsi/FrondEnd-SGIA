@@ -1,6 +1,6 @@
 # REQ-06: Alertas de Stock Crítico y Preventivo
 
-> **Código:** `REQ-06` | **Módulo:** `FU-02` (Gestión de Inventario y Almacenamiento)  
+> **Código:** `REQ-06` | **Módulo:** `FU-02` (Gestión de Inventario y Activos)  
 > **Plataforma:** Web (`apps/web`)  
 > **Roles:** Administrador (`AD-01`), Director (`DIR-01`) y Pañolero (`PAN-01`)
 

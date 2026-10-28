@@ -31,6 +31,8 @@ import type { WebRoleCode } from '@/features/auth/types/roles';
 import { toast } from '@/lib/toast';
 import { NotificationBell } from '@/features/alertas/components/notification-bell';
 import { SettingsModal } from '@/components/settings/settings-modal';
+import { ChangePasswordDialog } from '@/features/auth/components/change-password-dialog';
+import { SessionsDialog } from '@/features/auth/components/sessions-dialog';
 
 interface NavItem {
   to: string;
@@ -63,6 +65,8 @@ export default function AppLayout() {
   const [sidebarWidth, setSidebarWidth] = useState(256);
   const [isDragging, setIsDragging] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [sessionsOpen, setSessionsOpen] = useState(false);
 
   const MIN_WIDTH = 180;
   const MAX_WIDTH = 420;
@@ -452,7 +456,20 @@ export default function AppLayout() {
         </div>
 
         {/* Modal de Ajustes del Sistema y Paleta de Colores (REQ-CONFIG) */}
-        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        <SettingsModal
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          onChangePassword={() => {
+            setSettingsOpen(false);
+            setPasswordOpen(true);
+          }}
+          onViewSessions={() => {
+            setSettingsOpen(false);
+            setSessionsOpen(true);
+          }}
+        />
+        <ChangePasswordDialog open={passwordOpen} onClose={() => setPasswordOpen(false)} />
+        <SessionsDialog open={sessionsOpen} onClose={() => setSessionsOpen(false)} />
       </div>
     </TooltipProvider>
   );

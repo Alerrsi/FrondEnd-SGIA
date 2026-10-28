@@ -1,6 +1,6 @@
 # Catálogo de Endpoints — SGIA Backend API
 
-> Sistema de Gestión de Inventario y Almacenamiento (INACAP Sede Temuco)  
+> Sistema de Gestión de Inventario y Activos (INACAP Sede Temuco)  
 > Base URL local: `http://localhost:8000/api`  
 > Formato de datos: `application/json`  
 > Mecanismo de autenticación: `Bearer Token` vía Laravel Sanctum en cabecera `Authorization: Bearer <token>`.

@@ -46,9 +46,7 @@ export default function ColaPrestamosPage() {
   const aprobarMutation = useAprobarPrestamo();
   const rechazarMutation = useRechazarPrestamo();
 
-  const rawLoans: Prestamo[] = Array.isArray(pendingLoansResponse)
-    ? pendingLoansResponse
-    : ((pendingLoansResponse as any)?.data ?? []);
+  const rawLoans: Prestamo[] = pendingLoansResponse?.data ?? [];
 
   // Filtrado exclusivo de solicitudes pendientes de revisión o preparación
   const pendingLoans = rawLoans.filter((l) => {
@@ -104,7 +102,7 @@ export default function ColaPrestamosPage() {
         id: selectedPrestamo.id,
         payload: {
           rejection_reason: rejectionReason.trim(),
-        } as any,
+        },
       });
       toast.success(`Solicitud #${selectedPrestamo.codigo ?? selectedPrestamo.id} rechazada`);
       handleCloseRejectModal();

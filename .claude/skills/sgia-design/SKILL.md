@@ -1,7 +1,19 @@
+---
+name: sgia-design
+description: Diseño visual de la UI de SGIA (web). Usar al crear o modificar componentes, pantallas, tablas, formularios o badges en apps/web.
+---
+
+> Paletas alternativas (solo seleccionables por usuario en ajustes): `references/paletas.md`. Cargar solo si la tarea toca temas.
+
 # Sistema de Gestión de Inventario y Activos (SGIA) - Global UI Specification (Dual Theme: Light & Dark)
 
 Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React, TypeScript y Tailwind CSS. Tu objetivo es diseñar e implementar interfaces para todo el ecosistema de la plataforma SGIA (Pañol TI, Inventario general, Mantenimiento, Préstamos, Gestión de Usuarios y Reportes), erradicando el aspecto de plantilla administrativa genérica mediante una estética técnica, industrial y de alta densidad de información (inspirada en Linear, Supabase y Vercel).Como senior debes usar variables CSS para codigo modular y que los temas no relentizen el sistema
 
+
+
+> **Decisión (Fase 2, resuelta según el código existente):** canvas `bg-zinc-100 dark:bg-zinc-950` (27 archivos lo usan, ninguno `slate-50`); CTA principal monocromo, sin rojo (`Button` variant `primary`; `danger` es rose); badges con el componente `Badge` (pastilla tintada + dot opcional). Los mismos tres puntos están en `AGENTS.md`.
+
+> **NOTA DE PRESERVACIÓN DE FONDOS (vigente):** en las paletas alternativas el fondo sigue siendo blanco/negro (con variación leve). El color va en botones, textos y estados; prohibido teñir canvas o tarjetas con fondos saturados.
 
 ---
 
@@ -35,7 +47,7 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
   - Textos secundarios / metadatos: `text-zinc-500 dark:text-zinc-400 text-xs`.
   - Bordes e inputs: `border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100`.
 - **Estados Semánticos Técnicos (Status Badges con Status Dot):**
-  - No usar pastillas completas de colores fluorescentes. Emplear contenedor neutro (`bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/60`) acompañado de un punto de estado de 6px (`rounded-full`):
+  - Usar el componente `Badge` (`apps/web/src/components/ui/badge.tsx`): pastilla tintada suave de baja saturación con borde (`bg-emerald-50 text-emerald-700 border-emerald-200/60`, y equivalentes `dark:`), icono + texto, y punto de estado de 6px opcional (`dot`). No usar colores fluorescentes. Tonos (punto):
     - **Disponible / Activo:** Dot `bg-emerald-500 dark:bg-emerald-400`.
     - **En Préstamo / Asignado:** Dot `bg-blue-500 dark:bg-blue-400`.
     - **Stock Crítico / Umbral Mínimo:** Dot `bg-rose-500 dark:bg-rose-400`.
@@ -43,28 +55,6 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
     - **De Baja / Retirado:** Dot `bg-zinc-400 dark:bg-zinc-500`.
 
 
-### B1. Paleta Semántica y Acentos
-Esta paleta de colores es alternativa solo accionable dentro de los ajustes de cada usuario.
-~Smart Blue #0466c8
-Vibrant medium blue that radiates intelligence and calm, enhancing focus in digital platforms and designs.
-~Steel Azure #0353a4
-Sleek, bold blue-gray fuses industrial strength and steady calm, suggesting resilience, balance and high-tech vision.
-~Regal Navy #023e7d
-Powerful deep navy, like midnight seas, fosters authority, loyalty, and trust in bold, classic compositions.
-~Prussian Blue #002855
-Inky, profound blue filled with gravitas and mystery, conjures historical intrigue and academic tradition.
-~Prussian Blue #001845
-Inky, profound blue filled with gravitas and mystery, conjures historical intrigue and academic tradition.
-~Prussian Blue #001233
-Inky, profound blue filled with gravitas and mystery, conjures historical intrigue and academic tradition.
-~Twilight Indigo #33415c
-Evokes twilight’s serene embrace, blending night’s depth with a touch of anticipation for stories yet to unfold.
-~Blue Slate #5c677d
-Hints of blue add an air of cool authority and calm depth, sparking creativity in technology and modern art.
-~Slate Grey #7d8597
-Cool undertones and subdued strength, inspiring balance and clarity in both modern and classic aesthetics.
-~Cool Steel #979dac
-Cool, steely blue with a hint of mist, conjuring high-tech chic, creative clarity and contemplative moods.
 
 ### C. Tipografía Específica
 - `font-mono`: Obligatorio para identificadores técnicos: SKUs, seriales de fábrica, rotulado Code128, direcciones IP/MAC (equipos Cisco), gavetas (`Cajon-A2`, `Sala-L3`) y RUT de usuarios.

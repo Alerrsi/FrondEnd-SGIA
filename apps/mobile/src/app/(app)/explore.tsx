@@ -15,12 +15,14 @@ import { LoanStatus, type Prestamo } from '@sgia/types';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useAuth } from '@/features/auth/auth-context';
 import { useTheme } from '@/hooks/use-theme';
 
 export default function MisSolicitudesScreen() {
   const theme = useTheme();
+  const { logout } = useAuth();
   const [requests, setRequests] = useState<Prestamo[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [cancelingId, setCancelingId] = useState<number | null>(null);
 
@@ -34,9 +36,13 @@ export default function MisSolicitudesScreen() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    loadRequests().finally(() => setLoading(false));
-  }, [loadRequests]);
+    fetchMyLoanRequests()
+      .then(setRequests)
+      .catch(() => {
+        // Error silencioso en carga secundaria
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -225,6 +231,11 @@ export default function MisSolicitudesScreen() {
         <ThemedText style={styles.headerSubtitle} themeColor="textSecondary">
           Seguimiento en tiempo real de tus préstamos remotos y solicitudes a pañol.
         </ThemedText>
+        <Pressable onPress={() => void logout()} accessibilityRole="button" hitSlop={8}>
+          <ThemedText type="small" themeColor="textSecondary">
+            Cerrar sesión
+          </ThemedText>
+        </Pressable>
       </View>
 
       {loading ? (
@@ -252,7 +263,7 @@ export default function MisSolicitudesScreen() {
               </ThemedText>
               <ThemedText style={styles.emptyText} themeColor="textSecondary">
                 Aún no has solicitado insumos o equipos. Puedes crear una nueva solicitud en la
-                pestaña "Solicitud".
+                pestaña &quot;Solicitud&quot;.
               </ThemedText>
             </View>
           }

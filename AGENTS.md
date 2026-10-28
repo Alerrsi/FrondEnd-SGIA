@@ -23,7 +23,7 @@ Este archivo entrega contexto de negocio, técnico y de diseño para cualquier a
 ## 2. Estructura del monorepo
 
 ```
-sgia-frontend/
+FrondEnd-SGIA/
 ├── apps/
 │   ├── web/              # Panel administrativo y de pañol (Vite + React) — AD-01, DIR-01, PAN-01
 │   └── mobile/           # App móvil de solicitudes docentes (Expo + React Native) — PRO-01
@@ -52,134 +52,40 @@ sgia-frontend/
 
 ## 4. Requisitos y especificaciones funcionales
 
-> **Nota de arquitectura:** Cada requisito funcional y no funcional cuenta con su propio archivo de especificación detallada en el directorio [`TASKS/`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/README.md). Consulta cada archivo específico antes de implementar o modificar flujos:
+> **Nota de arquitectura:** Cada requisito funcional y no funcional cuenta con su propio archivo de especificación detallada en el directorio [`TASKS/`](TASKS/README.md). Consulta cada archivo específico antes de implementar o modificar flujos:
 
-- **Autenticación y Sesiones:** [`TASKS/REQ-01-AUTENTICACION-SESIONES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-01-AUTENTICACION-SESIONES.md)
-- **Administración de Usuarios:** [`TASKS/REQ-02-ADMINISTRACION-USUARIOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-02-ADMINISTRACION-USUARIOS.md)
-- **Inventario y Facturas OCR:** [`TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md)
-- **Ubicación Física:** [`TASKS/REQ-05-UBICACION-FISICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-05-UBICACION-FISICA.md)
-- **Alertas de Stock Crítico:** [`TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
-- **Cotizaciones y Proveedores:** [`TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md)
-- **Compras y Adquisiciones:** [`TASKS/REQ-08-COMPRAS-ADQUISICIONES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
-- **Préstamos Remotos:** [`TASKS/REQ-09-PRESTAMOS-REMOTOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
-- **Operación de Pañol Presencial:** [`TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
-- **Historial y Auditoría de Préstamos:** [`TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md)
-- **Fichas Técnicas de Equipos:** [`TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md)
-- **Informes de Novedades y Fallas:** [`TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md)
-- **Dashboards y Analítica:** [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
-- **Configuración y Paletas de Color:** [`TASKS/REQ-CONFIG.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-CONFIG.md)
-- **Requisitos No Funcionales (Calidad, Accesibilidad y Rendimiento):** [`TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md)
-- **Directrices de Interfaz y Sidebar:** [`TASKS/REQ-DISEÑO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-DISE%C3%91O.md)
+- **Autenticación y Sesiones:** [`TASKS/REQ-01-AUTENTICACION-SESIONES.md`](TASKS/REQ-01-AUTENTICACION-SESIONES.md)
+- **Administración de Usuarios:** [`TASKS/REQ-02-ADMINISTRACION-USUARIOS.md`](TASKS/REQ-02-ADMINISTRACION-USUARIOS.md)
+- **Inventario y Facturas OCR:** [`TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`](TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md)
+- **Ubicación Física:** [`TASKS/REQ-05-UBICACION-FISICA.md`](TASKS/REQ-05-UBICACION-FISICA.md)
+- **Alertas de Stock Crítico:** [`TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`](TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
+- **Cotizaciones y Proveedores:** [`TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md`](TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md)
+- **Compras y Adquisiciones:** [`TASKS/REQ-08-COMPRAS-ADQUISICIONES.md`](TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
+- **Préstamos Remotos:** [`TASKS/REQ-09-PRESTAMOS-REMOTOS.md`](TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
+- **Operación de Pañol Presencial:** [`TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md`](TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
+- **Historial y Auditoría de Préstamos:** [`TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md`](TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md)
+- **Fichas Técnicas de Equipos:** [`TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md`](TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md)
+- **Informes de Novedades y Fallas:** [`TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md`](TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md)
+- **Dashboards y Analítica:** [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+- **Configuración y Paletas de Color:** [`TASKS/REQ-CONFIG.md`](TASKS/REQ-CONFIG.md)
+- **Requisitos No Funcionales (Calidad, Accesibilidad y Rendimiento):** [`TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md`](TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md)
+- **Directrices de Interfaz y Sidebar:** [`TASKS/REQ-DISEÑO.md`](TASKS/REQ-DISE%C3%91O.md)
 
-## 5. Resumen Ejecutivo del Sistema de Diseño (UI Global SGIA)
+## 5. Sistema de Diseño (resumen)
 
-> Fuente canónica y especificación completa: [`SKILLS/Design.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/SKILLS/Design.md).
+> Especificación completa (tokens, tablas, drawers, patrón de componente): [`.claude/skills/sgia-design/SKILL.md`](.claude/skills/sgia-design/SKILL.md). Paletas alternativas: [`references/paletas.md`](.claude/skills/sgia-design/references/paletas.md).
 
-El diseño del SGIA evita plantillas SaaS genéricas y adopta un **enfoque industrial, técnico, ágil y de alta densidad de información** (inspirado en Linear, Raycast y consolas de ingeniería):
+Estética industrial, técnica y de alta densidad (inspirada en Linear, Supabase y Vercel), con doble tema claro/oscuro y escala neutra `zinc`.
 
-### 1. Canvas y Jerarquía de Superficies
-- **Fondo Canvas:** `bg-slate-50` (o `bg-zinc-50`). Prohibido usar fondos blanco puro extensos para prevenir fatiga en turnos largos.
-- **Paneles y Tarjetas:** `bg-white`, bordes finos de 1px (`border-slate-200/80`), elevación mínima (`shadow-xs` / `shadow-sm`) y bordes rectos o sutiles. Prohibidas tarjetas infladas o sombras difusas pesadas.
-- **Divisores:** `border-slate-100` o `divide-slate-100`.
+- **Canvas:** `bg-zinc-100 dark:bg-zinc-950`; paneles `bg-white dark:bg-zinc-900` con borde de 1px y elevación mínima.
+- **Rojo institucional (`#d9232a`):** solo etiqueta de sede y paradas o alertas críticas. El CTA principal es monocromo; nunca fondos grandes ni cabeceras rojas.
+- **Badges de estado:** componente `Badge` (`apps/web/src/components/ui/badge.tsx`), pastilla tintada con borde, icono + texto y punto opcional.
+- **Tipografía:** `font-mono` obligatorio en SKU, seriales, Code128, IP/MAC, gavetas y RUT; `font-sans` (Inter o Geist) para el resto.
+- **Tablas:** TanStack Table, cabeceras compactas, máximo 1 acción directa por fila y el resto en `DropdownMenu`.
+- **Formularios y mesón:** React Hook Form + Zod; Drawers (Radix Sheet) para operaciones frecuentes, Dialog solo para confirmaciones destructivas; escáner Code128 por `keydown` + `Enter`; avisos con Sileo.
+- **Paletas alternativas:** el fondo sigue siendo blanco/negro. El color va en botones, textos y estados; prohibido teñir canvas o tarjetas con fondos saturados.
 
-### 2. Paleta Semántica, Acento Institucional y Paletas Alternativas
-
-#### A. Paleta Principal Institucional INACAP
-- **Rojo Institucional (`#d9232a` / `bg-red-600` / `hover:bg-red-700`):**
-  - **Uso deliberado y exclusivo:** CTA principal culminante (ej. *"Dar de alta producto"*, *"Confirmar préstamo"*) o paradas críticas.
-  - **Prohibido:** fondos grandes, cabeceras completas o barras laterales rojas para evitar sobreestimulación visual.
-- **Escala Neutra:**
-  - Títulos: `text-slate-900 font-semibold`.
-  - Metadatos / secundarios: `text-slate-500 text-xs` o `text-slate-600 text-sm`.
-  - Bordes y campos: `border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400`.
-- **Badges Semánticos Técnicos (con icono + texto siempre):**
-  - **Disponible / Óptimo:** `bg-emerald-50 text-emerald-700 border-emerald-200/60`.
-  - **En Préstamo / Asignado:** `bg-blue-50 text-blue-700 border-blue-200/60`.
-  - **Stock Crítico / Umbral Mínimo:** `bg-rose-50 text-rose-700 border-rose-200/60`.
-  - **En Mantención / Revisión:** `bg-amber-50 text-amber-700 border-amber-200/60`.
-  - **De Baja / Retirado:** `bg-slate-100 text-slate-600 border-slate-200`.
-
-> **NOTA DE PRESERVACIÓN DE FONDOS (Regla de Oro para todas las paletas alternativas):**  
-> Para cada paleta alternativa dentro de las opciones se deben mantener como colores de fondo ya sea el blanco y negro (este puede variar un poco según paleta elegida). Los colores deben verse reflejados en los tonos de botones, letras específicas como estados de entidades entre otros sin perder la estética principal y enfoque de la paleta principal. Prohibido teñir canvas completos o tarjetas con fondos saturados.
-
-#### B. Paleta B1: Industrial Steel & Aerospace Azure (SKILLS/Design.md)
-- Esquema de alta concentración técnica con tonos `Smart Blue` (`#0466c8`), `Steel Azure` (`#0353a4`), `Regal Navy` (`#023e7d`), `Twilight Indigo` (`#33415c`), `Blue Slate` (`#5c677d`) y `Cool Steel` (`#979dac`).
-
-#### C. Paletas Alternativas Tipo Pastel (Soft Technical Pastels)
-Paletas suaves de baja saturación diseñadas para reducir la fatiga ocular en jornadas extensas de mesón y pañol, manteniendo siempre la rigurosidad industrial, la legibilidad y los fondos neutros intactos:
-
-1. **Sage Mint (Menta Salvia Suave) — `palette-sage`:**
-   - **Concepto:** Tono sereno, orgánico y técnico, óptimo para gestión de laboratorio y ergonomía de lectura sostenida.
-   - **Color de Acento / Botones:** Salvia suave (`#62929e` / hover `#4d7c8a` en light; `#83c5be` en dark). Botón secundario con borde sutil `#b2c9ab`.
-   - **Letras y Tipografía Específica:** Links activos y titulares de módulo en Verde Salvia Profundo (`#284b40` en light; `#a7c4bc` en dark). Micro-etiqueta de Sede en Salvia técnico.
-   - **Estados de Entidades:**
-     - *Disponible / Activo:* `bg-emerald-50/70 text-emerald-800 border-emerald-200/70` (dot `#52b788`).
-     - *En Préstamo:* `bg-teal-50/80 text-teal-800 border-teal-200/70` (dot `#62929e`).
-     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#e07a5f`).
-     - *Mantención:* `bg-amber-50/70 text-amber-800 border-amber-200/60` (dot `#d4a373`).
-
-2. **Lavender Mist (Lavanda / Violeta Empolvado) — `palette-lavender`:**
-   - **Concepto:** Atmósfera analítica, reflexiva y de alta concentración para módulos de auditoría y reportes.
-   - **Color de Acento / Botones:** Lavanda Iris (`#7c69d8` / hover `#6855c4` en light; `#9b87f5` en dark). Anillo de foco (`ring`) en `#c8b6ff`.
-   - **Letras y Tipografía Específica:** Enlaces activos y micro-etiqueta institucional en Púrpura Pizarra (`#3c3169` en light; `#c8b6ff` en dark).
-   - **Estados de Entidades:**
-     - *Disponible / Activo:* `bg-violet-50/80 text-violet-800 border-violet-200/70` (dot `#8f80c7`).
-     - *En Préstamo:* `bg-indigo-50/80 text-indigo-800 border-indigo-200/70` (dot `#6b7280`).
-     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#f472b6`).
-     - *Mantención:* `bg-purple-50/70 text-purple-800 border-purple-200/60` (dot `#c084fc`).
-
-3. **Nordic Ice (Celeste Glaciar / Sky Pastel) — `palette-nordic`:**
-   - **Concepto:** Estilo telecomunicaciones e infraestructura de redes, frío, ultra limpio y preciso.
-   - **Color de Acento / Botones:** Hielo Glaciar (`#4682b4` / hover `#36648b` en light; `#64b5f6` en dark). Bordes de acción en `#a2d2ff`.
-   - **Letras y Tipografía Específica:** Navegación activa y texto de Sede en Azul Ártico Técnico (`#1d4e89` en light; `#90caf9` en dark).
-   - **Estados de Entidades:**
-     - *Disponible / Activo:* `bg-sky-50/80 text-sky-800 border-sky-200/70` (dot `#38bdf8`).
-     - *En Préstamo:* `bg-cyan-50/80 text-cyan-800 border-cyan-200/70` (dot `#0284c7`).
-     - *Alerta / Stock Crítico:* `bg-red-50/70 text-red-800 border-red-200/60` (dot `#fb7185`).
-     - *Mantención:* `bg-blue-50/80 text-blue-800 border-blue-200/60` (dot `#93c5fd`).
-
-4. **Peach & Sand (Melocotón / Arcilla Suave Pastel) — `palette-peach`:**
-   - **Concepto:** Calidez sutil y visualmente relajada para logística de inventario rápido sin estridencias.
-   - **Color de Acento / Botones:** Terracota Suave (`#d97757` / hover `#be6143` en light; `#f4978e` en dark). Foco suave en `#ffc6a5`.
-   - **Letras y Tipografía Específica:** Identificadores y enlaces activos en Marrón Arcilla (`#6b3a2e` en light; `#f8ad9d` en dark). Sede en Melocotón técnico.
-   - **Estados de Entidades:**
-     - *Disponible / Activo:* `bg-amber-50/80 text-stone-800 border-stone-200/70` (dot `#e07a5f`).
-     - *En Préstamo:* `bg-orange-50/80 text-orange-800 border-orange-200/70` (dot `#f4978e`).
-     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#e63946`).
-     - *Mantención:* `bg-yellow-50/70 text-yellow-800 border-yellow-200/60` (dot `#f6bd60`).
-
-5. **Chamomile Honey (Manzanilla / Ocre Suave Pastel) — `palette-chamomile`:**
-   - **Concepto:** Gama cálida de bajísimo contraste fotópico, diseñada para turnos vespertinos y control de activos bajo luz tenue.
-   - **Color de Acento / Botones:** Ámbar Mate (`#b5832b` / hover `#9c6d1f` en light; `#e2b866` en dark). Bordes en `#f6df9d`.
-   - **Letras y Tipografía Específica:** Indicadores de navegación y texto de Sede en Ocre Mineral (`#5c4015` en light; `#f6df9d` en dark).
-   - **Estados de Entidades:**
-     - *Disponible / Activo:* `bg-amber-50/80 text-amber-900 border-amber-200/70` (dot `#d4a34b`).
-     - *En Préstamo:* `bg-stone-50/80 text-stone-800 border-stone-200/70` (dot `#a8a29e`).
-     - *Alerta / Stock Crítico:* `bg-rose-50/70 text-rose-800 border-rose-200/60` (dot `#f87171`).
-     - *Mantención:* `bg-yellow-50/70 text-yellow-800 border-yellow-200/60` (dot `#facc15`).
-
-### 3. Tipografía Técnica
-- `font-mono`: Obligatorio en identificadores técnicos (SKU, seriales, rotulado Code128, IP/MAC de equipos Cisco, gavetas `Cajon-A2`, RUT y cifras tabulares con `font-variant-numeric: tabular-nums`).
-- `font-sans`: Tipografía de lectura e interfaz (Inter o Geist) para navegación, formularios, descripciones y títulos.
-
-### 4. Tablas y Data Grids de Alta Densidad (TanStack Table)
-- Cabeceras compactas en mayúsculas atenuadas (`text-xs font-semibold uppercase tracking-wider text-slate-400`).
-- SKU en chip monoespaciado tenue (`font-mono text-xs text-slate-600 bg-slate-100/80 px-2 py-0.5 rounded border border-slate-200/60`).
-- Microbarra de nivel de stock compacto (40-60px) con coloración semántica.
-- Acciones por fila: 1 acción directa principal + menú contextual `DropdownMenu` (`MoreHorizontal`) de Radix UI para acciones secundarias.
-
-### 5. Formularios y Operatoria de Mesón
-- **React Hook Form + Zod** con validación estricta y mensajes correctivos.
-- Agrupación en fieldsets técnicos (`"Identificación de Hardware"`, `"Ubicación en Pañol"`, `"Parámetros de Stock"`).
-- **Drawers laterales (Radix Sheet):** Para operaciones frecuentes (fichas técnicas, asignación rápida) manteniendo la tabla visible de fondo.
-- **Modales centrados (Radix Dialog):** Reservados para confirmaciones destructivas o acciones aisladas.
-- **Ergonomía de Lector Code128:** Soporte de escaneo continuo con listener de eventos `keydown` terminado en `Enter` sin requerir clic previo.
-- **Feedback fluido:** Notificaciones y alertas operativas con Sileo (`toast.success`, `toast.warning`, `toast.error`).
-
-### 6. Barra Lateral y Restricción Estricta del IconBar Encogido (Siempre Vertical)
-> **RESTRICCIÓN OBLIGATORIA (Sidebar Encogido / IconBar Vertical):**  
-> Cuando la barra lateral izquierda está en modo encogido/comprimido (`isCollapsed === true`, ancho `64px`, muelles de iconos `w-[48px]`), el componente `IconBar` (`GlassIconBar` / `IconNav`) y todos los muelles de iconos del lateral izquierdo **DEBEN PERMANECER SIEMPRE EN ORIENTACIÓN VERTICAL ESTRICTA** (`axis="column"`, `data-orientation="vertical"` y clases `flex flex-col items-center`).  
-> **Queda terminantemente PROHIBIDO** que el iconbar del panel lateral encogido se renderice o se configure en orientación horizontal (`row`). Todos los iconos de navegación de módulos y acciones deben estar apilados en una columna vertical centrada.
+> **RESTRICCIÓN OBLIGATORIA (Sidebar encogido):** con `isCollapsed === true` (ancho `64px`), el `IconBar` y todos los muelles de iconos del lateral izquierdo **DEBEN PERMANECER SIEMPRE EN ORIENTACIÓN VERTICAL** (`axis="column"`, `data-orientation="vertical"`, `flex flex-col items-center`). Prohibido renderizarlos en horizontal (`row`).
 
 ## 6. Arquitectura y Manejo de Datos
 
@@ -219,5 +125,5 @@ Paletas suaves de baja saturación diseñadas para reducir la fatiga ocular en j
 ## 9. Referencias y Fuentes
 
 - Formulación del Proyecto de Título - SGIA, INACAP Sede Temuco (Sección TIHI84).
-- Especificación de diseño y patrones de componentes: [`SKILLS/Design.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/SKILLS/Design.md).
-- Índice de requisitos detallados: [`TASKS/README.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/README.md).
+- Especificación de diseño y patrones de componentes: [`.claude/skills/sgia-design/SKILL.md`](.claude/skills/sgia-design/SKILL.md).
+- Índice de requisitos detallados: [`TASKS/README.md`](TASKS/README.md).

@@ -84,8 +84,8 @@ export function FacturaUploadModal({
       const rawProducts =
         res.products ||
         res.draft_products ||
-        (res as any).productos ||
-        (res as any).items ||
+        res.productos ||
+        res.items ||
         [];
 
       const items = rawProducts.map(
@@ -94,11 +94,11 @@ export function FacturaUploadModal({
           name: p.name || p.nombre || 'Producto nuevo',
           quantity: Number(p.quantity || p.stock || 1),
           stock_minimo: 5,
-          price: Number(p.price || (p as any).precio || 0),
+          price: Number(p.price || p.precio || 0),
           area: 'Informática',
           sala: 'Pañol Central',
           cajon: '',
-          barcode: p.barcode || (p as any).codigoBarras || undefined,
+          barcode: p.barcode || p.codigoBarras || undefined,
         }),
       );
 
@@ -129,7 +129,7 @@ export function FacturaUploadModal({
     setIsDragging(false);
   };
 
-  const handleItemChange = (id: string, field: keyof EditableDraftItem, value: any) => {
+  const handleItemChange = (id: string, field: keyof EditableDraftItem, value: EditableDraftItem[keyof EditableDraftItem]) => {
     setDraftItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)),
     );
@@ -293,7 +293,7 @@ export function FacturaUploadModal({
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
                       {scanResult.invoice_number ||
-                        (scanResult as any).numero_factura ||
+                        scanResult.numero_factura ||
                         'Factura detectada'}
                     </span>
                     <Badge tone="available">OCR Procesado</Badge>
@@ -302,7 +302,7 @@ export function FacturaUploadModal({
                     Proveedor:{' '}
                     <strong className="text-zinc-800 dark:text-zinc-200">
                       {scanResult.supplier?.name ||
-                        (scanResult as any).proveedor?.nombre ||
+                        scanResult.proveedor?.nombre ||
                         scanResult.supplier_name ||
                         'ElectroChile S.A.'}
                     </strong>

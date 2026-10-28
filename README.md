@@ -38,6 +38,10 @@ pnpm lint           # lint de todas las apps/paquetes
 pnpm typecheck      # typecheck de todas las apps/paquetes
 ```
 
+## Para agentes de IA
+
+Leer [`CLAUDE.md`](CLAUDE.md) (reglas y comandos) y, para contexto de negocio y arquitectura, [`AGENTS.md`](AGENTS.md). La especificación de diseño está en el skill `.claude/skills/sgia-design/`.
+
 ## Nota de stack
 
 El documento de formulación original especificaba Flutter para el componente móvil.

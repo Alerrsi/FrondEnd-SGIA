@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import mockData from '../data/mock-metrics.json';
+import mockData from '../mocks/mock-metrics.json';
 import type {
   ExecutiveKpis,
   MetricQueryInput,
@@ -24,7 +24,7 @@ export async function executeMetricsGraphQL<TData = unknown>(
  * Resuelve una métrica mock context-aware respetando entidad, métrica, rango temporal y agrupación
  */
 export function resolveMockMetric(input: MetricQueryInput): MetricResult {
-  const metricsMap = mockData.metrics as Record<string, any>;
+  const metricsMap = mockData.metrics as Record<string, Partial<MetricResult>>;
 
   // 1. Búsqueda por entidad, métrica y agrupación si existe
   if (input.groupBy) {

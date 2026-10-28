@@ -47,24 +47,24 @@ Implementar un flujo de autenticación seguro, centralizado y persistente vía L
     - `DIR-01` ➔ `/` (Dashboard)
     - `PAN-01` ➔ `/inventario`
   - [x] Pantalla `ForbiddenPage` (403) ante intentos de navegación no autorizados.
-- [ ] **Modal de Cambio de Contraseña:**
-  - [ ] Diálogo accesible con Radix UI para cambio de contraseña desde el header/perfil.
-  - [ ] Validación de coincidencia de contraseña nueva y confirmación.
-  - [ ] Notificación toast de confirmación y cierre seguro.
-- [ ] **Gestión de Dispositivos y Sesiones Activas:**
-  - [ ] Vista o pestaña de perfil para ver sesiones abiertas (`GET /api/tokens`).
-  - [ ] Botón para cerrar sesiones en otros dispositivos (`POST /api/tokens/revoke-others`).
+- [x] **Modal de Cambio de Contraseña:**
+  - [x] Diálogo accesible con Radix UI para cambio de contraseña desde el header/perfil.
+  - [x] Validación de coincidencia de contraseña nueva y confirmación.
+  - [x] Notificación toast de confirmación y cierre seguro.
+- [x] **Gestión de Dispositivos y Sesiones Activas:**
+  - [x] Vista o pestaña de perfil para ver sesiones abiertas (`GET /api/tokens`).
+  - [x] Botón para cerrar sesiones en otros dispositivos (`POST /api/tokens/revoke-others`).
 
 ### 2. App Móvil (`apps/mobile`)
-- [ ] **Pantalla de Login Nativa:**
-  - [ ] Formulario con NativeWind adaptado a teclado táctil (`KeyboardAvoidingView`).
-  - [ ] Envío explícito de `device_name: 'mobile'` (vigencia de token de 60 días).
-  - [ ] Validación de que solo usuarios con rol `PRO-01` puedan iniciar sesión en la app.
-- [ ] **Almacenamiento Seguro Móvil:**
-  - [ ] Implementar `TokenStorage` usando `expo-secure-store`.
-  - [ ] Restauración automática de sesión al abrir la app.
-- [ ] **Cierre de Sesión:**
-  - [ ] Botón de cierre de sesión en drawer/perfil que llama a `POST /api/logout` y limpia el SecureStore.
+- [x] **Pantalla de Login Nativa:**
+  - [x] Formulario (StyleSheet, sin NativeWind: no está instalado en la app) adaptado a teclado táctil (`KeyboardAvoidingView`).
+  - [x] Envío explícito de `device_name: 'mobile'` (vigencia de token de 60 días).
+  - [x] Validación de que solo usuarios con rol `PRO-01` puedan iniciar sesión en la app.
+- [x] **Almacenamiento Seguro Móvil:**
+  - [x] Implementar `TokenStorage` usando `expo-secure-store`.
+  - [x] Restauración automática de sesión al abrir la app.
+- [x] **Cierre de Sesión:**
+  - [x] Botón de cierre de sesión en drawer/perfil que llama a `POST /api/logout` y limpia el SecureStore.
 
 ---
 
@@ -72,4 +72,4 @@ Implementar un flujo de autenticación seguro, centralizado y persistente vía L
 
 - [x] Unit test: almacenamiento y eliminación de token en `TokenStorage`.
 - [x] Unit test: permisos de rutas por rol (`canAccessRoute` y `getRoleDefaultPath`).
-- [ ] Integration test: flujo de login exitoso y manejo de errores 401/422.
+- [x] Integration test: flujo de login exitoso y manejo de errores 401/422 (web, `login.test.tsx`; móvil sin infraestructura de tests, ver changelog F5).

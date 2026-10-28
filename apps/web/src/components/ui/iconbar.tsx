@@ -134,7 +134,6 @@ export function IconNav({
     const ro = new ResizeObserver(update);
     if (trackRef.current) ro.observe(trackRef.current);
     return () => ro.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vertical, active, items]);
 
   const select = (k: string) => {

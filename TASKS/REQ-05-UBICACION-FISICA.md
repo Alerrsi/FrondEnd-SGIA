@@ -1,6 +1,6 @@
 # REQ-05: Gestión y Filtrado por Ubicación Física en Pañol
 
-> **Código:** `REQ-05` | **Módulo:** `FU-02` (Gestión de Inventario y Almacenamiento)  
+> **Código:** `REQ-05` | **Módulo:** `FU-02` (Gestión de Inventario y Activos)  
 > **Plataforma:** Web (`apps/web`)  
 > **Roles:** Pañolero (`PAN-01`), Director (`DIR-01`) y Administrador (`AD-01`)
 

@@ -10,7 +10,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  // Botón de Acción Principal Global (CTA): Monocromático de alto contraste técnico según Design.md
+  // Botón de Acción Principal Global (CTA): Monocromático de alto contraste técnico según el skill sgia-design
   primary:
     'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white shadow-xs font-medium focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600',
   secondary:

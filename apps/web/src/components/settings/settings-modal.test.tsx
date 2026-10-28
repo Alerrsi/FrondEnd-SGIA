@@ -43,7 +43,7 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
     expect(screen.getByText('Paleta Principal (Industrial INACAP)')).toBeDefined();
     expect(screen.getByText('Predeterminada')).toBeDefined();
 
-    // Paleta B1 (Azul Acero & Indigo) de AGENTS.md / Design.md
+    // Paleta B1 (Azul Acero & Indigo) de AGENTS.md / sgia-design
     expect(screen.getByText('Paleta B1 (Azul Acero & Indigo)')).toBeDefined();
     expect(screen.getByText('Alternativa B1')).toBeDefined();
 

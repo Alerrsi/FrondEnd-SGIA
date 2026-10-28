@@ -1,4 +1,4 @@
-import { Check, Laptop, Moon, Palette, Sparkles, Sun } from 'lucide-react';
+import { Check, KeyRound, Laptop, Monitor, Moon, Palette, Sparkles, Sun } from 'lucide-react';
 import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useTheme, type ColorPalette, type ThemePreference } from '@/contexts/theme-context';
@@ -7,6 +7,8 @@ import { cn } from '@/lib/cn';
 export interface SettingsModalProps {
   open: boolean;
   onClose: () => void;
+  onChangePassword?: () => void;
+  onViewSessions?: () => void;
 }
 
 interface PaletteOption {
@@ -145,7 +147,7 @@ const THEME_OPTIONS: Array<{ id: ThemePreference; label: string; icon: typeof Su
   { id: 'system', label: 'Sistema', icon: Laptop },
 ];
 
-export function SettingsModal({ open, onClose }: SettingsModalProps) {
+export function SettingsModal({ open, onClose, onChangePassword, onViewSessions }: SettingsModalProps) {
   const { palette, setPalette, theme, setTheme } = useTheme();
 
   return (
@@ -157,6 +159,31 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       className="max-w-3xl w-full max-h-[90vh] flex flex-col"
     >
       <div className="flex flex-col gap-6 py-2 overflow-y-auto pr-1 max-h-[calc(90vh-140px)]">
+        {(onChangePassword || onViewSessions) && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
+              <KeyRound className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+                Cuenta y seguridad
+              </h3>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {onChangePassword && (
+                <Button variant="secondary" size="sm" className="text-xs" onClick={onChangePassword}>
+                  <KeyRound className="h-3.5 w-3.5" />
+                  Cambiar contraseña
+                </Button>
+              )}
+              {onViewSessions && (
+                <Button variant="secondary" size="sm" className="text-xs" onClick={onViewSessions}>
+                  <Monitor className="h-3.5 w-3.5" />
+                  Sesiones activas
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Apartado 1: Paleta de Colores */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">

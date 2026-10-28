@@ -1,0 +1,47 @@
+
+> sgia-frontend@1.0.0 typecheck /home/korossuh/Projects/SGIA/FrondEnd-SGIA
+> turbo run typecheck
+
+
+Attention:
+Turborepo now collects completely anonymous telemetry regarding usage.
+This information is used to shape the Turborepo roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://turborepo.dev/docs/telemetry
+
+• turbo 2.11.3
+
+   • Packages in scope: @sgia/api-client, @sgia/config, @sgia/design-tokens, @sgia/mobile, @sgia/types, @sgia/web
+   • Running typecheck in 6 packages
+   • Remote caching disabled
+
+@sgia/mobile:typecheck: cache miss, executing 707f62dceacb3bf2
+@sgia/types:typecheck: cache miss, executing cdb329835af67654
+@sgia/web:typecheck: cache miss, executing 11bfaae17a99d4f8
+@sgia/api-client:typecheck: cache miss, executing 2eb07dbe5560a363
+@sgia/design-tokens:typecheck: cache miss, executing 25e6b5487411c74d
+@sgia/mobile:typecheck: 
+@sgia/mobile:typecheck: > @sgia/mobile@1.0.0 typecheck /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/mobile
+@sgia/mobile:typecheck: > tsc --noEmit
+@sgia/mobile:typecheck: 
+@sgia/types:typecheck: 
+@sgia/types:typecheck: > @sgia/types@1.0.0 typecheck /home/korossuh/Projects/SGIA/FrondEnd-SGIA/packages/types
+@sgia/types:typecheck: > tsc --noEmit
+@sgia/types:typecheck: 
+@sgia/api-client:typecheck: 
+@sgia/api-client:typecheck: > @sgia/api-client@1.0.0 typecheck /home/korossuh/Projects/SGIA/FrondEnd-SGIA/packages/api-client
+@sgia/api-client:typecheck: > tsc --noEmit
+@sgia/api-client:typecheck: 
+@sgia/design-tokens:typecheck: 
+@sgia/design-tokens:typecheck: > @sgia/design-tokens@1.0.0 typecheck /home/korossuh/Projects/SGIA/FrondEnd-SGIA/packages/design-tokens
+@sgia/design-tokens:typecheck: > tsc --noEmit
+@sgia/design-tokens:typecheck: 
+@sgia/web:typecheck: 
+@sgia/web:typecheck: > @sgia/web@1.0.0 typecheck /home/korossuh/Projects/SGIA/FrondEnd-SGIA/apps/web
+@sgia/web:typecheck: > tsc --noEmit
+@sgia/web:typecheck: 
+
+ Tasks:    5 successful, 5 total
+Cached:    0 cached, 5 total
+  Time:    9.565s 
+

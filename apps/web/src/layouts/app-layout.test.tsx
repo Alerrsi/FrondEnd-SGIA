@@ -25,6 +25,9 @@ vi.mock('@/features/auth/context/auth-context', () => ({
 }));
 
 vi.mock('@sgia/api-client', () => ({
+  useChangePassword: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useTokens: () => ({ data: [], isLoading: false, isError: false }),
+  useRevokeOtherTokens: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCriticalStockAlerts: () => ({
     data: {
       data: [

@@ -68,7 +68,7 @@ export interface UpdateUsuarioPayload {
   rol_id?: number;
   panol_id?: number | null;
   carreras?: number[];
-  area?: string;
+  area?: string | null;
   activo?: boolean;
   is_active?: boolean;
   password?: string;
