@@ -1,7 +1,7 @@
 # REQ-03 & REQ-04: Catálogo de Inventario, Alta de Productos y Escaneo OCR de Facturas
 
 > **Códigos:** `REQ-03` (Alta vía Factura OCR) y `REQ-04` (Gestión de Productos y Códigos de Barra)  
-> **Módulo:** `FU-02` (Gestión de Inventario y Almacenamiento)  
+> **Módulo:** `FU-02` (Gestión de Inventario y Activos)  
 > **Plataforma:** Web (`apps/web`)  
 > **Roles:** Director de Carrera (`DIR-01`), Pañolero (`PAN-01`) y Administrador (`AD-01`)
 
