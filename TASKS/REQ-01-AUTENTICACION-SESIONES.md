@@ -72,4 +72,4 @@ Implementar un flujo de autenticación seguro, centralizado y persistente vía L
 
 - [x] Unit test: almacenamiento y eliminación de token en `TokenStorage`.
 - [x] Unit test: permisos de rutas por rol (`canAccessRoute` y `getRoleDefaultPath`).
-- [ ] Integration test: flujo de login exitoso y manejo de errores 401/422.
+- [x] Integration test: flujo de login exitoso y manejo de errores 401/422 (web, `login.test.tsx`; móvil sin infraestructura de tests, ver changelog F5).

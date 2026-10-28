@@ -235,3 +235,11 @@
 - **api-client:** hooks `useChangePassword`, `useTokens`, `useRevokeOtherTokens`. `fetchTokens` ahora lee `response.tokens` (la API devuelve `{ tokens: [...] }`; antes devolvía el objeto entero).
 - **Limitación:** la API no marca cuál es la sesión actual, así que no hay botón para cerrar una sesión individual (`DELETE /api/tokens/{id}`) por riesgo de cerrar la propia.
 - **Verificación:** typecheck 5/5, lint 0, 157 tests pasan (+2 del diálogo de contraseña).
+
+---
+
+## REQ-01: cierre
+
+- **Fecha:** 2026-10-28
+- **Cambios:** test de integración del login web (`login.test.tsx`) con `AuthProvider` real y `fetch` simulado: login exitoso (token guardado y redirección por rol), 401, 422 y rechazo de `PRO-01` en web.
+- **Estado:** REQ-01 sin casillas pendientes. El login móvil se probó a mano contra la API real (navegador); `apps/mobile` sigue sin Jest, decisión de F5.
