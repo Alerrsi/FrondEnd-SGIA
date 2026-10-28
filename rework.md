@@ -59,7 +59,7 @@ Resuelto el 2026-10-27 según el código existente (canvas zinc-100, CTA monocro
 
 ## Fase 3 — Limpieza de documentación
 
-- [ ] **Quitar rutas absolutas `file:///home/alerrsi/...`** de `AGENTS.md` y de `FIXES/CHANGELOG-FIXES.md`. Reemplazar por rutas relativas (`TASKS/REQ-01-AUTENTICACION-SESIONES.md`).
+- [~] **Quitar rutas absolutas `file:///home/alerrsi/...`** de `AGENTS.md` y de `FIXES/CHANGELOG-FIXES.md`. Reemplazar por rutas relativas (`TASKS/REQ-01-AUTENTICACION-SESIONES.md`).
   - Motivo: no funcionan fuera de esa máquina y son ruido en el contexto.
 - [ ] **Unificar el nombre del sistema.** `AGENTS.md` dice "Sistema de Gestión de Inventario y Activos" y `ENDPOINTS.md` dice "Sistema de Gestión de Inventario y Almacenamiento". Elegir uno.
 - [ ] **Actualizar `sgia-frontend/` en `AGENTS.md` §2.** La estructura del árbol usa ese nombre, pero el repositorio se llama `frondend-sgia`. Corregir la ruta del árbol o aclarar que es ilustrativo.

@@ -52,24 +52,24 @@ sgia-frontend/
 
 ## 4. Requisitos y especificaciones funcionales
 
-> **Nota de arquitectura:** Cada requisito funcional y no funcional cuenta con su propio archivo de especificación detallada en el directorio [`TASKS/`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/README.md). Consulta cada archivo específico antes de implementar o modificar flujos:
+> **Nota de arquitectura:** Cada requisito funcional y no funcional cuenta con su propio archivo de especificación detallada en el directorio [`TASKS/`](TASKS/README.md). Consulta cada archivo específico antes de implementar o modificar flujos:
 
-- **Autenticación y Sesiones:** [`TASKS/REQ-01-AUTENTICACION-SESIONES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-01-AUTENTICACION-SESIONES.md)
-- **Administración de Usuarios:** [`TASKS/REQ-02-ADMINISTRACION-USUARIOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-02-ADMINISTRACION-USUARIOS.md)
-- **Inventario y Facturas OCR:** [`TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md)
-- **Ubicación Física:** [`TASKS/REQ-05-UBICACION-FISICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-05-UBICACION-FISICA.md)
-- **Alertas de Stock Crítico:** [`TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
-- **Cotizaciones y Proveedores:** [`TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md)
-- **Compras y Adquisiciones:** [`TASKS/REQ-08-COMPRAS-ADQUISICIONES.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
-- **Préstamos Remotos:** [`TASKS/REQ-09-PRESTAMOS-REMOTOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
-- **Operación de Pañol Presencial:** [`TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
-- **Historial y Auditoría de Préstamos:** [`TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md)
-- **Fichas Técnicas de Equipos:** [`TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md)
-- **Informes de Novedades y Fallas:** [`TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md)
-- **Dashboards y Analítica:** [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
-- **Configuración y Paletas de Color:** [`TASKS/REQ-CONFIG.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-CONFIG.md)
-- **Requisitos No Funcionales (Calidad, Accesibilidad y Rendimiento):** [`TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md)
-- **Directrices de Interfaz y Sidebar:** [`TASKS/REQ-DISEÑO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-DISE%C3%91O.md)
+- **Autenticación y Sesiones:** [`TASKS/REQ-01-AUTENTICACION-SESIONES.md`](TASKS/REQ-01-AUTENTICACION-SESIONES.md)
+- **Administración de Usuarios:** [`TASKS/REQ-02-ADMINISTRACION-USUARIOS.md`](TASKS/REQ-02-ADMINISTRACION-USUARIOS.md)
+- **Inventario y Facturas OCR:** [`TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`](TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md)
+- **Ubicación Física:** [`TASKS/REQ-05-UBICACION-FISICA.md`](TASKS/REQ-05-UBICACION-FISICA.md)
+- **Alertas de Stock Crítico:** [`TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`](TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
+- **Cotizaciones y Proveedores:** [`TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md`](TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md)
+- **Compras y Adquisiciones:** [`TASKS/REQ-08-COMPRAS-ADQUISICIONES.md`](TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
+- **Préstamos Remotos:** [`TASKS/REQ-09-PRESTAMOS-REMOTOS.md`](TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
+- **Operación de Pañol Presencial:** [`TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md`](TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
+- **Historial y Auditoría de Préstamos:** [`TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md`](TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md)
+- **Fichas Técnicas de Equipos:** [`TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md`](TASKS/REQ-12-FICHAS-TECNICAS-EQUIPOS.md)
+- **Informes de Novedades y Fallas:** [`TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md`](TASKS/REQ-13-INFORMES-NOVEDADES-FALLAS.md)
+- **Dashboards y Analítica:** [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+- **Configuración y Paletas de Color:** [`TASKS/REQ-CONFIG.md`](TASKS/REQ-CONFIG.md)
+- **Requisitos No Funcionales (Calidad, Accesibilidad y Rendimiento):** [`TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md`](TASKS/REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md)
+- **Directrices de Interfaz y Sidebar:** [`TASKS/REQ-DISEÑO.md`](TASKS/REQ-DISE%C3%91O.md)
 
 ## 5. Resumen Ejecutivo del Sistema de Diseño (UI Global SGIA)
 
@@ -167,4 +167,4 @@ Detalle completo (B1, Sage, Lavender, Nordic, Peach, Chamomile) en `.claude/skil
 
 - Formulación del Proyecto de Título - SGIA, INACAP Sede Temuco (Sección TIHI84).
 - Especificación de diseño y patrones de componentes: [`.claude/skills/sgia-design/SKILL.md`](.claude/skills/sgia-design/SKILL.md).
-- Índice de requisitos detallados: [`TASKS/README.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/README.md).
+- Índice de requisitos detallados: [`TASKS/README.md`](TASKS/README.md).
