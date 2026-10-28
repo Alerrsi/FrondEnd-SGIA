@@ -8,16 +8,16 @@
 ## FIX-002: Incorporación de Ajustes de Usuario, Modal de Paletas de Color y Prevención de Solapamiento
 
 - **Fecha:** 2026-10-10
-- **Módulo:** Configuración de Usuario / Paleta de Colores (`apps/web`) — [REQ-CONFIG](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-CONFIG.md)
+- **Módulo:** Configuración de Usuario / Paleta de Colores (`apps/web`) — [REQ-CONFIG](TASKS/REQ-CONFIG.md)
 - **Archivos Modificados / Creados:**
-  - [`apps/web/src/components/settings/settings-modal.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/components/settings/settings-modal.tsx)
-  - [`apps/web/src/components/settings/settings-modal.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/components/settings/settings-modal.test.tsx)
-  - [`apps/web/src/contexts/theme-context.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/contexts/theme-context.tsx)
-  - [`apps/web/src/contexts/theme-context.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/contexts/theme-context.test.tsx)
-  - [`apps/web/src/layouts/app-layout.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/layouts/app-layout.tsx)
-  - [`apps/web/src/layouts/app-layout.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/layouts/app-layout.test.tsx)
-  - [`apps/web/src/index.css`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/index.css)
-  - [`TASKS/REQ-CONFIG.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-CONFIG.md)
+  - [`apps/web/src/components/settings/settings-modal.tsx`](apps/web/src/components/settings/settings-modal.tsx)
+  - [`apps/web/src/components/settings/settings-modal.test.tsx`](apps/web/src/components/settings/settings-modal.test.tsx)
+  - [`apps/web/src/contexts/theme-context.tsx`](apps/web/src/contexts/theme-context.tsx)
+  - [`apps/web/src/contexts/theme-context.test.tsx`](apps/web/src/contexts/theme-context.test.tsx)
+  - [`apps/web/src/layouts/app-layout.tsx`](apps/web/src/layouts/app-layout.tsx)
+  - [`apps/web/src/layouts/app-layout.test.tsx`](apps/web/src/layouts/app-layout.test.tsx)
+  - [`apps/web/src/index.css`](apps/web/src/index.css)
+  - [`TASKS/REQ-CONFIG.md`](TASKS/REQ-CONFIG.md)
 - **Requerimientos Implementados:**
   1. **Botón de Ajustes en el Sidebar:** Se añadió botón con icono de engranaje (`Settings`) al costado del nombre del usuario en la fila superior del perfil y en el muelle de iconos colapsado (`IconBar 3`), con accesibilidad por teclado y tooltips informativos.
   2. **Modal de Ajustes (`SettingsModal`):** Diálogo Radix centrado y responsive que despliega la sección *"Paleta de Colores de Interfaz"* y *"Modo de Visualización"*.
@@ -40,7 +40,7 @@
 - **Fecha:** 2026-10-10
 - **Módulo:** UI Layout / Sidebar (`apps/web`) — [REQ-DISEÑO]
 - **Archivos Modificados / Creados:**
-  - [`apps/web/src/layouts/app-layout.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/layouts/app-layout.tsx)
+  - [`apps/web/src/layouts/app-layout.tsx`](apps/web/src/layouts/app-layout.tsx)
 - **Requerimientos Implementados:**
   1. **Arrastre de Panel sin Lag:** Se ha eliminado el lag drástico al arrastrar el separador del sidebar para cambiar su ancho. Esto se logró eliminando la transición CSS (se aplica `transition-none`) exclusivamente cuando `isDragging === true` y procesando el evento `mousemove` a 60FPS usando `requestAnimationFrame`. La transición de `duration-200 ease-out` vuelve al soltar el ratón (`isDragging === false`).
   2. **Arrastrar para Colapsar (Snap to Collapse):** Se ha añadido la regla lógica al `mousemove` donde si `e.clientX` cae por debajo de `COLLAPSE_THRESHOLD = 130`, automáticamente dispara `setIsCollapsed(true)`. Si es mayor a 130, actualiza dinámicamente el ancho respetando el `MIN_WIDTH = 180px`.
@@ -57,8 +57,8 @@
 - **Fecha:** 2026-10-10
 - **Módulo:** UI Layout / Sidebar (`apps/web`) — [REQ-DISEÑO]
 - **Archivos Modificados:**
-  - [`apps/web/src/layouts/app-layout.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/layouts/app-layout.tsx)
-  - [`TASKS/REQ-DISEÑO.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-DISE%C3%91O.md)
+  - [`apps/web/src/layouts/app-layout.tsx`](apps/web/src/layouts/app-layout.tsx)
+  - [`TASKS/REQ-DISEÑO.md`](TASKS/REQ-DISE%C3%91O.md)
 - **Requerimientos Implementados:**
   1. **Margen de Respiración Lateral:** El contenedor colapsado ahora tiene un ancho de `64px` con padding horizontal `px-2` y vertical `py-3`, evitando que los muelles `bar-well` (ancho unificado `48px`) queden pegados a los límites izquierdo y derecho de la pantalla o del canvas.
   2. **Centrado Absoluto de Navegación de Funciones:** El contenedor central de módulos (`IconBar 2` con `GlassIconBar`) incluye ahora `justify-center items-center`, asegurando que el bloque de accesos directos permanezca centrado en el medio de la pantalla (eje vertical y horizontal) con independencia de la altura del viewport o de cuántos módulos tenga habilitado el rol.
@@ -74,7 +74,7 @@
 - **Fecha:** 2026-10-10
 - **Módulo:** Módulo Inventario (`apps/web`) — [REQ-03-REQ-04-INVENTARIO-PRODUCTOS]
 - **Archivos Modificados:**
-  - [`apps/web/src/features/inventario/components/inventario-table.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/inventario/components/inventario-table.tsx)
+  - [`apps/web/src/features/inventario/components/inventario-table.tsx`](apps/web/src/features/inventario/components/inventario-table.tsx)
 - **Requerimientos Implementados:**
   1. Se eliminó el literal `\n` que se encontraba renderizado como texto sin escapar al final del mapeo de celdas en el `<tr>` de cada fila del `<tbody>` (línea 526).
 - **Verificación:**
@@ -88,13 +88,13 @@
 - **Fecha:** 2026-10-11
 - **Módulo:** Enrutamiento y Navegación (`apps/web`) — [REQ-05, REQ-10, REQ-11]
 - **Archivos Modificados / Creados:**
-  - [`apps/web/src/app.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/app.tsx)
-  - [`apps/web/src/layouts/app-layout.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/layouts/app-layout.tsx)
-  - [`apps/web/src/features/auth/types/roles.ts`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/auth/types/roles.ts)
-  - [`apps/web/src/features/ubicaciones/pages/ubicaciones-page.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/ubicaciones/pages/ubicaciones-page.tsx)
-  - [`apps/web/src/features/ubicaciones/pages/ubicaciones-page.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/ubicaciones/pages/ubicaciones-page.test.tsx)
-  - [`apps/web/src/features/prestamos/pages/prestamos-menu-page.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/prestamos/pages/prestamos-menu-page.tsx)
-  - [`apps/web/src/features/prestamos/pages/prestamos-menu-page.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/prestamos/pages/prestamos-menu-page.test.tsx)
+  - [`apps/web/src/app.tsx`](apps/web/src/app.tsx)
+  - [`apps/web/src/layouts/app-layout.tsx`](apps/web/src/layouts/app-layout.tsx)
+  - [`apps/web/src/features/auth/types/roles.ts`](apps/web/src/features/auth/types/roles.ts)
+  - [`apps/web/src/features/ubicaciones/pages/ubicaciones-page.tsx`](apps/web/src/features/ubicaciones/pages/ubicaciones-page.tsx)
+  - [`apps/web/src/features/ubicaciones/pages/ubicaciones-page.test.tsx`](apps/web/src/features/ubicaciones/pages/ubicaciones-page.test.tsx)
+  - [`apps/web/src/features/prestamos/pages/prestamos-menu-page.tsx`](apps/web/src/features/prestamos/pages/prestamos-menu-page.tsx)
+  - [`apps/web/src/features/prestamos/pages/prestamos-menu-page.test.tsx`](apps/web/src/features/prestamos/pages/prestamos-menu-page.test.tsx)
 - **Problema Solucionado:**
   1. Al hacer clic en el sidebar en las opciones de **Préstamos** (`/prestamos`), **Ubicaciones** (`/ubicaciones`) e **Historial** (`/historial`), el router no tenía declaradas las rutas exactas correspondientes o los permisos en `roles.ts`, cayendo en el catch-all `*` y redirigiendo a la ruta por defecto del rol PAN-01 (`/inventario`).
   2. La opción **Proveedores** aparecía en la barra lateral para el rol Pañolero (`PAN-01`) cuando solo corresponde a Dirección (`DIR-01`) y Administración (`AD-01`).
@@ -114,15 +114,15 @@
 - **Fecha:** 2026-10-12
 - **Módulo:** Dashboards, Analítica y Métricas (`apps/web`) — [REQ-14]
 - **Archivos Modificados / Creados:**
-  - [`apps/web/src/features/dashboard/data/mock-metrics.json`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/data/mock-metrics.json)
-  - [`apps/web/src/features/dashboard/types/metrics.ts`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/types/metrics.ts)
-  - [`apps/web/src/features/dashboard/hooks/use-metrics.ts`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/hooks/use-metrics.ts)
-  - [`apps/web/src/features/dashboard/components/metric-strip.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/components/metric-strip.tsx)
-  - [`apps/web/src/features/dashboard/components/dynamic-chart-card.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/components/dynamic-chart-card.tsx)
-  - [`apps/web/src/features/dashboard/components/chart-builder-modal.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/components/chart-builder-modal.tsx)
-  - [`apps/web/src/features/dashboard/pages/dashboard-page.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/pages/dashboard-page.tsx)
-  - [`apps/web/src/features/dashboard/dashboard-page.test.tsx`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/apps/web/src/features/dashboard/dashboard-page.test.tsx)
-  - [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](file:///home/alerrsi/Documents/proyects/SGIA/FrondEnd-SGIA/TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+  - [`apps/web/src/features/dashboard/data/mock-metrics.json`](apps/web/src/features/dashboard/data/mock-metrics.json)
+  - [`apps/web/src/features/dashboard/types/metrics.ts`](apps/web/src/features/dashboard/types/metrics.ts)
+  - [`apps/web/src/features/dashboard/hooks/use-metrics.ts`](apps/web/src/features/dashboard/hooks/use-metrics.ts)
+  - [`apps/web/src/features/dashboard/components/metric-strip.tsx`](apps/web/src/features/dashboard/components/metric-strip.tsx)
+  - [`apps/web/src/features/dashboard/components/dynamic-chart-card.tsx`](apps/web/src/features/dashboard/components/dynamic-chart-card.tsx)
+  - [`apps/web/src/features/dashboard/components/chart-builder-modal.tsx`](apps/web/src/features/dashboard/components/chart-builder-modal.tsx)
+  - [`apps/web/src/features/dashboard/pages/dashboard-page.tsx`](apps/web/src/features/dashboard/pages/dashboard-page.tsx)
+  - [`apps/web/src/features/dashboard/dashboard-page.test.tsx`](apps/web/src/features/dashboard/dashboard-page.test.tsx)
+  - [`TASKS/REQ-14-DASHBOARDS-ANALITICA.md`](TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
 - **Requerimientos Implementados:**
   1. **Generación de Mock Data Contextual (`mock-metrics.json`):** Archivo JSON con datos del pañol TI (Routers Cisco 4321, Switches Catalyst 2960, Multímetros Fluke, kits Arduino/IoT, etc.), respetando el disclaimer de desarrollo previo a la API GraphQL.
   2. **Cinta Métrica Ejecutiva (`MetricStrip`):** Con 8 indicadores estratégicos compactos (activos disponibles, en préstamo, en taller, de baja, préstamos hoy, tasa de atrasos, alertas críticas y rotación mensual).
