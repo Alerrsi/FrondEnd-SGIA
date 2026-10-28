@@ -73,12 +73,12 @@ Resuelto el 2026-10-27 según el código existente (canvas zinc-100, CTA monocro
 
 `TASKS/README.md` marca el estado de cada requisito. Revisar si coincide con el código real.
 
-- [ ] **REQ-01 (80%)**: confirmar qué falta exactamente.
-- [ ] **REQ-02 (100%)**: confirmar que los tests de `usuarios-lifecycle` y `usuarios-table` pasan.
-- [ ] **REQ-03-04 (Pendiente)**: revisar si ya existe `inventario-table` y `producto-form-dialog` en `apps/web/src/features/inventario/`. Si existen, el estado está desactualizado.
-- [ ] **REQ-05, 06, 07, 08 (Pendientes)**: revisar si hay código parcial en `features/ubicaciones`, `features/alertas`, `features/cotizaciones` y `features/proveedores`.
-- [ ] **REQ-CONFIG (100%)**: confirmar con `FIX-002` y `FIX-003` del changelog.
-- [ ] **Actualizar `TASKS/README.md`** con el estado real.
+- [x] **REQ-01 (80%)**: confirmar qué falta exactamente.
+- [x] **REQ-02 (100%)**: confirmar que los tests de `usuarios-lifecycle` y `usuarios-table` pasan.
+- [x] **REQ-03-04 (Pendiente)**: revisar si ya existe `inventario-table` y `producto-form-dialog` en `apps/web/src/features/inventario/`. Si existen, el estado está desactualizado.
+- [x] **REQ-05, 06, 07, 08 (Pendientes)**: revisar si hay código parcial en `features/ubicaciones`, `features/alertas`, `features/cotizaciones` y `features/proveedores`.
+- [x] **REQ-CONFIG (100%)**: confirmar con `FIX-002` y `FIX-003` del changelog.
+- [x] **Actualizar `TASKS/README.md`** con el estado real.
 
 Criterio: el porcentaje de cada requisito se puede justificar con archivos concretos.
 

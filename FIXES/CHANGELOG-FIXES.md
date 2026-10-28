@@ -167,3 +167,11 @@
   3. Nombre oficial del repositorio: `FrondEnd-SGIA` (igual al remoto); el árbol de `AGENTS.md` §2 lo usa.
   4. `AGENTS.md` §5 reducido a un resumen que apunta al skill `sgia-design` (170 → 129 líneas).
   5. `README.md`: sección "Para agentes de IA".
+
+---
+
+## REWORK-F4: Estado de requisitos alineado con el código
+
+- **Fecha:** 2026-10-27
+- **Archivos Modificados:** `TASKS/README.md`, `rework.md`
+- **Cambios:** estados recalculados con las casillas de cada `TASKS/REQ-*.md` y el código de `apps/` y `packages/`. REQ-03 a REQ-07 y REQ-10 a REQ-12 pasan de Pendiente a Completado; REQ-01 baja de 80% a 48%; REQ-09 pasa a Parcial; REQ-14 a En Progreso; REQ-NF baja de 60% a 17%.
