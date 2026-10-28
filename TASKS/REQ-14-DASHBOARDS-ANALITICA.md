@@ -143,7 +143,7 @@ PD: crea un json con los datos de prueba
   - [p] Hooks TanStack Query especializados (`useExecutiveKpis`, `useCustomMetric`, `useBatchMetrics`) alimentados por mock JSON en contexto pañol TI.
 
 ### 2. Cinta Métrica de KPIs Ejecutivos (GraphQL `executiveKpis`)
-- [p] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo Design.md):**
+- [p] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo sgia-design):**
   - [p] Consulta vía GraphQL `executiveKpis(timeRange: $range)`.
   - [p] Estado de inventario: activos disponibles, en préstamo, en taller y de baja.
   - [p] Operación diaria: préstamos activos hoy y tasa porcentual de atrasos.

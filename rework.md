@@ -37,7 +37,7 @@ Motivo: sin esta línea base no se puede saber si un cambio rompió algo.
     ```
   - Mover las paletas alternativas (Sage, Lavender, Nordic, Peach, Chamomile, B1) a `.claude/skills/sgia-design/references/paletas.md` para que solo se carguen cuando se necesiten.
   - Criterio: al pedir "haz una pantalla de inventario", Claude carga el skill sin que el usuario lo pida.
-- [ ] **Decidir si `SKILLS/Design.md` se mantiene** como documento de referencia o se elimina después de migrar.
+- [x] **Decidir si `SKILLS/Design.md` se mantiene** como documento de referencia o se elimina después de migrar. → eliminado; el skill es la única fuente.
 - [x] **Crear comandos de proyecto** en `.claude/commands/`:
   - `/verificar`: corre typecheck, lint y tests web, y resume los fallos.
   - `/nueva-pantalla`: pide módulo y rol, y crea la estructura de `features/<módulo>/` siguiendo las convenciones.

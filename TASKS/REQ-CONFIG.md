@@ -24,7 +24,7 @@ Este fichero de tareas consta de tareas para un apartado específico del sistema
   - Paleta estándar industrial INACAP basada en la escala neutra Zinc (`bg-zinc-100` / `bg-zinc-950`), superficie `bg-white` / `bg-zinc-900`, acento institucional INACAP (`#dc2626`) y estados semánticos técnicos estándar.
 
 - [x] **Paleta de colores B1 de AGENT.md / Design.md:**
-  - Paleta alternativa de alta concentración técnica con tonos aeroespaciales e industriales de `SKILLS/Design.md`:
+  - Paleta alternativa de alta concentración técnica con tonos aeroespaciales e industriales de `.claude/skills/sgia-design/SKILL.md`:
     - `Smart Blue` (`#0466c8`)
     - `Steel Azure` (`#0353a4`)
     - `Regal Navy` (`#023e7d`)

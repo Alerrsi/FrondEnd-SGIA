@@ -26,7 +26,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - `TASKS/` — especificación de cada requisito (`REQ-XX`). Leer el archivo del requisito antes de tocar un flujo.
 - `ENDPOINTS.md` — catálogo de endpoints de la API.
 - `FIXES/CHANGELOG-FIXES.md` — historial de correcciones; registrar ahí los cambios importantes.
-- `SKILLS/Design.md` — especificación de diseño de UI. Leer antes de crear o modificar componentes visuales.
+- `.claude/skills/sgia-design/` — skill con la especificación de diseño de UI (se carga sola). Leer antes de crear o modificar componentes visuales.
 - `AGENTS.md` — contexto de negocio y arquitectura completo. Consultarlo para tareas de dominio.
 
 ## Reglas duras
@@ -42,7 +42,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 
 ## Decisiones de diseño
 
-Resueltas en Fase 2 de `rework.md` según el código existente (detalle en `SKILLS/Design.md`): canvas `bg-zinc-100 dark:bg-zinc-950`; CTA principal monocromo (sin rojo); badges con el componente `Badge`; paletas alternativas no tiñen canvas ni tarjetas.
+Resueltas en Fase 2 de `rework.md` según el código existente (detalle en el skill `sgia-design`): canvas `bg-zinc-100 dark:bg-zinc-950`; CTA principal monocromo (sin rojo); badges con el componente `Badge`; paletas alternativas no tiñen canvas ni tarjetas.
 
 ## Convenciones de trabajo
 
