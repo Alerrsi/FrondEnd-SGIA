@@ -5,6 +5,7 @@ import type {
   LoanCheckinPayload,
   LoanCheckoutPayload,
   LoanExportParams,
+  LoanRequestQueryParams,
   Prestamo,
   PrestamoParams,
   RechazarPrestamoPayload,
@@ -16,6 +17,7 @@ import {
   checkinLoan,
   checkoutLoan,
   createLoanRequest,
+  deliverLoan,
   exportLoans,
   fetchLoan,
   fetchLoans,
@@ -27,8 +29,8 @@ import {
 export const loanKeys = {
   all: ['loans'] as const,
   list: (params?: PrestamoParams) => ['loans', 'list', params] as const,
-  pending: ['loans', 'pending'] as const,
-  myRequests: ['loans', 'my-requests'] as const,
+  pending: (params?: { per_page?: number; page?: number }) => ['loans', 'pending', params] as const,
+  myRequests: (params?: LoanRequestQueryParams) => ['loans', 'my-requests', params] as const,
   detail: (id: number) => ['loans', 'detail', id] as const,
 };
 
@@ -39,17 +41,17 @@ export function useLoans(params?: PrestamoParams) {
   });
 }
 
-export function usePendingLoans() {
+export function usePendingLoans(params?: { per_page?: number; page?: number }) {
   return useQuery({
-    queryKey: loanKeys.pending,
-    queryFn: fetchPendingLoans,
+    queryKey: loanKeys.pending(params),
+    queryFn: () => fetchPendingLoans(params),
   });
 }
 
-export function useMyLoanRequests() {
+export function useMyLoanRequests(params?: LoanRequestQueryParams) {
   return useQuery({
-    queryKey: loanKeys.myRequests,
-    queryFn: fetchMyLoanRequests,
+    queryKey: loanKeys.myRequests(params),
+    queryFn: () => fetchMyLoanRequests(params),
   });
 }
 
@@ -108,6 +110,17 @@ export function useCheckoutLoan() {
   const queryClient = useQueryClient();
   return useMutation<Prestamo, Error, LoanCheckoutPayload>({
     mutationFn: checkoutLoan,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: loanKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+  });
+}
+
+export function useDeliverLoan() {
+  const queryClient = useQueryClient();
+  return useMutation<Prestamo, Error, number>({
+    mutationFn: (id: number) => deliverLoan(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: loanKeys.all });
       queryClient.invalidateQueries({ queryKey: ['products'] });

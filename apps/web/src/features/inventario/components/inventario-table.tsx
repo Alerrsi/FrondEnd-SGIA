@@ -26,7 +26,7 @@ import {
   X,
 } from 'lucide-react';
 import { useCajones, useLocations } from '@sgia/api-client';
-import type { Producto } from '@sgia/types';
+import type { CajonEntity, LocationEntity, Producto } from '@sgia/types';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -118,7 +118,11 @@ export function InventarioTable({
 
   // Carga dinámica de ubicaciones físicas desde la API
   const { data: locationsData } = useLocations({ per_page: 50 });
-  const locations = locationsData?.data ?? [];
+  const locations: LocationEntity[] = Array.isArray(locationsData?.data)
+    ? locationsData.data
+    : Array.isArray(locationsData)
+      ? (locationsData as LocationEntity[])
+      : [];
 
   const activeLocation = locations.find(
     (l) => (l.nombre || l.sala) === salaFilter,
@@ -127,7 +131,17 @@ export function InventarioTable({
   const { data: cajonesData } = useCajones(
     activeLocation?.id ? { location_id: activeLocation.id, per_page: 50 } : undefined,
   );
-  const cajones = cajonesData?.data ?? [];
+  const cajones: CajonEntity[] = Array.isArray(cajonesData?.data)
+    ? cajonesData.data
+    : Array.isArray(cajonesData)
+      ? (cajonesData as CajonEntity[])
+      : [];
+
+  const safeProductos = useMemo(() => {
+    return Array.isArray(productos)
+      ? productos.filter((p): p is Producto => Boolean(p && typeof p === "object"))
+      : [];
+  }, [productos]);
 
   const columns = useMemo(
     () => [
@@ -156,11 +170,18 @@ export function InventarioTable({
       }),
       columnHelper.accessor('categoria', {
         header: 'Área / Especialidad',
-        cell: (info) => (
-          <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
-            {info.getValue() || '—'}
-          </span>
-        ),
+        cell: (info) => {
+          const val = info.getValue();
+          const display =
+            typeof val === 'string'
+              ? val
+              : (val as any)?.nombre ?? (val as any)?.name ?? '—';
+          return (
+            <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
+              {display}
+            </span>
+          );
+        },
       }),
       columnHelper.accessor('ubicacion', {
         header: 'Ubicación Física',
@@ -169,11 +190,21 @@ export function InventarioTable({
           if (!loc) {
             return <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">—</span>;
           }
+          if (typeof loc === 'string') {
+            return (
+              <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
+                <span>{loc}</span>
+              </div>
+            );
+          }
+          const salaStr = typeof loc.sala === 'string' ? loc.sala : (loc.sala as any)?.nombre ?? (loc.sala as any)?.sala ?? '';
+          const cajonStr = typeof loc.cajon === 'string' ? loc.cajon : (loc.cajon as any)?.codigo ?? (loc.cajon as any)?.nombre ?? '';
           return (
             <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
               <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
               <span>
-                {loc.sala || 'Sala —'} · {loc.cajon || 'Cajón —'}
+                {salaStr || 'Sala —'} · {cajonStr || 'Cajón —'}
               </span>
             </div>
           );
@@ -313,7 +344,7 @@ export function InventarioTable({
   );
 
   const table = useReactTable({
-    data: productos,
+    data: safeProductos,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -507,7 +538,7 @@ export function InventarioTable({
                   </div>
                 </td>
               </tr>
-            ) : productos.length === 0 ? (
+            ) : safeProductos.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="px-4 py-12 text-center text-xs text-zinc-500 font-mono">
                   No se encontraron productos con los criterios seleccionados.

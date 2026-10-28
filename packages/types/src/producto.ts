@@ -115,19 +115,28 @@ export interface CreateProductoPayload {
   name?: string;
   nombre?: string;
   description?: string;
+  descripcion?: string;
   barcode?: string;
+  codigoBarras?: string;
   quantity?: number;
+  cantidad?: number;
   stock?: number;
   stock_minimo?: number;
   stockCritico?: number;
+  carrera_codigo?: string;
+  carrera?: string;
+  categoria_id?: number;
+  panol_id?: number;
   supplier_id?: number;
   location_id?: number;
   cajon_id?: number;
+  estante_id?: number;
   sala?: string;
   cajon?: string;
   area?: string;
   photo_url?: string;
   is_active?: boolean;
+  activo?: boolean;
   categoria?: string;
   marca?: string;
   modelo?: string;
@@ -138,19 +147,28 @@ export interface UpdateProductoPayload {
   name?: string;
   nombre?: string;
   description?: string;
+  descripcion?: string;
   barcode?: string;
+  codigoBarras?: string;
   quantity?: number;
+  cantidad?: number;
   stock?: number;
   stock_minimo?: number;
   stockCritico?: number;
+  carrera_codigo?: string;
+  carrera?: string;
+  categoria_id?: number;
+  panol_id?: number;
   supplier_id?: number;
   location_id?: number;
   cajon_id?: number;
+  estante_id?: number;
   sala?: string;
   cajon?: string;
   area?: string;
   photo_url?: string;
   is_active?: boolean;
+  activo?: boolean;
 }
 
 export interface ExtraerFacturaPayload {
@@ -173,8 +191,10 @@ export interface BorradorProducto {
 }
 
 export interface InvoiceScanResponse {
+  message?: string;
   invoice_number?: string;
   numero_factura?: string;
+  supplier_detected?: string;
   supplier_name?: string;
   supplier_id?: number;
   supplier?: { id?: number; name?: string };
@@ -188,10 +208,15 @@ export interface InvoiceScanResponse {
 export interface ProductoParams {
   search?: string;
   query?: string;
+  carrera?: string;
+  categoria_id?: number;
+  panol_id?: number;
   area?: string;
   is_active?: boolean;
   supplier_id?: number;
   location_id?: number;
+  cajon_id?: number;
+  estante_id?: number;
   ubicacionId?: number;
   sala?: string;
   cajon?: string;
@@ -205,6 +230,7 @@ export interface ProductoParams {
 export interface ProductLocationPayload {
   location_id?: number;
   cajon_id?: number;
+  estante_id?: number;
   sala?: string;
   cajon?: string;
   descripcion?: string;

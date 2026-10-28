@@ -73,6 +73,8 @@ export interface Prestamo {
   }>;
   origen: LoanOrigin | string;
   estado: LoanStatus | string;
+  status?: LoanStatus | string;
+  status_label?: string;
   asignatura?: string | null;
   subject?: string | null;
   carrera?: string | null;
@@ -91,10 +93,13 @@ export interface Prestamo {
   motivoRechazo?: string | null;
   rejection_reason?: string | null;
   observaciones?: string | null;
+  notes?: string | null;
   procesadoPorId?: number | null;
   procesadoPorNombre?: string | null;
   tramitadoAt?: string | null;
+  processed_at?: string | null;
   diasAtraso?: number;
+  allowed_transitions?: string[];
   eventos?: PrestamoEvento[];
   createdAt?: string;
   created_at?: string;
@@ -111,6 +116,7 @@ export interface CreatePrestamoPayload {
   room?: string;
   fechaSolicitada?: string;
   loan_date?: string;
+  fecha?: string;
   time_block?: string;
   notes?: string;
 }
@@ -131,10 +137,19 @@ export interface RechazarPrestamoPayload {
 }
 
 export interface LoanCheckoutPayload {
-  docente_run: string;
+  borrower_name?: string;
+  solicitante?: string;
+  borrower_document?: string;
+  credencial?: string;
+  docente_run?: string;
   credential_code?: string;
   subject?: string;
+  asignatura?: string;
   room?: string;
+  sala?: string;
+  loan_date?: string;
+  fecha?: string;
+  time_block?: string;
   notes?: string;
   items: Array<{
     barcode?: string;
@@ -150,9 +165,10 @@ export interface LoanCheckinPayload {
     product_id?: number;
     productoId?: number;
     item_id?: number;
-    condition?: 'bueno' | 'regular' | 'dañado';
+    condition?: 'bueno' | 'regular' | 'dañado' | 'optimo' | 'extraviado';
     damaged?: boolean;
     dañado?: boolean;
+    quantity_returned?: number;
     notes?: string;
     observaciones?: string;
   }>;
@@ -161,7 +177,10 @@ export interface LoanCheckinPayload {
 export interface LoanExportParams {
   start_date?: string;
   end_date?: string;
-  format: 'pdf' | 'excel';
+  from_date?: string;
+  to_date?: string;
+  status?: string;
+  format: 'pdf' | 'excel' | 'xlsx';
 }
 
 export interface LoanParams {
@@ -169,12 +188,22 @@ export interface LoanParams {
   per_page?: number;
   perPage?: number;
   search?: string;
+  status?: LoanStatus | string;
   estado?: LoanStatus | string;
+  tipo?: LoanOrigin | string;
+  type?: LoanOrigin | string;
   origen?: LoanOrigin | string;
+  insumo?: string;
+  product?: string;
+  profesor?: string;
+  teacher?: string;
+  borrower?: string;
   run?: string;
   docente?: string;
   asignatura?: string;
+  subject?: string;
   sala?: string;
+  room?: string;
   start_date?: string;
   end_date?: string;
   fecha_desde?: string;
@@ -182,3 +211,10 @@ export interface LoanParams {
 }
 
 export type PrestamoParams = LoanParams;
+
+export interface LoanRequestQueryParams {
+  status?: string;
+  estado?: string;
+  per_page?: number;
+  page?: number;
+}

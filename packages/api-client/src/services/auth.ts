@@ -1,4 +1,4 @@
-import type { Usuario } from '@sgia/types';
+import type { RoleCode, Usuario } from '@sgia/types';
 import { del, get, post, put, type TokenStorage } from '../http';
 
 export interface LoginPayload {
@@ -22,16 +22,41 @@ export interface ApiTokenInfo {
   expires_at?: string | null;
 }
 
+const VALID_ROLE_CODES = new Set(['AD-01', 'DIR-01', 'PAN-01', 'PRO-01']);
+
+export function normalizeRoleCode(raw: any): RoleCode {
+  if (typeof raw?.role === 'string' && VALID_ROLE_CODES.has(raw.role.toUpperCase())) {
+    return raw.role.toUpperCase() as RoleCode;
+  }
+  if (typeof raw?.rol === 'string' && VALID_ROLE_CODES.has(raw.rol.toUpperCase())) {
+    return raw.rol.toUpperCase() as RoleCode;
+  }
+  if (typeof raw?.rol_id === 'number') {
+    if (raw.rol_id === 1) return 'AD-01';
+    if (raw.rol_id === 2) return 'DIR-01';
+    if (raw.rol_id === 3) return 'PAN-01';
+    if (raw.rol_id === 4 || raw.rol_id === 5) return 'PRO-01';
+  }
+  const text = String(raw?.rol ?? raw?.role ?? '').toLowerCase();
+  if (text.includes('admin')) return 'AD-01';
+  if (text.includes('director') || text.includes('coordinador')) return 'DIR-01';
+  if (text.includes('pañol') || text.includes('panol')) return 'PAN-01';
+  if (text.includes('docente') || text.includes('profesor')) return 'PRO-01';
+
+  return 'PRO-01';
+}
+
 export function normalizeUser(raw: any): Usuario {
   if (!raw) return raw;
+  const roleCode = normalizeRoleCode(raw);
   return {
     id: raw.id,
     run: raw.run ?? '',
     nombre: raw.nombre ?? raw.name ?? '',
     name: raw.name ?? raw.nombre ?? '',
     email: raw.email,
-    rol: raw.rol ?? raw.role,
-    role: raw.role ?? raw.rol,
+    rol: roleCode,
+    role: roleCode,
     area: raw.area ?? null,
     activo: raw.activo ?? raw.is_active ?? true,
     is_active: raw.is_active ?? raw.activo ?? true,

@@ -8,6 +8,10 @@ describe('Role and Route Permissions', () => {
     expect(isWebRole('PAN-01')).toBe(true);
     expect(isWebRole('PRO-01')).toBe(false);
     expect(isWebRole('UNKNOWN')).toBe(false);
+    expect(isWebRole('Director de carrera')).toBe(true);
+    expect(isWebRole('Administrador')).toBe(true);
+    expect(isWebRole('Pañol')).toBe(true);
+    expect(isWebRole('Docente')).toBe(false);
   });
 
   it('defines default routes for each web role', () => {
@@ -18,12 +22,12 @@ describe('Role and Route Permissions', () => {
   });
 
   describe('canAccessRoute', () => {
-    it('allows AD-01 only to access user management', () => {
+    it('allows AD-01 to access management, inventory and administrative routes', () => {
       expect(canAccessRoute('AD-01', '/usuarios')).toBe(true);
+      expect(canAccessRoute('AD-01', '/inventario')).toBe(true);
+      expect(canAccessRoute('AD-01', '/cotizaciones')).toBe(true);
       expect(canAccessRoute('AD-01', '/')).toBe(false);
-      expect(canAccessRoute('AD-01', '/inventario')).toBe(false);
       expect(canAccessRoute('AD-01', '/prestamos/cola')).toBe(false);
-      expect(canAccessRoute('AD-01', '/cotizaciones')).toBe(false);
     });
 
     it('allows DIR-01 to access dashboard, quotations, and inventory', () => {

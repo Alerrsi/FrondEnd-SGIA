@@ -63,6 +63,19 @@ function Label({
   );
 }
 
+function extractLocationId(prod: Producto | null): number | null {
+  if (!prod) return null;
+  if (typeof prod.location_id === 'number') return prod.location_id;
+  if (typeof prod.location === 'number') return prod.location;
+  if (typeof prod.location === 'object' && prod.location !== null && 'id' in prod.location) {
+    return Number((prod.location as LocationEntity).id) || null;
+  }
+  if (typeof prod.ubicacion === 'object' && prod.ubicacion !== null && prod.ubicacion.id) {
+    return prod.ubicacion.id;
+  }
+  return null;
+}
+
 export function ProductoFormDialog({
   open,
   onClose,
@@ -80,7 +93,9 @@ export function ProductoFormDialog({
   const [manualLocationMode, setManualLocationMode] = useState(false);
 
   const { data: locationsData } = useLocations({ per_page: 50 });
-  const locations = locationsData?.data ?? [];
+  const locations: LocationEntity[] = Array.isArray(locationsData?.data)
+    ? locationsData.data.filter((l): l is LocationEntity => Boolean(l && typeof l === 'object'))
+    : [];
 
   const {
     register,
@@ -112,17 +127,17 @@ export function ProductoFormDialog({
       ? { location_id: selectedLocationId, per_page: 50 }
       : undefined,
   );
-  const cajones = cajonesData?.data ?? [];
+  const cajones = Array.isArray(cajonesData?.data)
+    ? cajonesData.data.filter((c) => Boolean(c && typeof c === 'object'))
+    : [];
 
   useEffect(() => {
     if (open) {
       if (producto) {
-        const locId =
-          producto.location_id ??
-          (producto.location && 'id' in producto.location
-            ? (producto.location as LocationEntity).id
-            : null);
-        const cajId = producto.cajon_id ?? producto.cajon?.id ?? null;
+        const locId = extractLocationId(producto);
+        const cajId =
+          producto.cajon_id ??
+          (typeof producto.cajon === 'object' && producto.cajon !== null ? producto.cajon.id : null);
 
         reset({
           name: producto.nombre || producto.name || '',
@@ -448,7 +463,7 @@ export function ProductoFormDialog({
           </DialogCloseButton>
           <Button type="submit" disabled={isPending} size="sm" className="min-w-28">
             {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            {esEdicion ? 'Guardar cambios' : 'Dar de alta producto'}
+            <span>{esEdicion ? 'Guardar Cambios' : 'Dar de Alta'}</span>
           </Button>
         </div>
       </form>

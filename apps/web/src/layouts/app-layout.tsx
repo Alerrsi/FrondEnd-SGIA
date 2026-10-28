@@ -1,3 +1,4 @@
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { useEffect, useState } from 'react';
 import {
   BarChart3,
@@ -443,7 +444,9 @@ export default function AppLayout() {
           {/* Main Content Area: comparte exactamente el mismo canvas bg-zinc-50 dark:bg-zinc-950 */}
           <main className="flex-1 overflow-auto bg-zinc-50 dark:bg-zinc-950 p-6 transition-colors">
             <div className="mx-auto max-w-7xl">
-              <Outlet />
+              <ErrorBoundary>
+                <Outlet />
+              </ErrorBoundary>
             </div>
           </main>
         </div>

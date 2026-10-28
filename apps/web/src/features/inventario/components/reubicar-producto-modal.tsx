@@ -52,10 +52,14 @@ export function ReubicarProductoModal({
     if (open && producto) {
       const currentLocId =
         producto.location_id ??
-        (producto.location && 'id' in producto.location
+        (producto.location && typeof producto.location === 'object' && 'id' in producto.location
           ? (producto.location as LocationEntity).id
           : null);
-      const currentCajonId = producto.cajon_id ?? producto.cajon?.id ?? null;
+      const currentCajonId =
+        producto.cajon_id ??
+        (producto.cajon && typeof producto.cajon === 'object' && 'id' in producto.cajon
+          ? (producto.cajon as any).id
+          : null);
 
       setSelectedLocationId(currentLocId ?? null);
       setSelectedCajonId(currentCajonId ?? null);
@@ -75,10 +79,14 @@ export function ReubicarProductoModal({
 
   const initialLocId =
     producto.location_id ??
-    (producto.location && 'id' in producto.location
+    (producto.location && typeof producto.location === 'object' && 'id' in producto.location
       ? (producto.location as LocationEntity).id
       : null);
-  const initialCajonId = producto.cajon_id ?? producto.cajon?.id ?? null;
+  const initialCajonId =
+    producto.cajon_id ??
+    (producto.cajon && typeof producto.cajon === 'object' && 'id' in producto.cajon
+      ? (producto.cajon as any).id
+      : null);
   const initialSala = producto.ubicacion?.sala || '';
   const initialCajon = producto.ubicacion?.cajon || '';
   const initialDesc = producto.ubicacion?.descripcion || '';

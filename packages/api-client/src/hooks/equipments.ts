@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CreateIncidentReportPayload,
   CreateNovedadPayload,
+  DashboardAnalyticsParams,
   EquipmentQueryParams,
+  EquipmentReportQueryParams,
   EquipmentSpecs,
   IncidentReport,
   IncidentSeverity,
@@ -12,6 +14,7 @@ import type {
 } from '@sgia/types';
 import {
   createIncidentReport,
+  downloadEquipmentReports,
   fetchCareersDistribution,
   fetchDashboardStats,
   fetchEquipo,
@@ -34,6 +37,7 @@ export const equipmentKeys = {
   list: (params?: EquipmentQueryParams) => ['equipment', 'list', params] as const,
   specs: (id: number) => ['equipment', 'specs', id] as const,
   detail: (id: number) => ['equipment', 'detail', id] as const,
+  reports: (id: number, params?: EquipmentReportQueryParams) => ['equipment', 'reports', id, params] as const,
 };
 
 export const incidentKeys = {
@@ -43,11 +47,11 @@ export const incidentKeys = {
 
 export const dashboardKeys = {
   stats: ['dashboard', 'stats'] as const,
-  topProducts: ['dashboard', 'top-products'] as const,
-  topSupplies: ['dashboard', 'top-supplies'] as const,
-  careersDistribution: ['dashboard', 'careers-distribution'] as const,
-  leastDemanded: ['dashboard', 'least-demanded'] as const,
-  topTeachers: ['dashboard', 'top-teachers'] as const,
+  topProducts: (params?: DashboardAnalyticsParams) => ['dashboard', 'top-products', params] as const,
+  topSupplies: (params?: DashboardAnalyticsParams) => ['dashboard', 'top-supplies', params] as const,
+  careersDistribution: (params?: { since?: string }) => ['dashboard', 'careers-distribution', params] as const,
+  leastDemanded: (params?: DashboardAnalyticsParams) => ['dashboard', 'least-demanded', params] as const,
+  topTeachers: (params?: DashboardAnalyticsParams) => ['dashboard', 'top-teachers', params] as const,
   loansByTeacher: ['dashboard', 'loans-by-teacher'] as const,
 };
 
@@ -97,10 +101,10 @@ export function useEquipmentTechnicalSheet(id: number | undefined) {
   });
 }
 
-export function useEquipmentReports(id: number | undefined) {
+export function useEquipmentReports(id: number | undefined, params?: EquipmentReportQueryParams) {
   return useQuery({
-    queryKey: ['equipment', 'reports', id],
-    queryFn: () => fetchEquipmentReports(id!),
+    queryKey: equipmentKeys.reports(id!, params),
+    queryFn: () => fetchEquipmentReports(id!, params),
     enabled: id !== undefined,
   });
 }
@@ -112,8 +116,13 @@ export function useDownloadTechnicalSheet() {
 }
 
 export function useDownloadEquipmentReports() {
-  return useMutation<Blob, Error, number>({
-    mutationFn: (id: number) => fetchEquipmentReports(id),
+  return useMutation<Blob, Error, { id: number; params?: EquipmentReportQueryParams } | number>({
+    mutationFn: (arg) => {
+      if (typeof arg === 'number') {
+        return downloadEquipmentReports(arg);
+      }
+      return downloadEquipmentReports(arg.id, arg.params);
+    },
   });
 }
 
@@ -135,6 +144,8 @@ export function useCreateNovedad() {
 }
 
 export function useIncidentReports(params?: {
+  productId?: number;
+  product_id?: number;
   severity?: IncidentSeverity;
   status?: IncidentStatus;
   page?: number;
@@ -161,38 +172,38 @@ export function useDashboardStats() {
   });
 }
 
-export function useTopProducts() {
+export function useTopProducts(params?: DashboardAnalyticsParams) {
   return useQuery({
-    queryKey: dashboardKeys.topProducts,
-    queryFn: fetchTopProducts,
+    queryKey: dashboardKeys.topProducts(params),
+    queryFn: () => fetchTopProducts(params),
   });
 }
 
-export function useTopSupplies() {
+export function useTopSupplies(params?: DashboardAnalyticsParams) {
   return useQuery({
-    queryKey: dashboardKeys.topSupplies,
-    queryFn: fetchTopSupplies,
+    queryKey: dashboardKeys.topSupplies(params),
+    queryFn: () => fetchTopSupplies(params),
   });
 }
 
-export function useCareersDistribution() {
+export function useCareersDistribution(params?: { since?: string }) {
   return useQuery({
-    queryKey: dashboardKeys.careersDistribution,
-    queryFn: fetchCareersDistribution,
+    queryKey: dashboardKeys.careersDistribution(params),
+    queryFn: () => fetchCareersDistribution(params),
   });
 }
 
-export function useLeastDemanded() {
+export function useLeastDemanded(params?: DashboardAnalyticsParams) {
   return useQuery({
-    queryKey: dashboardKeys.leastDemanded,
-    queryFn: fetchLeastDemanded,
+    queryKey: dashboardKeys.leastDemanded(params),
+    queryFn: () => fetchLeastDemanded(params),
   });
 }
 
-export function useTopTeachers() {
+export function useTopTeachers(params?: DashboardAnalyticsParams) {
   return useQuery({
-    queryKey: dashboardKeys.topTeachers,
-    queryFn: fetchTopTeachers,
+    queryKey: dashboardKeys.topTeachers(params),
+    queryFn: () => fetchTopTeachers(params),
   });
 }
 

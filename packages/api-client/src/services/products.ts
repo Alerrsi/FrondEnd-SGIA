@@ -21,18 +21,29 @@ export function normalizeUbicacion(rawLoc: any, rawCajon?: any): Ubicacion {
   const loc = rawLoc?.location ?? rawLoc;
   const cajonObj = rawCajon ?? rawLoc?.cajon;
 
-  const sala = loc?.sala ?? loc?.nombre ?? '';
+  const sala =
+    typeof loc === 'string'
+      ? loc
+      : loc?.sala ?? loc?.nombre ?? '';
+
   const cajon =
-    (typeof cajonObj === 'string'
+    typeof cajonObj === 'string'
       ? cajonObj
-      : cajonObj?.codigo ?? cajonObj?.nombre ?? rawLoc?.cajon_nombre) || '';
+      : cajonObj?.codigo ?? cajonObj?.nombre ?? rawLoc?.cajon_nombre ?? '';
+
   const descripcion =
-    loc?.descripcion ?? loc?.description ?? cajonObj?.descripcion ?? cajonObj?.description ?? null;
+    typeof loc?.descripcion === 'string'
+      ? loc.descripcion
+      : typeof loc?.description === 'string'
+        ? loc.description
+        : typeof cajonObj?.descripcion === 'string'
+          ? cajonObj.descripcion
+          : null;
 
   return {
     id: loc?.id ?? (typeof rawLoc?.id === 'number' ? rawLoc.id : 0),
-    sala,
-    cajon,
+    sala: typeof sala === 'string' ? sala : '',
+    cajon: typeof cajon === 'string' ? cajon : '',
     descripcion,
   };
 }
@@ -41,7 +52,7 @@ export function normalizeProducto(raw: any): Producto {
   if (raw === null) return null as unknown as Producto;
   if (raw === undefined) return undefined as unknown as Producto;
 
-  const stock = Number(raw.stock ?? raw.quantity ?? raw.cantidad ?? 0);
+  const stock = Number(raw.stock ?? raw.quantity ?? raw.stock_actual ?? raw.cantidad ?? 0);
   const stockCritico = Number(
     raw.stockCritico ?? raw.stock_minimo ?? raw.stockMinimo ?? raw.min_stock ?? 0,
   );
@@ -50,20 +61,79 @@ export function normalizeProducto(raw: any): Producto {
     raw.cajon ?? raw.cajon_entity,
   );
 
+  const rawCat = raw.categoria ?? raw.category;
+  const categoria =
+    typeof rawCat === 'string'
+      ? rawCat
+      : typeof rawCat?.nombre === 'string'
+        ? rawCat.nombre
+        : typeof rawCat?.name === 'string'
+          ? rawCat.name
+          : 'General';
+
+  const rawArea = raw.area ?? raw.carrera;
+  const area =
+    typeof rawArea === 'string'
+      ? rawArea
+      : typeof rawArea?.nombre === 'string'
+        ? rawArea.nombre
+        : typeof rawArea?.codigo === 'string'
+          ? rawArea.codigo
+          : null;
+
+  const rawMarca = raw.marca ?? raw.brand;
+  const marca =
+    typeof rawMarca === 'string'
+      ? rawMarca
+      : typeof rawMarca?.nombre === 'string'
+        ? rawMarca.nombre
+        : null;
+
+  const rawModelo = raw.modelo ?? raw.model;
+  const modelo =
+    typeof rawModelo === 'string'
+      ? rawModelo
+      : typeof rawModelo?.nombre === 'string'
+        ? rawModelo.nombre
+        : null;
+
+  const nombre =
+    typeof raw.nombre === 'string'
+      ? raw.nombre
+      : typeof raw.name === 'string'
+        ? raw.name
+        : '';
+
+  const codigoBarras =
+    typeof raw.codigoBarras === 'string'
+      ? raw.codigoBarras
+      : typeof raw.barcode === 'string'
+        ? raw.barcode
+        : typeof raw.sku === 'string'
+          ? raw.sku
+          : '';
+
+  const description =
+    typeof raw.description === 'string'
+      ? raw.description
+      : typeof raw.descripcion === 'string'
+        ? raw.descripcion
+        : null;
+
   return {
     id: raw.id,
-    nombre: raw.nombre ?? raw.name ?? '',
-    name: raw.nombre ?? raw.name ?? '',
-    codigoBarras: raw.codigoBarras ?? raw.barcode ?? raw.sku ?? '',
-    barcode: raw.codigoBarras ?? raw.barcode ?? raw.sku ?? '',
-    description: raw.description ?? raw.descripcion ?? null,
-    categoria: raw.categoria ?? raw.category?.nombre ?? raw.category?.name ?? 'General',
-    marca: raw.marca ?? raw.brand ?? null,
-    modelo: raw.modelo ?? raw.model ?? null,
-    stock,
-    quantity: stock,
-    stockCritico,
-    stock_minimo: stockCritico,
+    nombre,
+    name: nombre,
+    codigoBarras,
+    barcode: codigoBarras,
+    description,
+    categoria,
+    marca,
+    modelo,
+    stock: Number.isFinite(stock) ? stock : 0,
+    quantity: Number.isFinite(stock) ? stock : 0,
+    stockCritico: Number.isFinite(stockCritico) ? stockCritico : 5,
+    stock_minimo: Number.isFinite(stockCritico) ? stockCritico : 5,
     ubicacion,
     location: raw.location ?? ubicacion,
     location_id: raw.location_id ?? raw.ubicacion_id ?? (ubicacion.id || null),
@@ -71,7 +141,7 @@ export function normalizeProducto(raw: any): Producto {
     cajon: raw.cajon ?? null,
     supplier_id: raw.supplier_id ?? raw.proveedor_id ?? null,
     supplier: raw.supplier ?? raw.proveedor ?? null,
-    area: raw.area ?? null,
+    area,
     photo_url: raw.photo_url ?? raw.foto ?? null,
     activo: Boolean(raw.activo ?? raw.is_active ?? true),
     is_active: Boolean(raw.activo ?? raw.is_active ?? true),
@@ -102,17 +172,28 @@ export async function fetchProducts(
   if (params?.perPage) query.set('per_page', String(params.perPage));
 
   const qs = query.toString();
-  const res = await get<PaginatedResponse<any>>(`/products${qs ? `?${qs}` : ''}`);
+  const res = await get<any>(`/products${qs ? `?${qs}` : ''}`);
 
-  return {
-    data: (res.data ?? []).map(normalizeProducto),
-    meta: res.meta ?? {
-      currentPage: 1,
-      lastPage: 1,
-      perPage: res.data?.length ?? 0,
-      total: res.data?.length ?? 0,
-    },
+  const rawList = Array.isArray(res)
+    ? res
+    : Array.isArray(res?.data)
+      ? res.data
+      : Array.isArray(res?.products)
+        ? res.products
+        : [];
+
+  const data = rawList
+    .map(normalizeProducto)
+    .filter((p: any): p is Producto => Boolean(p && typeof p === 'object'));
+
+  const meta = res?.meta ?? {
+    currentPage: res?.current_page ?? res?.meta?.current_page ?? params?.page ?? 1,
+    lastPage: res?.last_page ?? res?.meta?.last_page ?? 1,
+    perPage: res?.per_page ?? res?.meta?.per_page ?? params?.perPage ?? (data.length || 10),
+    total: res?.total ?? res?.meta?.total ?? data.length,
   };
+
+  return { data, meta };
 }
 
 export async function fetchProduct(id: number): Promise<Producto> {
@@ -192,7 +273,7 @@ export async function extractFactura(fileOrPayload: File | any): Promise<Invoice
     name: p.nombre ?? p.name ?? '',
     codigoBarras: p.codigoBarras ?? p.barcode ?? '',
     barcode: p.codigoBarras ?? p.barcode ?? '',
-    categoria: p.categoria ?? p.category ?? 'General',
+    categoria: typeof p.categoria === 'string' ? p.categoria : p.categoria?.nombre ?? p.category ?? 'General',
     marca: p.marca ?? p.brand ?? null,
     modelo: p.modelo ?? p.model ?? null,
     stock: Number(p.stock ?? p.quantity ?? p.cantidad ?? 1),

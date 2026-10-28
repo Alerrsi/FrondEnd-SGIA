@@ -79,25 +79,52 @@ export interface FichaTecnica {
 }
 
 export type IncidentSeverity = 'leve' | 'media' | 'critica';
-export type IncidentStatus = 'en_revision' | 'en_reparacion' | 'reparado' | 'dado_de_baja';
+export type IncidentStatus =
+  | 'reportado'
+  | 'en_revision'
+  | 'en_reparacion'
+  | 'resuelto'
+  | 'reparado'
+  | 'dado_de_baja';
 
 export interface IncidentReport {
   id: number;
   product_id: number;
+  title?: string | null;
   description: string;
   severity: IncidentSeverity;
   status: IncidentStatus;
   photo_url?: string | null;
+  attachment_url?: string | null;
   reported_by?: number;
   created_at: string;
   updated_at: string;
 }
 
+export interface EquipmentReportQueryParams {
+  severity?: IncidentSeverity;
+  status?: IncidentStatus;
+  format?: 'pdf' | string;
+  per_page?: number;
+  page?: number;
+}
+
 export interface CreateIncidentReportPayload {
-  product_id: number;
-  description: string;
-  severity: IncidentSeverity;
+  product_id?: number;
+  productId?: number;
+  equipoId?: number;
+  productoId?: number;
+  title?: string;
+  titulo?: string;
+  description?: string;
+  descripcion?: string;
+  severity?: IncidentSeverity;
+  gravedad?: IncidentSeverity;
   photo?: File | Blob | null;
+  attachment?: File | Blob | null;
+  archivo?: File | Blob | null;
+  adjunto?: File | Blob | null;
+  foto?: File | Blob | null;
 }
 
 export interface Novedad {
@@ -109,6 +136,8 @@ export interface Novedad {
   tipo?: 'falla' | 'reposicion';
   severity?: IncidentSeverity;
   status?: IncidentStatus;
+  title?: string;
+  titulo?: string;
   descripcion: string;
   description?: string;
   adjuntoUrl?: string | null;
@@ -124,10 +153,16 @@ export interface CreateNovedadPayload {
   product_id?: number;
   tipo?: 'falla' | 'reposicion';
   severity?: IncidentSeverity;
-  descripcion: string;
+  gravedad?: IncidentSeverity;
+  title?: string;
+  titulo?: string;
+  descripcion?: string;
   description?: string;
   adjunto?: File | null;
   photo?: File | null;
+  attachment?: File | null;
+  archivo?: File | null;
+  foto?: File | null;
 }
 
 export interface DashboardStats {
@@ -143,6 +178,11 @@ export interface DashboardStats {
   };
   critical_alerts: number;
   monthly_rotation_rate: number;
+}
+
+export interface DashboardAnalyticsParams {
+  limit?: number;
+  since?: string;
 }
 
 export interface TopDemandedItem {

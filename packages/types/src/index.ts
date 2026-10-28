@@ -48,6 +48,7 @@ export type {
   RechazarPrestamoPayload,
   PrestamoParams,
   LoanExportParams,
+  LoanRequestQueryParams,
 } from './prestamo';
 
 export { QuotationStatus, PurchaseStatus } from './cotizacion';
@@ -56,12 +57,17 @@ export type {
   PurchaseStatus as PurchaseStatusValue,
   Supplier,
   CreateSupplierPayload,
+  SupplierQueryParams,
   Cotizacion,
   CotizacionItem,
   CreateCotizacionPayload,
   CotizacionParams,
+  QuotationResponsePayload,
+  PurchaseItem,
   PurchaseOrder,
   CreatePurchasePayload,
+  PurchaseQueryParams,
+  PurchaseArrivalScanPayload,
 } from './cotizacion';
 
 export type {
@@ -70,6 +76,7 @@ export type {
   UpdateEquipmentSpecsPayload,
   EquipmentMaintenanceRecord,
   EquipmentQueryParams,
+  EquipmentReportQueryParams,
   Equipo,
   FichaTecnica,
   IncidentSeverity,
@@ -79,6 +86,7 @@ export type {
   Novedad,
   CreateNovedadPayload,
   DashboardStats,
+  DashboardAnalyticsParams,
   TopDemandedItem,
   CareerDistribution,
   TeacherLoanRanking,

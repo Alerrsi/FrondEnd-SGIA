@@ -76,7 +76,7 @@ function AppContent() {
             <Route
               path="/inventario"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01']}>
+                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
                   <ProductosListPage />
                 </RequireRole>
               }

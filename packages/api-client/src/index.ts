@@ -99,6 +99,7 @@ export {
   rejectLoan,
   rechazarPrestamo,
   checkoutLoan,
+  deliverLoan,
   checkinLoan,
   exportLoans,
   normalizePrestamo,
@@ -115,6 +116,7 @@ export {
   useAprobarPrestamo,
   useRechazarPrestamo,
   useCheckoutLoan,
+  useDeliverLoan,
   useCheckinLoan,
   useExportLoans,
 } from './hooks/loans';
@@ -123,6 +125,8 @@ export {
   fetchQuotations,
   fetchQuotation,
   createCotizacion,
+  updateQuotationStatus,
+  updateQuotationResponse,
   fetchSuppliers,
   fetchSupplier,
   createSupplier,
@@ -133,6 +137,7 @@ export {
   fetchPurchase,
   createPurchase,
   updatePurchaseStatus,
+  scanPurchaseArrival,
 } from './services/quotations';
 export {
   quotationKeys,
@@ -141,6 +146,8 @@ export {
   useCotizaciones,
   useCotizacion,
   useCreateCotizacion,
+  useUpdateQuotationStatus,
+  useUpdateQuotationResponse,
   useSuppliers,
   useSupplier,
   useCreateSupplier,
@@ -150,6 +157,7 @@ export {
   usePurchase,
   useCreatePurchase,
   useUpdatePurchaseStatus,
+  useScanPurchaseArrival,
 } from './hooks/quotations';
 
 export {
@@ -175,6 +183,7 @@ export {
   updateEquipmentSpecs,
   fetchEquipmentTechnicalSheet,
   fetchEquipmentReports,
+  downloadEquipmentReports,
   fetchEquipos,
   fetchEquipo,
   createIncidentReport,

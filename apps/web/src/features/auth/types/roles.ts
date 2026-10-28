@@ -12,7 +12,7 @@ export const ROLE_DEFAULT_PATH: Record<WebRoleCode, string> = {
 
 export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/': ['DIR-01'],
-  '/inventario': ['PAN-01', 'DIR-01'],
+  '/inventario': ['PAN-01', 'DIR-01', 'AD-01'],
   '/prestamos': ['PAN-01', 'AD-01'],
   '/prestamos/cola': ['PAN-01'],
   '/prestamos/mostrador': ['PAN-01'],
@@ -22,12 +22,19 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/equipos': ['AD-01', 'DIR-01', 'PAN-01'],
   '/alertas': ['AD-01', 'DIR-01', 'PAN-01'],
   '/proveedores': ['DIR-01', 'AD-01'],
-  '/cotizaciones': ['DIR-01'],
+  '/cotizaciones': ['DIR-01', 'AD-01'],
   '/usuarios': ['AD-01'],
 };
 
 export function isWebRole(role: string): role is WebRoleCode {
-  return (WEB_ROLES as readonly string[]).includes(role);
+  if ((WEB_ROLES as readonly string[]).includes(role as WebRoleCode)) {
+    return true;
+  }
+  const r = role.toLowerCase();
+  if (r.includes('admin')) return true;
+  if (r.includes('director') || r.includes('coordinador')) return true;
+  if (r.includes('pañol') || r.includes('panol')) return true;
+  return false;
 }
 
 export function getRoleDefaultPath(role: RoleCode): string {

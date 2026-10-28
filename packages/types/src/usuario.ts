@@ -9,14 +9,24 @@ export const ROLE_LABELS: Record<RoleCode, string> = {
   'PRO-01': 'Profesor',
 };
 
+export interface CarreraItem {
+  id: number;
+  codigo: string;
+  nombre: string;
+}
+
 export interface Usuario {
   id: number;
   run?: string;
   nombre: string;
   name?: string;
   email: string;
+  rol_id?: number;
   rol: RoleCode;
   role?: RoleCode;
+  panol_id?: number | null;
+  panol?: string | null;
+  carreras?: CarreraItem[];
   area?: string | null;
   activo: boolean;
   is_active?: boolean;
@@ -38,7 +48,10 @@ export interface CreateUsuarioPayload {
   name?: string;
   email: string;
   rol?: RoleCode;
-  role?: RoleCode;
+  role?: RoleCode | string;
+  rol_id?: number;
+  panol_id?: number | null;
+  carreras?: number[];
   area?: string;
   password: string;
   password_confirmation?: string;
@@ -51,7 +64,10 @@ export interface UpdateUsuarioPayload {
   name?: string;
   email?: string;
   rol?: RoleCode;
-  role?: RoleCode;
+  role?: RoleCode | string;
+  rol_id?: number;
+  panol_id?: number | null;
+  carreras?: number[];
   area?: string;
   activo?: boolean;
   is_active?: boolean;
@@ -60,10 +76,12 @@ export interface UpdateUsuarioPayload {
 }
 
 export interface UserQueryParams {
-  role?: RoleCode;
+  search?: string;
+  role?: RoleCode | string;
+  rol_id?: number;
+  panol_id?: number;
   area?: string;
   is_active?: boolean;
-  search?: string;
   per_page?: number;
   page?: number;
 }

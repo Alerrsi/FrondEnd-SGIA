@@ -129,8 +129,11 @@ export default function ProductosListPage() {
 
   // Contadores rápidos para métricas
   const totalItems = data?.meta?.total ?? 0;
-  const criticalItemsCount = (data?.data ?? []).filter(
-    (p) => p.stock <= p.stockCritico,
+  const productosList = Array.isArray(data?.data)
+    ? data.data.filter((p): p is Producto => Boolean(p && typeof p === "object"))
+    : [];
+  const criticalItemsCount = productosList.filter(
+    (p) => Number(p.stock ?? 0) <= Number(p.stockCritico ?? 0),
   ).length;
 
   const handleOpenCreate = () => {
@@ -249,7 +252,7 @@ export default function ProductosListPage() {
 
       {/* 3. Marco unificado: Toolbar + Tabla de Datos */}
       <InventarioTable
-        productos={data?.data ?? []}
+        productos={productosList}
         isLoading={isLoading}
         isFetching={isFetching}
         canDelete={canDelete}

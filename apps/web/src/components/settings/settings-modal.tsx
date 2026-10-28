@@ -288,6 +288,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
       </div>
 
+
       <div className="mt-4 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
         <Button variant="outline" size="sm" onClick={onClose}>
           Cerrar

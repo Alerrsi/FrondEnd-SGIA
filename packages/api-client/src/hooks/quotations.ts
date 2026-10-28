@@ -5,9 +5,14 @@ import type {
   CreateCotizacionPayload,
   CreatePurchasePayload,
   CreateSupplierPayload,
+  PurchaseArrivalScanPayload,
   PurchaseOrder,
+  PurchaseQueryParams,
   PurchaseStatus,
+  QuotationResponsePayload,
+  QuotationStatus,
   Supplier,
+  SupplierQueryParams,
 } from '@sgia/types';
 import {
   createCotizacion,
@@ -19,8 +24,11 @@ import {
   fetchQuotations,
   fetchSupplier,
   fetchSuppliers,
+  scanPurchaseArrival,
   setSupplierStatus,
   updatePurchaseStatus,
+  updateQuotationResponse,
+  updateQuotationStatus,
   updateSupplier,
 } from '../services/quotations';
 
@@ -32,13 +40,13 @@ export const quotationKeys = {
 
 export const supplierKeys = {
   all: ['suppliers'] as const,
-  list: (params?: any) => ['suppliers', 'list', params] as const,
+  list: (params?: SupplierQueryParams) => ['suppliers', 'list', params] as const,
   detail: (id: number) => ['suppliers', 'detail', id] as const,
 };
 
 export const purchaseKeys = {
   all: ['purchases'] as const,
-  list: (params?: any) => ['purchases', 'list', params] as const,
+  list: (params?: PurchaseQueryParams) => ['purchases', 'list', params] as const,
   detail: (id: number) => ['purchases', 'detail', id] as const,
 };
 
@@ -65,7 +73,23 @@ export function useCreateCotizacion() {
   });
 }
 
-export function useSuppliers(params?: { category?: string; is_active?: boolean; page?: number; per_page?: number }) {
+export function useUpdateQuotationStatus() {
+  const queryClient = useQueryClient();
+  return useMutation<Cotizacion, Error, { id: number; status: QuotationStatus | string }>({
+    mutationFn: ({ id, status }) => updateQuotationStatus(id, status),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: quotationKeys.all }),
+  });
+}
+
+export function useUpdateQuotationResponse() {
+  const queryClient = useQueryClient();
+  return useMutation<Cotizacion, Error, { id: number; payload: QuotationResponsePayload }>({
+    mutationFn: ({ id, payload }) => updateQuotationResponse(id, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: quotationKeys.all }),
+  });
+}
+
+export function useSuppliers(params?: SupplierQueryParams) {
   return useQuery({
     queryKey: supplierKeys.list(params),
     queryFn: () => fetchSuppliers(params),
@@ -104,7 +128,7 @@ export function useSetSupplierStatus() {
   });
 }
 
-export function usePurchases(params?: { status?: PurchaseStatus; page?: number; per_page?: number }) {
+export function usePurchases(params?: PurchaseQueryParams) {
   return useQuery({
     queryKey: purchaseKeys.list(params),
     queryFn: () => fetchPurchases(params),
@@ -129,8 +153,19 @@ export function useCreatePurchase() {
 
 export function useUpdatePurchaseStatus() {
   const queryClient = useQueryClient();
-  return useMutation<PurchaseOrder, Error, { id: number; status: PurchaseStatus }>({
+  return useMutation<PurchaseOrder, Error, { id: number; status: PurchaseStatus | string }>({
     mutationFn: ({ id, status }) => updatePurchaseStatus(id, status),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: purchaseKeys.all }),
+  });
+}
+
+export function useScanPurchaseArrival() {
+  const queryClient = useQueryClient();
+  return useMutation<PurchaseOrder, Error, { id: number; payload: PurchaseArrivalScanPayload }>({
+    mutationFn: ({ id, payload }) => scanPurchaseArrival(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: purchaseKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
   });
 }
