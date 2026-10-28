@@ -47,13 +47,13 @@ Implementar un flujo de autenticación seguro, centralizado y persistente vía L
     - `DIR-01` ➔ `/` (Dashboard)
     - `PAN-01` ➔ `/inventario`
   - [x] Pantalla `ForbiddenPage` (403) ante intentos de navegación no autorizados.
-- [ ] **Modal de Cambio de Contraseña:**
-  - [ ] Diálogo accesible con Radix UI para cambio de contraseña desde el header/perfil.
-  - [ ] Validación de coincidencia de contraseña nueva y confirmación.
-  - [ ] Notificación toast de confirmación y cierre seguro.
-- [ ] **Gestión de Dispositivos y Sesiones Activas:**
-  - [ ] Vista o pestaña de perfil para ver sesiones abiertas (`GET /api/tokens`).
-  - [ ] Botón para cerrar sesiones en otros dispositivos (`POST /api/tokens/revoke-others`).
+- [x] **Modal de Cambio de Contraseña:**
+  - [x] Diálogo accesible con Radix UI para cambio de contraseña desde el header/perfil.
+  - [x] Validación de coincidencia de contraseña nueva y confirmación.
+  - [x] Notificación toast de confirmación y cierre seguro.
+- [x] **Gestión de Dispositivos y Sesiones Activas:**
+  - [x] Vista o pestaña de perfil para ver sesiones abiertas (`GET /api/tokens`).
+  - [x] Botón para cerrar sesiones en otros dispositivos (`POST /api/tokens/revoke-others`).
 
 ### 2. App Móvil (`apps/mobile`)
 - [x] **Pantalla de Login Nativa:**

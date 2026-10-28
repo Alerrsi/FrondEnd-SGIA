@@ -225,3 +225,13 @@
 - **Cambios:** pantalla de login (`features/auth/login-screen.tsx`, RHF, `device_name: 'mobile'`), `AuthProvider` con restauración de sesión y rechazo de roles distintos de `PRO-01`, `TokenStorage` con `expo-secure-store` (`config/api.ts`), gate de autenticación en `_layout.tsx` y botón "Cerrar sesión" en Mis Solicitudes.
 - **Dependencias nuevas en móvil:** `expo-secure-store`, `@tanstack/react-query`, `react-hook-form`.
 - **Pendiente:** NativeWind no está instalado, se usó `StyleSheet`; sin test de integración del login; la URL de la API se toma de `EXPO_PUBLIC_SGIA_API_URL`.
+
+---
+
+## REQ-01 web: cambio de contraseña y sesiones activas
+
+- **Fecha:** 2026-10-28
+- **Cambios:** `ChangePasswordDialog` (RHF + Zod: 8+ caracteres con letras y números, confirmación coincidente) y `SessionsDialog` (lista de `GET /api/tokens`, botón "Cerrar otras sesiones"). Se abren desde la nueva sección "Cuenta y seguridad" de Ajustes.
+- **api-client:** hooks `useChangePassword`, `useTokens`, `useRevokeOtherTokens`. `fetchTokens` ahora lee `response.tokens` (la API devuelve `{ tokens: [...] }`; antes devolvía el objeto entero).
+- **Limitación:** la API no marca cuál es la sesión actual, así que no hay botón para cerrar una sesión individual (`DELETE /api/tokens/{id}`) por riesgo de cerrar la propia.
+- **Verificación:** typecheck 5/5, lint 0, 157 tests pasan (+2 del diálogo de contraseña).

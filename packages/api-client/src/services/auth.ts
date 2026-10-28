@@ -111,7 +111,7 @@ export async function changePassword(payload: ChangePasswordPayload): Promise<{ 
 
 export async function fetchTokens(): Promise<ApiTokenInfo[]> {
   const response = await get<any>('/tokens');
-  return response?.data ?? response;
+  return response?.tokens ?? response?.data ?? response;
 }
 
 export async function revokeToken(tokenId: number | string): Promise<void> {

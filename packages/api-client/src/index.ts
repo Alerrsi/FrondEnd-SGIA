@@ -24,7 +24,15 @@ export {
   normalizeUser,
 } from './services/auth';
 export type { LoginPayload, ChangePasswordPayload, ApiTokenInfo } from './services/auth';
-export { authKeys, useCurrentUser, useLogin, useLogout } from './hooks/auth';
+export {
+  authKeys,
+  useCurrentUser,
+  useLogin,
+  useLogout,
+  useChangePassword,
+  useTokens,
+  useRevokeOtherTokens,
+} from './hooks/auth';
 
 export {
   fetchProducts,
