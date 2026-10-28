@@ -39,7 +39,7 @@ export default function NuevaSolicitudScreen() {
   // Estados de catálogo y búsqueda
   const [search, setSearch] = useState('');
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [loadingCatalog, setLoadingCatalog] = useState(false);
+  const [loadingCatalog, setLoadingCatalog] = useState(true);
 
   // Carrito de solicitud
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -58,7 +58,6 @@ export default function NuevaSolicitudScreen() {
   // Cargar catálogo de productos
   useEffect(() => {
     let isMounted = true;
-    setLoadingCatalog(true);
     fetchProducts({ per_page: 50 })
       .then((res) => {
         if (isMounted) setProductos(res.data);
@@ -405,7 +404,7 @@ export default function NuevaSolicitudScreen() {
 
             <ThemedText style={styles.modalMessage} themeColor="textSecondary">
               El pañolero preparará los insumos antes del inicio de tu bloque horario. Puedes seguir
-              el estado en la pestaña "Mis Préstamos".
+              el estado en la pestaña &quot;Mis Préstamos&quot;.
             </ThemedText>
 
             <Pressable

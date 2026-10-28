@@ -144,6 +144,14 @@
 
 ---
 
+## REWORK-F1: Configuración de Claude Code
+
+- **Fecha:** 2026-10-27
+- **Archivos Modificados:** `CLAUDE.md`, `.claude/settings.json`, `.claude/skills/sgia-design/`, `.claude/commands/`
+- **Cambios:** `CLAUDE.md` en la raíz; permisos en `settings.json` (permitir typecheck/lint/test, pedir confirmación en install/commit/push, denegar `rm -rf`, `push --force`, `reset --hard`); `SKILLS/Design.md` migrado al skill `sgia-design` con paletas en `references/paletas.md`; comandos `/verificar` y `/nueva-pantalla`.
+
+---
+
 ## REWORK-F2: Conflictos de diseño AGENTS.md vs SKILLS/Design.md resueltos
 
 - **Fecha:** 2026-10-27
@@ -188,4 +196,14 @@
   4. `iconbar.tsx`: quitado un `eslint-disable` de una regla no cargada.
   5. `cola-prestamos-page.tsx`: `usePendingLoans` ya devuelve `PaginatedResponse`, se quitó la rama de array.
 - **Verificación:** typecheck 5/5, 155 tests pasan, `pnpm --filter @sgia/web lint` sin errores.
-- **Pendiente:** el lint móvil (6 errores, ver `FIXES/baseline-lint-mobile.txt`) no corría antes porque Turbo se detenía en el fallo de web.
+  6. `mock-metrics.json` movido de `dashboard/data/` a `dashboard/mocks/` (lo usa `use-metrics.ts` en producción hasta conectar GraphQL).
+  7. `usuarios/lib/run.ts` se mantiene: es lógica de RUN chileno, no una utilidad genérica. `apps/mobile` no tiene tests ni Jest (decisión: documentado, no se agrega).
+- **Nota:** el lint móvil (6 errores, ver `FIXES/baseline-lint-mobile.txt`) no corría antes porque Turbo se detenía en el fallo de web; se corrigió en F6.
+
+---
+
+## REWORK-F6: Verificación final
+
+- **Fecha:** 2026-10-27
+- **Resultado:** `pnpm install` sin errores; typecheck 5/5; 155 tests pasan (igual que la línea base); lint web y móvil 0 errores (el móvil tenía 6 en `FIXES/baseline-lint-mobile.txt`, corregidos).
+- **Lint móvil (6 → 0):** en `explore.tsx` e `index.tsx` el estado de carga arranca en `true` en vez de activarse dentro del `useEffect` (`react-hooks/set-state-in-effect`); `explore.tsx` hace el fetch inicial directo en el efecto; comillas escapadas con `&quot;` (`react/no-unescaped-entities`).

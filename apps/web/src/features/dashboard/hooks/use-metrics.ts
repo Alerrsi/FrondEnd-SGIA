@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import mockData from '../data/mock-metrics.json';
+import mockData from '../mocks/mock-metrics.json';
 import type {
   ExecutiveKpis,
   MetricQueryInput,

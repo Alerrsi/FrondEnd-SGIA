@@ -91,21 +91,21 @@ Estos puntos dependen de lo que muestre la Fase 0. Se completan después.
 - [x] **Resolver los errores de `pnpm typecheck`** registrados en la línea base.
 - [x] **Resolver los fallos de tests** registrados en la línea base.
 - [x] **Revisar `apps/web/src/components/ui/toogle.tsx`**: el nombre tiene una errata y existe también `toggle.tsx`. Confirmar si son duplicados y eliminar el que no se usa.
-- [ ] **Revisar `apps/web/src/features/dashboard/data/mock-metrics.json`**: confirmar que no se usa en producción o moverlo a un directorio de mocks.
-- [ ] **Revisar `apps/web/src/features/usuarios/lib/run.ts`**: el nombre no describe su contenido; renombrar si es una utilidad genérica.
+- [x] **Revisar `apps/web/src/features/dashboard/data/mock-metrics.json`**: confirmar que no se usa en producción o moverlo a un directorio de mocks. → sí se usa en producción (`use-metrics.ts`, sin GraphQL aún, REQ-14 `[p]`); movido a `dashboard/mocks/`.
+- [x] **Revisar `apps/web/src/features/usuarios/lib/run.ts`**: el nombre no describe su contenido; renombrar si es una utilidad genérica. → no es genérica: validación/formato del RUN chileno, solo de `usuarios`; se mantiene el nombre.
 - [x] **Verificar que `apps/mobile` consume la API solo por `packages/api-client`** y no con `fetch` directo.
-- [ ] **Confirmar que las pantallas del mobile tienen tests**: no hay script `test` en `apps/mobile/package.json`. Decidir si se agrega Jest o se documenta que no se testea.
+- [x] **Confirmar que las pantallas del mobile tienen tests**: no hay script `test` en `apps/mobile/package.json`. Decidir si se agrega Jest o se documenta que no se testea. → confirmado: no hay tests móviles; se documenta, sin agregar Jest por ahora.
 
 ---
 
 ## Fase 6 — Verificación final
 
-- [ ] `pnpm install` sin errores.
-- [ ] `pnpm typecheck` sin errores.
-- [ ] `pnpm lint` sin errores nuevos respecto de la línea base.
-- [ ] `pnpm --filter @sgia/web test` con al menos la misma cantidad de tests pasando que en la línea base.
-- [ ] `FIXES/CHANGELOG-FIXES.md` tiene una entrada por cada cambio importante de este rework.
-- [ ] `TASKS/README.md` refleja el estado real.
+- [x] `pnpm install` sin errores.
+- [x] `pnpm typecheck` sin errores.
+- [x] `pnpm lint` sin errores nuevos respecto de la línea base.
+- [x] `pnpm --filter @sgia/web test` con al menos la misma cantidad de tests pasando que en la línea base.
+- [x] `FIXES/CHANGELOG-FIXES.md` tiene una entrada por cada cambio importante de este rework.
+- [x] `TASKS/README.md` refleja el estado real.
 
 ---
 
