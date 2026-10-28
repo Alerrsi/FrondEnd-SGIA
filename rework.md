@@ -61,11 +61,11 @@ Resuelto el 2026-10-27 según el código existente (canvas zinc-100, CTA monocro
 
 - [x] **Quitar rutas absolutas `file:///home/alerrsi/...`** de `AGENTS.md` y de `FIXES/CHANGELOG-FIXES.md`. Reemplazar por rutas relativas (`TASKS/REQ-01-AUTENTICACION-SESIONES.md`).
   - Motivo: no funcionan fuera de esa máquina y son ruido en el contexto.
-- [ ] **Unificar el nombre del sistema.** `AGENTS.md` dice "Sistema de Gestión de Inventario y Activos" y `ENDPOINTS.md` dice "Sistema de Gestión de Inventario y Almacenamiento". Elegir uno.
-- [ ] **Actualizar `sgia-frontend/` en `AGENTS.md` §2.** La estructura del árbol usa ese nombre, pero el repositorio se llama `frondend-sgia`. Corregir la ruta del árbol o aclarar que es ilustrativo.
-- [ ] **Corregir el typo del nombre del repositorio:** `FrondEnd-SGIA` aparece en las rutas de los docs y `frondend-sgia` en el remoto. Decidir cuál es el nombre oficial y renombrar en los docs.
-- [ ] **Reducir `AGENTS.md`** o dividirlo: lo de negocio y roles puede quedarse; el detalle de diseño ya vive en el skill (Fase 1).
-- [ ] **Actualizar `README.md`:** agregar el paso de `pnpm install` antes de `pnpm dev:web` (ya está, pero confirmar) y una sección "Para agentes de IA" que apunte a `CLAUDE.md`.
+- [x] **Unificar el nombre del sistema.** `AGENTS.md` dice "Sistema de Gestión de Inventario y Activos" y `ENDPOINTS.md` dice "Sistema de Gestión de Inventario y Almacenamiento". Elegir uno.
+- [x] **Actualizar `sgia-frontend/` en `AGENTS.md` §2.** La estructura del árbol usa ese nombre, pero el repositorio se llama `frondend-sgia`. Corregir la ruta del árbol o aclarar que es ilustrativo.
+- [x] **Corregir el typo del nombre del repositorio:** `FrondEnd-SGIA` aparece en las rutas de los docs y `frondend-sgia` en el remoto. Decidir cuál es el nombre oficial y renombrar en los docs.
+- [x] **Reducir `AGENTS.md`** o dividirlo: lo de negocio y roles puede quedarse; el detalle de diseño ya vive en el skill (Fase 1).
+- [x] **Actualizar `README.md`:** agregar el paso de `pnpm install` antes de `pnpm dev:web` (ya está, pero confirmar) y una sección "Para agentes de IA" que apunte a `CLAUDE.md`.
 
 ---
 

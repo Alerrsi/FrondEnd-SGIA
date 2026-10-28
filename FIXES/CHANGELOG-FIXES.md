@@ -154,3 +154,16 @@
   2. **Rojo en CTA:** no. `Button` `primary` es monocromo; el rojo queda para etiqueta de sede y paradas críticas.
   3. **Badges:** componente `Badge` (pastilla tintada con borde + `dot` opcional).
   4. **Paletas alternativas:** la nota de preservación de fondos sigue vigente.
+
+---
+
+## REWORK-F3: Limpieza de documentación
+
+- **Fecha:** 2026-10-27
+- **Archivos Modificados:** `AGENTS.md`, `FIXES/CHANGELOG-FIXES.md`, `ENDPOINTS.md`, `TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`, `TASKS/REQ-05-UBICACION-FISICA.md`, `TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`, `README.md`, `rework.md`
+- **Cambios:**
+  1. Rutas `file:///home/alerrsi/...` reemplazadas por rutas relativas a la raíz del repo (`AGENTS.md`, este changelog).
+  2. Nombre oficial del sistema: "Sistema de Gestión de Inventario y Activos" (ENDPOINTS.md y 3 TASKS corregidos).
+  3. Nombre oficial del repositorio: `FrondEnd-SGIA` (igual al remoto); el árbol de `AGENTS.md` §2 lo usa.
+  4. `AGENTS.md` §5 reducido a un resumen que apunta al skill `sgia-design` (170 → 129 líneas).
+  5. `README.md`: sección "Para agentes de IA".
