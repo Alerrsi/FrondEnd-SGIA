@@ -1,16 +1,18 @@
-import { useMemo, useState } from 'react';
-import { Chart as ChartJS, registerables } from 'chart.js';
-import { Bar, Line, Doughnut, PolarArea } from 'react-chartjs-2';
-import { Trash2, GripVertical, ArrowLeftRight, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { ApiRequestError, useApiClientCustomMetric } from '@sgia/api-client';
+import { Trash2, GripVertical, ArrowLeftRight, AlertTriangle, BarChart3, Lock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useCustomMetric } from '../hooks/use-metrics';
-import type { DragItemPayload, MetricQueryInput } from '../types/metrics';
 import { useTheme } from '@/contexts/theme-context';
-
-// Registrar todos los controladores (BarController, LineController, DoughnutController, PolarAreaController),
-// escalas, elementos y utilidades para Chart.js
-ChartJS.register(...registerables);
+import { apiErrorToMessage } from '@/lib/api-error';
+import { buildLegend } from '../lib/chart-format';
+import {
+  CHART_TYPE_LABELS,
+  TIME_RANGE_LABELS,
+  type DragItemPayload,
+  type MetricQueryInput,
+} from '../types/metrics';
+import { MetricChart } from './metric-chart';
 
 interface DynamicChartCardProps {
   input: MetricQueryInput;
@@ -22,6 +24,11 @@ interface DynamicChartCardProps {
   onDropPayload?: (targetIndex: number, payload: DragItemPayload) => void;
 }
 
+function describeRange(input: MetricQueryInput): string {
+  if (input.timeRange !== 'CUSTOM') return TIME_RANGE_LABELS[input.timeRange];
+  return `${input.dateFrom ?? '?'} → ${input.dateTo ?? 'hoy'}`;
+}
+
 export function DynamicChartCard({
   input,
   index = 0,
@@ -31,128 +38,14 @@ export function DynamicChartCard({
   onDragEnd,
   onDropPayload,
 }: DynamicChartCardProps) {
-  const { data, isLoading, isError } = useCustomMetric(input);
+  const { data, isLoading, error } = useApiClientCustomMetric(input);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const [isDragOverCard, setIsDragOverCard] = useState(false);
 
-  const chartData = useMemo(() => {
-    // Si no hay puntos todavía, proveer puntos representativos de Pañol TI
-    const points =
-      data?.points && data.points.length > 0
-        ? data.points
-        : [
-            { label: 'Cisco Routing', value: 45 },
-            { label: 'Microcontroladores', value: 38 },
-            { label: 'Ciberseguridad', value: 29 },
-            { label: 'Insumos Soldadura', value: 62 },
-          ];
-
-    const labels = points.map((p) => p.label);
-    const values = points.map((p) => p.value);
-
-    // Paleta zed.dev dual-theme
-    const colors = [
-      '#ef4444', // Red INACAP
-      '#06b6d4', // Cyan
-      '#8b5cf6', // Violet
-      '#f59e0b', // Amber
-      '#10b981', // Emerald
-      '#3b82f6', // Blue
-      '#ec4899', // Pink
-    ];
-
-    if (input.chartType === 'LINE') {
-      return {
-        labels,
-        datasets: [
-          {
-            label: input.title || input.entity,
-            data: values,
-            borderColor: '#ef4444',
-            backgroundColor: isDark ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.08)',
-            fill: true,
-            tension: 0.35,
-            pointBackgroundColor: '#ef4444',
-            pointBorderColor: isDark ? '#18181b' : '#ffffff',
-            pointRadius: 4,
-          },
-        ],
-      };
-    }
-
-    if (input.chartType === 'DOUGHNUT' || input.chartType === 'POLAR_AREA') {
-      return {
-        labels,
-        datasets: [
-          {
-            data: values,
-            backgroundColor: colors.slice(0, values.length),
-            borderColor: isDark ? '#18181b' : '#ffffff',
-            borderWidth: 2,
-          },
-        ],
-      };
-    }
-
-    // Default: BAR
-    return {
-      labels,
-      datasets: [
-        {
-          label: input.title || input.entity,
-          data: values,
-          backgroundColor: isDark ? 'rgba(239, 68, 68, 0.8)' : 'rgba(239, 68, 68, 0.85)',
-          borderRadius: 4,
-          hoverBackgroundColor: '#dc2626',
-        },
-      ],
-    };
-  }, [data, input, isDark]);
-
-  const options = useMemo(() => {
-    const textColor = isDark ? '#a1a1aa' : '#71717a';
-    const gridColor = isDark ? 'rgba(63, 63, 70, 0.25)' : 'rgba(228, 228, 231, 0.7)';
-
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: input.chartType === 'DOUGHNUT' || input.chartType === 'POLAR_AREA',
-          position: 'bottom' as const,
-          labels: {
-            color: textColor,
-            font: { family: 'monospace', size: 10 },
-            boxWidth: 10,
-          },
-        },
-        tooltip: {
-          backgroundColor: isDark ? '#18181b' : '#ffffff',
-          titleColor: isDark ? '#ffffff' : '#18181b',
-          bodyColor: isDark ? '#d4d4d8' : '#27272a',
-          borderColor: isDark ? '#3f3f46' : '#e4e4e7',
-          borderWidth: 1,
-          padding: 8,
-          bodyFont: { family: 'monospace', size: 11 },
-          titleFont: { family: 'monospace', size: 11, weight: 'bold' as const },
-        },
-      },
-      scales:
-        input.chartType === 'DOUGHNUT' || input.chartType === 'POLAR_AREA'
-          ? {}
-          : {
-              x: {
-                grid: { display: false },
-                ticks: { color: textColor, font: { family: 'monospace', size: 10 } },
-              },
-              y: {
-                grid: { color: gridColor },
-                ticks: { color: textColor, font: { family: 'monospace', size: 10 } },
-              },
-            },
-    };
-  }, [isDark, input.chartType]);
+  const title = input.title || `${input.entity} (${input.metric})`;
+  const isForbidden = error instanceof ApiRequestError && error.status === 403;
+  const legend = data ? buildLegend(data) : [];
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (!isEditMode) return;
@@ -204,15 +97,15 @@ export function DynamicChartCard({
       className={`flex flex-col p-4 shadow-xs transition-all relative ${
         isEditMode
           ? isDragOverCard
-            ? 'cursor-grabbing border-2 border-red-500 ring-2 ring-red-500/30 bg-red-50/20 dark:bg-red-950/30 scale-[1.01]'
-            : 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-red-500/70'
+            ? 'cursor-grabbing border-2 border-sky-500 ring-2 ring-sky-500/30 bg-sky-50/30 dark:bg-sky-950/30 scale-[1.01]'
+            : 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-sky-500/70'
           : ''
       }`}
     >
       {/* Overlay feedback cuando se arrastra un gráfico encima para intercambiar lugar */}
       {isEditMode && isDragOverCard && (
-        <div className="absolute inset-0 bg-red-500/10 dark:bg-red-500/20 rounded-lg flex items-center justify-center z-10 pointer-events-none backdrop-blur-2xs">
-          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-red-400 dark:border-red-600 px-3 py-1.5 rounded-md shadow-md text-red-600 dark:text-red-400 font-mono text-xs font-semibold">
+        <div className="absolute inset-0 bg-sky-500/10 dark:bg-sky-500/20 rounded-lg flex items-center justify-center z-10 pointer-events-none backdrop-blur-2xs">
+          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-sky-400 dark:border-sky-600 px-3 py-1.5 rounded-md shadow-md text-sky-700 dark:text-sky-400 font-mono text-xs font-semibold">
             <ArrowLeftRight className="h-4 w-4 animate-pulse" />
             <span>Soltar para mover a posición #{index + 1}</span>
           </div>
@@ -235,7 +128,7 @@ export function DynamicChartCard({
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
-                {input.title || `${input.entity} (${input.metric})`}
+                {title}
               </span>
               {isEditMode && (
                 <span className="font-mono text-[9px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-1 py-0.2 rounded border border-zinc-200 dark:border-zinc-700">
@@ -244,8 +137,7 @@ export function DynamicChartCard({
               )}
             </div>
             <span className="font-mono text-[10px] text-zinc-400">
-              {input.timeRange} · {input.chartType}
-              {input.groupBy ? ` · ${input.groupBy}` : ''}
+              {describeRange(input)} · {CHART_TYPE_LABELS[input.chartType]}
             </span>
           </div>
         </div>
@@ -265,26 +157,59 @@ export function DynamicChartCard({
         )}
       </div>
 
-      <div className="relative h-60 w-full min-h-[240px]">
+      <div className="relative h-64 w-full">
         {isLoading ? (
           <div className="flex h-full items-center justify-center font-mono text-xs text-zinc-400">
-            Cargando datos analíticos…
+            Cargando datos…
           </div>
-        ) : isError ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2 font-mono text-xs text-rose-500">
+        ) : isForbidden ? (
+          <div
+            role="alert"
+            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-zinc-500"
+          >
+            <Lock className="h-5 w-5" />
+            <span>Tu rol no tiene permisos para ver las métricas.</span>
+          </div>
+        ) : error ? (
+          <div
+            role="alert"
+            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-rose-600 dark:text-rose-400"
+          >
             <AlertTriangle className="h-5 w-5" />
-            <span>Error al cargar métrica</span>
+            <span>{apiErrorToMessage(error)}</span>
           </div>
-        ) : input.chartType === 'LINE' ? (
-          <Line data={chartData} options={options} />
-        ) : input.chartType === 'DOUGHNUT' ? (
-          <Doughnut data={chartData} options={options} />
-        ) : input.chartType === 'POLAR_AREA' ? (
-          <PolarArea data={chartData} options={options} />
+        ) : !data || data.points.length === 0 ? (
+          <div
+            data-testid={`chart-empty-${index}`}
+            className="flex h-full flex-col items-center justify-center gap-2 font-mono text-xs text-zinc-400"
+          >
+            <BarChart3 className="h-5 w-5" />
+            <span>Sin datos para el período</span>
+          </div>
         ) : (
-          <Bar data={chartData} options={options} />
+          <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />
         )}
       </div>
+
+      {legend.length > 0 && (
+        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
+          {legend.map((item) => (
+            <li key={item.label} className="flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {data?.summary && (
+        <p
+          title={data.summary}
+          className="mt-2 truncate border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono text-[10px] text-zinc-400"
+        >
+          {data.summary}
+        </p>
+      )}
     </Card>
   );
 }

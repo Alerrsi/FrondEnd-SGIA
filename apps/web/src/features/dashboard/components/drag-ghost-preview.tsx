@@ -25,8 +25,8 @@ const SHAPE_CONFIGS: Record<
     badge: 'BAR',
     renderMiniVisual: () => (
       <div className="flex items-end justify-between h-14 bg-zinc-950/80 rounded-md p-2 border border-zinc-800 gap-1.5">
-        <div className="w-full h-[40%] bg-red-600/70 rounded-t" />
-        <div className="w-full h-[75%] bg-red-500 rounded-t" />
+        <div className="w-full h-[40%] bg-sky-600/70 rounded-t" />
+        <div className="w-full h-[75%] bg-sky-500 rounded-t" />
         <div className="w-full h-[55%] bg-amber-500/80 rounded-t" />
         <div className="w-full h-[95%] bg-emerald-500 rounded-t" />
         <div className="w-full h-[65%] bg-cyan-500/80 rounded-t" />
@@ -148,12 +148,12 @@ export function DragGhostPreview({
         pointerEvents: 'none',
         zIndex: 99999,
       }}
-      className="w-72 select-none rounded-xl border-2 border-red-500 bg-zinc-900/95 dark:bg-zinc-950/95 p-3.5 shadow-2xl shadow-red-500/30 backdrop-blur-md text-zinc-100 flex flex-col gap-2.5 transition-transform duration-75 ease-out"
+      className="w-72 select-none rounded-xl border-2 border-sky-500 bg-zinc-900/95 dark:bg-zinc-950/95 p-3.5 shadow-2xl shadow-sky-500/30 backdrop-blur-md text-zinc-100 flex flex-col gap-2.5 transition-transform duration-75 ease-out"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded bg-red-600/20 text-red-400 border border-red-500/40">
-            <Icon className="h-4 w-4 text-red-500" />
+          <div className="flex h-7 w-7 items-center justify-center rounded bg-sky-600/20 text-sky-400 border border-sky-500/40">
+            <Icon className="h-4 w-4 text-sky-500" />
           </div>
           <div>
             <div className="text-xs font-bold text-zinc-100 leading-tight">
@@ -175,8 +175,8 @@ export function DragGhostPreview({
       </div>
 
       <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-zinc-800">
-        <span className="flex items-center gap-1.5 text-red-400 font-semibold" data-testid="drag-ghost-status">
-          <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
+        <span className="flex items-center gap-1.5 text-sky-400 font-semibold" data-testid="drag-ghost-status">
+          <span className="h-2 w-2 rounded-full bg-sky-500 animate-ping" />
           Arrastrando gráfico...
         </span>
         <span className="text-zinc-500 text-[10px]">Suelta en una zona</span>

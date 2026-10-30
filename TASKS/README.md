@@ -8,7 +8,7 @@ Este directorio contiene las especificaciones detalladas para cada módulo funci
 
 | Archivo | Requisito | Funcionalidad | Plataforma | Roles | Estado General |
 |---|---|---|---|---|:---:|
-| [REQ-01](./REQ-01-AUTENTICACION-SESIONES.md) | `REQ-01` | Autenticación, Sesiones y Seguridad | Web + Mobile | Todos | 🟡 En Progreso (48%) — 16/33 tareas; falta móvil, cambio de contraseña y sesiones |
+| [REQ-01](./REQ-01-AUTENTICACION-SESIONES.md) | `REQ-01` | Autenticación, Sesiones y Seguridad | Web + Mobile | Todos | 🟢 Completado (100%) — web y móvil, cambio de contraseña y sesiones |
 | [REQ-02](./REQ-02-ADMINISTRACION-USUARIOS.md) | `REQ-02` | Administración de Usuarios y Cuentas | Web | AD-01 | 🟢 Completado (100%) — 24/24; `usuarios-lifecycle.test.tsx` |
 | [REQ-03-04](./REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md) | `REQ-03`, `REQ-04` | Catálogo de Productos y OCR Facturas | Web | DIR-01, PAN-01, AD-01 | 🟢 Completado (23/23) — `features/inventario/` con tabla, formulario, factura y 5 tests |
 | [REQ-05](./REQ-05-UBICACION-FISICA.md) | `REQ-05` | Ubicación Física (Salas y Cajones) | Web | PAN-01, DIR-01, AD-01 | 🟢 Completado (20/20) — `features/ubicaciones/`; sin test propio |
@@ -20,7 +20,7 @@ Este directorio contiene las especificaciones detalladas para cada módulo funci
 | [REQ-11](./REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md) | `REQ-11` | Historial y Auditoría de Préstamos | Web | PAN-01, DIR-01, AD-01 | 🟢 Completado (20/20) — `prestamos/historial` con test |
 | [REQ-12](./REQ-12-FICHAS-TECNICAS-EQUIPOS.md) | `REQ-12` | Fichas Técnicas y Manuales PDF | Web | DIR-01, AD-01, PAN-01 | 🟢 Completado (16/16) — `features/equipos/` con tests |
 | [REQ-13](./REQ-13-INFORMES-NOVEDADES-FALLAS.md) | `REQ-13` | Reportes de Novedades e Incidentes | Mobile + Web | PRO-01, PAN-01, DIR-01 | 🔴 Pendiente (0/17) — sin código |
-| [REQ-14](./REQ-14-DASHBOARDS-ANALITICA.md) | `REQ-14` | Analítica y Dashboards Ejecutivos | Web | DIR-01, AD-01 | 🟡 En Progreso — `features/dashboard/`, 57 tareas parciales `[p]` |
+| [REQ-14](./REQ-14-DASHBOARDS-ANALITICA.md) | `REQ-14` | Analítica y Dashboards Ejecutivos | Web | DIR-01, AD-01 | 🟡 Casi completo — GraphQL real conectado (`/api/metrics`); falta previsualización en vivo en el menú |
 | [REQ-CONFIG](./REQ-CONFIG.md) | `REQ-CONFIG` | Configuración de Sistema y Paletas de Color | Web | Todos | 🟢 Completado (8/8) |
 | [REQ-NF](./REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md) | `REQ-NF` | Accesibilidad AA, Performance y Offline | Web + Mobile | Todos | 🟡 En Progreso (17%) — 5/29 tareas |
 

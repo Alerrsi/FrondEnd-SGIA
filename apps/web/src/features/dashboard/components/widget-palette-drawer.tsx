@@ -114,8 +114,8 @@ export function WidgetPaletteDrawer({
         )}
       >
         <SheetHeader className="pb-3 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center gap-2 text-xs font-mono text-red-600 dark:text-red-500 font-semibold uppercase tracking-wider">
-            <span>Catálogo zed.dev</span>
+          <div className="flex items-center gap-2 text-xs font-mono text-sky-600 dark:text-sky-500 font-semibold uppercase tracking-wider">
+            <span>Catálogo</span>
             <span className="text-zinc-400">/</span>
             <span>Paleta de Formas</span>
           </div>
@@ -123,7 +123,7 @@ export function WidgetPaletteDrawer({
             Formas Gráficas Genéricas
           </SheetTitle>
           <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
-            Arrastra una forma hacia el lienzo o pulsa «Añadir» para integrarla y fijarla directamente en tu plantilla activa.
+            Arrastra una forma hacia el lienzo o pulsa «Añadir», y elige qué datos mostrar.
           </SheetDescription>
         </SheetHeader>
 
@@ -155,7 +155,7 @@ export function WidgetPaletteDrawer({
                 className={`flex flex-col gap-2 rounded-lg border p-3.5 transition-all select-none ${
                   isMaxCapacity
                     ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 opacity-60 cursor-not-allowed'
-                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:border-red-500/60 hover:shadow-xs cursor-grab active:cursor-grabbing'
+                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:border-sky-500/60 hover:shadow-xs cursor-grab active:cursor-grabbing'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -205,7 +205,7 @@ export function WidgetPaletteDrawer({
                       e.stopPropagation();
                       onSelectWidget?.(shape.type);
                     }}
-                    className="h-6 text-[11px] px-2.5 gap-1 border-red-300 dark:border-red-900/60 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 font-medium"
+                    className="h-6 text-[11px] px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
                   >
                     <Plus className="h-3 w-3" />
                     <span>Añadir</span>

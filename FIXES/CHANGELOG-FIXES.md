@@ -243,3 +243,17 @@
 - **Fecha:** 2026-10-28
 - **Cambios:** test de integración del login web (`login.test.tsx`) con `AuthProvider` real y `fetch` simulado: login exitoso (token guardado y redirección por rol), 401, 422 y rechazo de `PRO-01` en web.
 - **Estado:** REQ-01 sin casillas pendientes. El login móvil se probó a mano contra la API real (navegador); `apps/mobile` sigue sin Jest, decisión de F5.
+
+---
+
+## REQ-14: dashboard conectado a `/api/metrics` (GraphQL)
+
+- **Fecha:** 2026-10-30
+- **Contrato:** `metrics.md` (raíz). Implementado según su checklist §9.
+- **api-client:** `services/metrics.ts` sin datos de respaldo (propaga `errors[0].message`; 401/403 vía `post`), `buildMetricInput` envía solo campos del contrato; `useExecutiveKpis`/`useCustomMetric` con `retry: false` y clave sin `title`; se eliminó `useBatchMetrics`. `KpiTimeRange` (sin `CUSTOM`) en `packages/types`; `summary` ahora `string | null`.
+- **Web:** se eliminó `hooks/use-metrics.ts` y `mocks/mock-metrics.json`; tipos del dashboard reexportan `@sgia/types`. `groupBy` por entidad según §4 (fuera `CAREERS.level`); `TOTAL`/`AVERAGE` ocultos en `ALERTS` y `MAINTENANCE`; `CUSTOM` con fechas; `limit`. `sanitizeCharts` limpia plantillas viejas de `localStorage` con `groupBy` inválidos.
+- **Menú de gráficos:** `ChartConfigModal` reemplaza al asistente post-drop y al constructor (sin uso). Se abre al soltar un widget (zona destacada, ranuras) o al pulsar «Añadir» del catálogo; permite cambiar tipo, entidad, cálculo, agrupación, período, límite y título, con sugerencias por tipo.
+- **Gráficos:** `MetricChart` + `lib/chart-format.ts`: registro selectivo de Chart.js, paleta sin rojo (rojo solo en semántica crítica), colores cíclicos, `secondaryValue` como segunda serie, leyenda por `category`, `%` en `RATE`, etiquetas truncadas, estados "sin datos", error y sin permisos. Se neutralizó el rojo de banners, zona de soltado y paleta.
+- **Verificación:** typecheck web/api-client/types sin errores, lint web 0, 177 tests pasan (+20 en `metrics-api.test.tsx`). `apps/mobile` no compila por dependencias sin instalar (preexistente, ajeno a este cambio).
+- **Pendiente:** previsualización en vivo en el menú; no se probó contra el backend real ni se revisó el render visual en navegador.
+

@@ -1,8 +1,9 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
+import { mockMetricsApi } from './metrics-api-mock';
 
 // Mock react-chartjs-2 to avoid canvas issues in happy-dom
 vi.mock('react-chartjs-2', () => ({
@@ -35,6 +36,11 @@ function renderWithClient(ui: React.ReactElement) {
 }
 
 describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    mockMetricsApi();
+  });
+
   it('renders dashboard layout and charts from default template', async () => {
     renderWithClient(<DashboardPage />);
 

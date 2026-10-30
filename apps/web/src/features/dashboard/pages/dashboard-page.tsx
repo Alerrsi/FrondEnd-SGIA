@@ -11,257 +11,36 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { useApiClientExecutiveKpis } from '@sgia/api-client';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { MetricStrip } from '../components/metric-strip';
 import { DynamicChartCard } from '../components/dynamic-chart-card';
 import { WidgetPaletteDrawer } from '../components/widget-palette-drawer';
-import { PostDropConfigModal } from '../components/post-drop-config-modal';
+import { ChartConfigModal } from '../components/chart-config-modal';
 import { DropZone } from '../components/drop-zone';
 import { DragGhostPreview } from '../components/drag-ghost-preview';
-import { useExecutiveKpis } from '../hooks/use-metrics';
-import type {
-  ChartType,
-  DashboardTemplate,
-  DragItemPayload,
-  MetricQueryInput,
+import { DEFAULT_TEMPLATES } from '../lib/chart-presets';
+import { sanitizeCharts } from '../lib/chart-config';
+import {
+  MAX_CHARTS,
+  type ChartType,
+  type DashboardTemplate,
+  type DragItemPayload,
+  type MetricQueryInput,
 } from '../types/metrics';
 import { toast } from '@/lib/toast';
-
-// 3 Plantillas predeterminadas del sistema
-const DEFAULT_TEMPLATES: DashboardTemplate[] = [
-  {
-    id: 'template-operaciones',
-    name: 'Operaciones y Movimiento de Pañol',
-    description: 'Flujo de préstamos, tasas de devolución y alertas críticas de stock.',
-    charts: [
-      {
-        title: 'Préstamos Diarios por Semana',
-        entity: 'LOANS',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'LINE',
-      },
-      {
-        title: 'Estado y Atrasos de Préstamos',
-        entity: 'LOANS',
-        metric: 'RATE',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'DOUGHNUT',
-      },
-      {
-        title: 'Alertas Críticas por Especialidad',
-        entity: 'ALERTS',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'BAR',
-      },
-    ],
-  },
-  {
-    id: 'template-demanda',
-    name: 'Demanda y Desgaste por Carrera',
-    description: 'Consumo de insumos por área y ranking de equipamiento solicitado.',
-    charts: [
-      {
-        title: 'Insumos Consumidos por Especialidad',
-        entity: 'SUPPLIES',
-        metric: 'TOTAL',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'BAR',
-      },
-      {
-        title: 'Ranking de Equipos Más Solicitados',
-        entity: 'EQUIPMENT',
-        metric: 'COUNT',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'BAR',
-      },
-      {
-        title: 'Préstamos por Asignatura Clave',
-        entity: 'TEACHERS',
-        metric: 'COUNT',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'POLAR_AREA',
-      },
-    ],
-  },
-  {
-    id: 'template-salud',
-    name: 'Salud del Inventario y Ciclo de Vida',
-    description: 'Equipos ociosos, incidencias en taller y rotación semestral.',
-    charts: [
-      {
-        title: 'Equipos Ociosos / Sin Rotación',
-        entity: 'EQUIPMENT',
-        metric: 'COUNT',
-        timeRange: 'YEAR_TO_DATE',
-        chartType: 'BAR',
-      },
-      {
-        title: 'Incidencias y Reparaciones en Taller',
-        entity: 'MAINTENANCE',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'LINE',
-      },
-      {
-        title: 'Tasa de Rotación Semestral de Insumos (%)',
-        entity: 'SUPPLIES',
-        metric: 'RATE',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'BAR',
-      },
-    ],
-  },
-];
 
 const STORAGE_KEY = 'sgia_dashboard_charts_v1';
 const TEMPLATES_STORAGE_KEY = 'sgia_dashboard_templates_v2';
 const ACTIVE_TEMPLATE_ID_KEY = 'sgia_dashboard_active_template_id_v2';
 
-function getDefaultChartForType(
-  chartType: ChartType,
-  existingCharts: MetricQueryInput[],
-): MetricQueryInput {
-  const optionsMap: Record<ChartType, MetricQueryInput[]> = {
-    BAR: [
-      {
-        title: 'Disponibilidad y Nivel de Hardware',
-        entity: 'EQUIPMENT',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'BAR',
-        groupBy: 'category',
-      },
-      {
-        title: 'Insumos Consumidos por Especialidad',
-        entity: 'SUPPLIES',
-        metric: 'TOTAL',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'BAR',
-        groupBy: 'career',
-      },
-      {
-        title: 'Equipos Ociosos / Sin Rotación',
-        entity: 'EQUIPMENT',
-        metric: 'COUNT',
-        timeRange: 'YEAR_TO_DATE',
-        chartType: 'BAR',
-        groupBy: 'status',
-      },
-    ],
-    LINE: [
-      {
-        title: 'Tendencia de Préstamos Semanales',
-        entity: 'LOANS',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'LINE',
-        groupBy: 'status',
-      },
-      {
-        title: 'Incidencias y Reparaciones en Taller',
-        entity: 'MAINTENANCE',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'LINE',
-        groupBy: 'type',
-      },
-      {
-        title: 'Evolución Mensual de Devoluciones',
-        entity: 'LOANS',
-        metric: 'RATE',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'LINE',
-        groupBy: 'career',
-      },
-    ],
-    DOUGHNUT: [
-      {
-        title: 'Distribución de Alertas por Criticidad',
-        entity: 'ALERTS',
-        metric: 'RATE',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'DOUGHNUT',
-        groupBy: 'severity',
-      },
-      {
-        title: 'Estado de Préstamos Activos',
-        entity: 'LOANS',
-        metric: 'COUNT',
-        timeRange: 'LAST_30_DAYS',
-        chartType: 'DOUGHNUT',
-        groupBy: 'status',
-      },
-      {
-        title: 'Proporción de Equipamiento por Taller',
-        entity: 'EQUIPMENT',
-        metric: 'RATE',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'DOUGHNUT',
-        groupBy: 'location',
-      },
-    ],
-    POLAR_AREA: [
-      {
-        title: 'Demanda de Insumos por Especialidad',
-        entity: 'SUPPLIES',
-        metric: 'TOTAL',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'POLAR_AREA',
-        groupBy: 'career',
-      },
-      {
-        title: 'Préstamos por Asignatura Clave',
-        entity: 'TEACHERS',
-        metric: 'COUNT',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'POLAR_AREA',
-        groupBy: 'career',
-      },
-      {
-        title: 'Frecuencia de Uso de Laboratorios',
-        entity: 'EQUIPMENT',
-        metric: 'COUNT',
-        timeRange: 'SEMESTER_CURRENT',
-        chartType: 'POLAR_AREA',
-        groupBy: 'category',
-      },
-    ],
-  };
-
-  const candidateList = optionsMap[chartType] || [];
-  for (const candidate of candidateList) {
-    const alreadyExists = existingCharts.some(
-      (c) =>
-        c.entity === candidate.entity &&
-        c.metric === candidate.metric &&
-        c.chartType === candidate.chartType &&
-        (c.groupBy || '') === (candidate.groupBy || ''),
-    );
-    if (!alreadyExists) {
-      return { ...candidate };
-    }
-  }
-
-  const fallback = candidateList[0] || {
-    title: `Gráfico ${chartType}`,
-    entity: 'EQUIPMENT',
-    metric: 'COUNT',
-    timeRange: 'SEMESTER_CURRENT',
-    chartType,
-    groupBy: 'category',
-  };
-  return {
-    ...fallback,
-    title: `${fallback.title} #${existingCharts.length + 1}`,
-    timeRange: 'SEMESTER_CURRENT',
-  };
-}
-
 export default function DashboardPage() {
-  const { data: kpis, isLoading: isLoadingKpis } = useExecutiveKpis('LAST_30_DAYS');
+  const {
+    data: kpis,
+    isLoading: isLoadingKpis,
+    error: kpisError,
+  } = useApiClientExecutiveKpis('LAST_30_DAYS');
 
   // Estado unificado de todas las plantillas (por defecto + personalizadas)
   const [templates, setTemplates] = useState<DashboardTemplate[]>(() => {
@@ -270,7 +49,10 @@ export default function DashboardPage() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return (parsed as DashboardTemplate[]).map((t) => ({
+            ...t,
+            charts: sanitizeCharts(t.charts),
+          }));
         }
       }
       // Migración retrospectiva: si existían gráficos guardados en sgia_dashboard_charts_v1
@@ -279,7 +61,7 @@ export default function DashboardPage() {
         const parsedV1 = JSON.parse(savedV1);
         if (Array.isArray(parsedV1) && parsedV1.length > 0) {
           return DEFAULT_TEMPLATES.map((t, idx) =>
-            idx === 0 ? { ...t, charts: parsedV1 } : t,
+            idx === 0 ? { ...t, charts: sanitizeCharts(parsedV1) } : t,
           );
         }
       }
@@ -324,7 +106,7 @@ export default function DashboardPage() {
   // Asistente modal tras soltar widget (Post-Drop en DropZone específica)
   const [pendingDrop, setPendingDrop] = useState<{
     chartType: ChartType;
-    targetIndex: number;
+    targetIndex?: number;
   } | null>(null);
 
   // Modal de confirmación para eliminar gráfico
@@ -469,7 +251,7 @@ export default function DashboardPage() {
     newChart: MetricQueryInput,
     targetIndex?: number,
   ) => {
-    if (charts.length >= 5) {
+    if (charts.length >= MAX_CHARTS) {
       toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
       return;
     }
@@ -509,16 +291,15 @@ export default function DashboardPage() {
     );
   };
 
-  // Añadir directamente al hacer clic en un widget del catálogo
+  // Al pulsar Añadir en el catálogo se abre el menú para elegir qué datos mostrar
   const handleSelectWidgetDirectly = (chartType: ChartType) => {
-    const newChart = getDefaultChartForType(chartType, charts);
-    addChartToActiveTemplate(newChart);
     setPaletteOpen(false);
+    setPendingDrop({ chartType });
   };
 
   // Manejo de Drag sobre la Zona Destacada Principal
   const handleProminentDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (charts.length >= 5) return;
+    if (charts.length >= MAX_CHARTS) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
     if (!isProminentOver) setIsProminentOver(true);
@@ -540,33 +321,24 @@ export default function DashboardPage() {
     draggedWidgetTypeRef.current = null;
     setPaletteOpen(false);
 
-    if (charts.length >= 5) {
+    if (charts.length >= MAX_CHARTS) {
       toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
       return;
     }
 
+    let chartType: ChartType =
+      draggedWidgetType ?? draggedWidgetTypeRef.current ?? 'BAR';
     try {
       const dataStr =
         e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('application/json');
-      let chartType: ChartType = 'BAR';
       if (dataStr) {
         const parsed = JSON.parse(dataStr) as DragItemPayload;
-        if (parsed.type === 'NEW_WIDGET') {
-          chartType = parsed.chartType;
-        }
-      } else if (draggedWidgetType) {
-        chartType = draggedWidgetType;
-      } else if (draggedWidgetTypeRef.current) {
-        chartType = draggedWidgetTypeRef.current;
+        if (parsed.type === 'NEW_WIDGET') chartType = parsed.chartType;
       }
-
-      const newChart = getDefaultChartForType(chartType, charts);
-      addChartToActiveTemplate(newChart);
     } catch {
-      const fallbackType = draggedWidgetType || draggedWidgetTypeRef.current || 'BAR';
-      const newChart = getDefaultChartForType(fallbackType, charts);
-      addChartToActiveTemplate(newChart);
+      // Se conserva el tipo registrado al iniciar el arrastre
     }
+    setPendingDrop({ chartType });
   };
 
   // Manejo de Drop tanto en DropZones intermedias como directamente sobre tarjetas para reordenar
@@ -578,7 +350,7 @@ export default function DashboardPage() {
     setPaletteOpen(false);
 
     if (payload.type === 'NEW_WIDGET') {
-      if (charts.length >= 5) {
+      if (charts.length >= MAX_CHARTS) {
         toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
         return;
       }
@@ -601,9 +373,9 @@ export default function DashboardPage() {
     }
   };
 
-  const handleConfirmPostDrop = (newChart: MetricQueryInput, targetIndex: number) => {
-    if (charts.length >= 5) {
-      toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
+  const handleConfirmPostDrop = (newChart: MetricQueryInput, targetIndex?: number) => {
+    if (charts.length >= MAX_CHARTS) {
+      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos simultáneos por plantilla`);
       setPendingDrop(null);
       return;
     }
@@ -614,7 +386,6 @@ export default function DashboardPage() {
 
   const handleCancelPostDrop = () => {
     setPendingDrop(null);
-    toast.info('Acción de soltado cancelada; el lienzo no fue alterado');
   };
 
   return (
@@ -645,7 +416,7 @@ export default function DashboardPage() {
               Dashboards Analíticos y Métricas
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Visualización interactiva zed.dev del pañol. Arrastra widgets desde el catálogo o pulsa Añadir para personalizar y guardar en tus plantillas.
+              Métricas del pañol. Arrastra un gráfico desde el catálogo o pulsa Añadir, y elige qué datos mostrar.
             </p>
           </div>
 
@@ -656,8 +427,8 @@ export default function DashboardPage() {
               variant="outline"
               size="sm"
               onClick={handleOpenWidgetCatalog}
-              disabled={charts.length >= 5}
-              className="text-xs gap-1.5 border-red-300 dark:border-red-900/60 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 font-medium"
+              disabled={charts.length >= MAX_CHARTS}
+              className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 font-medium"
             >
               <Palette className="h-3.5 w-3.5" />
               <span>Abrir Catálogo de Widgets ({charts.length}/5)</span>
@@ -706,13 +477,13 @@ export default function DashboardPage() {
       {isEditMode && !isDraggingWidget && (
         <div
           data-testid="edit-mode-banner"
-          className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/20 text-xs font-mono text-red-700 dark:text-red-400"
+          className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg border border-sky-200 dark:border-sky-900/50 bg-sky-50/50 dark:bg-sky-950/20 text-xs font-mono text-sky-700 dark:text-sky-400"
         >
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
+            <SlidersHorizontal className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
             <span>
               <strong>Modo Edición Activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
-              Se guardan de inmediato en tu plantilla activa. Máximo 5 gráficos simultáneos.
+              Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo 5 gráficos simultáneos.
             </span>
           </div>
 
@@ -721,7 +492,7 @@ export default function DashboardPage() {
             variant="outline"
             size="sm"
             onClick={() => setPaletteOpen(true)}
-            className="text-xs h-7 gap-1 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300"
+            className="text-xs h-7 gap-1 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300"
           >
             <Palette className="h-3 w-3" />
             <span>Ver Catálogo</span>
@@ -733,22 +504,22 @@ export default function DashboardPage() {
       {isDraggingWidget && (
         <div
           data-testid="drag-focus-banner"
-          className="flex items-center justify-between gap-3 p-3.5 rounded-lg bg-red-950/40 border-2 border-red-500/80 text-xs font-mono text-red-300 shadow-md animate-pulse"
+          className="flex items-center justify-between gap-3 p-3.5 rounded-lg bg-sky-950/40 border-2 border-sky-500/80 text-xs font-mono text-sky-300 shadow-md animate-pulse"
         >
           <div className="flex items-center gap-2">
-            <Target className="h-4 w-4 text-red-400 animate-spin" />
+            <Target className="h-4 w-4 text-sky-400 animate-spin" />
             <span>
-              <strong>Zonas de Inserción Enfocadas:</strong> Suelta el gráfico en la Zona Principal destacada o en cualquier ranura para fijarlo.
+              <strong>Zonas de Inserción Enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
           </div>
-          <span className="text-[11px] text-red-400">
+          <span className="text-[11px] text-sky-400">
             {charts.length < 5 ? `Espacio disponible (${charts.length}/5)` : 'Límite de 5 alcanzado'}
           </span>
         </div>
       )}
 
       {/* Cinta Métrica Compacta Superior (Executive KPIs) */}
-      <MetricStrip kpis={kpis} isLoading={isLoadingKpis} />
+      <MetricStrip kpis={kpis} isLoading={isLoadingKpis} error={kpisError} />
 
       {/* Selector de Plantillas (Guardado y Sincronizado por Plantilla) */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-2xs">
@@ -801,29 +572,29 @@ export default function DashboardPage() {
             'relative flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl border-2 border-dashed transition-all duration-200 select-none shadow-xl cursor-copy',
             isProminentOver
               ? 'border-emerald-400 bg-emerald-950/60 text-emerald-100 shadow-emerald-500/30 scale-[1.01]'
-              : 'border-red-500 bg-gradient-to-r from-red-950/50 via-zinc-900/90 to-red-950/50 text-zinc-100 shadow-red-500/25 animate-pulse',
+              : 'border-sky-500 bg-gradient-to-r from-sky-950/50 via-zinc-900/90 to-sky-950/50 text-zinc-100 shadow-sky-500/25 animate-pulse',
           )}
         >
           <div className="pointer-events-none select-none flex flex-col items-center gap-3">
             <div className="flex items-center gap-2">
-              <span className="flex h-2.5 w-2.5 rounded-full bg-red-500 animate-ping" />
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-red-300 bg-red-950/90 border border-red-500/60 px-3 py-1 rounded-full shadow-xs">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500 animate-ping" />
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-300 bg-sky-950/90 border border-sky-500/60 px-3 py-1 rounded-full shadow-xs">
                 ★ Zona Principal de Soltado Destacada ★
               </span>
             </div>
 
             <div className="flex items-center gap-3 text-center sm:text-left">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-600/20 border border-red-500/40 text-red-400 shrink-0">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-600/20 border border-sky-500/40 text-sky-400 shrink-0">
                 <Target className="h-6 w-6 animate-spin" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-zinc-100">
                   {isProminentOver
-                    ? '¡Suelta aquí para añadir de inmediato a tu Plantilla Personalizada!'
-                    : 'Suelta tu gráfico aquí para insertarlo y fijarlo'}
+                    ? '¡Suelta aquí para configurar el gráfico!'
+                    : 'Suelta tu gráfico aquí para configurarlo'}
                 </h3>
                 <p className="text-xs text-zinc-400 font-mono">
-                  Al soltar, el gráfico se añade y guarda automáticamente dentro de tu plantilla ({charts.length + 1}/5)
+                  Al soltar se abre el menú para elegir qué datos mostrar ({charts.length + 1}/5)
                 </p>
               </div>
             </div>
@@ -842,7 +613,7 @@ export default function DashboardPage() {
               variant="outline"
               size="sm"
               onClick={handleOpenWidgetCatalog}
-              className="text-xs gap-1.5 border-red-300 dark:border-red-900/60 text-red-600 dark:text-red-400"
+              className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400"
             >
               <Palette className="h-3.5 w-3.5" />
               <span>Abrir Catálogo de Widgets</span>
@@ -865,7 +636,7 @@ export default function DashboardPage() {
               {/* DropZone al inicio (Posición 0) */}
               <DropZone
                 index={0}
-                disabled={charts.length >= 5}
+                disabled={charts.length >= MAX_CHARTS}
                 isFocused={isDraggingWidget}
                 draggedWidgetType={draggedWidgetType}
                 onDropPayload={handleDropPayload}
@@ -888,7 +659,7 @@ export default function DashboardPage() {
                     {/* DropZone intermedia tras cada tarjeta */}
                     <DropZone
                       index={idx + 1}
-                      disabled={charts.length >= 5}
+                      disabled={charts.length >= MAX_CHARTS}
                       isFocused={isDraggingWidget}
                       draggedWidgetType={draggedWidgetType}
                       onDropPayload={handleDropPayload}
@@ -926,7 +697,7 @@ export default function DashboardPage() {
 
       {/* Asistente Contextual Post-Drop (al soltar una forma en una DropZone o sobre otra tarjeta) */}
       {pendingDrop && (
-        <PostDropConfigModal
+        <ChartConfigModal
           open={true}
           onClose={handleCancelPostDrop}
           onConfirm={handleConfirmPostDrop}

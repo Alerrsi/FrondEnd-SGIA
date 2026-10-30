@@ -3,8 +3,7 @@ import { render, screen, fireEvent, act, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
-import { resolveMockMetric } from './hooks/use-metrics';
-import type { MetricQueryInput } from './types/metrics';
+import { mockMetricsApi } from './metrics-api-mock';
 
 // Mock react-chartjs-2 to avoid canvas issues in happy-dom
 vi.mock('react-chartjs-2', () => ({
@@ -40,6 +39,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+    mockMetricsApi();
   });
 
   it('activa el modo de edición y bloquea/desbloquea controles de arrastre', async () => {
@@ -202,10 +202,10 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
 
     // Al soltar, se retira el preview de arrastre y se abre el asistente de configuración
     expect(screen.queryByTestId('drag-ghost-preview')).toBeNull();
-    expect(screen.getByText(/Asistente de Configuración Analítica/i)).toBeDefined();
+    expect(screen.getByText('Configurar gráfico')).toBeDefined();
   });
 
-  it('abre el asistente post-drop con tipo de gráfico bloqueado y selectores dependientes de groupBy', async () => {
+  it('abre el menú de configuración con el tipo soltado preseleccionado y selectores dependientes de groupBy', async () => {
     const user = userEvent.setup();
     renderWithClient(<DashboardPage />);
 
@@ -222,21 +222,22 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     });
 
     // Se abre el asistente modal
-    expect(screen.getByText(/Asistente de Configuración Analítica \(Post-Drop\)/i)).toBeDefined();
-    // Tipo de gráfico bloqueado a DOUGHNUT
-    expect(screen.getByText(/Torta \/ Dona \(DOUGHNUT\)/i)).toBeDefined();
+    expect(screen.getByText('Configurar gráfico')).toBeDefined();
+    // Tipo de gráfico preseleccionado: DOUGHNUT
+    expect(screen.getByRole('button', { name: 'Dona' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByRole('button', { name: 'Barras' }).getAttribute('aria-pressed')).toBe('false');
 
     // Seleccionar entidad LOANS
-    const entitySelect = screen.getByLabelText(/Entidad de Pañol TI/i);
+    const entitySelect = screen.getByLabelText(/¿Qué quieres medir\?/i);
     await user.selectOptions(entitySelect, 'LOANS');
 
     // Comprobar opciones de Agrupar por para LOANS
-    const groupBySelect = screen.getByLabelText(/Agrupar por \(Group By Contextual\)/i);
+    const groupBySelect = screen.getByLabelText(/Agrupar por/i);
     expect(groupBySelect).toBeDefined();
-    expect(screen.getByRole('option', { name: 'Estado de Préstamo' })).toBeDefined();
-    expect(screen.getByRole('option', { name: 'Docente Solicitante' })).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Estado de préstamo' })).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Docente solicitante' })).toBeDefined();
     expect(screen.getByRole('option', { name: 'Asignatura' })).toBeDefined();
-    expect(screen.getByRole('option', { name: 'Tipo de Insumo' })).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Tipo de ítem' })).toBeDefined();
   });
 
   it('permite cancelar el drop sin alterar los gráficos del lienzo', async () => {
@@ -258,11 +259,11 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     });
 
     // Modal abierto -> Click Cancelar
-    const cancelBtn = screen.getByRole('button', { name: /Cancelar Soltado/i });
+    const cancelBtn = screen.getByRole('button', { name: /^Cancelar$/ });
     await user.click(cancelBtn);
 
     // El modal se cierra y el conteo de gráficos se mantiene intacto
-    expect(screen.queryByText(/Asistente de Configuración Analítica/i)).toBeNull();
+    expect(screen.queryByText('Configurar gráfico')).toBeNull();
     const chartCardsAfter = screen.getAllByTestId(/^chart-card-/);
     expect(chartCardsAfter.length).toBe(3);
   });
@@ -282,14 +283,14 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     });
 
     // Seleccionar entidad EQUIPMENT y agrupar por location
-    const entitySelect = screen.getByLabelText(/Entidad de Pañol TI/i);
+    const entitySelect = screen.getByLabelText(/¿Qué quieres medir\?/i);
     await user.selectOptions(entitySelect, 'EQUIPMENT');
 
-    const groupBySelect = screen.getByLabelText(/Agrupar por \(Group By Contextual\)/i);
+    const groupBySelect = screen.getByLabelText(/Agrupar por/i);
     await user.selectOptions(groupBySelect, 'location');
 
     // Confirmar inserción
-    const confirmBtn = screen.getByRole('button', { name: /Confirmar e Insertar/i });
+    const confirmBtn = screen.getByRole('button', { name: /Añadir al panel/i });
     await user.click(confirmBtn);
 
     // Ahora hay 4 gráficos
@@ -367,7 +368,8 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     expect(cards.length).toBe(3);
   });
 
-  it('muestra la zona de soltado destacada que resalta de las demás y al soltar añade y fija el gráfico de inmediato', async () => {
+  it('muestra la zona de soltado destacada y al soltar abre el menú para elegir los datos antes de añadir el gráfico', async () => {
+    const user = userEvent.setup();
     renderWithClient(<DashboardPage />);
 
     // Abrir catálogo de widgets
@@ -394,7 +396,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     fireEvent.dragOver(prominentDropZone, {
       dataTransfer: { dropEffect: 'copy' },
     });
-    expect(prominentDropZone.textContent).toContain('¡Suelta aquí para añadir de inmediato a tu Plantilla Personalizada!');
+    expect(prominentDropZone.textContent).toContain('¡Suelta aquí para configurar el gráfico!');
 
     // Soltar dentro de la zona destacada
     fireEvent.drop(prominentDropZone, {
@@ -403,11 +405,16 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
       },
     });
 
-    // El gráfico queda añadido en el lienzo (de 3 pasa a 4)
-    const cardsAfter = screen.getAllByTestId(/^chart-card-/);
-    expect(cardsAfter.length).toBe(4);
+    // Soltar no añade nada todavía: primero se elige qué datos mostrar
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
+    expect(screen.getByText('Configurar gráfico')).toBeDefined();
 
-    // Y el gráfico añadido se visualiza inmediatamente
+    // El usuario elige una sugerencia del menú y confirma
+    await user.click(screen.getByRole('button', { name: 'Distribución de Alertas por Criticidad' }));
+    await user.click(screen.getByRole('button', { name: /Añadir al panel/i }));
+
+    // El gráfico queda añadido en el lienzo (de 3 pasa a 4) y se visualiza
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
     expect(screen.getByText('Distribución de Alertas por Criticidad')).toBeDefined();
   });
 
@@ -438,6 +445,10 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
         getData: () => JSON.stringify({ type: 'NEW_WIDGET', chartType: 'LINE' }),
       },
     });
+
+    // Se elige la sugerencia y se confirma desde el menú
+    await user.click(screen.getByRole('button', { name: 'Tendencia de Préstamos Semanales' }));
+    await user.click(screen.getByRole('button', { name: /Añadir al panel/i }));
 
     // Se crea la Plantilla Personalizada activa con 4 gráficos
     const customTemplateBtn = screen.getByRole('button', { name: /Plantilla Personalizada \(4\)/i });
@@ -476,6 +487,11 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     const addBarBtn = within(barWidget).getByRole('button', { name: /Añadir/i });
     await user.click(addBarBtn);
 
+    // El botón abre el menú de configuración con Barras preseleccionado
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
+    expect(screen.getByRole('button', { name: 'Barras' }).getAttribute('aria-pressed')).toBe('true');
+    await user.click(screen.getByRole('button', { name: /Añadir al panel/i }));
+
     // Ahora hay 4 gráficos y se creó Plantilla Personalizada
     expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
     expect(screen.getByRole('button', { name: /Plantilla Personalizada/i })).toBeDefined();
@@ -495,19 +511,5 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     const returnCustomBtn = screen.getByRole('button', { name: /Plantilla Personalizada/i });
     await user.click(returnCustomBtn);
     expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
-  });
-
-  it('resuelve métricas con mock context-aware de Pañol TI', () => {
-    const input: MetricQueryInput = {
-      entity: 'EQUIPMENT',
-      metric: 'COUNT',
-      chartType: 'BAR',
-      timeRange: 'SEMESTER_CURRENT',
-      groupBy: 'hardware_category',
-    };
-
-    const res = resolveMockMetric(input);
-    expect(res.points.length).toBeGreaterThan(0);
-    expect(res.points[0]?.label).toContain('Cisco');
   });
 });

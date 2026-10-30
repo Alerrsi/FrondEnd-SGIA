@@ -75,17 +75,17 @@ export function DropZone({
         disabled
           ? 'border-zinc-200 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-900/20 text-zinc-400 cursor-not-allowed opacity-60'
           : isOver
-            ? 'border-red-500 ring-2 ring-red-500/50 bg-red-100/60 dark:bg-red-950/60 text-red-600 dark:text-red-400 scale-[1.02] shadow-sm'
+            ? 'border-sky-500 ring-2 ring-sky-500/50 bg-sky-100/60 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 scale-[1.02] shadow-sm'
             : isFocused
-              ? 'border-red-500 ring-2 ring-red-400/40 bg-red-50/50 dark:bg-red-950/40 text-red-600 dark:text-red-400 animate-pulse shadow-xs'
+              ? 'border-sky-500 ring-2 ring-sky-400/40 bg-sky-50/50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 animate-pulse shadow-xs'
               : 'border-zinc-300 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/30 text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-700'
       }`}
     >
       <div className="flex items-center gap-2 pointer-events-none select-none">
         {isFocused ? (
-          <Target className="h-4 w-4 text-red-500 animate-spin-slow" />
+          <Target className="h-4 w-4 text-sky-500 animate-spin-slow" />
         ) : (
-          <PlusCircle className={`h-4 w-4 ${isOver ? 'text-red-500 animate-pulse' : 'text-zinc-400'}`} />
+          <PlusCircle className={`h-4 w-4 ${isOver ? 'text-sky-500 animate-pulse' : 'text-zinc-400'}`} />
         )}
 
         <span>

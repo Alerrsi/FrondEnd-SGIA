@@ -17,6 +17,8 @@ export type TimeRange =
   | 'YEAR_TO_DATE'
   | 'CUSTOM';
 
+export type KpiTimeRange = Exclude<TimeRange, 'CUSTOM'>;
+
 export type ChartType = 'BAR' | 'LINE' | 'DOUGHNUT' | 'POLAR_AREA';
 
 export interface MetricQueryInput {
@@ -34,8 +36,8 @@ export interface MetricQueryInput {
 export interface MetricDataPoint {
   label: string;
   value: number;
-  secondaryValue?: number;
-  category?: string;
+  secondaryValue?: number | null;
+  category?: string | null;
 }
 
 export interface MetricResult {
@@ -44,7 +46,7 @@ export interface MetricResult {
   timeRange: TimeRange;
   chartType: ChartType;
   points: MetricDataPoint[];
-  summary?: number;
+  summary?: string | null;
 }
 
 export interface ExecutiveKpis {

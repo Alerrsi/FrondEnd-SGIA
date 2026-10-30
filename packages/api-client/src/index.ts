@@ -234,12 +234,12 @@ export {
   executeGraphQL,
   fetchExecutiveKpis,
   fetchCustomMetric,
+  buildMetricInput,
 } from './services/metrics';
 export {
   metricKeys,
   useExecutiveKpis as useApiClientExecutiveKpis,
   useCustomMetric as useApiClientCustomMetric,
-  useBatchMetrics as useApiClientBatchMetrics,
 } from './hooks/metrics';
 
 export { createSgiaQueryClient } from './query-client';

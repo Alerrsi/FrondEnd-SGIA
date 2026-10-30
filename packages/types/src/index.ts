@@ -96,6 +96,7 @@ export type {
   MetricEntity,
   MetricAggregation,
   TimeRange,
+  KpiTimeRange,
   ChartType,
   MetricQueryInput,
   MetricDataPoint,

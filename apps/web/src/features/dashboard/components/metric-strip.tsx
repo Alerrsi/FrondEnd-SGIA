@@ -7,14 +7,27 @@ import {
   CheckCircle2,
   TrendingUp,
 } from 'lucide-react';
+import { apiErrorToMessage } from '@/lib/api-error';
 import type { ExecutiveKpis } from '../types/metrics';
 
 interface MetricStripProps {
   kpis?: ExecutiveKpis;
   isLoading?: boolean;
+  error?: unknown;
 }
 
-export function MetricStrip({ kpis, isLoading }: MetricStripProps) {
+export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
+  if (error) {
+    return (
+      <div
+        role="alert"
+        className="flex items-center rounded-lg border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-zinc-900 p-3 font-mono text-xs text-rose-600 dark:text-rose-400"
+      >
+        No se pudieron cargar los indicadores: {apiErrorToMessage(error)}
+      </div>
+    );
+  }
+
   if (isLoading || !kpis) {
     return (
       <div className="flex items-center justify-between rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs animate-pulse font-mono text-xs text-zinc-400">

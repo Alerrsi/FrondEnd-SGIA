@@ -1,42 +1,39 @@
 import { useQuery } from '@tanstack/react-query';
 import type {
   ExecutiveKpis,
+  KpiTimeRange,
   MetricQueryInput,
   MetricResult,
-  TimeRange,
 } from '@sgia/types';
-import { fetchCustomMetric, fetchExecutiveKpis } from '../services/metrics';
+import { buildMetricInput, fetchCustomMetric, fetchExecutiveKpis } from '../services/metrics';
+
+/** Cada consulta pega a `/api/metrics` (120 req/min): sin reintentos ni refetch agresivo. */
+const METRIC_QUERY_OPTIONS = {
+  staleTime: 1000 * 60 * 5,
+  retry: false,
+  refetchOnWindowFocus: false,
+} as const;
 
 export const metricKeys = {
   all: ['metrics'] as const,
-  kpis: (timeRange?: TimeRange) => [...metricKeys.all, 'kpis', timeRange] as const,
-  custom: (input: MetricQueryInput) => [...metricKeys.all, 'custom', input] as const,
-  batch: (inputs: MetricQueryInput[]) => [...metricKeys.all, 'batch', inputs] as const,
+  kpis: (timeRange?: KpiTimeRange) => [...metricKeys.all, 'kpis', timeRange] as const,
+  custom: (input: MetricQueryInput) =>
+    [...metricKeys.all, 'custom', buildMetricInput(input)] as const,
 };
 
-export function useExecutiveKpis(timeRange: TimeRange = 'LAST_30_DAYS') {
+export function useExecutiveKpis(timeRange: KpiTimeRange = 'LAST_30_DAYS') {
   return useQuery<ExecutiveKpis>({
     queryKey: metricKeys.kpis(timeRange),
     queryFn: () => fetchExecutiveKpis(timeRange),
-    staleTime: 1000 * 60 * 5,
+    ...METRIC_QUERY_OPTIONS,
   });
 }
 
-export function useCustomMetric(input: MetricQueryInput) {
+export function useCustomMetric(input: MetricQueryInput, enabled = true) {
   return useQuery<MetricResult>({
     queryKey: metricKeys.custom(input),
     queryFn: () => fetchCustomMetric(input),
-    staleTime: 1000 * 60 * 5,
-  });
-}
-
-export function useBatchMetrics(inputs: MetricQueryInput[]) {
-  return useQuery<MetricResult[]>({
-    queryKey: metricKeys.batch(inputs),
-    queryFn: async () => {
-      return Promise.all(inputs.map((input) => fetchCustomMetric(input)));
-    },
-    staleTime: 1000 * 60 * 5,
-    enabled: inputs.length > 0,
+    ...METRIC_QUERY_OPTIONS,
+    enabled,
   });
 }

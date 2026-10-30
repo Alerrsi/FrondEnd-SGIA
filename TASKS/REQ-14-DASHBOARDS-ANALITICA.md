@@ -127,81 +127,78 @@ type Query {
 
 ---
 DISCLAIMER: DE MOMENTO NO ESTA PROGRAMADA LA API DE EL BACKEND
-POR LO QUE DEBES GENERAR LOS GRAFICOS QUE EL USUARIO NECESITA 
-CON DATOS MOCK FALSOS, DICHOS DATOS DEBEN SER CON EL CONTEXTO DEL SISTEMA 
-OBVIAMENTE NO PASARAS DATOS DE ALGO NADA QUE VER COMO CARREAS, ETC.
-CUANDO MARQUES LAS TAREAS NO PONGAS UNA X CON UNA p de PARTIAL
-y usa charts.js
-HASTA QUE TE INDIQUE TRABAJAR CON LA API DE GRAHPQL
-PD: crea un json con los datos de prueba
+> **Estado (2026-10-30):** el frontend consume `POST /api/metrics` real; ya no hay datos mock ni de respaldo. El contrato vigente (transporte, esquema, `groupBy` por entidad, errores) está en [`metrics.md`](../metrics.md).
+
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. Cliente GraphQL y Capa de Datos (`apps/web` & `@sgia/api-client`)
-- [p] **Configuración del Cliente GraphQL hacia `/api/metrics`:**
-  - [p] Función de transporte GraphQL autenticada con Bearer Token (reutilizando credenciales Sanctum).
-  - [p] Tipos TypeScript para operaciones GraphQL (`MetricEntity`, `MetricAggregation`, `TimeRange`, `ChartType`, `MetricResult`, `ExecutiveKpis`).
-  - [p] Hooks TanStack Query especializados (`useExecutiveKpis`, `useCustomMetric`, `useBatchMetrics`) alimentados por mock JSON en contexto pañol TI.
+- [x] **Configuración del Cliente GraphQL hacia `/api/metrics`:**
+  - [x] Función de transporte GraphQL autenticada con Bearer Token (reutilizando credenciales Sanctum).
+  - [x] Tipos TypeScript para operaciones GraphQL (`MetricEntity`, `MetricAggregation`, `TimeRange`, `ChartType`, `MetricResult`, `ExecutiveKpis`).
+  - [x] Hooks TanStack Query especializados (`useExecutiveKpis`, `useCustomMetric`) contra `/api/metrics` (`retry: false`, `staleTime` 5 min; una consulta por gráfico). Sin datos de respaldo: se muestra el `message` del error; 403 muestra aviso de permisos y 401 cierra sesión.
 
 ### 2. Cinta Métrica de KPIs Ejecutivos (GraphQL `executiveKpis`)
-- [p] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo sgia-design):**
-  - [p] Consulta vía GraphQL `executiveKpis(timeRange: $range)`.
-  - [p] Estado de inventario: activos disponibles, en préstamo, en taller y de baja.
-  - [p] Operación diaria: préstamos activos hoy y tasa porcentual de atrasos.
-  - [p] Salud y rotación: alertas de stock crítico pendientes y porcentaje de rotación mensual.
+- [x] **Cinta Métrica Compacta Superior (`MetricStrip` - Estilo sgia-design):**
+  - [x] Consulta vía GraphQL `executiveKpis(timeRange: $range)`.
+  - [x] Estado de inventario: activos disponibles, en préstamo, en taller y de baja.
+  - [x] Operación diaria: préstamos activos hoy y tasa porcentual de atrasos.
+  - [x] Salud y rotación: alertas de stock crítico pendientes y porcentaje de rotación mensual.
 
 ### 3. Configuración Visual Chart.js con Tema Oscuro (`react-chartjs-2`)
-- [p] **Tokens de Diseño y Paleta Zed.dev:**
-  - [p] Fondo `#111113`, superficies `#18181b`, líneas de cuadrícula translúcidas `#27272a`.
-  - [p] Paleta semántica institucional: acentos rojo `#ef4444`, ámbar `#f59e0b`, esmeralda `#10b981`, violeta `#8b5cf6` y cian `#06b6d4`.
-  - [p] Tooltips interactivos con contraste alto, tipografía monoespaciada compacta y badges legibles.
-  - [p] Componente envolvente genérico `DynamicChartCard` que recibe `MetricResult` y lo traduce a configuración de `react-chartjs-2`.
+- [x] **Tokens de Diseño y Paleta Zed.dev:**
+  - [x] Fondo `#111113`, superficies `#18181b`, líneas de cuadrícula translúcidas `#27272a`.
+  - [x] Paleta semántica institucional: acentos rojo `#ef4444`, ámbar `#f59e0b`, esmeralda `#10b981`, violeta `#8b5cf6` y cian `#06b6d4`.
+  - [x] Tooltips interactivos con contraste alto, tipografía monoespaciada compacta y badges legibles.
+  - [x] Componente envolvente genérico `DynamicChartCard` que recibe `MetricResult` y lo traduce a configuración de `react-chartjs-2`.
 
 ### 4. Sistema de Plantillas y Dashboards Dinámicos
-- [p] **Selector de Plantillas Predefinidas (3 Plantillas por Defecto):**
-  - [p] *Plantilla 1: Operaciones y Movimiento de Pañol:*
+- [x] **Selector de Plantillas Predefinidas (3 Plantillas por Defecto):**
+  - [x] *Plantilla 1: Operaciones y Movimiento de Pañol:*
     - Préstamos diarios (Línea: `LOANS` + `COUNT` + `LAST_30_DAYS`).
     - Estado y atrasos de préstamos (Dona: `LOANS` + `RATE`).
     - Alertas críticas por categoría (Barras: `ALERTS` + `COUNT`).
-  - [p] *Plantilla 2: Demanda y Desgaste por Carrera:*
+  - [x] *Plantilla 2: Demanda y Desgaste por Carrera:*
     - Insumos consumidos por especialidad (Barras: `SUPPLIES` + `TOTAL` agrupado por `CAREER`).
     - Ranking de equipos más solicitados (Barras horizontales: `EQUIPMENT` + `COUNT`).
     - Préstamos por docente y asignatura (Dona / Polar: `TEACHERS` + `COUNT`).
-  - [p] *Plantilla 3: Salud del Inventario y Ciclo de Vida:*
+  - [x] *Plantilla 3: Salud del Inventario y Ciclo de Vida:*
     - Inventario ocioso / sin rotación (Barras: `EQUIPMENT` + `COUNT` en estado ocioso).
     - Incidencias y mantenciones por equipo (Línea: `MAINTENANCE` + `COUNT`).
     - Tasa de rotación semestral de insumos (Barras: `SUPPLIES` + `RATE`).
-- [p] **Constructor de Gráficos Personalizados (GraphQL Query Builder Modal):**
-  - [p] Formulario interactivo con selección de:
+- [x] **Constructor de Gráficos Personalizados (GraphQL Query Builder Modal):**
+  - [x] Formulario interactivo con selección de:
     - **Entidad:** `EQUIPMENT`, `SUPPLIES`, `LOANS`, `ALERTS`, `MAINTENANCE`, `CAREERS`, `TEACHERS`.
     - **Métrica:** `TOTAL`, `AVERAGE`, `COUNT`, `RATE`.
     - **Tipo de Gráfico:** `BAR`, `LINE`, `DOUGHNUT`, `POLAR_AREA`.
     - **Rango Temporal:** `LAST_7_DAYS`, `LAST_30_DAYS`, `SEMESTER_CURRENT`, `SEMESTER_PREVIOUS`, `YEAR_TO_DATE`, `CUSTOM`.
-  - [p] Previsualización en vivo ejecutando la consulta hacia los datos mock tipados.
-- [p] **Reglas de Negocio y Restricciones Obligatorias:**
-  - [p] **Límite máximo:** Máximo 5 gráficos simultáneos por plantilla (bloquea la adición si se alcanza el cupo).
-  - [p] **Prevención de duplicados:** Validación que prohíbe agregar 2 gráficos idénticos (mismo conjunto de `entity`, `metric`, `chartType` y `timeRange`).
-  - [p] **Eliminación con confirmación:** Cada tarjeta de gráfico incluye botón de eliminar con `ConfirmDialog` antes de su retiro.
-  - [p] **Persistencia:** Guardado local (`localStorage`) del estado de plantillas del director.
+  - [ ] Previsualización en vivo dentro del menú (hoy el gráfico se ve al añadirlo al panel).
+  - [x] Rango `CUSTOM` con fecha inicial obligatoria y final opcional; `executiveKpis` no ofrece `CUSTOM`.
+  - [x] `groupBy` según `metrics.md` §4 (sin `CAREERS.level`) y cálculo `TOTAL`/`AVERAGE` oculto en `ALERTS` y `MAINTENANCE`.
+- [x] **Reglas de Negocio y Restricciones Obligatorias:**
+  - [x] **Límite máximo:** Máximo 5 gráficos simultáneos por plantilla (bloquea la adición si se alcanza el cupo).
+  - [x] **Prevención de duplicados:** Validación que prohíbe agregar 2 gráficos idénticos (mismo conjunto de `entity`, `metric`, `chartType` y `timeRange`).
+  - [x] **Eliminación con confirmación:** Cada tarjeta de gráfico incluye botón de eliminar con `ConfirmDialog` antes de su retiro.
+  - [x] **Persistencia:** Guardado local (`localStorage`) del estado de plantillas del director.
 
 ### 5. Interacción con los Gráficos y Composición Drag & Drop (Modo Edición)
-- [p] **Modo de Edición del Dashboard (Edit Mode Toggle):**
-  - [p] Interruptor/botón en la barra de controles para alternar entre "Modo Visualización" y "Modo Edición del Dashboard".
-  - [p] En Modo Visualización: bloqueo de reordenamiento y arrastre para garantizar ergonomía de lectura y tooltips sin saltos accidentales.
-  - [p] En Modo Edición: habilitación de zonas de soltado (Drop Zones), indicadores de arrastre (drag handles) en gráficos existentes y despliegue del panel lateral de widgets.
-- [p] **Panel Lateral de Formas Gráficas Genéricas (Widget Palette Drawer):**
-  - [p] Panel lateral retráctil (Drawer / Sheet zed.dev) con catálogo de formas genéricas disponibles:
+- [x] **Modo de Edición del Dashboard (Edit Mode Toggle):**
+  - [x] Interruptor/botón en la barra de controles para alternar entre "Modo Visualización" y "Modo Edición del Dashboard".
+  - [x] En Modo Visualización: bloqueo de reordenamiento y arrastre para garantizar ergonomía de lectura y tooltips sin saltos accidentales.
+  - [x] En Modo Edición: habilitación de zonas de soltado (Drop Zones), indicadores de arrastre (drag handles) en gráficos existentes y despliegue del panel lateral de widgets.
+- [x] **Panel Lateral de Formas Gráficas Genéricas (Widget Palette Drawer):**
+  - [x] Panel lateral retráctil (Drawer / Sheet zed.dev) con catálogo de formas genéricas disponibles:
     - **Gráfico de Barras (BAR):** Miniatura representativa para comparativas discretas o rankings categóricos.
     - **Gráfico de Torta / Dona (DOUGHNUT):** Miniatura para proporciones relativas y cuotas porcentuales del pañol.
     - **Gráfico de Series de Tiempo / Línea (LINE):** Miniatura para tendencias cronológicas continuas (semanal/mensual).
     - **Gráfico de Área Polar (POLAR_AREA):** Miniatura para frecuencias multivariables y ciclos de asignaturas.
-  - [p] Cada elemento del lote es arrastrable (`draggable={true}`) con cursor `grab`/`grabbing` y ghost preview de arrastre con badges descriptivos.
-- [p] **Zonas de Soltado y Lienzo Interactivo (Drag & Drop Canvas):**
-  - [p] Ranuras de soltado visuales (`DropZone`) entre tarjetas y al final del grid de hasta 5 elementos, con estilo dashed tenue y realce reactivo (`dragover`).
-  - [p] Prevención y feedback visual si se intenta arrastrar habiendo alcanzado el cupo máximo de 5 gráficos (desactivación del drag con tooltip explicativo).
-  - [p] Posibilidad de reordenar la cuadrícula arrastrando gráficos ya existentes hacia nuevas posiciones en modo edición.
-- [p] **Asistente Contextual Post-Drop (Configurador Inmediato al Soltar):**
-  - [p] Al soltar una forma gráfica en una DropZone, apertura inmediata del modal/asistente de configuración analítica:
-    - **Tipo de Gráfico preasignado:** Bloqueado y determinado automáticamente por la forma arrastrada (ej. si arrastró "Series de tiempo", el tipo es estrictamente `LINE`).
+  - [x] Cada elemento del lote es arrastrable (`draggable={true}`) con cursor `grab`/`grabbing` y ghost preview de arrastre con badges descriptivos.
+- [x] **Zonas de Soltado y Lienzo Interactivo (Drag & Drop Canvas):**
+  - [x] Ranuras de soltado visuales (`DropZone`) entre tarjetas y al final del grid de hasta 5 elementos, con estilo dashed tenue y realce reactivo (`dragover`).
+  - [x] Prevención y feedback visual si se intenta arrastrar habiendo alcanzado el cupo máximo de 5 gráficos (desactivación del drag con tooltip explicativo).
+  - [x] Posibilidad de reordenar la cuadrícula arrastrando gráficos ya existentes hacia nuevas posiciones en modo edición.
+- [x] **Menú de Configuración (al soltar o pulsar Añadir):**
+  - [x] Al soltar una forma gráfica en una DropZone, apertura inmediata del modal/asistente de configuración analítica:
+    - **Tipo de Gráfico preasignado:** el de la forma arrastrada o añadida desde el catálogo; el usuario puede cambiarlo en el menú. Incluye sugerencias rápidas por tipo.
     - **Entidad:** Selección de dominio del pañol (`EQUIPMENT`, `SUPPLIES`, `LOANS`, `ALERTS`, `MAINTENANCE`, `CAREERS`, `TEACHERS`).
     - **Métrica / Agregación:** Selección de cálculo matemático (`COUNT`, `TOTAL`, `AVERAGE`, `RATE`, etc.).
     - **Agrupar por (Group By Contextual y Coherente):** Menú dinámico dependiente de la entidad elegida con relaciones semánticas válidas:
@@ -210,27 +207,28 @@ PD: crea un json con los datos de prueba
       - Para `EQUIPMENT`: agrupar por Categoría de Hardware, Sala/Ubicación o Estado físico.
       - Para `ALERTS`: agrupar por Criticidad o Especialidad/Área.
       - Para `MAINTENANCE`: agrupar por Equipo, Tipo de Falla o Taller.
+    - **Máximo de elementos** (1-50) y **Período**.
     - **Título personalizado:** Pre-generación automática de título coherente con opción de sobreescritura manual por el director.
-  - [p] Cancelación limpia: si el usuario cancela el asistente modal, la acción de drop se revierte sin añadir elementos vacíos ni romper el layout.
-- [p] **Validación y Persistencia del Layout Editado:**
-  - [p] Validación automática anti-duplicados (rechazo si ya existe un gráfico con idéntica entidad, cálculo, tipo y agrupación).
-  - [p] Botón "Guardar y Salir" que consolida el nuevo orden y composición en `localStorage` y notifica el éxito mediante toast de Sileo.
-- [p] Reemplazar botón de añadir gráfico sin modo de edición: solo se pueden añadir mediante "Abrir catálogo de widgets".
-- [p] En modo edición los gráficos pueden cambiar de lugar si es que se arrastran.
-- [p] Cuando el usuario agarre un gráfico y salga del menú de widgets se debe enfocar la zona donde se pueden poner los widgets quitando el menú de widgets.
-- [p] Al estar en la zona de enfoque arrastrando el grafico fuera de la zona de widgets aun se debe visualizar el movimiento del grafico con el mouse hasta soltarlo en la zona, si el usuario no ha soltado no quites el grafico, OBLIGATORIO
-- [p] Cuando se salga arrastrando el grafico se debe mostrar una zona clara donde soltar el grafico que resalte de las demas, una vez la suelte dentro el grafico se tiene que añadir y quedar
-- [p] Si el usuario esta dentro de una plantilla por defecto al añadir un grafico se debe crear una personalizada con ese grafico añadido
+  - [x] Cancelación limpia: si el usuario cancela el asistente modal, la acción de drop se revierte sin añadir elementos vacíos ni romper el layout.
+- [x] **Validación y Persistencia del Layout Editado:**
+  - [x] Validación automática anti-duplicados (rechazo si ya existe un gráfico con idéntica entidad, cálculo, tipo y agrupación).
+  - [x] Botón "Guardar y Salir" que consolida el nuevo orden y composición en `localStorage` y notifica el éxito mediante toast de Sileo.
+- [x] Reemplazar botón de añadir gráfico sin modo de edición: solo se pueden añadir mediante "Abrir catálogo de widgets".
+- [x] En modo edición los gráficos pueden cambiar de lugar si es que se arrastran.
+- [x] Cuando el usuario agarre un gráfico y salga del menú de widgets se debe enfocar la zona donde se pueden poner los widgets quitando el menú de widgets.
+- [x] Al estar en la zona de enfoque arrastrando el grafico fuera de la zona de widgets aun se debe visualizar el movimiento del grafico con el mouse hasta soltarlo en la zona, si el usuario no ha soltado no quites el grafico, OBLIGATORIO
+- [x] Cuando se salga arrastrando el grafico se debe mostrar una zona clara donde soltar el grafico que resalte de las demas, una vez la suelte dentro el grafico se tiene que añadir y quedar
+- [x] Si el usuario esta dentro de una plantilla por defecto al añadir un grafico se debe crear una personalizada con ese grafico añadido
 
 ---
 
 ## 🧪 Pruebas Requeridas
 
-- [p] Unit test: hooks `useExecutiveKpis`, `useCustomMetric`.
-- [p] Unit test: validaciones del builder dinámico (máximo 5 gráficos, rechazo de duplicados idénticos).
-- [p] Component test: interacción de eliminación con modal de confirmación (`ConfirmDialog`).
-- [p] Integration test: renderizado de gráficos dinámicos `react-chartjs-2` a partir de respuestas analíticas.
-- [p] Unit & Component test: activación del modo de edición y bloqueo/desbloqueo de controles de arrastre.
-- [p] Component test: arrastre de forma gráfica genérica desde el panel lateral y activación de DropZone.
-- [p] Integration test: apertura del asistente post-drop con tipo de gráfico bloqueado al arrastrado y selectores dependientes de `groupBy`.
-- [p] Integration test: cancelación y confirmación del drop, verificación de persistencia en `localStorage`.
+- [x] Unit test: hooks `useExecutiveKpis`, `useCustomMetric`.
+- [x] Unit test: validaciones del builder dinámico (máximo 5 gráficos, rechazo de duplicados idénticos).
+- [x] Component test: interacción de eliminación con modal de confirmación (`ConfirmDialog`).
+- [x] Integration test: renderizado de gráficos dinámicos `react-chartjs-2` a partir de respuestas analíticas.
+- [x] Unit & Component test: activación del modo de edición y bloqueo/desbloqueo de controles de arrastre.
+- [x] Component test: arrastre de forma gráfica genérica desde el panel lateral y activación de DropZone.
+- [x] Integration test: apertura del asistente post-drop con tipo de gráfico bloqueado al arrastrado y selectores dependientes de `groupBy`.
+- [x] Integration test: cancelación y confirmación del drop, verificación de persistencia en `localStorage`.

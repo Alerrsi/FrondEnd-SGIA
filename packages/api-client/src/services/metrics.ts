@@ -1,103 +1,104 @@
 import type {
   ExecutiveKpis,
+  KpiTimeRange,
   MetricQueryInput,
   MetricResult,
-  TimeRange,
 } from '@sgia/types';
 import { post } from '../http';
 
+interface GraphQLResponse<TData> {
+  data?: TData;
+  errors?: Array<{ message: string }>;
+}
+
+const EXECUTIVE_KPIS_QUERY = `
+  query GetExecutiveKpis($timeRange: TimeRange) {
+    executiveKpis(timeRange: $timeRange) {
+      activosDisponibles
+      activosEnPrestamo
+      activosEnTaller
+      activosDeBaja
+      prestamosActivosHoy
+      tasaAtrasosPct
+      alertasCriticasNoResueltas
+      tasaRotacionMensualPct
+    }
+  }
+`;
+
+const CUSTOM_METRIC_QUERY = `
+  query GetCustomMetric($input: MetricQueryInput!) {
+    customMetric(input: $input) {
+      entity
+      metric
+      timeRange
+      chartType
+      summary
+      points {
+        label
+        value
+        secondaryValue
+        category
+      }
+    }
+  }
+`;
+
 /**
- * Ejecutor autenticado de consultas GraphQL sobre el endpoint unificado /api/metrics
+ * Ejecutor autenticado de consultas GraphQL sobre el endpoint unificado /api/metrics.
+ * Los errores de consulta llegan con HTTP 200 en `errors`; 401 y 403 los lanza `post`.
  */
 export async function executeGraphQL<TData = unknown>(
   query: string,
   variables?: Record<string, unknown>,
 ): Promise<TData> {
-  const response = await post<{ query: string; variables?: Record<string, unknown> }, { data?: TData; errors?: Array<{ message: string }> }>(
-    '/metrics',
-    { query, variables },
-  );
+  const response = await post<
+    { query: string; variables?: Record<string, unknown> },
+    GraphQLResponse<TData>
+  >('/metrics', { query, variables });
 
   if (response.errors && response.errors.length > 0) {
     throw new Error(response.errors[0]?.message ?? 'Error en la consulta GraphQL');
   }
 
-  return response.data as TData;
+  if (!response.data) {
+    throw new Error('La API de métricas respondió sin datos');
+  }
+
+  return response.data;
+}
+
+/** Solo envía al backend los campos que entiende (`title` se ignora y las fechas solo aplican con CUSTOM). */
+export function buildMetricInput(input: MetricQueryInput): Record<string, unknown> {
+  const isCustom = input.timeRange === 'CUSTOM';
+  return {
+    entity: input.entity,
+    metric: input.metric,
+    timeRange: input.timeRange,
+    chartType: input.chartType,
+    ...(input.groupBy ? { groupBy: input.groupBy } : {}),
+    ...(isCustom && input.dateFrom ? { dateFrom: input.dateFrom } : {}),
+    ...(isCustom && input.dateTo ? { dateTo: input.dateTo } : {}),
+    ...(input.limit !== undefined ? { limit: input.limit } : {}),
+  };
 }
 
 export async function fetchExecutiveKpis(
-  timeRange: TimeRange = 'LAST_30_DAYS',
+  timeRange: KpiTimeRange = 'LAST_30_DAYS',
 ): Promise<ExecutiveKpis> {
-  const query = `
-    query GetExecutiveKpis($timeRange: TimeRange) {
-      executiveKpis(timeRange: $timeRange) {
-        activosDisponibles
-        activosEnPrestamo
-        activosEnTaller
-        activosDeBaja
-        prestamosActivosHoy
-        tasaAtrasosPct
-        alertasCriticasNoResueltas
-        tasaRotacionMensualPct
-      }
-    }
-  `;
-
-  try {
-    const res = await executeGraphQL<{ executiveKpis: ExecutiveKpis }>(query, { timeRange });
-    return res.executiveKpis;
-  } catch {
-    // Retorno mock controlado hasta que la API backend esté disponible
-    return {
-      activosDisponibles: 842,
-      activosEnPrestamo: 128,
-      activosEnTaller: 23,
-      activosDeBaja: 14,
-      prestamosActivosHoy: 46,
-      tasaAtrasosPct: 4.8,
-      alertasCriticasNoResueltas: 7,
-      tasaRotacionMensualPct: 28.5,
-    };
-  }
+  const res = await executeGraphQL<{ executiveKpis: ExecutiveKpis }>(
+    EXECUTIVE_KPIS_QUERY,
+    { timeRange },
+  );
+  return res.executiveKpis;
 }
 
 export async function fetchCustomMetric(
   input: MetricQueryInput,
 ): Promise<MetricResult> {
-  const query = `
-    query GetCustomMetric($input: MetricQueryInput!) {
-      customMetric(input: $input) {
-        entity
-        metric
-        timeRange
-        chartType
-        summary
-        points {
-          label
-          value
-          secondaryValue
-          category
-        }
-      }
-    }
-  `;
-
-  try {
-    const res = await executeGraphQL<{ customMetric: MetricResult }>(query, { input });
-    return res.customMetric;
-  } catch {
-    return {
-      entity: input.entity,
-      metric: input.metric,
-      timeRange: input.timeRange,
-      chartType: input.chartType,
-      points: [
-        { label: 'Cisco Routing & Switching', value: 45 },
-        { label: 'Electrónica y Microcontroladores', value: 38 },
-        { label: 'Ciberseguridad & Firewalls', value: 29 },
-        { label: 'Insumos de Soldadura y Conectores', value: 62 },
-      ],
-      summary: 174,
-    };
-  }
+  const res = await executeGraphQL<{ customMetric: MetricResult }>(
+    CUSTOM_METRIC_QUERY,
+    { input: buildMetricInput(input) },
+  );
+  return res.customMetric;
 }
