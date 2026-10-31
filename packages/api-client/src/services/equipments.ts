@@ -114,6 +114,15 @@ export async function createIncidentReport(
   form.append('severity', severity);
   form.append('gravedad', severity);
 
+  const unitId = (payload as any).equipment_unit_id;
+  if (unitId !== undefined && unitId !== null) form.append('equipment_unit_id', String(unitId));
+
+  const requestType = (payload as any).request_type ?? (payload as any).tipo;
+  if (requestType) form.append('request_type', requestType);
+
+  const evidence = (payload as any).evidence_photo;
+  if (evidence) form.append('evidence_photo', evidence);
+
   const file =
     (payload as any).attachment ??
     (payload as any).archivo ??

@@ -251,3 +251,8 @@ export * as quotationsApi from './services/quotations';
 export * as usersApi from './services/users';
 export * as equipmentsApi from './services/equipments';
 export * as metricsApi from './services/metrics';
+
+export * from './services/units';
+export * from './hooks/units';
+export { useUpdateProductCondition } from './hooks/products';
+export { updateProductCondition } from './services/products';

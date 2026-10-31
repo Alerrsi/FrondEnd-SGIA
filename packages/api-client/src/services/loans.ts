@@ -1,4 +1,5 @@
 import type {
+  DeliverLoanPayload,
   AprobarPrestamoPayload,
   CreatePrestamoPayload,
   LoanCheckinPayload,
@@ -242,8 +243,8 @@ export async function checkoutLoan(payload: LoanCheckoutPayload): Promise<Presta
   return normalizePrestamo(response?.data ?? response);
 }
 
-export async function deliverLoan(id: number): Promise<Prestamo> {
-  const response = await post<void, any>(`/loans/${id}/deliver`);
+export async function deliverLoan(id: number, payload?: DeliverLoanPayload): Promise<Prestamo> {
+  const response = await post<DeliverLoanPayload, any>(`/loans/${id}/deliver`, payload);
   return normalizePrestamo(response?.data ?? response);
 }
 

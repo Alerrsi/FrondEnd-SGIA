@@ -21,6 +21,8 @@ export interface Supplier {
   email: string;
   phone?: string | null;
   category?: string | null;
+  rut?: string | null;
+  address?: string | null;
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;
@@ -32,6 +34,8 @@ export interface CreateSupplierPayload {
   email?: string | null;
   phone?: string | null;
   category?: string | null;
+  rut?: string | null;
+  address?: string | null;
   is_active?: boolean;
 }
 

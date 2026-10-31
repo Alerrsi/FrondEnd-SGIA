@@ -96,6 +96,11 @@ export interface IncidentReport {
   status: IncidentStatus;
   photo_url?: string | null;
   attachment_url?: string | null;
+  equipment_unit_id?: number | null;
+  equipment_unit?: { id: number; code: string; serial_number?: string | null } | null;
+  request_type?: 'falla' | 'reposicion' | 'mantencion';
+  has_evidence_photo?: boolean;
+  allowed_transitions?: IncidentStatus[];
   reported_by?: number;
   created_at: string;
   updated_at: string;
@@ -120,6 +125,9 @@ export interface CreateIncidentReportPayload {
   descripcion?: string;
   severity?: IncidentSeverity;
   gravedad?: IncidentSeverity;
+  equipment_unit_id?: number;
+  request_type?: 'falla' | 'reposicion' | 'mantencion';
+  evidence_photo?: File | Blob | null;
   photo?: File | Blob | null;
   attachment?: File | Blob | null;
   archivo?: File | Blob | null;
@@ -133,7 +141,10 @@ export interface Novedad {
   productoId?: number | null;
   product_id?: number | null;
   reportadoPorId?: number;
-  tipo?: 'falla' | 'reposicion';
+  tipo?: 'falla' | 'reposicion' | 'mantencion';
+  equipment_unit_id?: number;
+  request_type?: 'falla' | 'reposicion' | 'mantencion';
+  evidence_photo?: File | Blob | null;
   severity?: IncidentSeverity;
   status?: IncidentStatus;
   title?: string;

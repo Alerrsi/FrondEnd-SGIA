@@ -31,6 +31,18 @@ export interface ItemPrestamo {
   sala?: string;
   cajon?: string;
   devuelto?: boolean;
+  delivered_quantity?: number;
+  returned_quantity?: number;
+  units?: LoanItemUnit[];
+}
+
+export interface LoanItemUnit {
+  id: number;
+  code: string;
+  serial_number?: string | null;
+  status: string;
+  returned_at?: string | null;
+  return_condition?: 'bueno' | 'regular' | 'danado' | 'extraviado' | null;
 }
 
 export interface PrestamoEvento {
@@ -70,6 +82,9 @@ export interface Prestamo {
     sala?: string;
     cajon?: string;
     devuelto?: boolean;
+    delivered_quantity?: number;
+    returned_quantity?: number;
+    units?: LoanItemUnit[];
   }>;
   origen: LoanOrigin | string;
   estado: LoanStatus | string;
@@ -151,10 +166,12 @@ export interface LoanCheckoutPayload {
   fecha?: string;
   time_block?: string;
   notes?: string;
+  storeroom_id?: string;
   items: Array<{
     barcode?: string;
     product_id?: number;
     quantity: number;
+    unit_ids?: number[];
   }>;
 }
 
@@ -165,7 +182,8 @@ export interface LoanCheckinPayload {
     product_id?: number;
     productoId?: number;
     item_id?: number;
-    condition?: 'bueno' | 'regular' | 'dañado' | 'optimo' | 'extraviado';
+    condition?: 'bueno' | 'regular' | 'dañado' | 'danado' | 'optimo' | 'extraviado';
+    unit_ids?: number[];
     damaged?: boolean;
     dañado?: boolean;
     quantity_returned?: number;
@@ -217,4 +235,8 @@ export interface LoanRequestQueryParams {
   estado?: string;
   per_page?: number;
   page?: number;
+}
+
+export interface DeliverLoanPayload {
+  items?: Array<{ item_id: number; unit_ids: number[] }>;
 }

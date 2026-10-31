@@ -257,3 +257,19 @@
 - **Verificación:** typecheck web/api-client/types sin errores, lint web 0, 177 tests pasan (+20 en `metrics-api.test.tsx`). `apps/mobile` no compila por dependencias sin instalar (preexistente, ajeno a este cambio).
 - **Pendiente:** previsualización en vivo en el menú; no se probó contra el backend real ni se revisó el render visual en navegador.
 
+
+---
+
+## FIX-008: Capa de datos para el plan Equipos (unidades, carreras, campos nuevos)
+
+- **Fecha:** 2026-10-31
+- **Módulo:** `packages/types` y `packages/api-client` según `ENDPOINTS.md` (rama backend `plan/modelos-y-equipos`)
+- **Cambios:**
+  - Tipos nuevos en `packages/types/src/unidad.ts`: `EquipmentUnit`, estados, `Career`, payloads.
+  - Servicios y hooks en `packages/api-client/src/{services,hooks}/units.ts`: unidades (`/products/{id}/units`, `/equipment-units/*`, código de barras, hoja de vida, escaneo `by-code`), carreras (`/careers`), foto de evidencia.
+  - `Producto`: `type` (`maqueta`), `category_id`, `career_id`, mantención, `reference_price`, cantidades en reparación/baja. Nuevo `updateProductCondition` (`PATCH /products/{id}/condition`, solo insumos). `setProductoActivo` ahora usa `PATCH /products/{id}/status`.
+  - Ubicaciones: `storeroom_id`, `building`, `floor`; cajones: `barcode`. Proveedor: `rut`, `address`.
+  - Préstamos: `unit_ids` en checkout/checkin, `deliverLoan(id, payload?)` con `items[{item_id, unit_ids}]`, `storeroom_id`, `delivered_quantity`, `returned_quantity`, `units[]`.
+  - Informes de novedades: `equipment_unit_id`, `request_type`, `evidence_photo`.
+- **Verificación:** typecheck web/api-client/types sin errores, 177 tests web pasan. `apps/mobile` no compila por dependencias sin instalar (preexistente).
+- **Pendiente:** pantallas (detalle de producto con tabla de unidades, selector de unidad en novedades, devolución por unidad, `category_id` obligatorio en alta de producto, quitar campos de cantidad al editar equipos). Los checkboxes de `ENDPOINTS.md` siguen sin marcar.

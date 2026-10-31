@@ -4,6 +4,7 @@ import type {
   CriticalStockAlert,
   CriticalStockAlertQueryParams,
   InvoiceScanResponse,
+  ProductConditionPayload,
   ProductLocationPayload,
   Producto,
   ProductoParams,
@@ -21,6 +22,7 @@ import {
   fetchProducts,
   resolveStockAlert,
   setProductoActivo,
+  updateProductCondition,
   updateProductLocation,
   updateProducto,
 } from '../services/products';
@@ -89,6 +91,17 @@ export function useUpdateProducto() {
   return useMutation<Producto, Error, { id: number; payload: UpdateProductoPayload }>({
     mutationFn: ({ id, payload }) => updateProducto(id, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: productKeys.all }),
+  });
+}
+
+export function useUpdateProductCondition() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: number; payload: ProductConditionPayload }) =>
+      updateProductCondition(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: productKeys.all });
+    },
   });
 }
 

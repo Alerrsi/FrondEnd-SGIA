@@ -14,6 +14,9 @@ export interface LocationEntity {
   sala?: string;
   cajon?: string | null;
   descripcion?: string | null;
+  storeroom_id?: string | null;
+  building?: string | null;
+  floor?: string | null;
   cajones_count?: number;
   cajones?: CajonEntity[];
   created_by?: number | null;
@@ -25,6 +28,7 @@ export interface LocationEntity {
 export interface CajonEntity {
   id: number;
   codigo: string;
+  barcode?: string | null;
   descripcion?: string | null;
   location_id: number;
   location?: LocationEntity;
@@ -50,12 +54,18 @@ export interface CajonQueryParams {
 }
 
 export interface CreateLocationPayload {
+  storeroom_id?: string;
+  building?: string;
+  floor?: string;
   nombre: string;
   tipo?: LocationTipo | string;
   descripcion?: string;
 }
 
 export interface UpdateLocationPayload {
+  storeroom_id?: string;
+  building?: string;
+  floor?: string;
   nombre?: string;
   tipo?: LocationTipo | string;
   descripcion?: string;
@@ -103,6 +113,15 @@ export interface Producto {
   supplier?: { id?: number; name?: string } | null;
   area?: string | null;
   photo_url?: string | null;
+  type?: 'equipo' | 'insumo' | 'maqueta';
+  category_id?: number | null;
+  career_id?: number | null;
+  maintenance_priority?: 'A' | 'B' | 'C' | null;
+  requires_calibration?: boolean;
+  maintenance_frequency_months?: number | null;
+  reference_price?: number | null;
+  quantity_in_repair?: number;
+  quantity_written_off?: number;
   activo: boolean;
   is_active?: boolean;
   createdAt: string;
@@ -112,6 +131,14 @@ export interface Producto {
 }
 
 export interface CreateProductoPayload {
+  type?: 'equipo' | 'insumo' | 'maqueta';
+  category_id?: number;
+  career_id?: number;
+  maintenance_priority?: 'A' | 'B' | 'C';
+  requires_calibration?: boolean;
+  maintenance_frequency_months?: number;
+  reference_price?: number;
+  units?: Array<{ serial_number?: string }>;
   name?: string;
   nombre?: string;
   description?: string;
@@ -144,6 +171,13 @@ export interface CreateProductoPayload {
 }
 
 export interface UpdateProductoPayload {
+  type?: 'equipo' | 'insumo' | 'maqueta';
+  category_id?: number;
+  career_id?: number;
+  maintenance_priority?: 'A' | 'B' | 'C';
+  requires_calibration?: boolean;
+  maintenance_frequency_months?: number;
+  reference_price?: number;
   name?: string;
   nombre?: string;
   description?: string;
@@ -220,6 +254,7 @@ export interface ProductoParams {
   ubicacionId?: number;
   sala?: string;
   cajon?: string;
+  type?: 'equipo' | 'insumo' | 'maqueta';
   critical_only?: boolean;
   soloStockCritico?: boolean;
   page?: number;
@@ -234,6 +269,12 @@ export interface ProductLocationPayload {
   sala?: string;
   cajon?: string;
   descripcion?: string;
+}
+
+export interface ProductConditionPayload {
+  action: 'send_to_repair' | 'repaired' | 'write_off';
+  quantity: number;
+  source?: 'stock' | 'repair';
 }
 
 export interface ProductBarcodeResponse {

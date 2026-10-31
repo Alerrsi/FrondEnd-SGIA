@@ -28,6 +28,7 @@ export type {
   ProductLocationDetailResponse,
   ProductLocationPayload,
   ProductBarcodeResponse,
+  ProductConditionPayload,
   CriticalStockAlert,
   CriticalStockAlertQueryParams,
   ExtraerFacturaPayload,
@@ -43,6 +44,8 @@ export type {
   CreatePrestamoPayload,
   RemoteLoanRequestPayload,
   LoanCheckoutPayload,
+  LoanItemUnit,
+  DeliverLoanPayload,
   LoanCheckinPayload,
   AprobarPrestamoPayload,
   RechazarPrestamoPayload,
@@ -106,3 +109,21 @@ export type {
 } from './metric';
 
 export type { PaginatedResponse, ApiError, AuthResponse } from './pagination';
+
+export type {
+  EquipmentUnit,
+  EquipmentUnitStatus,
+  EquipmentUnitActiveLoan,
+  EquipmentUnitQueryParams,
+  EquipmentUnitBarcodeResponse,
+  CreateEquipmentUnitsPayload,
+  UpdateEquipmentUnitPayload,
+  UnitReturnCondition,
+  ProductType,
+  MaintenancePriority,
+  IncidentRequestType,
+  Career,
+  CareerQueryParams,
+  CreateCareerPayload,
+  UpdateCareerPayload,
+} from './unidad';

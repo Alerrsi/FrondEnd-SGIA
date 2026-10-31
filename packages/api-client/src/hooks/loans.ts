@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
+  DeliverLoanPayload,
   AprobarPrestamoPayload,
   CreatePrestamoPayload,
   LoanCheckinPayload,
@@ -119,8 +120,9 @@ export function useCheckoutLoan() {
 
 export function useDeliverLoan() {
   const queryClient = useQueryClient();
-  return useMutation<Prestamo, Error, number>({
-    mutationFn: (id: number) => deliverLoan(id),
+  return useMutation<Prestamo, Error, number | { id: number; payload?: DeliverLoanPayload }>({
+    mutationFn: (arg) =>
+      typeof arg === 'number' ? deliverLoan(arg) : deliverLoan(arg.id, arg.payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: loanKeys.all });
       queryClient.invalidateQueries({ queryKey: ['products'] });

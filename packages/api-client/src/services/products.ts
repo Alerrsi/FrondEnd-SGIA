@@ -6,6 +6,7 @@ import type {
   InvoiceScanResponse,
   PaginatedResponse,
   ProductBarcodeResponse,
+  ProductConditionPayload,
   ProductLocationPayload,
   Producto,
   ProductoParams,
@@ -143,6 +144,15 @@ export function normalizeProducto(raw: any): Producto {
     supplier: raw.supplier ?? raw.proveedor ?? null,
     area,
     photo_url: raw.photo_url ?? raw.foto ?? null,
+    type: raw.type,
+    category_id: raw.category_id ?? null,
+    career_id: raw.career_id ?? null,
+    maintenance_priority: raw.maintenance_priority ?? null,
+    requires_calibration: raw.requires_calibration ?? false,
+    maintenance_frequency_months: raw.maintenance_frequency_months ?? null,
+    reference_price: raw.reference_price ?? null,
+    quantity_in_repair: raw.quantity_in_repair ?? 0,
+    quantity_written_off: raw.quantity_written_off ?? 0,
     activo: Boolean(raw.activo ?? raw.is_active ?? true),
     is_active: Boolean(raw.activo ?? raw.is_active ?? true),
     createdAt: raw.createdAt ?? raw.created_at ?? new Date().toISOString(),
@@ -159,6 +169,7 @@ export async function fetchProducts(
   if (params?.search) query.set('search', params.search);
   if (params?.query) query.set('search', params.query);
   if (params?.area) query.set('area', params.area);
+  if (params?.type) query.set('type', params.type);
   if (params?.is_active !== undefined) query.set('is_active', String(params.is_active));
   if (params?.supplier_id) query.set('supplier_id', String(params.supplier_id));
   if (params?.location_id) query.set('location_id', String(params.location_id));
@@ -219,7 +230,15 @@ export async function deleteProducto(id: number): Promise<void> {
 }
 
 export async function setProductoActivo(id: number, is_active: boolean): Promise<Producto> {
-  const res = await patch<{ is_active: boolean }, any>(`/products/${id}`, { is_active });
+  const res = await patch<{ is_active: boolean }, any>(`/products/${id}/status`, { is_active });
+  return normalizeProducto(res?.data ?? res);
+}
+
+export async function updateProductCondition(
+  id: number,
+  payload: ProductConditionPayload,
+): Promise<Producto> {
+  const res = await patch<ProductConditionPayload, any>(`/products/${id}/condition`, payload);
   return normalizeProducto(res?.data ?? res);
 }
 
