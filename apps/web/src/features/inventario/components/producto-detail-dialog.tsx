@@ -19,6 +19,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
 
+import { ProductoUnidadesPanel } from './producto-unidades-panel';
+
 export interface ProductoDetailDialogProps {
   open: boolean;
   onClose: () => void;
@@ -134,7 +136,7 @@ export function ProductoDetailDialog({
       onClose={onClose}
       title="Ficha técnica de inventario"
       description={`Especificaciones técnicas de hardware y código óptico · ID #${producto.id}`}
-      className="max-w-xl"
+      className="max-w-3xl"
     >
       <div className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
         {/* Cabecera del producto */}
@@ -272,6 +274,11 @@ export function ProductoDetailDialog({
             )}
           </div>
         </div>
+
+        {/* Unidades individuales (equipo / maqueta) */}
+        {(producto.type === 'equipo' || producto.type === 'maqueta') && (
+          <ProductoUnidadesPanel producto={producto} />
+        )}
 
         {/* Metadatos de Creación / Auditoría */}
         <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono border-t border-zinc-200 dark:border-zinc-800 pt-2.5">

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -31,6 +31,8 @@ import type { CajonEntity, LocationEntity, Producto } from '@sgia/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
+
+import { ProductoUnidadesExpandidas } from './producto-unidades-expandidas';
 
 export const AREAS_INACAP = [
   'Informática',
@@ -121,6 +123,15 @@ export function InventarioTable({
   meta,
 }: InventarioTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [expandedIds, setExpandedIds] = useState<Set<number>>(() => new Set());
+
+  const toggleExpanded = (id: number) =>
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   const estadoOptions: Array<{ value: EstadoFilter; label: string }> = [
     { value: 'todos', label: 'Todos los estados' },
@@ -157,6 +168,29 @@ export function InventarioTable({
 
   const columns = useMemo(
     () => [
+      columnHelper.display({
+        id: 'expandir',
+        header: () => <span className="sr-only">Instancias</span>,
+        cell: (info) => {
+          const prod = info.row.original;
+          if (prod.type !== 'equipo' && prod.type !== 'maqueta') return null;
+          const expanded = expandedIds.has(prod.id);
+          return (
+            <button
+              type="button"
+              onClick={() => toggleExpanded(prod.id)}
+              aria-expanded={expanded}
+              aria-label={`${expanded ? 'Ocultar' : 'Ver'} instancias de ${prod.nombre}`}
+              title={expanded ? 'Ocultar instancias' : 'Ver instancias'}
+              className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            >
+              <ChevronRight
+                className={cn('h-4 w-4 transition-transform', expanded && 'rotate-90')}
+              />
+            </button>
+          );
+        },
+      }),
       columnHelper.accessor('codigoBarras', {
         header: 'SKU / Code128',
         cell: (info) => (
@@ -352,7 +386,7 @@ export function InventarioTable({
         },
       }),
     ],
-    [canDelete, onViewDetail, onEdit, onReubicar, onToggleActivo, onDelete],
+    [canDelete, expandedIds, onViewDetail, onEdit, onReubicar, onToggleActivo, onDelete],
   );
 
   const table = useReactTable({
@@ -558,16 +592,22 @@ export function InventarioTable({
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-3.5 py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
+                <Fragment key={row.id}>
+                  <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-3.5 py-2">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                  {expandedIds.has(row.original.id) && (
+                    <tr className="bg-zinc-50/60 dark:bg-zinc-950/40">
+                      <td colSpan={columns.length} className="p-0 pl-10">
+                        <ProductoUnidadesExpandidas producto={row.original} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))
             )}
           </tbody>
