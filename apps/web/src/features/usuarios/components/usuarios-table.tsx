@@ -20,7 +20,15 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
-import { ROLE_LABELS, ROLES, type RoleCode, type UsuarioSinPassword } from '@sgia/types';
+import {
+  ROLE_LABELS,
+  ROLES,
+  type Career,
+  type RoleCode,
+  type Storeroom,
+  type StoreroomId,
+  type UsuarioSinPassword,
+} from '@sgia/types';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -64,6 +72,26 @@ const accessorColumns = [
         {ROLE_LABELS[info.getValue()] ?? info.getValue()}
       </span>
     ),
+  }),
+  columnHelper.display({
+    id: 'assignment',
+    header: 'Pañol / Carreras',
+    cell: (info) => {
+      const user = info.row.original;
+      const careers = user.careers ?? [];
+      return (
+        <div className="flex flex-col gap-0.5 text-xs">
+          <span className="font-mono text-zinc-700 dark:text-zinc-300">
+            {user.storeroom?.code ?? user.storeroom_id ?? '—'}
+          </span>
+          {careers.length > 0 && (
+            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              {careers.map((c) => c.code ?? c.name).join(', ')}
+            </span>
+          )}
+        </div>
+      );
+    },
   }),
   columnHelper.accessor('activo', {
     header: 'Estado',
@@ -114,6 +142,13 @@ export interface UsuariosTableProps {
   onRolFilterChange?: (role: RoleCode | '') => void;
   estadoFilter?: EstadoFilter;
   onEstadoFilterChange?: (estado: EstadoFilter) => void;
+  /** Opciones de los filtros por pañol y carrera (AD-01). Sin opciones no se muestran. */
+  storerooms?: Storeroom[];
+  careers?: Career[];
+  storeroomFilter?: string;
+  onStoreroomFilterChange?: (id: StoreroomId | '') => void;
+  careerFilter?: number | '';
+  onCareerFilterChange?: (id: number | '') => void;
   page?: number;
   onPageChange?: (page: number) => void;
   pageSize?: number;
@@ -134,6 +169,12 @@ export function UsuariosTable({
   onRolFilterChange,
   estadoFilter = 'todos',
   onEstadoFilterChange,
+  storerooms = [],
+  careers = [],
+  storeroomFilter = '',
+  onStoreroomFilterChange,
+  careerFilter = '',
+  onCareerFilterChange,
   page = 1,
   onPageChange,
   pageSize = 10,
@@ -301,6 +342,44 @@ export function UsuariosTable({
               </option>
             ))}
           </select>
+
+          {storerooms.length > 0 && (
+            <select
+              value={storeroomFilter}
+              onChange={(event) => {
+                const found = storerooms.find((st) => String(st.id) === event.target.value);
+                onStoreroomFilterChange?.(found ? found.id : '');
+              }}
+              aria-label="Filtrar por pañol"
+              className={controlClasses}
+            >
+              <option value="">Todos los pañoles</option>
+              {storerooms.map((st) => (
+                <option key={String(st.id)} value={String(st.id)}>
+                  {st.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {careers.length > 0 && (
+            <select
+              value={careerFilter}
+              onChange={(event) =>
+                onCareerFilterChange?.(event.target.value ? Number(event.target.value) : '')
+              }
+              aria-label="Filtrar por carrera"
+              className={controlClasses}
+            >
+              <option value="">Todas las carreras</option>
+              {careers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.code ? `${c.code} · ` : ''}
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {isFetching && (

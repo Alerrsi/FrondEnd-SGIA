@@ -56,6 +56,24 @@ vi.mock('@/features/auth/context/auth-context', () => ({
 }));
 
 vi.mock('@sgia/api-client', () => ({
+  useRoles: () => ({
+    data: [
+      { id: 1, code: 'AD-01', name: 'Administrador' },
+      { id: 3, code: 'PAN-01', name: 'Pañol' },
+      { id: 4, code: 'PRO-01', name: 'Profesor' },
+    ],
+  }),
+  useStorerooms: () => ({
+    data: { data: [{ id: 'PAN-TEMUCO', name: 'Pañol TI Temuco', code: 'PAN-TEMUCO' }] },
+  }),
+  useCareers: () => ({
+    data: {
+      data: [
+        { id: 2, name: 'Ingeniería en Informática', code: 'II', level: 'profesional' },
+        { id: 3, name: 'Analista Programador', code: 'AP', level: 'tecnico' },
+      ],
+    },
+  }),
   useUsers: () => ({
     data: mockUsersResponse,
     isLoading: false,
@@ -109,6 +127,8 @@ describe('REQ-02: Ciclo de vida de administración de usuarios', () => {
     await user.type(areaInput, 'Pañol Central');
     await user.type(passwordInput, 'Secret1234!');
     await user.selectOptions(roleSelect, 'PAN-01');
+    await user.selectOptions(screen.getByLabelText('Pañol por defecto'), 'PAN-TEMUCO');
+    await user.click(screen.getByLabelText(/AP · Analista Programador/));
 
     mockCreateMutateAsync.mockResolvedValueOnce({
       id: 3,
@@ -131,6 +151,8 @@ describe('REQ-02: Ciclo de vida de administración de usuarios', () => {
           rol: 'PAN-01',
           area: 'Pañol Central',
           password: 'Secret1234!',
+          storeroom_id: 'PAN-TEMUCO',
+          career_ids: [3],
         }),
       );
     });

@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useDeleteUsuario, useToggleUsuarioActivo, useUsers } from '@sgia/api-client';
-import type { RoleCode, UserQueryParams, UsuarioSinPassword } from '@sgia/types';
+import {
+  useCareers,
+  useDeleteUsuario,
+  useStorerooms,
+  useToggleUsuarioActivo,
+  useUsers,
+} from '@sgia/api-client';
+import type {
+  RoleCode,
+  StoreroomId,
+  UserQueryParams,
+  UsuarioSinPassword,
+} from '@sgia/types';
 import { AlertCircle, Plus, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -23,6 +34,10 @@ export default function UsuariosPage() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [rolFilter, setRolFilter] = useState<RoleCode | ''>('');
   const [estadoFilter, setEstadoFilter] = useState<EstadoFilter>('todos');
+  const [storeroomFilter, setStoreroomFilter] = useState<StoreroomId | ''>('');
+  const [careerFilter, setCareerFilter] = useState<number | ''>('');
+  const { data: storeroomsData } = useStorerooms({ per_page: 100 });
+  const { data: careersData } = useCareers({ per_page: 100 });
 
   // Debounce search input
   useEffect(() => {
@@ -45,6 +60,8 @@ export default function UsuariosPage() {
     search: debouncedSearch.trim() || undefined,
     role: rolFilter || undefined,
     is_active: estadoFilter === 'todos' ? undefined : estadoFilter === 'activo',
+    storeroom_id: storeroomFilter === '' ? undefined : storeroomFilter,
+    career_id: careerFilter === '' ? undefined : careerFilter,
   };
 
   const { data, isLoading, isError, isFetching } = useUsers(queryParams);
@@ -180,6 +197,18 @@ export default function UsuariosPage() {
         onRolFilterChange={handleRoleFilterChange}
         estadoFilter={estadoFilter}
         onEstadoFilterChange={handleEstadoFilterChange}
+        storerooms={storeroomsData?.data}
+        careers={careersData?.data}
+        storeroomFilter={storeroomFilter === '' ? '' : String(storeroomFilter)}
+        onStoreroomFilterChange={(id) => {
+          setStoreroomFilter(id);
+          setPage(1);
+        }}
+        careerFilter={careerFilter}
+        onCareerFilterChange={(id) => {
+          setCareerFilter(id);
+          setPage(1);
+        }}
         page={page}
         onPageChange={setPage}
         pageSize={perPage}

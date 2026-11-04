@@ -16,12 +16,14 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ReceiptText,
+  ScrollText,
   Settings,
   Sun,
   Users,
   Wrench,
   ShoppingCart,
   Wallet,
+  Warehouse,
 } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ROLE_LABELS, type RoleCode } from '@sgia/types';
@@ -63,6 +65,8 @@ const navigation: NavItem[] = [
   { to: '/historial', label: 'Historial', icon: History, roles: ['AD-01', 'PAN-01'] },
   { to: '/alertas', label: 'Stock Crítico', icon: Bell, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['AD-01'] },
+  { to: '/panoles', label: 'Pañoles', icon: Warehouse, roles: ['AD-01'] },
+  { to: '/auditoria', label: 'Auditoría', icon: ScrollText, roles: ['AD-01'] },
 ];
 
 export default function AppLayout() {

@@ -1,6 +1,12 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useCreateUsuario, useUpdateUsuario } from '@sgia/api-client';
+import {
+  useCareers,
+  useCreateUsuario,
+  useRoles,
+  useStorerooms,
+  useUpdateUsuario,
+} from '@sgia/api-client';
 import {
   ROLES,
   ROLE_LABELS,
@@ -24,6 +30,8 @@ interface FormValues {
   rol: RoleCode;
   area: string;
   password: string;
+  storeroom_id: string;
+  career_ids: number[];
 }
 
 const inputClasses =
@@ -62,6 +70,8 @@ export function UsuarioFormDialog({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
@@ -71,8 +81,17 @@ export function UsuarioFormDialog({
       rol: 'AD-01',
       area: '',
       password: '',
+      storeroom_id: '',
+      career_ids: [],
     },
   });
+
+  const { data: roles } = useRoles();
+  const { data: storerooms } = useStorerooms({ per_page: 100 });
+  const { data: careers } = useCareers({ per_page: 100 });
+  const roleOptions = roles?.length
+    ? roles.map((r) => ({ code: r.code, label: ROLE_LABELS[r.code] ?? r.name }))
+    : ROLES.map((code) => ({ code, label: ROLE_LABELS[code] }));
 
   useEffect(() => {
     if (open) {
@@ -83,11 +102,25 @@ export function UsuarioFormDialog({
         rol: usuario?.rol ?? usuario?.role ?? 'AD-01',
         area: usuario?.area ?? '',
         password: '',
+        storeroom_id:
+          usuario?.storeroom_id === null || usuario?.storeroom_id === undefined
+            ? ''
+            : String(usuario.storeroom_id),
+        career_ids: (usuario?.careers ?? []).map((c) => c.id),
       });
     }
   }, [open, usuario, reset]);
 
   const isPending = createUsuario.isPending || updateUsuario.isPending;
+  const careerIds = watch('career_ids') ?? [];
+  const toggleCareer = (id: number, checked: boolean) =>
+    setValue('career_ids', checked ? [...careerIds, id] : careerIds.filter((c) => c !== id), {
+      shouldDirty: true,
+    });
+
+  /** Reenvía el id del pañol con su tipo original; vacío = sin pañol (`null`). */
+  const resolveStoreroom = (value: string) =>
+    value === '' ? null : (storerooms?.data.find((st) => String(st.id) === value)?.id ?? value);
 
   const onSubmit = handleSubmit(
     async (values) => {
@@ -100,6 +133,8 @@ export function UsuarioFormDialog({
             rol: values.rol,
             role: values.rol,
             area: values.area.trim() || null,
+            storeroom_id: resolveStoreroom(values.storeroom_id),
+            career_ids: values.career_ids,
           };
           if (values.password && values.password.trim()) {
             updatePayload.password = values.password;
@@ -119,6 +154,8 @@ export function UsuarioFormDialog({
             rol: values.rol,
             role: values.rol,
             area: values.area.trim() || undefined,
+            storeroom_id: resolveStoreroom(values.storeroom_id),
+            career_ids: values.career_ids,
             password: values.password,
             password_confirmation: values.password,
           };
@@ -248,9 +285,9 @@ export function UsuarioFormDialog({
               className={inputClasses}
               {...register('rol', { required: 'Selecciona un rol' })}
             >
-              {ROLES.map((rol) => (
-                <option key={rol} value={rol}>
-                  {ROLE_LABELS[rol]}
+              {roleOptions.map((rol) => (
+                <option key={rol.code} value={rol.code}>
+                  {rol.label}
                 </option>
               ))}
             </select>
@@ -268,6 +305,45 @@ export function UsuarioFormDialog({
               {...register('area')}
             />
             <FieldError message={errors.area?.message} />
+          </div>
+
+          <div>
+            <Label htmlFor="usuario-storeroom">Pañol por defecto</Label>
+            <select
+              id="usuario-storeroom"
+              disabled={isPending}
+              className={inputClasses}
+              {...register('storeroom_id')}
+            >
+              <option value="">Sin pañol</option>
+              {(storerooms?.data ?? []).map((st) => (
+                <option key={String(st.id)} value={String(st.id)}>
+                  {st.name} ({st.code})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Carreras asignadas
+            </span>
+            <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
+              {(careers?.data ?? []).map((c) => (
+                <label key={c.id} className="flex items-center gap-2 text-xs">
+                  <input
+                    type="checkbox"
+                    disabled={isPending}
+                    checked={careerIds.includes(c.id)}
+                    onChange={(e) => toggleCareer(c.id, e.target.checked)}
+                  />
+                  <span>
+                    {c.code ? `${c.code} · ` : ''}
+                    {c.name}
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
         </fieldset>
 

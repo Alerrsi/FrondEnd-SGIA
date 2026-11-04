@@ -27,6 +27,8 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/mantenciones': ['PAN-01', 'DIR-01', 'AD-01'],
   '/estudiantes': ['PAN-01', 'AD-01'],
   '/usuarios': ['AD-01'],
+  '/panoles': ['AD-01'],
+  '/auditoria': ['AD-01'],
 };
 
 export function isWebRole(role: string): role is WebRoleCode {

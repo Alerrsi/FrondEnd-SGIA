@@ -5,6 +5,8 @@ import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import ComprasPage from '@/features/compras/pages/compras-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
+import AuditoriaPage from '@/features/administracion/pages/auditoria-page';
+import PanolesPage from '@/features/administracion/pages/panoles-page';
 import MantencionesPage from '@/features/mantenciones/pages/mantenciones-page';
 import EstudiantesPage from '@/features/estudiantes/pages/estudiantes-page';
 import EquiposPage from '@/features/equipos/pages/equipos-page';
@@ -232,6 +234,24 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
                   <EstudiantesPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/panoles"
+              element={
+                <RequireRole allowedRoles={['AD-01']}>
+                  <PanolesPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/auditoria"
+              element={
+                <RequireRole allowedRoles={['AD-01']}>
+                  <AuditoriaPage />
                 </RequireRole>
               }
             />
