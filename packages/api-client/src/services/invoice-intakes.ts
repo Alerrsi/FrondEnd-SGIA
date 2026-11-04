@@ -129,7 +129,7 @@ export async function uploadInvoiceIntake(
 ): Promise<InvoiceIntake> {
   const form = new FormData();
   form.append('file', payload.file);
-  form.append('annual_budget_id', String(payload.annual_budget_id));
+  if (payload.annual_budget_id) form.append('annual_budget_id', String(payload.annual_budget_id));
   if (payload.purchase_id) form.append('purchase_id', String(payload.purchase_id));
   return unwrapIntake(await post<FormData, { data?: RawIntake }>('/invoice-intakes', form));
 }

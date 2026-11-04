@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { ApiRequestError, usePurchases, useUploadInvoiceIntake } from '@sgia/api-client';
-import { PurchaseStatus, type InvoiceIntake } from '@sgia/types';
+import { ApiRequestError, useUploadInvoiceIntake } from '@sgia/api-client';
+import type { InvoiceIntake } from '@sgia/types';
 import { FileText, FileUp, Loader2, UploadCloud, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
-import { formatCLP } from '@/features/compras/lib/format';
-import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -14,10 +12,6 @@ import { toast } from '@/lib/toast';
 const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPTED = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
 
-const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
-const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
 const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
 
 interface UploadInvoiceIntakeDialogProps {
@@ -28,7 +22,7 @@ interface UploadInvoiceIntakeDialogProps {
   onUploaded: (intake: InvoiceIntake) => void;
 }
 
-/** Paso 1: archivo + presupuesto (+ compra opcional). El backend corre el OCR y crea el borrador. */
+/** Paso 1: solo el archivo (presupuesto y compra solo llegan por URL desde otras vistas). El backend corre el OCR y crea el borrador. */
 export function UploadInvoiceIntakeDialog({
   open,
   onClose,
@@ -39,28 +33,15 @@ export function UploadInvoiceIntakeDialog({
   const upload = useUploadInvoiceIntake();
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [budgetId, setBudgetId] = useState<number | undefined>(initialBudgetId);
-  const [purchaseId, setPurchaseId] = useState<number | undefined>(initialPurchaseId);
   const [dragging, setDragging] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const { data: purchasesPage } = usePurchases({ per_page: 100 });
-  // Solo compras del mismo presupuesto, no canceladas y con reserva vigente (el backend lo valida igual).
-  const purchases = (purchasesPage?.data ?? []).filter(
-    (p) =>
-      p.annual_budget_id === budgetId &&
-      p.status !== PurchaseStatus.CANCELADA &&
-      ((p.reserved_amount ?? 0) > 0 || p.id === purchaseId),
-  );
 
   useEffect(() => {
     if (!open) return;
     setFile(null);
-    setBudgetId(initialBudgetId);
-    setPurchaseId(initialPurchaseId);
     setErrors({});
     if (fileRef.current) fileRef.current.value = '';
-  }, [open, initialBudgetId, initialPurchaseId]);
+  }, [open]);
 
   const pickFile = (f: File | undefined) => {
     if (!f) return;
@@ -81,17 +62,17 @@ export function UploadInvoiceIntakeDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const next: Record<string, string> = {};
-    if (!file) next.file = 'Selecciona el archivo de la factura.';
-    if (!budgetId) next.annual_budget_id = 'Selecciona el presupuesto a descontar.';
-    setErrors(next);
-    if (!file || !budgetId) return;
+    if (!file) {
+      setErrors({ file: 'Selecciona el archivo de la factura.' });
+      return;
+    }
+    setErrors({});
 
     try {
       const intake = await upload.mutateAsync({
         file,
-        annual_budget_id: budgetId,
-        purchase_id: purchaseId ?? null,
+        annual_budget_id: initialBudgetId,
+        purchase_id: initialPurchaseId ?? null,
       });
       toast.success(
         intake.raw_ocr_payload.ocr_available
@@ -195,51 +176,6 @@ export function UploadInvoiceIntakeDialog({
           )}
         </div>
         {errors.file && <p className={errorClasses}>{errors.file}</p>}
-
-        <div>
-          <label htmlFor="ii-budget" className={labelClasses}>
-            Presupuesto
-          </label>
-          <BudgetSelect
-            id="ii-budget"
-            value={budgetId}
-            onChange={(id) => {
-              setBudgetId(id);
-              setPurchaseId(undefined);
-            }}
-            invalid={Boolean(errors.annual_budget_id)}
-            disabled={pending}
-            className={`${inputClasses} mt-1.5`}
-          />
-          {errors.annual_budget_id && <p className={errorClasses}>{errors.annual_budget_id}</p>}
-        </div>
-
-        <div>
-          <label htmlFor="ii-purchase" className={labelClasses}>
-            Orden de compra (opcional)
-          </label>
-          <select
-            id="ii-purchase"
-            value={purchaseId ?? ''}
-            onChange={(e) => setPurchaseId(e.target.value ? Number(e.target.value) : undefined)}
-            disabled={pending || !budgetId}
-            className={`${inputClasses} mt-1.5`}
-          >
-            <option value="">
-              {budgetId ? 'Sin compra ligada' : 'Elige primero el presupuesto'}
-            </option>
-            {purchases.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.code ?? `#${p.id}`} · {p.supplier?.name ?? 'Proveedor'} · reservado{' '}
-                {formatCLP(p.reserved_amount)}
-              </option>
-            ))}
-          </select>
-          {errors.purchase_id && <p className={errorClasses}>{errors.purchase_id}</p>}
-          <p className="mt-1 text-[11px] text-zinc-400">
-            Ligarla libera su reserva al confirmar y descuenta el monto real de la factura.
-          </p>
-        </div>
 
         <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>

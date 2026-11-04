@@ -56,7 +56,9 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                 <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
                   {budget
                     ? `${careerLabel(budget)} · ${budget.year}`
-                    : `Presupuesto #${intake.annual_budget_id}`}
+                    : intake.annual_budget_id
+                      ? `Presupuesto #${intake.annual_budget_id}`
+                      : 'Sin presupuesto asociado'}
                   {purchase ? ` · Compra ${purchase.code ?? `#${purchase.id}`}` : ''}
                   {` · Recibida ${formatDate(intake.received_at ?? intake.created_at)}`}
                 </SheetDescription>

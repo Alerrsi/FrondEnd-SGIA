@@ -65,7 +65,7 @@ export interface InvoiceIntakeQueryParams {
 
 export interface UploadInvoiceIntakePayload {
   file: File;
-  annual_budget_id: number;
+  annual_budget_id?: number;
   purchase_id?: number | null;
 }
 

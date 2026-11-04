@@ -5,7 +5,6 @@ import {
   useToggleProductoActivo,
 } from '@sgia/api-client';
 import type { Producto, ProductoParams } from '@sgia/types';
-import { useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
   FileUp,
@@ -22,17 +21,18 @@ import {
   InventarioTable,
   type EstadoFilter,
 } from '../components/inventario-table';
+import { InvoiceIntakeReviewSheet } from '@/features/ingresos-factura/components/invoice-intake-review-sheet';
+import { UploadInvoiceIntakeDialog } from '@/features/ingresos-factura/components/upload-invoice-intake-dialog';
 import { ProductoDetailDialog } from '../components/producto-detail-dialog';
 import { ProductoFormDialog } from '../components/producto-form-dialog';
 import { ReubicarProductoModal } from '../components/reubicar-producto-modal';
 
 export default function ProductosListPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const toggleProductoActivo = useToggleProductoActivo();
   const deleteProducto = useDeleteProducto();
 
-  // Roles permitidos para acciones especiales. El alta por factura vive en /ingresos-factura (REQ-17).
+  // Roles permitidos para acciones especiales. El alta por factura se hace en este mismo menú (REQ-17).
   const canScanInvoice = user?.rol === 'DIR-01' || user?.rol === 'AD-01';
   const canDelete = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
 
@@ -48,6 +48,8 @@ export default function ProductosListPage() {
   const [criticalOnly, setCriticalOnly] = useState(false);
 
   // Modales
+  const [invoiceUploadOpen, setInvoiceUploadOpen] = useState(false);
+  const [invoiceIntakeId, setInvoiceIntakeId] = useState<number | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Producto | null>(null);
   const [detailProduct, setDetailProduct] = useState<Producto | null>(null);
@@ -199,7 +201,7 @@ export default function ProductosListPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate('/ingresos-factura')}
+              onClick={() => setInvoiceUploadOpen(true)}
               className="flex items-center gap-1.5 text-xs h-8"
             >
               <FileUp className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
@@ -299,6 +301,20 @@ export default function ProductosListPage() {
       />
 
       {/* Modales y Drawers */}
+      <UploadInvoiceIntakeDialog
+        open={invoiceUploadOpen}
+        onClose={() => setInvoiceUploadOpen(false)}
+        onUploaded={(intake) => {
+          setInvoiceUploadOpen(false);
+          setInvoiceIntakeId(intake.id);
+        }}
+      />
+
+      <InvoiceIntakeReviewSheet
+        intakeId={invoiceIntakeId}
+        onClose={() => setInvoiceIntakeId(null)}
+      />
+
       <ProductoFormDialog
         open={formOpen}
         onClose={() => {
