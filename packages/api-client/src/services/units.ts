@@ -101,14 +101,22 @@ export async function fetchEquipmentUnitBarcode(id: number): Promise<EquipmentUn
   const data = res?.data ?? res;
   return {
     barcode: data?.barcode ?? data?.code ?? '',
-    svg: data?.svg ?? '',
-    data_uri: data?.data_uri,
-    html: data?.html,
+    svg: data?.barcode_svg ?? data?.svg ?? '',
+    data_uri: data?.barcode_image_uri ?? data?.data_uri,
+    html: data?.barcode_html ?? data?.html,
   };
 }
 
 export async function fetchEquipmentUnitTechnicalSheet(id: number): Promise<Blob> {
   return getBlob(`/equipment-units/${id}/technical-sheet`);
+}
+
+export async function fetchEquipmentUnitLabel(id: number): Promise<Blob> {
+  return getBlob(`/equipment-units/${id}/label`);
+}
+
+export async function fetchProductLabel(id: number): Promise<Blob> {
+  return getBlob(`/products/${id}/label`);
 }
 
 export async function downloadEquipmentUnitReports(id: number): Promise<Blob> {

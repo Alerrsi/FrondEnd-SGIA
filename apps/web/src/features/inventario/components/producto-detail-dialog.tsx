@@ -1,4 +1,4 @@
-import { useProductBarcode } from '@sgia/api-client';
+import { fetchProductLabel, useProductBarcode } from '@sgia/api-client';
 import type { Producto } from '@sgia/types';
 import {
   AlertTriangle,
@@ -17,6 +17,8 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
+import { printBlob } from '@/features/equipos/utils/download';
+import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 import { useOptionalAuth } from '@/features/auth/context/auth-context';
@@ -41,6 +43,9 @@ export function ProductoDetailDialog({
   // Mantenciones y documentos: escritura solo AD-01 y PAN-01 (sin sesión, p. ej. en tests, se permite).
   const role = useOptionalAuth()?.user?.rol;
   const canMaintain = role === undefined || role === 'AD-01' || role === 'PAN-01';
+  const canPrintServerLabel =
+    producto?.type === 'insumo' &&
+    (role === undefined || role === 'AD-01' || role === 'DIR-01' || role === 'PAN-01');
   const { data: barcodeData, isLoading: isBarcodeLoading } = useProductBarcode(
     open && producto ? producto.id : undefined,
   );
@@ -58,6 +63,14 @@ export function ProductoDetailDialog({
     }
   };
 
+  const handleServerLabel = async () => {
+    try {
+      printBlob(await fetchProductLabel(producto.id));
+    } catch (e) {
+      toast.error(apiErrorToMessage(e));
+    }
+  };
+
   const handlePrintLabel = () => {
     const svgContent = barcodeData?.svg || '';
     const printWindow = window.open('', '_blank', 'width=450,height=350');
@@ -67,54 +80,18 @@ export function ProductoDetailDialog({
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Etiqueta - ${producto.nombre}</title>
+          <title>${barcode}</title>
           <style>
-            @page { size: auto; margin: 5mm; }
-            body {
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-              text-align: center;
-              padding: 10px;
-              margin: 0;
-              color: #000;
-              background: #fff;
-            }
-            .header {
-              font-size: 14px;
-              weight: bold;
-              margin-bottom: 2px;
-              text-transform: uppercase;
-            }
-            .sub {
-              font-size: 11px;
-              color: #444;
-              margin-bottom: 8px;
-            }
-            .barcode-svg svg {
-              max-width: 100%;
-              height: 55px;
-            }
-            .code-text {
-              font-family: monospace;
-              font-size: 13px;
-              font-weight: bold;
-              letter-spacing: 2px;
-              margin-top: 4px;
-            }
-            .location {
-              font-size: 10px;
-              font-weight: bold;
-              margin-top: 6px;
-              border-top: 1px dashed #666;
-              padding-top: 4px;
-            }
+            @page { size: 50mm 30mm; margin: 0; }
+            html, body { width: 50mm; height: 30mm; margin: 0; padding: 0; overflow: hidden; background: #fff; color: #000; }
+            body { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+            .barcode-svg svg { width: 44mm; height: 18mm; }
+            .code-text { font-family: monospace; font-size: 10pt; font-weight: bold; letter-spacing: 1px; margin-top: 1mm; }
           </style>
         </head>
         <body>
-          <div class="header">${producto.nombre}</div>
-          <div class="sub">${producto.area || 'Área Informática y Ciberseguridad'} · INACAP Sede Temuco</div>
           <div class="barcode-svg">${svgContent}</div>
           <div class="code-text">${barcode}</div>
-          <div class="location">Ubicación: ${producto.ubicacion?.sala || 'Pañol'} · Cajón: ${producto.ubicacion?.cajon || 'General'}</div>
           <script>
             window.onload = function() {
               window.print();
@@ -129,7 +106,6 @@ export function ProductoDetailDialog({
         // fallback
       }
     }
-    window.print();
   };
 
   const isCritical = producto.stock <= (producto.stockCritico ?? producto.stock_minimo ?? 0);
@@ -308,11 +284,11 @@ export function ProductoDetailDialog({
             type="button"
             variant="outline"
             size="sm"
-            onClick={handlePrintLabel}
+            onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
             className="flex items-center gap-1.5 text-xs"
           >
             <Printer className="h-3.5 w-3.5 text-zinc-500" />
-            <span>Imprimir etiqueta térmica</span>
+            <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
           </Button>
 
           <div className="flex items-center gap-2">

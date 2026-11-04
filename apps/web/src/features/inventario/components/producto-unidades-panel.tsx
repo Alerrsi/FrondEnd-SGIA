@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  fetchEquipmentUnitLabel,
   fetchEquipmentUnitTechnicalSheet,
   useActiveMaintenance,
   useDeleteEquipmentUnit,
@@ -7,11 +8,12 @@ import {
   useUpdateEquipmentUnitStatus,
 } from '@sgia/api-client';
 import type { EquipmentUnit, EquipmentUnitStatus, Producto } from '@sgia/types';
-import { Barcode, FileText, FolderOpen, Loader2, Plus, Trash2, Wrench } from 'lucide-react';
+import { Barcode, FileText, FolderOpen, Loader2, Plus, Printer, Trash2, Wrench } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { downloadBlob } from '@/features/equipos/utils/download';
+import { useOptionalAuth } from '@/features/auth/context/auth-context';
+import { downloadBlob, printBlob } from '@/features/equipos/utils/download';
 import { MaintenanceChecklistSheet } from '@/features/mantenciones/components/maintenance-checklist-sheet';
 import { OpenMaintenanceDialog } from '@/features/mantenciones/components/open-maintenance-dialog';
 import { UnitDocumentsDialog } from '@/features/mantenciones/components/unit-documents-dialog';
@@ -119,6 +121,8 @@ export function ProductoUnidadesPanel({
   const [addOpen, setAddOpen] = useState(false);
   const [barcodeUnit, setBarcodeUnit] = useState<EquipmentUnit | null>(null);
   const [deleteUnit, setDeleteUnit] = useState<EquipmentUnit | null>(null);
+  const role = useOptionalAuth()?.user?.rol;
+  const canPrintLabel = role === undefined || role === 'AD-01' || role === 'DIR-01' || role === 'PAN-01';
   const [sheetLoadingId, setSheetLoadingId] = useState<number | null>(null);
 
   const { data, isLoading, isError, error } = useProductUnits(producto.id, {
@@ -147,6 +151,17 @@ export function ProductoUnidadesPanel({
     try {
       const blob = await fetchEquipmentUnitTechnicalSheet(unit.id);
       downloadBlob(blob, `hoja-de-vida-${unit.code}.pdf`);
+    } catch (e) {
+      toast.error(apiErrorToMessage(e));
+    } finally {
+      setSheetLoadingId(null);
+    }
+  };
+
+  const handleLabel = async (unit: EquipmentUnit) => {
+    setSheetLoadingId(unit.id);
+    try {
+      printBlob(await fetchEquipmentUnitLabel(unit.id));
     } catch (e) {
       toast.error(apiErrorToMessage(e));
     } finally {
@@ -321,6 +336,19 @@ export function ProductoUnidadesPanel({
                             <FileText className="h-3.5 w-3.5" />
                           )}
                         </Button>
+                        {canPrintLabel && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Imprimir etiqueta de ${unit.code}`}
+                            title="Imprimir etiqueta"
+                            disabled={sheetLoadingId === unit.id}
+                            onClick={() => handleLabel(unit)}
+                          >
+                            <Printer className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                         {canDelete && (
                           <Button
                             type="button"

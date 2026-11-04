@@ -18,6 +18,10 @@ const units: EquipmentUnit[] = [
   { id: 4, code: 'PRO-ISD-000004', status: 'en_reparacion', product_id: 7 },
 ];
 
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useOptionalAuth: () => ({ user: { rol: 'AD-01' } }),
+}));
+
 vi.mock('@sgia/api-client', () => ({
   useProductUnits: () => ({
     data: { data: units, meta: { currentPage: 1, lastPage: 1, perPage: 10, total: 4 } },

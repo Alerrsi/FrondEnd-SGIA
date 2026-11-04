@@ -262,9 +262,9 @@ export async function fetchProductBarcode(id: number): Promise<ProductBarcodeRes
   const data = res?.data ?? res;
   return {
     barcode: data?.barcode ?? '',
-    svg: data?.svg ?? '',
-    data_uri: data?.data_uri,
-    html: data?.html,
+    svg: data?.barcode_svg ?? data?.svg ?? '',
+    data_uri: data?.barcode_image_uri ?? data?.data_uri,
+    html: data?.barcode_html ?? data?.html,
   };
 }
 
