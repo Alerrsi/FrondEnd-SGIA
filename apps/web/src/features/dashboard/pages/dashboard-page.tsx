@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   BarChart3,
-  RotateCcw,
+  Eye,
   LayoutGrid,
   Pencil,
   Check,
   Palette,
   SlidersHorizontal,
   Target,
-  Sparkles,
+  Plus,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useApiClientExecutiveKpis } from '@sgia/api-client';
@@ -20,20 +20,16 @@ import { WidgetPaletteDrawer } from '../components/widget-palette-drawer';
 import { ChartConfigModal } from '../components/chart-config-modal';
 import { DropZone } from '../components/drop-zone';
 import { DragGhostPreview } from '../components/drag-ghost-preview';
-import { DEFAULT_TEMPLATES } from '../lib/chart-presets';
-import { sanitizeCharts } from '../lib/chart-config';
+import { useMyPanel, pickGenericTemplate } from '../hooks/use-my-panel';
 import {
   MAX_CHARTS,
   type ChartType,
-  type DashboardTemplate,
   type DragItemPayload,
   type MetricQueryInput,
 } from '../types/metrics';
+import type { ChartTemplate } from '@sgia/types';
+import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-
-const STORAGE_KEY = 'sgia_dashboard_charts_v1';
-const TEMPLATES_STORAGE_KEY = 'sgia_dashboard_templates_v2';
-const ACTIVE_TEMPLATE_ID_KEY = 'sgia_dashboard_active_template_id_v2';
 
 export default function DashboardPage() {
   const {
@@ -42,53 +38,10 @@ export default function DashboardPage() {
     error: kpisError,
   } = useApiClientExecutiveKpis('LAST_30_DAYS');
 
-  // Estado unificado de todas las plantillas (por defecto + personalizadas)
-  const [templates, setTemplates] = useState<DashboardTemplate[]>(() => {
-    try {
-      const saved = localStorage.getItem(TEMPLATES_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return (parsed as DashboardTemplate[]).map((t) => ({
-            ...t,
-            charts: sanitizeCharts(t.charts),
-          }));
-        }
-      }
-      // Migración retrospectiva: si existían gráficos guardados en sgia_dashboard_charts_v1
-      const savedV1 = localStorage.getItem(STORAGE_KEY);
-      if (savedV1) {
-        const parsedV1 = JSON.parse(savedV1);
-        if (Array.isArray(parsedV1) && parsedV1.length > 0) {
-          return DEFAULT_TEMPLATES.map((t, idx) =>
-            idx === 0 ? { ...t, charts: sanitizeCharts(parsedV1) } : t,
-          );
-        }
-      }
-    } catch {
-      // Ignorar errores de parsing
-    }
-    return DEFAULT_TEMPLATES;
-  });
-
-  // ID de la plantilla seleccionada actualmente
-  const [activeTemplateId, setActiveTemplateId] = useState<string>(() => {
-    try {
-      const savedId = localStorage.getItem(ACTIVE_TEMPLATE_ID_KEY);
-      if (savedId) return savedId;
-    } catch {
-      // Ignorar errores de parsing
-    }
-    return 'template-operaciones';
-  });
-
-  // Obtener la plantilla activa y sus gráficos garantizando integridad
-  const activeTemplate =
-    templates.find((t) => t.id === activeTemplateId) ||
-    templates[0] ||
-    DEFAULT_TEMPLATES[0]!;
-
-  const charts = activeTemplate.charts;
+  // Panel personal (REQ-15): los gráficos viven en el servidor (`/api/me/charts`), máximo 5.
+  const panel = useMyPanel();
+  const panelCharts = panel.visible;
+  const charts = panelCharts.map((c) => c.input);
 
   // Modo Edición / Visualización
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -112,24 +65,13 @@ export default function DashboardPage() {
   // Modal de confirmación para eliminar gráfico
   const [chartToDeleteIndex, setChartToDeleteIndex] = useState<number | null>(null);
 
-  // Función unificada para guardar plantillas y sincronizar con localStorage
-  const saveTemplatesState = (
-    newTemplates: DashboardTemplate[],
-    newActiveId: string,
-  ) => {
-    setTemplates(newTemplates);
-    setActiveTemplateId(newActiveId);
-
-    const current =
-      newTemplates.find((t) => t.id === newActiveId) || newTemplates[0];
-    const currentCharts = current?.charts || [];
-
+  /** Ejecuta una operación contra el servidor mostrando su error (422: posición ocupada, límite, etc.). */
+  const run = async (action: () => Promise<unknown>, successMessage?: string) => {
     try {
-      localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(newTemplates));
-      localStorage.setItem(ACTIVE_TEMPLATE_ID_KEY, newActiveId);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentCharts));
-    } catch {
-      // Storage no disponible
+      await action();
+      if (successMessage) toast.success(successMessage);
+    } catch (error) {
+      toast.error(apiErrorToMessage(error));
     }
   };
 
@@ -168,44 +110,37 @@ export default function DashboardPage() {
     };
   }, []);
 
-  const handleSelectTemplate = (template: DashboardTemplate) => {
-    saveTemplatesState(templates, template.id);
-    toast.info(`Plantilla cambiada a: ${template.name}`);
+  const handleConfirmDelete = async () => {
+    if (chartToDeleteIndex === null) return;
+    const target = panelCharts[chartToDeleteIndex];
+    setChartToDeleteIndex(null);
+    if (!target) return;
+    await run(() => panel.remove(target.id), 'Gráfico eliminado de tu panel');
   };
 
-  const handleConfirmDelete = () => {
-    if (chartToDeleteIndex !== null) {
-      const updatedCharts = charts.filter((_, idx) => idx !== chartToDeleteIndex);
-      const nextTemplates = templates.map((t) =>
-        t.id === activeTemplateId ? { ...t, charts: updatedCharts } : t,
-      );
-      saveTemplatesState(nextTemplates, activeTemplateId);
-      setChartToDeleteIndex(null);
-      toast.success('Gráfico retirado del panel y plantilla guardada');
+  const handleHide = (index: number) => {
+    const target = panelCharts[index];
+    if (target) void run(() => panel.hide(target.id), 'Gráfico oculto (conserva su posición)');
+  };
+
+  const handleAddFromTemplate = (template: ChartTemplate) => {
+    if (!panel.canAdd) {
+      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por usuario`);
+      return;
     }
-  };
-
-  const handleResetToDefault = () => {
-    const defaultTmpl =
-      DEFAULT_TEMPLATES.find((t) => t.id === activeTemplateId) || DEFAULT_TEMPLATES[0]!;
-    const nextTemplates = templates.map((t) =>
-      t.id === activeTemplateId ? { ...t, charts: defaultTmpl.charts } : t,
-    );
-    saveTemplatesState(nextTemplates, activeTemplateId);
-    toast.success('Plantilla restablecida a sus valores por defecto');
+    void run(() => panel.addChart(template), `Gráfico "${template.name}" añadido a tu panel`);
   };
 
   // Toggle de Modo Edición con persistencia explícita en "Guardar y Salir"
   const handleToggleEditMode = () => {
     if (isEditMode) {
-      saveTemplatesState(templates, activeTemplateId);
       setIsEditMode(false);
       setPaletteOpen(false);
       setIsDraggingWidget(false);
       setDraggedWidgetType(null);
       draggedWidgetTypeRef.current = null;
       setIsProminentOver(false);
-      toast.success('Distribución del dashboard guardada exitosamente');
+      toast.success('Distribución guardada en tu cuenta');
     } else {
       setIsEditMode(true);
       toast.info('Modo de Edición activado: añade o reordena los gráficos de tu plantilla');
@@ -246,48 +181,20 @@ export default function DashboardPage() {
     }, 80);
   };
 
-  // Añadir un gráfico asegurando la actualización y persistencia en pantalla
-  const addChartToActiveTemplate = (
-    newChart: MetricQueryInput,
-    targetIndex?: number,
-  ) => {
-    if (charts.length >= MAX_CHARTS) {
-      toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
+  // Añade un gráfico al panel: se crea en el servidor desde la plantilla genérica de su forma
+  const addChartToPanel = async (newChart: MetricQueryInput, targetIndex?: number) => {
+    if (!panel.canAdd) {
+      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por usuario`);
       return;
     }
-
-    const updatedCharts = [...charts];
-    if (
-      typeof targetIndex === 'number' &&
-      targetIndex >= 0 &&
-      targetIndex <= updatedCharts.length
-    ) {
-      updatedCharts.splice(targetIndex, 0, newChart);
-    } else {
-      updatedCharts.push(newChart);
+    const template = pickGenericTemplate(panel.templates, newChart.chartType);
+    if (!template) {
+      toast.error('No hay plantillas de gráfico disponibles en el servidor.');
+      return;
     }
-
-    const currentTmpl = templates.find((t) => t.id === activeTemplateId);
-    const baseName = currentTmpl ? currentTmpl.name : 'Personalizada';
-
-    const customTemplateObj: DashboardTemplate = {
-      id: 'template-custom',
-      name: 'Plantilla Personalizada',
-      description: `Plantilla personalizada basada en ${baseName} con gráficos añadidos.`,
-      charts: updatedCharts,
-    };
-
-    // Actualizamos tanto la plantilla activa como la plantilla personalizada.
-    // Esto garantiza que si el usuario se mantiene en su plantilla, conmuta entre pestañas
-    // o recarga la página, los gráficos añadidos persisten y quedan siempre en pantalla.
-    const nextTemplates = templates
-      .filter((t) => t.id !== 'template-custom')
-      .map((t) => (t.id === activeTemplateId ? { ...t, charts: updatedCharts } : t));
-    nextTemplates.push(customTemplateObj);
-
-    saveTemplatesState(nextTemplates, 'template-custom');
-    toast.success(
-      `¡Gráfico añadido y guardado en tu panel! (${updatedCharts.length}/5)`,
+    await run(
+      () => panel.addChart(template, newChart, targetIndex),
+      `¡Gráfico añadido a tu panel! (${panel.total + 1}/${MAX_CHARTS})`,
     );
   };
 
@@ -299,7 +206,7 @@ export default function DashboardPage() {
 
   // Manejo de Drag sobre la Zona Destacada Principal
   const handleProminentDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (charts.length >= MAX_CHARTS) return;
+    if (!panel.canAdd) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
     if (!isProminentOver) setIsProminentOver(true);
@@ -321,8 +228,8 @@ export default function DashboardPage() {
     draggedWidgetTypeRef.current = null;
     setPaletteOpen(false);
 
-    if (charts.length >= MAX_CHARTS) {
-      toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
+    if (!panel.canAdd) {
+      toast.error('Límite alcanzado: Máximo 5 gráficos por usuario');
       return;
     }
 
@@ -350,8 +257,8 @@ export default function DashboardPage() {
     setPaletteOpen(false);
 
     if (payload.type === 'NEW_WIDGET') {
-      if (charts.length >= MAX_CHARTS) {
-        toast.error('Límite alcanzado: Máximo 5 gráficos simultáneos permitidos por plantilla');
+      if (!panel.canAdd) {
+        toast.error('Límite alcanzado: Máximo 5 gráficos por usuario');
         return;
       }
       setPendingDrop({ chartType: payload.chartType, targetIndex });
@@ -360,28 +267,16 @@ export default function DashboardPage() {
       if (sourceIndex === targetIndex) {
         return;
       }
-      const updated = [...charts];
-      const [moved] = updated.splice(sourceIndex, 1);
-      if (moved) {
-        updated.splice(targetIndex, 0, moved);
-        const nextTemplates = templates.map((t) =>
-          t.id === activeTemplateId ? { ...t, charts: updated } : t,
-        );
-        saveTemplatesState(nextTemplates, activeTemplateId);
-        toast.info(`Gráficos reordenados: movido a posición #${targetIndex + 1}`);
-      }
+      void run(
+        () => panel.reorder(sourceIndex, targetIndex),
+        `Gráficos reordenados: movido a posición #${targetIndex + 1}`,
+      );
     }
   };
 
   const handleConfirmPostDrop = (newChart: MetricQueryInput, targetIndex?: number) => {
-    if (charts.length >= MAX_CHARTS) {
-      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos simultáneos por plantilla`);
-      setPendingDrop(null);
-      return;
-    }
-
-    addChartToActiveTemplate(newChart, targetIndex);
     setPendingDrop(null);
+    void addChartToPanel(newChart, targetIndex);
   };
 
   const handleCancelPostDrop = () => {
@@ -427,11 +322,11 @@ export default function DashboardPage() {
               variant="outline"
               size="sm"
               onClick={handleOpenWidgetCatalog}
-              disabled={charts.length >= MAX_CHARTS}
+              disabled={!panel.canAdd}
               className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 font-medium"
             >
               <Palette className="h-3.5 w-3.5" />
-              <span>Abrir Catálogo de Widgets ({charts.length}/5)</span>
+              <span>Abrir Catálogo de Widgets ({panel.total}/5)</span>
             </Button>
 
             {/* Toggle Modo Edición / Guardar y Salir */}
@@ -457,17 +352,6 @@ export default function DashboardPage() {
                   <span>Modo Edición</span>
                 </>
               )}
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleResetToDefault}
-              className="text-xs gap-1.5"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              <span>Restablecer</span>
             </Button>
           </div>
         </div>
@@ -513,7 +397,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <span className="text-[11px] text-sky-400">
-            {charts.length < 5 ? `Espacio disponible (${charts.length}/5)` : 'Límite de 5 alcanzado'}
+            {panel.canAdd ? `Espacio disponible (${panel.total}/5)` : 'Límite de 5 alcanzado'}
           </span>
         </div>
       )}
@@ -521,7 +405,7 @@ export default function DashboardPage() {
       {/* Cinta Métrica Compacta Superior (Executive KPIs) */}
       <MetricStrip kpis={kpis} isLoading={isLoadingKpis} error={kpisError} />
 
-      {/* Selector de Plantillas (Guardado y Sincronizado por Plantilla) */}
+      {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 5 por usuario) */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-2xs">
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
           <LayoutGrid className="h-4 w-4" />
@@ -529,34 +413,28 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {templates.map((tmpl) => {
-            const isActive = activeTemplateId === tmpl.id;
-            const isCustom = tmpl.id === 'template-custom';
-            return (
+          {panel.templates
+            .filter((t) => t.entity !== null)
+            .map((tmpl) => (
               <Button
                 key={tmpl.id}
                 type="button"
-                variant={isActive ? 'primary' : 'outline'}
+                variant="outline"
                 size="sm"
-                onClick={() => handleSelectTemplate(tmpl)}
-                className={`text-xs gap-1.5 ${
-                  isActive
-                    ? isCustom
-                      ? 'bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-600 dark:hover:bg-amber-700 border-transparent shadow-xs'
-                      : 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                    : isCustom
-                      ? 'border-amber-400/60 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30'
-                      : 'text-zinc-600 dark:text-zinc-400'
-                }`}
+                disabled={!panel.canAdd || panel.isMutating}
+                onClick={() => handleAddFromTemplate(tmpl)}
+                title={tmpl.description ?? `Añadir "${tmpl.name}" a tu panel`}
+                className="text-xs gap-1.5 text-zinc-600 dark:text-zinc-400"
               >
-                {isCustom && <Sparkles className="h-3.5 w-3.5 text-amber-400" />}
-                <span>
-                  {tmpl.name}
-                  {isCustom ? ` (${tmpl.charts.length})` : ''}
-                </span>
+                <Plus className="h-3 w-3" />
+                <span>{tmpl.name}</span>
               </Button>
-            );
-          })}
+            ))}
+          {panel.templates.every((t) => t.entity === null) && (
+            <span className="font-mono text-[11px] text-zinc-400">
+              {panel.isLoading ? 'Cargando plantillas…' : 'Sin plantillas con consulta predefinida.'}
+            </span>
+          )}
         </div>
       </div>
 
@@ -594,7 +472,7 @@ export default function DashboardPage() {
                     : 'Suelta tu gráfico aquí para configurarlo'}
                 </h3>
                 <p className="text-xs text-zinc-400 font-mono">
-                  Al soltar se abre el menú para elegir qué datos mostrar ({charts.length + 1}/5)
+                  Al soltar se abre el menú para elegir qué datos mostrar ({panel.total + 1}/5)
                 </p>
               </div>
             </div>
@@ -603,10 +481,19 @@ export default function DashboardPage() {
       )}
 
       {/* Grid de Gráficos y Zonas de Soltado (Drag & Drop Canvas) */}
-      {charts.length === 0 ? (
+      {panel.isLoading ? (
+        <div className="p-12 text-center font-mono text-xs text-zinc-400">Cargando tu panel…</div>
+      ) : panel.error ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400"
+        >
+          {apiErrorToMessage(panel.error)}
+        </div>
+      ) : charts.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-center font-mono text-xs text-zinc-400 gap-3">
           <BarChart3 className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
-          <p>No hay gráficos activos en esta plantilla. Abre el Catálogo de Widgets para añadir nuevos gráficos.</p>
+          <p>Tu panel no tiene gráficos visibles. Añade una plantilla o abre el Catálogo de Widgets.</p>
           <div className="flex flex-col items-center gap-3 w-full max-w-md">
             <Button
               type="button"
@@ -636,30 +523,29 @@ export default function DashboardPage() {
               {/* DropZone al inicio (Posición 0) */}
               <DropZone
                 index={0}
-                disabled={charts.length >= MAX_CHARTS}
+                disabled={!panel.canAdd}
                 isFocused={isDraggingWidget}
                 draggedWidgetType={draggedWidgetType}
                 onDropPayload={handleDropPayload}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {charts.map((chart, idx) => (
-                  <div
-                    key={`${chart.entity}_${chart.metric}_${chart.chartType}_${chart.timeRange}_${chart.groupBy || ''}_${idx}`}
-                    className="flex flex-col gap-3"
-                  >
+                {panelCharts.map((item, idx) => (
+                  <div key={item.id} className="flex flex-col gap-3">
                     <DynamicChartCard
                       index={idx}
                       isEditMode={true}
-                      input={chart}
+                      input={item.input}
+                      visualization={item.visualization}
                       onDelete={() => setChartToDeleteIndex(idx)}
+                      onHide={() => handleHide(idx)}
                       onDropPayload={handleDropPayload}
                     />
 
                     {/* DropZone intermedia tras cada tarjeta */}
                     <DropZone
                       index={idx + 1}
-                      disabled={charts.length >= MAX_CHARTS}
+                      disabled={!panel.canAdd}
                       isFocused={isDraggingWidget}
                       draggedWidgetType={draggedWidgetType}
                       onDropPayload={handleDropPayload}
@@ -670,13 +556,15 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {charts.map((chart, idx) => (
+              {panelCharts.map((item, idx) => (
                 <DynamicChartCard
-                  key={`${chart.entity}_${chart.metric}_${chart.timeRange}_${chart.chartType}_${chart.groupBy || ''}_${idx}`}
+                  key={item.id}
                   index={idx}
                   isEditMode={false}
-                  input={chart}
+                  input={item.input}
+                  visualization={item.visualization}
                   onDelete={() => setChartToDeleteIndex(idx)}
+                  onHide={() => handleHide(idx)}
                 />
               ))}
             </div>
@@ -684,11 +572,53 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Gráficos ocultos: siguen ocupando una de las 5 posiciones hasta eliminarlos */}
+      {panel.hidden.length > 0 && (
+        <section
+          aria-label="Gráficos ocultos"
+          className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"
+        >
+          <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            Ocultos ({panel.hidden.length})
+          </h2>
+          <ul className="flex flex-col gap-1.5">
+            {panel.hidden.map((hiddenChart) => (
+              <li key={hiddenChart.id} className="flex items-center justify-between gap-2 text-xs">
+                <span className="truncate text-zinc-700 dark:text-zinc-300">
+                  {hiddenChart.custom_title ?? hiddenChart.template?.name ?? `Gráfico #${hiddenChart.id}`}
+                </span>
+                <span className="flex shrink-0 gap-1">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="gap-1 text-xs"
+                    onClick={() => void run(() => panel.show(hiddenChart.id), 'Gráfico visible de nuevo')}
+                  >
+                    <Eye className="h-3 w-3" />
+                    Mostrar
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="text-xs text-rose-600"
+                    onClick={() => void run(() => panel.remove(hiddenChart.id), 'Gráfico eliminado')}
+                  >
+                    Eliminar
+                  </Button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Panel Lateral Retráctil de Widgets Genéricos (Widget Palette Drawer) */}
       <WidgetPaletteDrawer
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
-        currentChartsCount={charts.length}
+        currentChartsCount={panel.total}
         onWidgetDragStart={handleWidgetDragStart}
         onWidgetDragEnd={handleWidgetDragEnd}
         onSelectWidget={handleSelectWidgetDirectly}

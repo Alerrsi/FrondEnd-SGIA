@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
@@ -45,30 +45,35 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
     renderWithClient(<DashboardPage />);
 
     expect(screen.getByText(/Dashboards Analíticos y Métricas/i)).toBeDefined();
+    await screen.findByText('Préstamos Diarios por Semana');
     expect(await screen.findByText('Disponibles')).toBeDefined();
     expect(await screen.findByText('En Préstamo')).toBeDefined();
     expect(await screen.findByText('Tasa Atrasos')).toBeDefined();
 
-    // Default charts
+    // Gráficos del panel personal (servidor)
     expect(screen.getByText('Préstamos Diarios por Semana')).toBeDefined();
     expect(screen.getByText('Estado y Atrasos de Préstamos')).toBeDefined();
     expect(screen.getByText('Alertas Críticas por Especialidad')).toBeDefined();
   });
 
-  it('switches between templates properly', async () => {
-    const user = userEvent.setup();
+  it('muestra las plantillas del servidor con consulta predefinida y oculta las genéricas', async () => {
     renderWithClient(<DashboardPage />);
+    expect(await screen.findByRole('button', { name: /Préstamos por estado/i })).toBeDefined();
+    // `bar`, `line`, `pie` y `kpi` son genéricas: se usan desde el catálogo de widgets
+    expect(screen.queryByRole('button', { name: /^Barras$/ })).toBeNull();
+  });
 
-    const demandaButton = screen.getByText('Demanda y Desgaste por Carrera');
-    await user.click(demandaButton);
-
-    expect(screen.getByText('Insumos Consumidos por Especialidad')).toBeDefined();
-    expect(screen.getByText('Ranking de Equipos Más Solicitados')).toBeDefined();
+  it('muestra el contador sobre el límite de 5 gráficos por usuario', async () => {
+    renderWithClient(<DashboardPage />);
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /Abrir Catálogo de Widgets \(3\/5\)/i })).toBeDefined(),
+    );
   });
 
   it('reemplaza botón de nuevo gráfico: solo se pueden añadir mediante Abrir Catálogo de Widgets', async () => {
     const user = userEvent.setup();
     renderWithClient(<DashboardPage />);
+    await screen.findByTestId('chart-card-0');
 
     // El botón tradicional "Nuevo Gráfico" ya no existe
     expect(screen.queryByRole('button', { name: /Nuevo Gráfico/i })).toBeNull();

@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { ApiRequestError, useApiClientCustomMetric } from '@sgia/api-client';
-import { Trash2, GripVertical, ArrowLeftRight, AlertTriangle, BarChart3, Lock } from 'lucide-react';
+import {
+  Trash2,
+  GripVertical,
+  ArrowLeftRight,
+  AlertTriangle,
+  BarChart3,
+  EyeOff,
+  Lock,
+} from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/theme-context';
@@ -19,9 +27,23 @@ interface DynamicChartCardProps {
   index?: number;
   isEditMode?: boolean;
   onDelete?: () => void;
+  /** Oculta el gráfico sin borrarlo (`is_active: false`); sigue ocupando su posición. */
+  onHide?: () => void;
+  /** `kpi` muestra una cifra en vez de un gráfico. */
+  visualization?: string;
   onDragStart?: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
   onDragEnd?: (e: React.DragEvent<HTMLDivElement>) => void;
   onDropPayload?: (targetIndex: number, payload: DragItemPayload) => void;
+}
+
+/** Una cifra a partir de los puntos: el único valor, o la suma (o el primero si es un porcentaje). */
+function formatKpiValue(points: Array<{ value: number }>, metric: MetricQueryInput['metric']): string {
+  const value =
+    points.length === 1 || metric === 'RATE' || metric === 'AVERAGE'
+      ? (points[0]?.value ?? 0)
+      : points.reduce((sum, p) => sum + p.value, 0);
+  const text = Number.isInteger(value) ? String(value) : value.toFixed(1);
+  return metric === 'RATE' ? `${text}%` : text;
 }
 
 function describeRange(input: MetricQueryInput): string {
@@ -34,6 +56,8 @@ export function DynamicChartCard({
   index = 0,
   isEditMode = false,
   onDelete,
+  onHide,
+  visualization,
   onDragStart,
   onDragEnd,
   onDropPayload,
@@ -142,6 +166,19 @@ export function DynamicChartCard({
           </div>
         </div>
 
+        {onHide && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={onHide}
+            className="h-6 w-6 text-zinc-400 hover:text-zinc-700"
+            title="Ocultar gráfico"
+            aria-label="Ocultar gráfico"
+          >
+            <EyeOff className="h-3.5 w-3.5" />
+          </Button>
+        )}
         {onDelete && (
           <Button
             type="button"
@@ -185,6 +222,16 @@ export function DynamicChartCard({
           >
             <BarChart3 className="h-5 w-5" />
             <span>Sin datos para el período</span>
+          </div>
+        ) : visualization === 'kpi' ? (
+          <div
+            data-testid={`chart-kpi-${index}`}
+            className="flex h-full flex-col items-center justify-center gap-1"
+          >
+            <span className="font-mono text-4xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+              {formatKpiValue(data.points, input.metric)}
+            </span>
+            <span className="font-mono text-[11px] text-zinc-500">{title}</span>
           </div>
         ) : (
           <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />

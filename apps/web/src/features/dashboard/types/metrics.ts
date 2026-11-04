@@ -58,6 +58,7 @@ export const GROUP_BY_OPTIONS_BY_ENTITY: Record<MetricEntity, GroupByOption[]> =
     { value: 'equipment', label: 'Equipo' },
     { value: 'failure_type', label: 'Gravedad de la falla' },
     { value: 'workshop', label: 'Taller' },
+    { value: 'maintenance_type', label: 'Tipo de mantención' },
   ],
   CAREERS: [{ value: 'specialty', label: 'Especialidad' }],
   TEACHERS: [
