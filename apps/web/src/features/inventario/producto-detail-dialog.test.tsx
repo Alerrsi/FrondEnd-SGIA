@@ -37,7 +37,22 @@ const mockProducto: Producto = {
 
 const mockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" data-testid="code128-svg"><rect width="10" height="50" fill="black"/></svg>`;
 
-vi.mock('@sgia/api-client', () => ({
+vi.mock('@sgia/api-client', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@sgia/api-client')>()),
+  useActiveMaintenance: (id: number | undefined, enabled?: boolean) => ({
+    data: enabled && id === 4 ? { id: 31, status: 'en_curso' } : null,
+    isLoading: false,
+  }),
+  useCreateMaintenanceRecord: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useSuppliers: () => ({ data: { data: [] } }),
+  useMaintenanceRecord: () => ({ data: undefined, isLoading: true }),
+  useUpdateMaintenanceRecord: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useFinishMaintenanceRecord: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useCancelMaintenanceRecord: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useUnitMaintenanceDocuments: () => ({ data: { data: [], meta: { total: 0 } }, isLoading: false }),
+  useUploadMaintenanceDocument: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useDeleteMaintenanceDocument: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useDownloadMaintenanceDocument: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useProductBarcode: () => ({
     data: {
       product_id: 42,

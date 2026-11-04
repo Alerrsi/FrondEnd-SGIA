@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
 
+import { useOptionalAuth } from '@/features/auth/context/auth-context';
 import { ProductoUnidadesPanel } from './producto-unidades-panel';
 
 export interface ProductoDetailDialogProps {
@@ -37,6 +38,9 @@ export function ProductoDetailDialog({
   onReubicar,
 }: ProductoDetailDialogProps) {
   const [copied, setCopied] = useState(false);
+  // Mantenciones y documentos: escritura solo AD-01 y PAN-01 (sin sesión, p. ej. en tests, se permite).
+  const role = useOptionalAuth()?.user?.rol;
+  const canMaintain = role === undefined || role === 'AD-01' || role === 'PAN-01';
   const { data: barcodeData, isLoading: isBarcodeLoading } = useProductBarcode(
     open && producto ? producto.id : undefined,
   );
@@ -277,7 +281,7 @@ export function ProductoDetailDialog({
 
         {/* Unidades individuales (equipo / maqueta) */}
         {(producto.type === 'equipo' || producto.type === 'maqueta') && (
-          <ProductoUnidadesPanel producto={producto} />
+          <ProductoUnidadesPanel producto={producto} canMaintain={canMaintain} />
         )}
 
         {/* Metadatos de Creación / Auditoría */}

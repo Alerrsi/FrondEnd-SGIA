@@ -19,6 +19,7 @@ import {
   Settings,
   Sun,
   Users,
+  Wrench,
   ShoppingCart,
   Wallet,
 } from 'lucide-react';
@@ -57,6 +58,7 @@ const navigation: NavItem[] = [
   { to: '/presupuestos', label: 'Presupuestos', icon: Wallet, roles: ['AD-01', 'DIR-01'] },
   { to: '/ingresos-factura', label: 'Ingresos de factura', icon: ReceiptText, roles: ['AD-01', 'DIR-01'] },
   { to: '/proveedores', label: 'Proveedores', icon: Building2, roles: ['AD-01', 'DIR-01'] },
+  { to: '/mantenciones', label: 'Mantenciones', icon: Wrench, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
   { to: '/estudiantes', label: 'Estudiantes', icon: GraduationCap, roles: ['AD-01', 'PAN-01'] },
   { to: '/historial', label: 'Historial', icon: History, roles: ['AD-01', 'PAN-01'] },
   { to: '/alertas', label: 'Stock Crítico', icon: Bell, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
