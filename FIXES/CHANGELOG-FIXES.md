@@ -273,3 +273,18 @@
   - Informes de novedades: `equipment_unit_id`, `request_type`, `evidence_photo`.
 - **Verificación:** typecheck web/api-client/types sin errores, 177 tests web pasan. `apps/mobile` no compila por dependencias sin instalar (preexistente).
 - **Pendiente:** pantallas (detalle de producto con tabla de unidades, selector de unidad en novedades, devolución por unidad, `category_id` obligatorio en alta de producto, quitar campos de cantidad al editar equipos). Los checkboxes de `ENDPOINTS.md` siguen sin marcar.
+
+
+---
+
+## FIX-009: Módulo de Compras y Adquisiciones (REQ-08)
+
+- **Fecha:** 2026-11-01
+- **Módulo:** `apps/web` (`features/compras`), `packages/api-client`, `packages/types` — [REQ-08](TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
+- **Cambios:**
+  - Tipos: `PurchaseStatus` queda en `pendiente | en_camino | completa` (la API ya no tiene `rechazada`); `PurchaseOrder` suma `code`, `received_at`, `guide_number`, `arrival_document_url`.
+  - api-client: los servicios de compras desenvuelven `data` y normalizan montos; nuevo `downloadPurchaseArrivalDocument` (`GET /purchases/{id}/arrival-document`).
+  - Web: ruta `/compras` (AD-01, DIR-01, PAN-01) con tabla, filtros por estado y búsqueda; formulario de orden desde cotización aceptada o compra directa (solo AD-01/DIR-01); detalle con transiciones según `allowed_transitions`, confirmación de llegada y registro de guía/factura (`arrival-scan`). `PurchaseStatusBadge`.
+  - Cotizaciones: «Generar orden de compra» ahora aparece con cotización `aceptada` (antes `completa`) y abre `/compras?cotizacion={id}`.
+- **Verificación:** typecheck web/api-client/types sin errores, 184 tests web pasan (+2). `apps/mobile` no compila por dependencias sin instalar (preexistente).
+- **Pendiente:** no probado contra el backend real; la forma exacta del Resource de compra (`code`, `total_amount`) se asumió y el normalizador tolera `total`.

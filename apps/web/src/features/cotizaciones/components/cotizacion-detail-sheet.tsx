@@ -35,7 +35,7 @@ export function CotizacionDetailSheet({
 
   const items = cotizacion.items ?? cotizacion.products ?? [];
   const suppliers = cotizacion.suppliers ?? [];
-  const canGenerateOrder = cotizacion.estado === QuotationStatus.COMPLETA;
+  const canGenerateOrder = cotizacion.estado === QuotationStatus.ACEPTADA;
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>

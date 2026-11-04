@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCotizaciones } from '@sgia/api-client';
 import type { Cotizacion } from '@sgia/types';
 import { AlertCircle, ClipboardList, FileText, Plus } from 'lucide-react';
@@ -10,15 +11,15 @@ import { CotizacionFormDialog } from '@/features/cotizaciones/components/cotizac
 import { CotizacionDetailSheet } from '@/features/cotizaciones/components/cotizacion-detail-sheet';
 
 export default function CotizacionesPage() {
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useCotizaciones({ page: 1, perPage: 20 });
 
   const [formOpen, setFormOpen] = useState(false);
   const [selectedCotizacion, setSelectedCotizacion] = useState<Cotizacion | null>(null);
 
-  const handleGenerateOrder = (_cotizacion: Cotizacion) => {
-    // Navigate or trigger order creation flow (REQ-08)
-    // For now, close the sheet — integration with REQ-08 pending
+  const handleGenerateOrder = (cotizacion: Cotizacion) => {
     setSelectedCotizacion(null);
+    navigate(`/compras?cotizacion=${cotizacion.id}`);
   };
 
   if (isLoading) {

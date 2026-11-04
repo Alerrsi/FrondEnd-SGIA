@@ -23,6 +23,7 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/alertas': ['AD-01', 'DIR-01', 'PAN-01'],
   '/proveedores': ['DIR-01', 'AD-01'],
   '/cotizaciones': ['DIR-01', 'AD-01'],
+  '/compras': ['PAN-01', 'DIR-01', 'AD-01'],
   '/usuarios': ['AD-01'],
 };
 

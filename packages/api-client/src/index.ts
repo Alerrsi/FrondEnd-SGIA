@@ -146,6 +146,7 @@ export {
   createPurchase,
   updatePurchaseStatus,
   scanPurchaseArrival,
+  downloadPurchaseArrivalDocument,
 } from './services/quotations';
 export {
   quotationKeys,

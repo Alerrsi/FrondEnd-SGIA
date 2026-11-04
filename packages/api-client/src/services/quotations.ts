@@ -6,6 +6,7 @@ import type {
   CreateSupplierPayload,
   PaginatedResponse,
   PurchaseArrivalScanPayload,
+  PurchaseItem,
   PurchaseOrder,
   PurchaseQueryParams,
   PurchaseStatus,
@@ -14,7 +15,7 @@ import type {
   Supplier,
   SupplierQueryParams,
 } from '@sgia/types';
-import { del, get, patch, post } from '../http';
+import { del, get, getBlob, patch, post } from '../http';
 
 function normalizeCotizacion(raw: any): Cotizacion {
   if (!raw) return raw;
@@ -152,6 +153,66 @@ export async function setSupplierStatus(id: number, is_active: boolean): Promise
 }
 
 // Compras y Adquisiciones (FU-03 / REQ-08)
+interface RawPurchase {
+  id: number;
+  code?: string | null;
+  quotation_id?: number | null;
+  quotation_reference?: string | null;
+  supplier_id?: number;
+  supplier?: Supplier | null;
+  items?: PurchaseItem[];
+  status?: PurchaseStatus;
+  estado?: PurchaseStatus;
+  total_amount?: number | string | null;
+  total?: number | string | null;
+  expected_at?: string | null;
+  received_at?: string | null;
+  guide_number?: string | null;
+  invoice_number?: string | null;
+  arrival_document_url?: string | null;
+  notes?: string | null;
+  allowed_transitions?: PurchaseStatus[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+function normalizePurchase(raw: RawPurchase): PurchaseOrder {
+  const items = (raw.items ?? []).map((it) => ({
+    ...it,
+    quantity: Number(it.quantity ?? 0),
+    unit_price: it.unit_price == null ? null : Number(it.unit_price),
+    subtotal: it.subtotal == null ? null : Number(it.subtotal),
+  }));
+  const computedTotal = items.reduce((sum, it) => sum + (it.unit_price ?? 0) * it.quantity, 0);
+  const rawTotal = raw.total_amount ?? raw.total;
+
+  return {
+    id: raw.id,
+    code: raw.code ?? null,
+    quotation_id: raw.quotation_id ?? null,
+    quotation_reference: raw.quotation_reference ?? null,
+    supplier_id: raw.supplier_id ?? raw.supplier?.id ?? 0,
+    supplier: raw.supplier ?? undefined,
+    items,
+    status: raw.status ?? raw.estado ?? 'pendiente',
+    total_amount: rawTotal == null ? computedTotal : Number(rawTotal),
+    expected_at: raw.expected_at ?? null,
+    received_at: raw.received_at ?? null,
+    guide_number: raw.guide_number ?? null,
+    invoice_number: raw.invoice_number ?? null,
+    arrival_document_url: raw.arrival_document_url ?? null,
+    notes: raw.notes ?? null,
+    allowed_transitions: raw.allowed_transitions ?? [],
+    created_at: raw.created_at ?? '',
+    updated_at: raw.updated_at ?? '',
+  };
+}
+
+function unwrapPurchase(response: { data?: RawPurchase } | RawPurchase): PurchaseOrder {
+  const raw = 'data' in response && response.data ? response.data : (response as RawPurchase);
+  return normalizePurchase(raw);
+}
+
 export async function fetchPurchases(params?: PurchaseQueryParams): Promise<PaginatedResponse<PurchaseOrder>> {
   const query = new URLSearchParams();
   const status = params?.status ?? params?.estado;
@@ -163,19 +224,31 @@ export async function fetchPurchases(params?: PurchaseQueryParams): Promise<Pagi
   if (params?.per_page) query.set('per_page', String(params.per_page));
 
   const qs = query.toString();
-  return get<PaginatedResponse<PurchaseOrder>>(`/purchases${qs ? `?${qs}` : ''}`);
+  const res = await get<{
+    data?: RawPurchase[];
+    meta?: PaginatedResponse<PurchaseOrder>['meta'];
+  }>(`/purchases${qs ? `?${qs}` : ''}`);
+  const data = (res?.data ?? []).map(normalizePurchase);
+  return {
+    data,
+    meta: res?.meta ?? { currentPage: 1, lastPage: 1, perPage: data.length, total: data.length },
+  };
 }
 
 export async function fetchPurchase(id: number): Promise<PurchaseOrder> {
-  return get<PurchaseOrder>(`/purchases/${id}`);
+  return unwrapPurchase(await get<{ data?: RawPurchase }>(`/purchases/${id}`));
 }
 
 export async function createPurchase(payload: CreatePurchasePayload): Promise<PurchaseOrder> {
-  return post<CreatePurchasePayload, PurchaseOrder>('/purchases', payload);
+  return unwrapPurchase(
+    await post<CreatePurchasePayload, { data?: RawPurchase }>('/purchases', payload),
+  );
 }
 
 export async function updatePurchaseStatus(id: number, status: PurchaseStatus | string): Promise<PurchaseOrder> {
-  return patch<{ status: string }, PurchaseOrder>(`/purchases/${id}/status`, { status });
+  return unwrapPurchase(
+    await patch<{ status: string }, { data?: RawPurchase }>(`/purchases/${id}/status`, { status }),
+  );
 }
 
 export async function scanPurchaseArrival(
@@ -187,7 +260,18 @@ export async function scanPurchaseArrival(
     formData.append('document', payload.document);
     if (payload.guide_number) formData.append('guide_number', payload.guide_number);
     if (payload.invoice_number) formData.append('invoice_number', payload.invoice_number);
-    return post<FormData, PurchaseOrder>(`/purchases/${id}/arrival-scan`, formData);
+    return unwrapPurchase(
+      await post<FormData, { data?: RawPurchase }>(`/purchases/${id}/arrival-scan`, formData),
+    );
   }
-  return post<PurchaseArrivalScanPayload, PurchaseOrder>(`/purchases/${id}/arrival-scan`, payload);
+  return unwrapPurchase(
+    await post<PurchaseArrivalScanPayload, { data?: RawPurchase }>(
+      `/purchases/${id}/arrival-scan`,
+      payload,
+    ),
+  );
+}
+
+export async function downloadPurchaseArrivalDocument(id: number): Promise<Blob> {
+  return getBlob(`/purchases/${id}/arrival-document`);
 }

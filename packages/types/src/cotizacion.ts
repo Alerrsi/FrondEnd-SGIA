@@ -110,31 +110,36 @@ export const PurchaseStatus = {
   PENDIENTE: 'pendiente',
   EN_CAMINO: 'en_camino',
   COMPLETA: 'completa',
-  RECHAZADA: 'rechazada',
 } as const;
 
 export type PurchaseStatus = (typeof PurchaseStatus)[keyof typeof PurchaseStatus];
 
 export interface PurchaseItem {
+  id?: number;
   name?: string;
   quantity: number;
   unit_price?: number | null;
+  subtotal?: number | null;
   product_id?: number | null;
 }
 
 export interface PurchaseOrder {
   id: number;
+  code?: string | null;
   quotation_id?: number | null;
   quotation_reference?: string | null;
   supplier_id: number;
   supplier?: Supplier;
-  items: CotizacionItem[] | PurchaseItem[];
+  items: PurchaseItem[];
   status: PurchaseStatus;
   total_amount?: number;
   expected_at?: string | null;
+  received_at?: string | null;
+  guide_number?: string | null;
   invoice_number?: string | null;
+  arrival_document_url?: string | null;
   notes?: string | null;
-  allowed_transitions?: string[];
+  allowed_transitions?: PurchaseStatus[];
   created_at: string;
   updated_at: string;
 }

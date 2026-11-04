@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react';
-import { QuotationStatus } from '@sgia/types';
+import { PurchaseStatus, QuotationStatus } from '@sgia/types';
 
 import { cn } from '@/lib/cn';
 
@@ -157,4 +157,24 @@ export function QuotationStatusBadge({ estado }: { estado: QuotationStatus }) {
         ? 'warning'
         : 'accent';
   return <Badge tone={tone}>{estado}</Badge>;
+}
+
+const PURCHASE_STATUS_LABEL: Record<PurchaseStatus, string> = {
+  [PurchaseStatus.PENDIENTE]: 'Pendiente',
+  [PurchaseStatus.EN_CAMINO]: 'En camino',
+  [PurchaseStatus.COMPLETA]: 'Completa',
+};
+
+export function PurchaseStatusBadge({ status }: { status: PurchaseStatus }) {
+  const tone: Tone =
+    status === PurchaseStatus.COMPLETA
+      ? 'success'
+      : status === PurchaseStatus.EN_CAMINO
+        ? 'loaned'
+        : 'warning';
+  return (
+    <Badge tone={tone} dot>
+      {PURCHASE_STATUS_LABEL[status] ?? status}
+    </Badge>
+  );
 }
