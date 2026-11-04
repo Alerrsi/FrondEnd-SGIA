@@ -110,6 +110,7 @@ export const PurchaseStatus = {
   PENDIENTE: 'pendiente',
   EN_CAMINO: 'en_camino',
   COMPLETA: 'completa',
+  CANCELADA: 'cancelada',
 } as const;
 
 export type PurchaseStatus = (typeof PurchaseStatus)[keyof typeof PurchaseStatus];
@@ -133,6 +134,10 @@ export interface PurchaseOrder {
   items: PurchaseItem[];
   status: PurchaseStatus;
   total_amount?: number;
+  /** Presupuesto anual que financia la compra (REQ-16). */
+  annual_budget_id?: number | null;
+  /** Monto reservado vigente; vuelve a 0 al cancelar o al confirmar la factura. */
+  reserved_amount?: number;
   expected_at?: string | null;
   received_at?: string | null;
   guide_number?: string | null;
@@ -145,12 +150,14 @@ export interface PurchaseOrder {
 }
 
 export interface CreatePurchasePayload {
+  /** Obligatorio: el total se reserva en este presupuesto. */
+  annual_budget_id: number;
   quotation_id?: number | null;
   supplier_id?: number;
   quotation_reference?: string | null;
   expected_at?: string | null;
   notes?: string | null;
-  items?: Array<{ name?: string; product_id?: number; quantity: number; unit_price?: number }>;
+  items?: Array<{ name?: string; product_id?: number; quantity: number; unit_price: number }>;
 }
 
 export interface PurchaseQueryParams {

@@ -6,6 +6,8 @@ import ComprasPage from '@/features/compras/pages/compras-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import EquiposPage from '@/features/equipos/pages/equipos-page';
+import IngresosFacturaPage from '@/features/ingresos-factura/pages/ingresos-factura-page';
+import PresupuestosPage from '@/features/presupuestos/pages/presupuestos-page';
 import ProductosListPage from '@/features/inventario/pages/productos-list-page';
 import PrestamosMenuPage from '@/features/prestamos/pages/prestamos-menu-page';
 import ColaPrestamosPage from '@/features/prestamos/pages/cola-prestamos-page';
@@ -192,6 +194,24 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
                   <ComprasPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/presupuestos"
+              element={
+                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                  <PresupuestosPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/ingresos-factura"
+              element={
+                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                  <IngresosFacturaPage />
                 </RequireRole>
               }
             />

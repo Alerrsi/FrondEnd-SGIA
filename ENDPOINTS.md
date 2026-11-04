@@ -34,8 +34,8 @@
 
 ### Cambios que rompen (hay que adaptar sí o sí)
 
-- [ ] **Alta de producto** (`POST /api/products`, §3): `category_id` es **obligatorio** (hay que listar/elegir categoría). Un `insumo` sin `barcode` exige `career_id` (carrera con `code`). Un `equipo`/`maqueta` con `quantity > 0` exige `career_id` y cajón (`cajon_id`, o `sala` + `cajon`) y crea las unidades; `units: [{serial_number}]` opcional.
-- [ ] **Cantidad de un equipo/maqueta es de solo lectura**: `PATCH /api/products/{id}` con `quantity*` → `422` ("La cantidad de un equipo se calcula a partir de sus unidades."). `quantity`, `quantity_in_repair`, `quantity_written_off` se derivan de las unidades (las `prestado` no suman). Quitar los campos de cantidad del formulario de edición de equipos.
+- [x] **Alta de producto** (`POST /api/products`, §3): `category_id` es **obligatorio** (hay que listar/elegir categoría). Un `insumo` sin `barcode` exige `career_id` (carrera con `code`). Un `equipo`/`maqueta` con `quantity > 0` exige `career_id` y cajón (`cajon_id`, o `sala` + `cajon`) y crea las unidades; `units: [{serial_number}]` opcional.
+- [x] **Cantidad de un equipo/maqueta es de solo lectura**: `PATCH /api/products/{id}` con `quantity*` → `422` ("La cantidad de un equipo se calcula a partir de sus unidades."). `quantity`, `quantity_in_repair`, `quantity_written_off` se derivan de las unidades (las `prestado` no suman). Quitar los campos de cantidad del formulario de edición de equipos.
 - [ ] **`PATCH /api/products/{id}/condition`** solo vale para `insumo`. En `equipo`/`maqueta` → `422`; usar `PATCH /api/equipment-units/{id}/status`.
 - [ ] **Informes de novedades** (`POST /api/equipment/{id}/reports`, §13): si el producto es `equipo`/`maqueta`, `equipment_unit_id` es **obligatorio** (unidad de ese producto). El formulario debe cargar `GET /api/products/{id}/units` para elegirla.
 - [ ] **Cambio de `type`**: `equipo` → `insumo` con unidades existentes → `422`; `insumo` → `equipo` genera las unidades desde los contadores.
@@ -117,8 +117,9 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `GET` | `/api/careers` | `AD-01`, `DIR-01` | Listado paginado.<br>**Query Params:** `level`, `search` (nombre), `per_page`. Cada carrera: `id`, `name`, `code`, `level`, `level_label`, auditoría. | ✅ Implementado |
-| `GET` | `/api/careers/{id}` | `AD-01`, `DIR-01` | Detalle de una carrera. | ✅ Implementado |
+| `GET` | `/api/categories` | `AD-01`, `DIR-01`, `PAN-01` | Categorías para elegir `category_id` en el alta de producto.<br>**Query Params:** `search`, `per_page`. Cada una: `id`, `name`, `description`. | ✅ Implementado |
+| `GET` | `/api/careers` | `AD-01`, `DIR-01`, `PAN-01` | Listado paginado.<br>**Query Params:** `level`, `search` (nombre), `per_page`. Cada carrera: `id`, `name`, `code`, `level`, `level_label`, auditoría. | ✅ Implementado |
+| `GET` | `/api/careers/{id}` | `AD-01`, `DIR-01`, `PAN-01` | Detalle de una carrera. | ✅ Implementado |
 | `POST` | `/api/careers` | `AD-01` | Crea una carrera.<br>**Body:** `name` (único), `level` (`tecnico` \| `profesional`), `code` (opcional: `ISD`, `II`, `IC`, `AP`; único). | ✅ Implementado |
 | `PATCH` | `/api/careers/{id}` | `AD-01` | Cambia nombre o nivel. | ✅ Implementado |
 | `DELETE` | `/api/careers/{id}` | `AD-01` | Elimina la carrera (204). Los usuarios conservan su `area`; sus préstamos pasan a "Sin nivel". | ✅ Implementado |
@@ -195,22 +196,26 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `GET` | `/api/budgets` | `AD-01`, `DIR-01` | Lista paginada. Filtros `year`, `career_id`, `per_page`. `AD-01` ve todos; `DIR-01` solo los de sus carreras (`career_user`). | ✅ Implementado |
-| `GET` | `/api/budgets/{id}` | `AD-01`, `DIR-01` | Detalle con `career`, `consumed_amount` e `invoice_intakes` (solo confirmados). `403` si es de una carrera ajena (DIR-01). | ✅ Implementado |
-| `POST` | `/api/budgets` | `AD-01` | `career_id`, `year`, `initial_amount` (> 0). `available_amount` arranca igual al inicial. `422` si ya existe esa carrera + año. | ✅ Implementado |
-| `PATCH` | `/api/budgets/{id}` | `AD-01` | `initial_amount`; `available_amount` se recalcula como `initial − consumido`. `422` si quedaría negativo. | ✅ Implementado |
-| `DELETE` | `/api/budgets/{id}` | `AD-01` | `204`. `422` si tiene ingresos de facturas. | ✅ Implementado |
+| `GET` | `/api/budgets` | `AD-01`, `DIR-01` | Lista paginada. Filtros `year`, `career_id`, `per_page`. `AD-01` y `DIR-01` (director del Área de Informática) ven todas las carreras. | ✅ Implementado |
+| `GET` | `/api/budgets/summary` | `AD-01`, `DIR-01` | Ejecución por carrera/año (sin paginar): `initial_amount`, `reserved_amount`, `consumed_amount`, `available_amount`, `execution_percent`. Filtros `year`, `career_id`. | ✅ Implementado |
+| `GET` | `/api/budgets/{id}/movements` | `AD-01`, `DIR-01` | Ledger paginado (más reciente primero). Filtros `type`, `from`, `to`, `purchase_id`, `invoice_intake_id`, `per_page`. | ✅ Implementado |
+| `GET` | `/api/budgets/{id}/spending` | `AD-01`, `DIR-01` | Gasto de ingresos `confirmado` agrupado: `group_by=product` (por defecto) \| `product_type` \| `supplier` (solo ingresos ligados a una compra). `422` si `group_by` es otro. Respuesta `{annual_budget_id, group_by, total, data:[{id, label, quantity, amount}]}`. | ✅ Implementado |
+| `GET` | `/api/budgets/{id}/monthly` | `AD-01`, `DIR-01` | 12 meses desde el ledger: `{annual_budget_id, year, data:[{month, reserved, consumed, restored}]}`. `year` opcional (año calendario; por defecto el del presupuesto). | ✅ Implementado |
+| `GET` | `/api/budgets/{id}` | `AD-01`, `DIR-01` | Detalle con `career`, `reserved_amount`, `consumed_amount` e `invoice_intakes` (solo confirmados). | ✅ Implementado |
+| `POST` | `/api/budgets` | `AD-01`, `DIR-01` | Ingreso manual por carrera: `career_id`, `year`, `initial_amount` (> 0). `available_amount` arranca igual al inicial; registra el movimiento `asignacion_inicial`. `422` si ya existe esa carrera + año. | ✅ Implementado |
+| `PATCH` | `/api/budgets/{id}` | `AD-01`, `DIR-01` | `initial_amount`; `available_amount = initial − consumido − reservado`. `422` si el nuevo monto no cubre consumido + reservado. Registra un movimiento `ajuste`. | ✅ Implementado |
+| `DELETE` | `/api/budgets/{id}` | `AD-01`, `DIR-01` | `204`. `422` si tiene ingresos de facturas o compras. | ✅ Implementado |
 
 ### 4.2 Ingreso de facturas con descuento de presupuesto (`FU-03` / `REQ-17`)
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `POST` | `/api/invoice-intakes` | `AD-01`, `DIR-01` (carreras propias) | `multipart`: `file` (PDF/PNG/JPG/WEBP, 10 MB), `annual_budget_id`. Guarda el archivo en disco privado, corre el OCR y crea el ingreso en `borrador`; los ítems detectados quedan en `raw_ocr_payload.items`. Si el OCR no está disponible el borrador queda sin ítems (`raw_ocr_payload.ocr_available = false`). `201`. Límite 10/min. | ✅ Implementado |
-| `GET` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | Filtros `status` (`borrador`/`confirmado`/`anulado`), `annual_budget_id`, `from`, `to`, `per_page`. DIR-01 solo ve sus carreras. | ✅ Implementado |
+| `POST` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | `multipart`: `file` (PDF/PNG/JPG/WEBP, 10 MB), `annual_budget_id`, `purchase_id` (opcional: compra del mismo presupuesto, no cancelada y con reserva vigente; `422` si no). Guarda el archivo en disco privado, corre el OCR y crea el ingreso en `borrador`; los ítems detectados quedan en `raw_ocr_payload.items`. Si el OCR no está disponible el borrador queda sin ítems (`raw_ocr_payload.ocr_available = false`). `201`. Límite 10/min. | ✅ Implementado |
+| `GET` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | Filtros `status` (`borrador`/`confirmado`/`anulado`), `annual_budget_id`, `from`, `to`, `per_page`. | ✅ Implementado |
 | `GET` | `/api/invoice-intakes/{id}` | `AD-01`, `DIR-01` | Detalle con `annual_budget` e `items` (con `product`). | ✅ Implementado |
 | `GET` | `/api/invoice-intakes/{id}/file` | `AD-01`, `DIR-01` | Descarga autenticada del archivo (disco privado). `404` si no tiene. | ✅ Implementado |
-| `POST` | `/api/invoice-intakes/{id}/confirm` | `AD-01`, `DIR-01` | `document_number`, `items: [{product_id, quantity, unit_price, detected_name?, cajon_id?}]`. En una transacción descuenta el presupuesto e ingresa el stock: `insumo` suma `quantity`; `equipo`/`maqueta` crea `quantity` unidades (`cajon_id` obligatorio). `422` si el total supera `available_amount`, si no está en `borrador` o falta `cajon_id`. | ✅ Implementado |
-| `POST` | `/api/invoice-intakes/{id}/cancel` | `AD-01`, `DIR-01` | `borrador` → `anulado`. `422` si ya está confirmado (se corrige con un ajuste manual de stock). | ✅ Implementado |
+| `POST` | `/api/invoice-intakes/{id}/confirm` | `AD-01`, `DIR-01` | `document_number`, `items: [{product_id, quantity, unit_price, detected_name?, cajon_id?}]`. En una transacción descuenta el presupuesto e ingresa el stock: `insumo` suma `quantity`; `equipo`/`maqueta` crea `quantity` unidades (`cajon_id` obligatorio). Si el ingreso está ligado a una compra, libera su reserva y consume el monto real (la diferencia vuelve al disponible). `422` si el total supera `available_amount` (más la reserva liberada), si no está en `borrador` o falta `cajon_id`. | ✅ Implementado |
+| `POST` | `/api/invoice-intakes/{id}/cancel` | `AD-01`, `DIR-01` | `borrador` → `anulado`, o `confirmado` → `anulado` con reversa completa (todo o nada): resta stock de insumos, da de baja las unidades creadas y repone el monto (`reposicion`). `422` en `items` si un insumo quedaría bajo 0, una unidad no está `disponible` / tiene préstamos o es anterior a la trazabilidad; `422` en `status` si ya está anulado. La compra ligada no cambia de estado. | ✅ Implementado |
 
 ---
 
@@ -229,10 +234,11 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `GET` | `/api/purchases` | `AD-01`, `DIR-01`, `PAN-01` | Listado paginado de órdenes de compra con proveedor e ítems.<br>**Query Params:** `status` (alias `estado`: `pendiente`, `en_camino`, `completa`), `supplier_id`, `quotation_id`, `search` (código, guía o factura), `per_page` (1-100). | ✅ Implementado |
-| `POST` | `/api/purchases` | `AD-01`, `DIR-01` | Registra una nueva orden de compra en estado `pendiente`. Genera código único (`OC-<año>-XXXXXX`), persiste los ítems y calcula el total. Si se envía `quotation_id` de una cotización **aceptada**, copia proveedor e ítems de la cotización (a menos que se envíen explícitamente) y la marca como `convertida`.<br>**Body:** `quotation_id` **o** `supplier_id` + `items` (array con `name`, `quantity`, `unit_price` opcional, `product_id` opcional; mínimo 1), `quotation_reference`, `expected_at`, `notes`. | ✅ Implementado |
+| `GET` | `/api/purchases` | `AD-01`, `DIR-01`, `PAN-01` | Listado paginado de órdenes de compra con proveedor e ítems.<br>**Query Params:** `status` (alias `estado`: `pendiente`, `en_camino`, `completa`, `cancelada`), `supplier_id`, `quotation_id`, `search` (código, guía o factura), `per_page` (1-100). | ✅ Implementado |
+| `POST` | `/api/purchases` | `AD-01`, `DIR-01` | Registra una nueva orden de compra en estado `pendiente`. Genera código único (`OC-<año>-XXXXXX`), persiste los ítems y calcula el total. Si se envía `quotation_id` de una cotización **aceptada**, copia proveedor e ítems de la cotización (a menos que se envíen explícitamente) y la marca como `convertida`.<br>**Reserva presupuesto:** `annual_budget_id` obligatorio; el total se reserva (`422` en `total` si supera `available_amount`). Desde una cotización, el precio sale de la oferta del proveedor elegido (`422` en `items.N.unit_price` si falta).<br>**Body:** `annual_budget_id`, `quotation_id` **o** `supplier_id` + `items` (array con `name`, `quantity`, `unit_price` **obligatorio**, `product_id` opcional; mínimo 1), `quotation_reference`, `expected_at`, `notes`. | ✅ Implementado |
 | `GET` | `/api/purchases/{id}` | `AD-01`, `DIR-01`, `PAN-01` | Detalle de la orden de compra, sus ítems adquiridos, la cotización de origen y las transiciones permitidas (`allowed_transitions`). | ✅ Implementado |
 | `PATCH` | `/api/purchases/{id}/status` | `AD-01`, `DIR-01`, `PAN-01` | Transición de estados según la máquina (`pendiente` → `en_camino` → `completa`); una transición inválida responde `422` con los estados permitidos. Al pasar a `completa` registra `received_at` y notifica al pañolero para el ingreso físico a stock.<br>**Body:** `status` (alias `estado`). | ✅ Implementado |
+| `POST` | `/api/purchases/{id}/cancel` | `AD-01`, `DIR-01` (compras con presupuesto) | Cancela una compra `pendiente` o `en_camino` y libera su reserva. `422` desde `completa`/`cancelada`. `PATCH .../status` no acepta `cancelada`. | ✅ Implementado |
 | `POST` | `/api/purchases/{id}/arrival-scan` | `AD-01`, `DIR-01`, `PAN-01` | Marca la orden como `completa` al escanear la guía de despacho / factura de llegada: extrae el número de factura vía OCR, guarda el documento escaneado y notifica al pañolero (PAN-01).<br>**Body (multipart o JSON):** `document` (PDF, PNG, JPG o WEBP hasta 10MB), `guide_number`, `invoice_number` (al menos uno de los tres). | ✅ Implementado |
 | `GET` | `/api/purchases/{id}/arrival-document` | `AD-01`, `DIR-01`, `PAN-01` | Descarga autenticada del documento de llegada (almacenado en disco privado). El recurso de la compra incluye `arrival_document_url`. | ✅ Implementado |
 

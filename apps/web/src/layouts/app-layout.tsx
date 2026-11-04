@@ -14,10 +14,12 @@ import {
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
+  ReceiptText,
   Settings,
   Sun,
   Users,
   ShoppingCart,
+  Wallet,
 } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ROLE_LABELS, type RoleCode } from '@sgia/types';
@@ -51,6 +53,8 @@ const navigation: NavItem[] = [
   { to: '/equipos', label: 'Fichas Técnicas', icon: Cpu, roles: ['AD-01', 'DIR-01'] },
   { to: '/cotizaciones', label: 'Cotizaciones', icon: ClipboardList, roles: ['AD-01', 'DIR-01'] },
   { to: '/compras', label: 'Compras', icon: ShoppingCart, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
+  { to: '/presupuestos', label: 'Presupuestos', icon: Wallet, roles: ['AD-01', 'DIR-01'] },
+  { to: '/ingresos-factura', label: 'Ingresos de factura', icon: ReceiptText, roles: ['AD-01', 'DIR-01'] },
   { to: '/proveedores', label: 'Proveedores', icon: Building2, roles: ['AD-01', 'DIR-01'] },
   { to: '/historial', label: 'Historial', icon: History, roles: ['AD-01', 'PAN-01'] },
   { to: '/alertas', label: 'Stock Crítico', icon: Bell, roles: ['AD-01', 'DIR-01', 'PAN-01'] },

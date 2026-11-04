@@ -172,6 +172,8 @@ interface RawPurchase {
   arrival_document_url?: string | null;
   notes?: string | null;
   allowed_transitions?: PurchaseStatus[];
+  annual_budget_id?: number | null;
+  reserved_amount?: number | string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -203,6 +205,8 @@ function normalizePurchase(raw: RawPurchase): PurchaseOrder {
     arrival_document_url: raw.arrival_document_url ?? null,
     notes: raw.notes ?? null,
     allowed_transitions: raw.allowed_transitions ?? [],
+    annual_budget_id: raw.annual_budget_id ?? null,
+    reserved_amount: raw.reserved_amount == null ? 0 : Number(raw.reserved_amount),
     created_at: raw.created_at ?? '',
     updated_at: raw.updated_at ?? '',
   };
@@ -249,6 +253,11 @@ export async function updatePurchaseStatus(id: number, status: PurchaseStatus | 
   return unwrapPurchase(
     await patch<{ status: string }, { data?: RawPurchase }>(`/purchases/${id}/status`, { status }),
   );
+}
+
+/** Cancela una compra `pendiente` o `en_camino` y libera su reserva de presupuesto. */
+export async function cancelPurchase(id: number): Promise<PurchaseOrder> {
+  return unwrapPurchase(await post<undefined, { data?: RawPurchase }>(`/purchases/${id}/cancel`));
 }
 
 export async function scanPurchaseArrival(

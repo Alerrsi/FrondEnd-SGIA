@@ -103,6 +103,28 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
 
     // NO debe mostrar el código técnico "PAN-01"
     expect(screen.queryByText('PAN-01')).toBeNull();
+
+    // Presupuestos e ingresos de factura son solo de AD-01 / DIR-01 (REQ-16 / REQ-17)
+    expect(screen.queryByText('Presupuestos')).toBeNull();
+    expect(screen.queryByText('Ingresos de factura')).toBeNull();
+  });
+
+  it('muestra Presupuestos e Ingresos de factura a DIR-01', () => {
+    mockUserRole = 'DIR-01';
+    mockUserName = 'Director Ana';
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Contenido Director</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Presupuestos')).toBeDefined();
+    expect(screen.getByText('Ingresos de factura')).toBeDefined();
   });
 
   it('toggles collapse and expand, maintaining option logos accessible', async () => {

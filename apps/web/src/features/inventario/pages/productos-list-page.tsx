@@ -5,6 +5,7 @@ import {
   useToggleProductoActivo,
 } from '@sgia/api-client';
 import type { Producto, ProductoParams } from '@sgia/types';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
   FileUp,
@@ -17,7 +18,6 @@ import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
-import { FacturaUploadModal } from '../components/factura-upload-modal';
 import {
   InventarioTable,
   type EstadoFilter,
@@ -28,10 +28,11 @@ import { ReubicarProductoModal } from '../components/reubicar-producto-modal';
 
 export default function ProductosListPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const toggleProductoActivo = useToggleProductoActivo();
   const deleteProducto = useDeleteProducto();
 
-  // Roles permitidos para acciones especiales
+  // Roles permitidos para acciones especiales. El alta por factura vive en /ingresos-factura (REQ-17).
   const canScanInvoice = user?.rol === 'DIR-01' || user?.rol === 'AD-01';
   const canDelete = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
 
@@ -51,7 +52,6 @@ export default function ProductosListPage() {
   const [editingProduct, setEditingProduct] = useState<Producto | null>(null);
   const [detailProduct, setDetailProduct] = useState<Producto | null>(null);
   const [reubicarTarget, setReubicarTarget] = useState<Producto | null>(null);
-  const [facturaModalOpen, setFacturaModalOpen] = useState(false);
   const [toggleTarget, setToggleTarget] = useState<Producto | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Producto | null>(null);
 
@@ -124,7 +124,7 @@ export default function ProductosListPage() {
     critical_only: criticalOnly ? true : undefined,
   };
 
-  const { data, isLoading, isError, isFetching, refetch } =
+  const { data, isLoading, isError, isFetching } =
     useProducts(queryParams);
 
   // Contadores rápidos para métricas
@@ -199,11 +199,11 @@ export default function ProductosListPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setFacturaModalOpen(true)}
+              onClick={() => navigate('/ingresos-factura')}
               className="flex items-center gap-1.5 text-xs h-8"
             >
               <FileUp className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
-              <span>Subir Factura (OCR)</span>
+              <span>Ingresar por factura</span>
             </Button>
           )}
 
@@ -323,14 +323,6 @@ export default function ProductosListPage() {
         onClose={() => setReubicarTarget(null)}
         producto={reubicarTarget}
       />
-
-      {canScanInvoice && (
-        <FacturaUploadModal
-          open={facturaModalOpen}
-          onClose={() => setFacturaModalOpen(false)}
-          onSuccess={() => refetch()}
-        />
-      )}
 
       {/* Modal de confirmación para activar/desactivar */}
       <ConfirmDialog

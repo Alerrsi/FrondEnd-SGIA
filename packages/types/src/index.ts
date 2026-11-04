@@ -110,6 +110,36 @@ export type {
 
 export type { PaginatedResponse, ApiError, AuthResponse } from './pagination';
 
+export { BudgetMovementType } from './presupuesto';
+export type {
+  BudgetMovementType as BudgetMovementTypeValue,
+  AnnualBudget,
+  BudgetSummaryRow,
+  BudgetMovement,
+  BudgetSpendingGroupBy,
+  BudgetSpendingRow,
+  BudgetSpending,
+  BudgetMonthlyRow,
+  BudgetMonthly,
+  BudgetQueryParams,
+  BudgetMovementQueryParams,
+  CreateBudgetPayload,
+  UpdateBudgetPayload,
+} from './presupuesto';
+
+export { InvoiceIntakeStatus } from './ingreso-factura';
+export type {
+  InvoiceIntakeStatus as InvoiceIntakeStatusValue,
+  InvoiceIntakeOcrItem,
+  InvoiceIntakeOcrPayload,
+  InvoiceIntakeItem,
+  InvoiceIntake,
+  InvoiceIntakeQueryParams,
+  UploadInvoiceIntakePayload,
+  ConfirmInvoiceIntakeItem,
+  ConfirmInvoiceIntakePayload,
+} from './ingreso-factura';
+
 export type {
   EquipmentUnit,
   EquipmentUnitStatus,

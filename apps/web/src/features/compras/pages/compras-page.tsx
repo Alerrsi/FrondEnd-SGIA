@@ -16,6 +16,7 @@ const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
   { value: PurchaseStatus.PENDIENTE, label: 'Pendientes' },
   { value: PurchaseStatus.EN_CAMINO, label: 'En camino' },
   { value: PurchaseStatus.COMPLETA, label: 'Completas' },
+  { value: PurchaseStatus.CANCELADA, label: 'Canceladas' },
 ];
 
 export default function ComprasPage() {

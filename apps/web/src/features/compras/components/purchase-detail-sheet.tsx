@@ -1,11 +1,23 @@
 import { useRef, useState } from 'react';
 import {
   downloadPurchaseArrivalDocument,
+  useBudget,
+  useCancelPurchase,
   useScanPurchaseArrival,
   useUpdatePurchaseStatus,
 } from '@sgia/api-client';
 import { PurchaseStatus, type PurchaseOrder } from '@sgia/types';
-import { Calendar, FileDown, Loader2, PackageCheck, ScanLine, Truck } from 'lucide-react';
+import {
+  Ban,
+  Calendar,
+  FileDown,
+  Loader2,
+  PackageCheck,
+  ReceiptText,
+  ScanLine,
+  Truck,
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import { PurchaseStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,7 +29,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { useAuth } from '@/features/auth/context/auth-context';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
+import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
@@ -31,19 +45,34 @@ const inputClasses =
   'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
 
 export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailSheetProps) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const updateStatus = useUpdatePurchaseStatus();
+  const cancelPurchase = useCancelPurchase();
   const scanArrival = useScanPurchaseArrival();
+  const { data: budget } = useBudget(purchase?.annual_budget_id ?? undefined);
   const fileRef = useRef<HTMLInputElement>(null);
   const [confirmReceive, setConfirmReceive] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
   const [guideNumber, setGuideNumber] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [file, setFile] = useState<File | null>(null);
 
   if (!purchase) return null;
 
+  const isManager = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
+  const isOpen =
+    purchase.status === PurchaseStatus.PENDIENTE || purchase.status === PurchaseStatus.EN_CAMINO;
   const canShip = purchase.allowed_transitions?.includes(PurchaseStatus.EN_CAMINO) ?? false;
   const canReceive = purchase.allowed_transitions?.includes(PurchaseStatus.COMPLETA) ?? false;
-  const canScan = purchase.status !== PurchaseStatus.COMPLETA;
+  const canScan = isOpen;
+  const canCancel = isManager && isOpen;
+  // La factura se liga a una compra con reserva vigente (no cancelada); el backend valida el resto.
+  const canRegisterInvoice =
+    isManager &&
+    purchase.status !== PurchaseStatus.CANCELADA &&
+    Boolean(purchase.annual_budget_id) &&
+    (purchase.reserved_amount ?? 0) > 0;
   const hasScanInput = Boolean(file || guideNumber.trim() || invoiceNumber.trim());
 
   const changeStatus = async (status: PurchaseStatus) => {
@@ -82,6 +111,24 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
     } catch (error) {
       toast.error(apiErrorToMessage(error));
     }
+  };
+
+  const handleCancel = async () => {
+    try {
+      await cancelPurchase.mutateAsync(purchase.id);
+      toast.success(
+        `Orden cancelada. Se liberaron ${formatCLP(purchase.reserved_amount)} del presupuesto.`,
+      );
+      setConfirmCancel(false);
+      onClose();
+    } catch (error) {
+      toast.error(apiErrorToMessage(error));
+      setConfirmCancel(false);
+    }
+  };
+
+  const goToInvoice = () => {
+    navigate(`/ingresos-factura?compra=${purchase.id}&presupuesto=${purchase.annual_budget_id}`);
   };
 
   const handleDownload = async () => {
@@ -137,6 +184,24 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 <dt className="text-zinc-500">N° factura</dt>
                 <dd className="font-mono">{purchase.invoice_number ?? '—'}</dd>
               </div>
+              <div className="col-span-2 border-t border-zinc-100 dark:border-zinc-800 pt-2">
+                <dt className="text-zinc-500">Presupuesto</dt>
+                <dd>
+                  {budget
+                    ? `${careerLabel(budget)} · ${budget.year}`
+                    : purchase.annual_budget_id
+                      ? `#${purchase.annual_budget_id}`
+                      : 'Sin presupuesto'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-zinc-500">Reservado</dt>
+                <dd className="font-mono">{formatCLP(purchase.reserved_amount)}</dd>
+              </div>
+              <div>
+                <dt className="text-zinc-500">Disponible del presupuesto</dt>
+                <dd className="font-mono">{budget ? formatCLP(budget.available_amount) : '—'}</dd>
+              </div>
             </dl>
 
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -151,12 +216,17 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 </thead>
                 <tbody>
                   {purchase.items.map((item, i) => (
-                    <tr key={item.id ?? i} className="border-t border-zinc-100 dark:border-zinc-800">
+                    <tr
+                      key={item.id ?? i}
+                      className="border-t border-zinc-100 dark:border-zinc-800"
+                    >
                       <td className="px-3 py-1.5 text-zinc-800 dark:text-zinc-200">
                         {item.name ?? `Producto #${item.product_id}`}
                       </td>
                       <td className="px-3 py-1.5 text-right font-mono">{item.quantity}</td>
-                      <td className="px-3 py-1.5 text-right font-mono">{formatCLP(item.unit_price)}</td>
+                      <td className="px-3 py-1.5 text-right font-mono">
+                        {formatCLP(item.unit_price)}
+                      </td>
                       <td className="px-3 py-1.5 text-right font-mono">
                         {formatCLP(item.subtotal ?? (item.unit_price ?? 0) * item.quantity)}
                       </td>
@@ -168,7 +238,9 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                     <td className="px-3 py-2" colSpan={3}>
                       Total
                     </td>
-                    <td className="px-3 py-2 text-right font-mono">{formatCLP(purchase.total_amount)}</td>
+                    <td className="px-3 py-2 text-right font-mono">
+                      {formatCLP(purchase.total_amount)}
+                    </td>
                   </tr>
                 </tfoot>
               </table>
@@ -249,11 +321,33 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                     className={inputClasses}
                   />
                 </div>
-                <Button type="submit" disabled={!hasScanInput || scanArrival.isPending} className="text-xs">
+                <Button
+                  type="submit"
+                  disabled={!hasScanInput || scanArrival.isPending}
+                  className="text-xs"
+                >
                   {scanArrival.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                   Registrar y completar
                 </Button>
               </form>
+            )}
+
+            {canRegisterInvoice && (
+              <Button variant="outline" onClick={goToInvoice} className="text-xs">
+                <ReceiptText className="h-4 w-4" />
+                Registrar factura e ingresar stock
+              </Button>
+            )}
+
+            {canCancel && (
+              <Button
+                variant="ghost"
+                onClick={() => setConfirmCancel(true)}
+                className="text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+              >
+                <Ban className="h-4 w-4" />
+                Cancelar compra
+              </Button>
             )}
           </div>
         </SheetContent>
@@ -267,6 +361,18 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
         loading={updateStatus.isPending}
         onConfirm={() => changeStatus(PurchaseStatus.COMPLETA)}
         onCancel={() => setConfirmReceive(false)}
+      />
+
+      <ConfirmDialog
+        open={confirmCancel}
+        title="Cancelar compra"
+        description={`La orden ${code} quedará cancelada y se liberarán ${formatCLP(purchase.reserved_amount)} reservados en el presupuesto. Esta acción no se puede deshacer.`}
+        confirmLabel="Cancelar compra"
+        cancelLabel="Volver"
+        variant="danger"
+        loading={cancelPurchase.isPending}
+        onConfirm={handleCancel}
+        onCancel={() => setConfirmCancel(false)}
       />
     </>
   );

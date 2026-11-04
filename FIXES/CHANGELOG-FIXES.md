@@ -288,3 +288,68 @@
   - Cotizaciones: «Generar orden de compra» ahora aparece con cotización `aceptada` (antes `completa`) y abre `/compras?cotizacion={id}`.
 - **Verificación:** typecheck web/api-client/types sin errores, 184 tests web pasan (+2). `apps/mobile` no compila por dependencias sin instalar (preexistente).
 - **Pendiente:** no probado contra el backend real; la forma exacta del Resource de compra (`code`, `total_amount`) se asumió y el normalizador tolera `total`.
+
+---
+
+## FIX-010: Presupuestos anuales e ingreso de facturas con descuento de presupuesto (REQ-16 / REQ-17)
+
+- **Fecha:** 2026-11-03
+- **Módulo:** `apps/web` (`features/presupuestos`, `features/ingresos-factura`, `features/compras`, `features/inventario`), `packages/api-client`, `packages/types` — [REQ-16 / REQ-17](TASKS/REQ-16-REQ-17-PRESUPUESTOS-INGRESO-FACTURAS.md)
+- **Cambios:**
+  - Tipos: `presupuesto.ts` (`AnnualBudget`, `BudgetSummaryRow`, `BudgetMovement` con los 6 tipos del ledger confirmados en el backend, `BudgetSpending`, `BudgetMonthly`) e `ingreso-factura.ts` (`InvoiceIntake`, OCR, payload de confirmación). `PurchaseStatus` suma `cancelada`; `PurchaseOrder` suma `annual_budget_id` y `reserved_amount`; `CreatePurchasePayload` exige `annual_budget_id` y `unit_price`.
+  - api-client: servicios y hooks de `/budgets` (lista, resumen, detalle, movimientos, gasto, mensual, CRUD) y `/invoice-intakes` (lista, detalle, subida multipart, confirmar, anular, archivo autenticado). Montos string → number. `useCancelPurchase`. Crear/cancelar compra y confirmar/anular ingreso invalidan `budgets` (y productos, unidades y compras cuando corresponde).
+  - Compras (fase 1): formulario reescrito con React Hook Form + Zod (presupuesto obligatorio con disponible visible, `unit_price` obligatorio, `422` en `total` mostrado junto al presupuesto); detalle con presupuesto/reserva, «Cancelar compra» y «Registrar factura e ingresar stock»; filtro `cancelada`.
+  - Presupuestos (fase 2): ruta `/presupuestos` (AD-01, DIR-01) con cinta métrica, tabla TanStack por año con barra de ejecución, alta/edición/eliminación y panel lateral con pestañas Movimientos, Gasto, Mensual (Chart.js con paleta validada y tabla de respaldo) y Facturas.
+  - Ingresos de factura (fase 3): ruta `/ingresos-factura` (AD-01, DIR-01) con bandeja filtrable, subida (archivo + presupuesto + compra opcional, manejo de `429` y OCR no disponible), revisión lado a lado con el archivo, asociación automática por nombre, alta rápida de producto (cantidad 0), cajón obligatorio para equipos/maquetas, aviso de monto y anulación con reversa.
+  - Inventario: se retira `factura-upload-modal` (`POST /api/invoices/scan`); el botón «Ingresar por factura» lleva a `/ingresos-factura`.
+  - Corrección: los `select` numéricos con valor inicial (cotización preseleccionada, producto asociado por OCR) se controlan con `Controller`; registrados sin controlar no mostraban el valor inicial.
+  - Tests preexistentes con errores de tipo (`purchase-hooks.test.tsx`, `producto-unidades-panel.test.tsx`) ajustados a `noUncheckedIndexedAccess`.
+- **Verificación:** `pnpm --filter @sgia/web typecheck` y `lint` sin errores; typecheck de `api-client` y `types` sin errores; 204 tests web pasan (42 archivos, +19 tests). `apps/mobile` no compila por dependencias sin instalar (preexistente).
+- **Pendiente:** no probado contra el backend real. Los selectores cargan hasta 100 productos/cajones/presupuestos. DIR-01 ve todas las carreras al crear un presupuesto (el `UserResource` no expone sus carreras; el backend responde `403`). El tipo `ajuste` del ledger no trae dirección: se muestra `notes`.
+
+---
+
+## FIX-011: Notificaciones visibles sobre modales y sheets
+
+- **Fecha:** 2026-11-03
+- **Módulo:** Notificaciones globales (`apps/web`)
+- **Archivos Modificados:**
+  - [`apps/web/src/index.css`](apps/web/src/index.css)
+- **Problema:** con un `Dialog` o `Sheet` abierto, los toasts de `sileo` quedaban detrás del overlay (`backdrop-blur`) y se veían difuminados. El viewport de sileo trae `z-index: 50`, igual que los overlays (`z-50` / `z-[60]`), y el portal del modal se monta después en el DOM, por lo que lo tapaba.
+- **Corrección:** override `[data-sileo-viewport] { z-index: 100; }` en `index.css`, por encima de cualquier capa de la app.
+- **Verificación:** `pnpm --filter @sgia/web typecheck` sin errores; 204 tests web pasan (42 archivos). `apps/mobile` sigue sin compilar por dependencias sin instalar (preexistente).
+
+---
+
+## FIX-012: Alta de producto con tipo, categoría y carrera (PAN-01 lee catálogos)
+
+- **Fecha:** 2026-11-03
+- **Módulo:** Inventario (`apps/web`) — [ENDPOINTS.md §2.0 y §3](ENDPOINTS.md)
+- **Contexto:** `ENDPOINTS.md` abre `GET /api/categories` y `GET /api/careers` a `PAN-01`. El formulario de inventario no enviaba `category_id` (obligatorio en `POST /api/products`), así que el alta respondía `422`.
+- **Archivos Modificados / Creados:**
+  - [`apps/web/src/features/inventario/components/producto-form-dialog.tsx`](apps/web/src/features/inventario/components/producto-form-dialog.tsx)
+  - [`apps/web/src/features/inventario/lib/producto-form-schema.ts`](apps/web/src/features/inventario/lib/producto-form-schema.ts) (nuevo)
+  - [`apps/web/src/features/inventario/producto-form-schema.test.ts`](apps/web/src/features/inventario/producto-form-schema.test.ts) (nuevo)
+  - `apps/web/src/features/presupuestos/pages/presupuestos-page.tsx`, `components/budget-select.tsx` (comentarios: DIR-01 ya no está limitado a sus carreras)
+- **Cambios:**
+  - Campos nuevos en alta/edición: `type` (`insumo`/`equipo`/`maqueta`), `category_id` (obligatorio) y `career_id`.
+  - Validación de UX (Zod): un insumo sin código de barras exige carrera; un equipo/maqueta con cantidad > 0 exige carrera y cajón (`cajon_id` o `sala` + `cajon`).
+  - Alta de equipo/maqueta: la cantidad se rotula «Unidades a crear».
+  - Edición de equipo/maqueta: la cantidad queda de solo lectura y no se envía en el `PATCH`, porque el backend responde `422` si llega.
+  - Presupuestos (gestión DIR-01, resumen, ledger, gasto, mensual), ingresos de factura (`purchase_id`, anular confirmados) y compras (`annual_budget_id`, `unit_price` obligatorio, `cancel`) ya estaban implementados en FIX-009/FIX-010.
+- **Verificación:** `pnpm --filter @sgia/web typecheck` y `lint` sin errores; 212 tests web pasan (43 archivos, +8 tests).
+- **Pendiente:** el cliente no sabe si la carrera elegida tiene `code`. Si no lo tiene, el backend responde `422` y el formulario muestra su mensaje. No probado contra el backend real.
+
+---
+
+## FIX-013: Presupuestos en tarjetas (hasta 3 por fila)
+
+- **Fecha:** 2026-11-03
+- **Módulo:** Presupuestos (`apps/web`) — REQ-16
+- **Archivos:**
+  - [`apps/web/src/features/presupuestos/components/budget-card.tsx`](apps/web/src/features/presupuestos/components/budget-card.tsx) (nuevo)
+  - [`apps/web/src/features/presupuestos/components/budget-summary-grid.tsx`](apps/web/src/features/presupuestos/components/budget-summary-grid.tsx) (nuevo, reemplaza `budget-summary-table.tsx`, eliminado)
+  - [`apps/web/src/features/presupuestos/budget-summary-grid.test.tsx`](apps/web/src/features/presupuestos/budget-summary-grid.test.tsx) (nuevo)
+  - `components/budget-execution-bar.tsx` (prop `barClassName` para ancho flexible), `pages/presupuestos-page.tsx`
+- **Cambios:** la tabla del resumen pasa a una grilla de tarjetas (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`) dentro del mismo marco con el selector de año. Cada tarjeta trae el código de la carrera en `font-mono`, el año, el disponible destacado, la barra de ejecución a todo el ancho y el desglose inicial / reservado / consumido. Clic o Enter abre el detalle, y el menú `MoreHorizontal` (editar / eliminar) solo aparece a AD-01 y DIR-01. Las tarjetas se ordenan por carrera; se pierde el ordenamiento por columna de la tabla.
+- **Verificación:** `pnpm --filter @sgia/web typecheck` y `lint` sin errores; 217 tests web pasan (44 archivos, +5 tests).

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
   useCajones,
+  useCareers,
+  useCategories,
   useCreateProducto,
   useLocations,
   useUpdateProducto,
@@ -21,22 +22,34 @@ import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
+import {
+  isUnitTracked,
+  productoFormSchema,
+  toNullableNumber,
+  toNumber,
+  type ProductoFormValues,
+} from '../lib/producto-form-schema';
 import { AREAS_INACAP } from './inventario-table';
 
-const productoSchema = z.object({
-  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-  description: z.string().optional(),
-  area: z.string().optional(),
-  quantity: z.number().min(0, 'La cantidad debe ser mayor o igual a 0'),
-  stock_minimo: z.number().min(0, 'El stock mínimo debe ser mayor o igual a 0'),
-  barcode: z.string().optional(),
-  location_id: z.number().nullable().optional(),
-  cajon_id: z.number().nullable().optional(),
-  sala: z.string().optional(),
-  cajon: z.string().optional(),
-});
+type FormValues = ProductoFormValues;
 
-type FormValues = z.infer<typeof productoSchema>;
+const EMPTY_VALUES: FormValues = {
+  mode: 'create',
+  type: 'insumo',
+  name: '',
+  description: '',
+  category_id: Number.NaN,
+  career_id: null,
+  area: 'Informática',
+  quantity: 1,
+  stock_minimo: 5,
+  auto_barcode: true,
+  barcode: '',
+  location_id: null,
+  cajon_id: null,
+  sala: '',
+  cajon: '',
+};
 
 const inputClasses =
   'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50 font-mono';
@@ -89,13 +102,14 @@ export function ProductoFormDialog({
   const createProducto = useCreateProducto();
   const updateProducto = useUpdateProducto();
 
-  const [autoBarcode, setAutoBarcode] = useState(!esEdicion);
   const [manualLocationMode, setManualLocationMode] = useState(false);
 
   const { data: locationsData } = useLocations({ per_page: 50 });
   const locations: LocationEntity[] = Array.isArray(locationsData?.data)
     ? locationsData.data.filter((l): l is LocationEntity => Boolean(l && typeof l === 'object'))
     : [];
+  const categories = useCategories({ per_page: 100 }).data?.data ?? [];
+  const careers = useCareers({ per_page: 100 }).data?.data ?? [];
 
   const {
     register,
@@ -105,22 +119,16 @@ export function ProductoFormDialog({
     setValue,
     formState: { errors, isDirty },
   } = useForm<FormValues>({
-    resolver: zodResolver(productoSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      area: 'Informática',
-      quantity: 1,
-      stock_minimo: 5,
-      barcode: '',
-      location_id: null,
-      cajon_id: null,
-      sala: '',
-      cajon: '',
-    },
+    resolver: zodResolver(productoFormSchema),
+    defaultValues: EMPTY_VALUES,
   });
 
   const selectedLocationId = watch('location_id');
+  const selectedType = watch('type');
+  const autoBarcode = watch('auto_barcode');
+  const unitTracked = isUnitTracked(selectedType);
+  // La cantidad de un equipo/maqueta existente se deriva de sus unidades (PATCH con quantity → 422).
+  const quantityReadOnly = esEdicion && unitTracked;
 
   const { data: cajonesData } = useCajones(
     selectedLocationId
@@ -140,6 +148,11 @@ export function ProductoFormDialog({
           (typeof producto.cajon === 'object' && producto.cajon !== null ? producto.cajon.id : null);
 
         reset({
+          mode: 'edit',
+          type: producto.type ?? 'insumo',
+          category_id: producto.category_id ?? Number.NaN,
+          career_id: producto.career_id ?? null,
+          auto_barcode: false,
           name: producto.nombre || producto.name || '',
           description: producto.description || '',
           area: producto.area || producto.categoria || 'Informática',
@@ -151,22 +164,9 @@ export function ProductoFormDialog({
           sala: producto.ubicacion?.sala || '',
           cajon: producto.ubicacion?.cajon || '',
         });
-        setAutoBarcode(false);
         setManualLocationMode(!locId && !!producto.ubicacion?.sala);
       } else {
-        reset({
-          name: '',
-          description: '',
-          area: 'Informática',
-          quantity: 1,
-          stock_minimo: 5,
-          barcode: '',
-          location_id: null,
-          cajon_id: null,
-          sala: '',
-          cajon: '',
-        });
-        setAutoBarcode(true);
+        reset(EMPTY_VALUES);
         setManualLocationMode(false);
       }
     }
@@ -207,10 +207,15 @@ export function ProductoFormDialog({
       try {
         if (esEdicion && producto) {
           const payload: UpdateProductoPayload = {
+            type: values.type,
+            category_id: values.category_id,
+            career_id: values.career_id ?? undefined,
             name: values.name.trim(),
             description: values.description?.trim() || undefined,
             area: values.area || undefined,
-            quantity: Number(values.quantity),
+            // equipo/maqueta: la cantidad es de solo lectura (insumo → equipo genera las
+            // unidades desde los contadores actuales).
+            ...(isUnitTracked(values.type) ? {} : { quantity: Number(values.quantity) }),
             stock_minimo: Number(values.stock_minimo),
             barcode: values.barcode?.trim() || undefined,
             location_id: values.location_id || undefined,
@@ -222,12 +227,15 @@ export function ProductoFormDialog({
           toast.success('Producto actualizado correctamente');
         } else {
           const payload: CreateProductoPayload = {
+            type: values.type,
+            category_id: values.category_id,
+            career_id: values.career_id ?? undefined,
             name: values.name.trim(),
             description: values.description?.trim() || undefined,
             area: values.area || undefined,
             quantity: Number(values.quantity),
             stock_minimo: Number(values.stock_minimo),
-            barcode: autoBarcode ? undefined : values.barcode?.trim() || undefined,
+            barcode: values.auto_barcode ? undefined : values.barcode?.trim() || undefined,
             location_id: values.location_id || undefined,
             cajon_id: values.cajon_id || undefined,
             sala: values.sala?.trim() || undefined,
@@ -298,6 +306,59 @@ export function ProductoFormDialog({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
+              <Label htmlFor="prod-type" required>
+                Tipo
+              </Label>
+              <select id="prod-type" disabled={isPending} className={inputClasses} {...register('type')}>
+                <option value="insumo">Insumo</option>
+                <option value="equipo">Equipo</option>
+                <option value="maqueta">Maqueta</option>
+              </select>
+            </div>
+
+            <div>
+              <Label htmlFor="prod-category" required>
+                Categoría
+              </Label>
+              <select
+                id="prod-category"
+                disabled={isPending}
+                aria-invalid={Boolean(errors.category_id) || undefined}
+                className={cn(inputClasses, 'font-sans')}
+                {...register('category_id', { setValueAs: toNumber })}
+              >
+                <option value="">Selecciona…</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <FieldError message={errors.category_id?.message} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="prod-career">Carrera</Label>
+              <select
+                id="prod-career"
+                disabled={isPending}
+                aria-invalid={Boolean(errors.career_id) || undefined}
+                className={cn(inputClasses, 'font-sans')}
+                {...register('career_id', { setValueAs: toNullableNumber })}
+              >
+                <option value="">Sin carrera</option>
+                {careers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.code ? `${c.code} · ${c.name}` : c.name}
+                  </option>
+                ))}
+              </select>
+              <FieldError message={errors.career_id?.message} />
+            </div>
+
+            <div>
               <Label htmlFor="prod-area">Área académica / Especialidad</Label>
               <select id="prod-area" disabled={isPending} className={inputClasses} {...register('area')}>
                 {AREAS_INACAP.map((area) => (
@@ -316,7 +377,7 @@ export function ProductoFormDialog({
                     type="button"
                     onClick={() => {
                       const next = !autoBarcode;
-                      setAutoBarcode(next);
+                      setValue('auto_barcode', next);
                       if (next) setValue('barcode', '');
                     }}
                     className="mb-1 flex items-center gap-1 text-[11px] font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -350,17 +411,29 @@ export function ProductoFormDialog({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <Label htmlFor="prod-quantity" required>
-                Cantidad en stock
+              <Label htmlFor="prod-quantity" required={!quantityReadOnly}>
+                {unitTracked && !esEdicion ? 'Unidades a crear' : 'Cantidad en stock'}
               </Label>
               <input
                 id="prod-quantity"
                 type="number"
                 min={0}
                 disabled={isPending}
-                className={inputClasses}
-                {...register('quantity', { valueAsNumber: true })}
+                readOnly={quantityReadOnly}
+                className={cn(inputClasses, quantityReadOnly && 'opacity-60')}
+                {...register('quantity', { setValueAs: toNumber })}
               />
+              {quantityReadOnly ? (
+                <span className="mt-1 block text-[11px] text-zinc-500 dark:text-zinc-400">
+                  Se calcula desde las unidades del equipo.
+                </span>
+              ) : (
+                unitTracked && (
+                  <span className="mt-1 block text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Cada unidad recibe su código; requiere carrera y cajón.
+                  </span>
+                )
+              )}
               <FieldError message={errors.quantity?.message} />
             </div>
 
@@ -374,7 +447,7 @@ export function ProductoFormDialog({
                 min={0}
                 disabled={isPending}
                 className={inputClasses}
-                {...register('stock_minimo', { valueAsNumber: true })}
+                {...register('stock_minimo', { setValueAs: toNumber })}
               />
               <FieldError message={errors.stock_minimo?.message} />
             </div>
@@ -455,6 +528,7 @@ export function ProductoFormDialog({
               </div>
             </div>
           )}
+          <FieldError message={errors.cajon_id?.message} />
         </fieldset>
 
         <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">

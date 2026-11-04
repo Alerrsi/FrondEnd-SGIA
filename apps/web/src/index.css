@@ -4,6 +4,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"] *, [data-theme="dark"]));
 
+/*
+ * Notificaciones (sileo) por encima de modales y sheets.
+ * Sileo trae z-index: 50, igual que los overlays de Dialog/Sheet (50 y 60),
+ * y como el portal del modal se monta después en el DOM, lo tapaba y
+ * difuminaba el toast. Se sube por encima de cualquier capa de la app.
+ */
+[data-sileo-viewport] {
+  z-index: 100;
+}
+
 @layer base {
   /* Modo claro por defecto (Neutros cálidos institucionales INACAP) */
   :root,

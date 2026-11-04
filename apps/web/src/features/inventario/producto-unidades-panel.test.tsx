@@ -38,10 +38,11 @@ describe('ProductoUnidadesPanel', () => {
     render(<ProductoUnidadesPanel producto={producto} />);
     expect(screen.getByText('PRO-ISD-000001')).toBeTruthy();
     expect(screen.getByText('PRO-ISD-000002')).toBeTruthy();
-    const rows = screen.getAllByRole('row').slice(1);
-    expect(within(rows[0]).getByText('Disponible')).toBeTruthy();
-    expect(within(rows[1]).getByText('Prestado')).toBeTruthy();
-    expect(within(rows[2]).getByText('De baja')).toBeTruthy();
+    const [first, second, third] = screen.getAllByRole('row').slice(1);
+    if (!first || !second || !third) throw new Error('Se esperaban 3 filas de unidades');
+    expect(within(first).getByText('Disponible')).toBeTruthy();
+    expect(within(second).getByText('Prestado')).toBeTruthy();
+    expect(within(third).getByText('De baja')).toBeTruthy();
     expect(screen.getByText('PRE-2026-000009')).toBeTruthy();
   });
 

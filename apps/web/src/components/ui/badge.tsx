@@ -163,15 +163,18 @@ const PURCHASE_STATUS_LABEL: Record<PurchaseStatus, string> = {
   [PurchaseStatus.PENDIENTE]: 'Pendiente',
   [PurchaseStatus.EN_CAMINO]: 'En camino',
   [PurchaseStatus.COMPLETA]: 'Completa',
+  [PurchaseStatus.CANCELADA]: 'Cancelada',
+};
+
+const PURCHASE_STATUS_TONE: Record<PurchaseStatus, Tone> = {
+  [PurchaseStatus.PENDIENTE]: 'warning',
+  [PurchaseStatus.EN_CAMINO]: 'loaned',
+  [PurchaseStatus.COMPLETA]: 'success',
+  [PurchaseStatus.CANCELADA]: 'retired',
 };
 
 export function PurchaseStatusBadge({ status }: { status: PurchaseStatus }) {
-  const tone: Tone =
-    status === PurchaseStatus.COMPLETA
-      ? 'success'
-      : status === PurchaseStatus.EN_CAMINO
-        ? 'loaned'
-        : 'warning';
+  const tone: Tone = PURCHASE_STATUS_TONE[status] ?? 'neutral';
   return (
     <Badge tone={tone} dot>
       {PURCHASE_STATUS_LABEL[status] ?? status}

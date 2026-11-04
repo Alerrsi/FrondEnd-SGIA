@@ -14,7 +14,9 @@ import type {
   Supplier,
   SupplierQueryParams,
 } from '@sgia/types';
+import { invalidateBudgets } from './budgets';
 import {
+  cancelPurchase,
   createCotizacion,
   createPurchase,
   createSupplier,
@@ -147,7 +149,23 @@ export function useCreatePurchase() {
   const queryClient = useQueryClient();
   return useMutation<PurchaseOrder, Error, CreatePurchasePayload>({
     mutationFn: createPurchase,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: purchaseKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: purchaseKeys.all });
+      // Crear la compra reserva presupuesto; desde cotización la deja «convertida».
+      invalidateBudgets(queryClient);
+      queryClient.invalidateQueries({ queryKey: quotationKeys.all });
+    },
+  });
+}
+
+export function useCancelPurchase() {
+  const queryClient = useQueryClient();
+  return useMutation<PurchaseOrder, Error, number>({
+    mutationFn: cancelPurchase,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: purchaseKeys.all });
+      invalidateBudgets(queryClient);
+    },
   });
 }
 

@@ -41,9 +41,15 @@ Gestionar el ciclo de vida de las compras y adquisiciones derivadas de cotizacio
   - [ ] Escaneo de la guía/factura de llegada vía `POST /api/purchases/{id}/arrival-scan` (OCR en backend; marca la orden `completa`).
   - [x] Notificación automática al pañolero para proceder a la ubicación física de los nuevos productos.
 
+### 2. Presupuesto (REQ-16 / REQ-17, ver [REQ-16-17](./REQ-16-REQ-17-PRESUPUESTOS-INGRESO-FACTURAS.md))
+- [x] `annual_budget_id` obligatorio al crear la orden (reserva el total) y `unit_price` obligatorio por ítem.
+- [x] Cancelar compra `pendiente`/`en_camino` (`POST /api/purchases/{id}/cancel`) libera la reserva; estado `cancelada` en filtros y badge.
+- [x] Desde el detalle, «Registrar factura e ingresar stock» abre `/ingresos-factura` con la compra y el presupuesto preseleccionados.
+
 ---
 
 ## 🧪 Pruebas Requeridas
 
 - [x] Unit test: hooks `usePurchases` y `useUpdatePurchaseStatus` (`features/compras/purchase-hooks.test.tsx`).
 - [x] Integration test: transición de orden de compra `en_camino` a `completa`.
+- [x] Unit test: `useCancelPurchase` y schema Zod del formulario (`purchase-form-schema.test.ts`).
