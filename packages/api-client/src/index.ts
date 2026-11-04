@@ -306,3 +306,104 @@ export { useUpdateProductCondition } from './hooks/products';
 export { updateProductCondition } from './services/products';
 export * from './services/categories';
 export * from './hooks/categories';
+
+// Estudiantes (REQ-20)
+export {
+  fetchStudents,
+  fetchStudentByRut,
+  fetchStudent,
+  createStudent,
+  updateStudent,
+  deleteStudent,
+  fetchStudentLoans,
+  normalizeStudent,
+} from './services/students';
+export {
+  studentKeys,
+  useStudents,
+  useStudent,
+  useStudentByRut,
+  useStudentLoans,
+  useCreateStudent,
+  useUpdateStudent,
+  useDeleteStudent,
+} from './hooks/students';
+
+// Mantenciones (REQ-18) y documentos de mantenimiento (REQ-19)
+export {
+  fetchMaintenanceRecords,
+  fetchMaintenanceRecord,
+  fetchUnitMaintenanceRecords,
+  createMaintenanceRecord,
+  updateMaintenanceRecord,
+  finishMaintenanceRecord,
+  cancelMaintenanceRecord,
+  fetchUnitMaintenanceDocuments,
+  uploadMaintenanceDocument,
+  downloadMaintenanceDocumentFile,
+  deleteMaintenanceDocument,
+  normalizeMaintenanceRecord,
+  normalizeMaintenanceDocument,
+} from './services/maintenance';
+export {
+  maintenanceKeys,
+  useMaintenanceRecords,
+  useMaintenanceRecord,
+  useUnitMaintenanceRecords,
+  useActiveMaintenance,
+  useCreateMaintenanceRecord,
+  useUpdateMaintenanceRecord,
+  useFinishMaintenanceRecord,
+  useCancelMaintenanceRecord,
+  useUnitMaintenanceDocuments,
+  useUploadMaintenanceDocument,
+  useDeleteMaintenanceDocument,
+  useDownloadMaintenanceDocument,
+} from './hooks/maintenance';
+
+// Dashboard personalizado (REQ-15)
+export {
+  fetchChartTemplates,
+  fetchMyCharts,
+  fetchMyChart,
+  createMyChart,
+  updateMyChart,
+  updateMyChartPositions,
+  deleteMyChart,
+  normalizeChartTemplate,
+  normalizeUserChart,
+  normalizeMetricInput,
+} from './services/dashboard-charts';
+export {
+  chartKeys,
+  useChartTemplates,
+  useMyCharts,
+  useCreateMyChart,
+  useUpdateMyChart,
+  useUpdateMyChartPositions,
+  useDeleteMyChart,
+} from './hooks/dashboard-charts';
+
+// Administración: pañoles, roles y auditoría (REQ-NF-01)
+export {
+  fetchStorerooms,
+  fetchStoreroom,
+  createStoreroom,
+  updateStoreroom,
+  deleteStoreroom,
+  fetchRoles,
+  fetchAuditLogs,
+  normalizeStoreroom,
+} from './services/storerooms';
+export {
+  storeroomKeys,
+  roleKeys,
+  auditKeys,
+  useStorerooms,
+  useStoreroom,
+  useCreateStoreroom,
+  useUpdateStoreroom,
+  useDeleteStoreroom,
+  useRoles,
+  useAuditLogs,
+} from './hooks/storerooms';

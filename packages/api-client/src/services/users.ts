@@ -28,7 +28,9 @@ export async function fetchUsers(
   const query = new URLSearchParams();
   if (params?.role) query.set("role", params.role);
   if (params?.rol_id) query.set("rol_id", String(params.rol_id));
-  if (params?.panol_id) query.set("panol_id", String(params.panol_id));
+  if (params?.storeroom_id !== undefined && params.storeroom_id !== "")
+    query.set("storeroom_id", String(params.storeroom_id));
+  if (params?.career_id) query.set("career_id", String(params.career_id));
   if (params?.area) query.set("area", params.area);
   if (params?.is_active !== undefined) query.set("is_active", String(params.is_active));
   if (params?.search) query.set("search", params.search);
@@ -63,8 +65,8 @@ export async function createUsuario(payload: CreateUsuarioPayload): Promise<Usua
     body.role = role;
     body.rol = role;
   }
-  if (payload.panol_id !== undefined) body.panol_id = payload.panol_id;
-  if (payload.carreras !== undefined) body.carreras = payload.carreras;
+  if (payload.storeroom_id !== undefined) body.storeroom_id = payload.storeroom_id;
+  if (payload.career_ids !== undefined) body.career_ids = payload.career_ids;
   if (payload.area !== undefined) body.area = payload.area;
   if (payload.run !== undefined) body.run = payload.run;
 
@@ -89,8 +91,8 @@ export async function updateUsuario(
     body.role = r;
     body.rol = r;
   }
-  if (payload.panol_id !== undefined) body.panol_id = payload.panol_id;
-  if (payload.carreras !== undefined) body.carreras = payload.carreras;
+  if (payload.storeroom_id !== undefined) body.storeroom_id = payload.storeroom_id;
+  if (payload.career_ids !== undefined) body.career_ids = payload.career_ids;
   if (payload.area !== undefined) body.area = payload.area;
   if (payload.activo !== undefined || payload.is_active !== undefined) {
     const act = payload.activo ?? payload.is_active;

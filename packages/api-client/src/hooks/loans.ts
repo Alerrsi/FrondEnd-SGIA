@@ -114,6 +114,9 @@ export function useCheckoutLoan() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: loanKeys.all });
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      // Un RUT nuevo crea al estudiante en el backend, y los préstamos suman al `loans_count`.
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['equipment-units'] });
     },
   });
 }

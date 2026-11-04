@@ -15,52 +15,12 @@ import type {
   Usuario,
 } from '@sgia/types';
 import { del, get, patch, post } from '../http';
+import { buildQuery, toAmount, toPaginated, unwrap, type Amount, type RawPaginated } from './shared';
 
 // Presupuestos anuales (FU-03 / REQ-16). Los montos llegan como string decimal ("150000.00").
 
-type Amount = number | string | null | undefined;
-
-export function toAmount(value: Amount): number {
-  if (value === null || value === undefined || value === '') return 0;
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
-}
-
-export interface RawPaginated<T> {
-  data?: T[];
-  meta?: {
-    current_page?: number;
-    last_page?: number;
-    per_page?: number;
-    total?: number;
-  };
-}
-
-export function toPaginated<R, T>(
-  res: RawPaginated<R> | undefined,
-  map: (raw: R) => T,
-): PaginatedResponse<T> {
-  const data = (res?.data ?? []).map(map);
-  const meta = res?.meta ?? {};
-  return {
-    data,
-    meta: {
-      currentPage: meta.current_page ?? 1,
-      lastPage: meta.last_page ?? 1,
-      perPage: meta.per_page ?? (data.length || 15),
-      total: meta.total ?? data.length,
-    },
-  };
-}
-
-export function buildQuery(params?: object): string {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(params ?? {})) {
-    if (value !== undefined && value !== null && value !== '') query.set(key, String(value));
-  }
-  const qs = query.toString();
-  return qs ? `?${qs}` : '';
-}
+// Los helpers viven en `shared.ts`; se reexportan porque otros servicios (ingresos de factura) los importan de aquí.
+export { buildQuery, toAmount, toPaginated, type RawPaginated };
 
 export interface RawAnnualBudget {
   id: number;
@@ -139,12 +99,6 @@ function normalizeMovement(raw: RawMovement): BudgetMovement {
     notes: raw.notes ?? null,
     created_at: raw.created_at ?? '',
   };
-}
-
-function unwrap<T>(res: { data?: T } | T): T {
-  if (res && typeof res === 'object' && 'data' in res && res.data !== undefined)
-    return res.data as T;
-  return res as T;
 }
 
 export async function fetchBudgets(

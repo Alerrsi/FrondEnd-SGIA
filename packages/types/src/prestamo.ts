@@ -1,3 +1,5 @@
+import type { Student } from './estudiante';
+
 export const LoanStatus = {
   EN_PROCESO: 'en_proceso',
   PROCESADA: 'procesada',
@@ -68,6 +70,9 @@ export interface Prestamo {
   usuario?: { name?: string; email?: string } | null;
   user_id?: number;
   tipo?: string;
+  /** Estudiante ligado al préstamo presencial (REQ-20). */
+  student_id?: number | null;
+  student?: Student | null;
   items: Array<{
     id?: number;
     prestamoId?: number;
@@ -100,6 +105,7 @@ export interface Prestamo {
   fechaSolicitud?: string | null;
   fechaSolicitada?: string | null;
   loan_date?: string | null;
+  due_date?: string | null;
   time_block?: string | null;
   fechaDevolucion?: string | null;
   return_date?: string | null;
@@ -152,7 +158,16 @@ export interface RechazarPrestamoPayload {
 }
 
 export interface LoanCheckoutPayload {
+  /**
+   * Obligatorio solo cuando no se envía `student_id` ni `student_rut`; con RUT nuevo es el nombre
+   * con el que el backend crea al estudiante.
+   */
   borrower_name?: string;
+  /** Estudiante existente (`GET /api/students/by-rut/{rut}` → 200). Excluyente con `student_rut`. */
+  student_id?: number;
+  /** RUT sin estudiante registrado: el backend lo crea. Excluyente con `student_id`. */
+  student_rut?: string;
+  due_date?: string;
   solicitante?: string;
   borrower_document?: string;
   credencial?: string;

@@ -51,9 +51,24 @@ export function normalizePrestamo(raw: any): Prestamo {
     codigo: raw.codigo ?? raw.code ?? `PRS-${String(raw.id).padStart(5, '0')}`,
     code: raw.codigo ?? raw.code ?? `PRS-${String(raw.id).padStart(5, '0')}`,
     solicitanteId: raw.solicitanteId ?? raw.user_id ?? 0,
-    solicitanteNombre: raw.solicitanteNombre ?? raw.user?.name ?? raw.user?.nombre ?? raw.borrower_name ?? 'Docente',
-    solicitanteRun: raw.solicitanteRun ?? raw.user?.run ?? raw.user?.rut ?? raw.docente_run ?? raw.borrower_document ?? '',
+    solicitanteNombre:
+      raw.solicitanteNombre ??
+      raw.user?.name ??
+      raw.user?.nombre ??
+      raw.borrower_name ??
+      raw.student?.full_name ??
+      'Docente',
+    solicitanteRun:
+      raw.solicitanteRun ??
+      raw.user?.run ??
+      raw.user?.rut ??
+      raw.docente_run ??
+      raw.borrower_document ??
+      raw.student?.rut ??
+      '',
     user_id: raw.user_id ?? raw.solicitanteId,
+    student_id: raw.student_id ?? raw.student?.id ?? null,
+    student: raw.student ?? null,
     items,
     origen: raw.origen ?? raw.tipo ?? raw.type ?? 'remoto',
     estado: status,
@@ -66,6 +81,7 @@ export function normalizePrestamo(raw: any): Prestamo {
     room: raw.room ?? raw.sala ?? null,
     fechaSolicitada: raw.fechaSolicitada ?? raw.loan_date ?? raw.fecha ?? null,
     loan_date: raw.loan_date ?? raw.fechaSolicitada ?? raw.fecha ?? null,
+    due_date: raw.due_date ?? null,
     time_block: raw.time_block ?? null,
     fechaDevolucion: raw.fechaDevolucion ?? raw.return_date ?? null,
     return_date: raw.return_date ?? raw.fechaDevolucion ?? null,
@@ -218,28 +234,53 @@ export async function rejectLoan(
 
 export const rechazarPrestamo = rejectLoan;
 
+/**
+ * Préstamo presencial directo (§10). El solicitante puede ser:
+ * - un estudiante existente (`student_id`): el backend toma de él nombre y documento;
+ * - un RUT sin registrar (`student_rut` + `borrower_name` opcional): el backend crea al estudiante;
+ * - un docente u otra persona (`borrower_name` + `borrower_document`).
+ * `student_id` y `student_rut` son excluyentes: si llegan ambos prevalece `student_id`.
+ */
 export async function checkoutLoan(payload: LoanCheckoutPayload): Promise<Prestamo> {
-  const borrowerName = payload.borrower_name ?? payload.solicitante ?? payload.docente_run ?? '';
-  const borrowerDoc = payload.borrower_document ?? payload.credencial ?? payload.credential_code ?? payload.docente_run ?? null;
   const subject = payload.subject ?? payload.asignatura ?? '';
   const room = payload.room ?? payload.sala ?? '';
   const loanDate = payload.loan_date ?? payload.fecha ?? new Date().toISOString().split('T')[0];
 
+  const borrower: Record<string, unknown> = {};
+  if (payload.student_id !== undefined) {
+    borrower.student_id = payload.student_id;
+  } else if (payload.student_rut) {
+    borrower.student_rut = payload.student_rut;
+    const name = payload.borrower_name ?? payload.solicitante;
+    if (name) borrower.borrower_name = name;
+  } else {
+    borrower.borrower_name =
+      payload.borrower_name ?? payload.solicitante ?? payload.docente_run ?? '';
+    borrower.borrower_document =
+      payload.borrower_document ??
+      payload.credencial ??
+      payload.credential_code ??
+      payload.docente_run ??
+      null;
+  }
+
   const body = {
-    borrower_name: borrowerName,
-    borrower_document: borrowerDoc,
+    ...borrower,
     items: payload.items.map((it) => ({
       product_id: it.product_id,
       quantity: it.quantity,
       barcode: it.barcode,
+      ...(it.unit_ids && it.unit_ids.length > 0 ? { unit_ids: it.unit_ids } : {}),
     })),
     subject,
     room,
     loan_date: loanDate,
+    due_date: payload.due_date ?? null,
     time_block: payload.time_block ?? null,
     notes: payload.notes ?? null,
+    ...(payload.storeroom_id ? { storeroom_id: payload.storeroom_id } : {}),
   };
-  const response = await post<any, any>('/loans/checkout', body);
+  const response = await post<typeof body, any>('/loans/checkout', body);
   return normalizePrestamo(response?.data ?? response);
 }
 

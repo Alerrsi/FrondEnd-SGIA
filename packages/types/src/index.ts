@@ -159,3 +159,68 @@ export type {
   CreateCareerPayload,
   UpdateCareerPayload,
 } from './unidad';
+
+
+export type {
+  Student,
+  StudentQueryParams,
+  CreateStudentPayload,
+  UpdateStudentPayload,
+} from './estudiante';
+
+export type {
+  MaintenanceType,
+  MaintenanceExecutionMode,
+  MaintenanceStatus,
+  MaintenanceResult,
+  MaintenanceDocumentType,
+  MaintenanceDocument,
+  MaintenanceDocumentQueryParams,
+  UploadMaintenanceDocumentPayload,
+  MaintenanceRecord,
+  MaintenanceRecordQueryParams,
+  CreateMaintenanceRecordPayload,
+  UpdateMaintenanceRecordPayload,
+  FinishMaintenancePayload,
+  CancelMaintenancePayload,
+} from './mantencion';
+
+export type {
+  StoreroomId,
+  Storeroom,
+  StoreroomQueryParams,
+  CreateStoreroomPayload,
+  UpdateStoreroomPayload,
+  RoleCatalogItem,
+} from './panol';
+
+export { AUDIT_ACTIONS, AUDITABLE_TYPES } from './auditoria';
+export type {
+  AuditAction,
+  AuditableType,
+  AuditLog,
+  AuditLogQueryParams,
+} from './auditoria';
+
+export { MAX_USER_CHARTS } from './dashboard-personal';
+export type {
+  ChartTemplate,
+  UserChart,
+  UserChartQueryParams,
+  CreateUserChartPayload,
+  UpdateUserChartPayload,
+  UserChartPosition,
+} from './dashboard-personal';
+
+export {
+  PUSH_NOTIFICATION_TYPES,
+  parsePushNotificationData,
+  pushNotificationLabel,
+  pushNotificationTarget,
+} from './notificacion';
+export type {
+  PushNotificationType,
+  LoanPushData,
+  MaintenancePushData,
+  PushNotificationData,
+} from './notificacion';
