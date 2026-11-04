@@ -85,6 +85,10 @@ const mockResolvedAlert: CriticalStockAlert = {
 
 const mockResolveMutateAsync = vi.fn();
 
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useAuth: () => ({ user: { rol: 'AD-01' } }),
+}));
+
 vi.mock('@sgia/api-client', () => ({
   useCriticalStockAlerts: (params?: { is_resolved?: boolean; alert_type?: string }) => {
     let data = [mockCriticalAlert, mockWarningAlert];

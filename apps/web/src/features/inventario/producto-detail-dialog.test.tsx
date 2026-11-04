@@ -37,6 +37,10 @@ const mockProducto: Producto = {
 
 const mockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60" data-testid="code128-svg"><rect width="10" height="50" fill="black"/></svg>`;
 
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useAuth: () => ({ user: { rol: 'AD-01' } }),
+}));
+
 vi.mock('@sgia/api-client', () => ({
   useProductBarcode: () => ({
     data: {
@@ -80,6 +84,10 @@ describe('ProductoDetailDialog (REQ-04)', () => {
 
   it('renders Code128 barcode container and allows thermal print dispatch', async () => {
     const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {});
+    const write = vi.fn();
+    const openSpy = vi
+      .spyOn(window, 'open')
+      .mockReturnValue({ document: { write, close: vi.fn() } } as unknown as Window);
 
     render(<ProductoDetailDialog open={true} onClose={vi.fn()} producto={mockProducto} />);
 
@@ -88,8 +96,12 @@ describe('ProductoDetailDialog (REQ-04)', () => {
     const printBtn = screen.getByRole('button', { name: /Imprimir etiqueta térmica/i });
     await userEvent.click(printBtn);
 
-    expect(printSpy).toHaveBeenCalled();
+    expect(openSpy).toHaveBeenCalled();
+    expect(write.mock.calls[0]?.[0]).toContain('size: 50mm 30mm');
+    // la ficha completa no se imprime, solo la ventana de la etiqueta
+    expect(printSpy).not.toHaveBeenCalled();
     printSpy.mockRestore();
+    openSpy.mockRestore();
   });
 
   it('handles reubicar button trigger', async () => {

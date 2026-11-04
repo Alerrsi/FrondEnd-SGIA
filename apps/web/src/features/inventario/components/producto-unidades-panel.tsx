@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import {
+  fetchEquipmentUnitLabel,
   fetchEquipmentUnitTechnicalSheet,
   useDeleteEquipmentUnit,
   useProductUnits,
   useUpdateEquipmentUnitStatus,
 } from '@sgia/api-client';
 import type { EquipmentUnit, EquipmentUnitStatus, Producto } from '@sgia/types';
-import { Barcode, FileText, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Barcode, FileText, Loader2, Plus, Printer, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { downloadBlob } from '@/features/equipos/utils/download';
+import { useAuth } from '@/features/auth/context/auth-context';
+import { downloadBlob, printBlob } from '@/features/equipos/utils/download';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
@@ -58,6 +60,8 @@ export function ProductoUnidadesPanel({
   const [addOpen, setAddOpen] = useState(false);
   const [barcodeUnit, setBarcodeUnit] = useState<EquipmentUnit | null>(null);
   const [deleteUnit, setDeleteUnit] = useState<EquipmentUnit | null>(null);
+  const { user } = useAuth();
+  const canPrintLabel = user?.rol === 'AD-01' || user?.rol === 'DIR-01' || user?.rol === 'PAN-01';
   const [sheetLoadingId, setSheetLoadingId] = useState<number | null>(null);
 
   const { data, isLoading, isError, error } = useProductUnits(producto.id, {
@@ -86,6 +90,17 @@ export function ProductoUnidadesPanel({
     try {
       const blob = await fetchEquipmentUnitTechnicalSheet(unit.id);
       downloadBlob(blob, `hoja-de-vida-${unit.code}.pdf`);
+    } catch (e) {
+      toast.error(apiErrorToMessage(e));
+    } finally {
+      setSheetLoadingId(null);
+    }
+  };
+
+  const handleLabel = async (unit: EquipmentUnit) => {
+    setSheetLoadingId(unit.id);
+    try {
+      printBlob(await fetchEquipmentUnitLabel(unit.id));
     } catch (e) {
       toast.error(apiErrorToMessage(e));
     } finally {
@@ -250,6 +265,19 @@ export function ProductoUnidadesPanel({
                             <FileText className="h-3.5 w-3.5" />
                           )}
                         </Button>
+                        {canPrintLabel && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label={`Imprimir etiqueta de ${unit.code}`}
+                            title="Imprimir etiqueta"
+                            disabled={sheetLoadingId === unit.id}
+                            onClick={() => handleLabel(unit)}
+                          >
+                            <Printer className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                         {canDelete && (
                           <Button
                             type="button"
