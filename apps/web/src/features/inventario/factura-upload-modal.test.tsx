@@ -28,6 +28,8 @@ const mockScanMutateAsync = vi.fn();
 const mockCreateMutateAsync = vi.fn();
 
 vi.mock('@sgia/api-client', () => ({
+  useCategories: () => ({ data: { data: [{ id: 7, name: 'Pilas y baterías' }] } }),
+  useCareers: () => ({ data: { data: [{ id: 3, name: 'Electricidad', code: 'II' }] } }),
   useScanInvoice: () => ({
     mutateAsync: mockScanMutateAsync,
     isPending: false,
@@ -110,6 +112,13 @@ describe('FacturaUploadModal (REQ-03)', () => {
     });
 
     const confirmButton = screen.getByText(/Confirmar y dar de alta/i);
+
+    // Sin categoría ni carrera no se puede confirmar
+    await user.click(confirmButton);
+    expect(mockCreateMutateAsync).not.toHaveBeenCalled();
+
+    await user.selectOptions(screen.getByLabelText('Categoría para todos'), '7');
+    await user.selectOptions(screen.getByLabelText('Carrera para todos'), '3');
     await user.click(confirmButton);
 
     await waitFor(() => {
@@ -117,5 +126,9 @@ describe('FacturaUploadModal (REQ-03)', () => {
       expect(handleSuccess).toHaveBeenCalled();
       expect(handleClose).toHaveBeenCalled();
     });
+
+    expect(mockCreateMutateAsync).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'insumo', category_id: 7, career_id: 3 }),
+    );
   });
 });

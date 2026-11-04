@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useCreateProducto, useScanInvoice } from '@sgia/api-client';
+import { useCareers, useCategories, useCreateProducto, useScanInvoice } from '@sgia/api-client';
 import type { BorradorProducto, CreateProductoPayload, InvoiceScanResponse } from '@sgia/types';
 import {
   Check,
@@ -28,8 +28,22 @@ interface EditableDraftItem {
   area: string;
   sala: string;
   cajon: string;
+  type: ProductType;
+  category_id: number | '';
+  career_id: number | '';
   barcode?: string;
 }
+
+type ProductType = 'insumo' | 'equipo' | 'maqueta';
+
+const TYPE_LABELS: Record<ProductType, string> = {
+  insumo: 'Insumo',
+  equipo: 'Equipo',
+  maqueta: 'Maqueta',
+};
+
+// Mismo patrón que valida el backend para el nombre.
+const NAME_REGEX = /^[\p{L}\p{N} \-.,/]+$/u;
 
 const inputClasses =
   'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
@@ -46,6 +60,8 @@ export function FacturaUploadModal({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scanInvoice = useScanInvoice();
   const createProducto = useCreateProducto();
+  const categories = useCategories({ per_page: 100 }).data?.data ?? [];
+  const careers = useCareers({ per_page: 100 }).data?.data ?? [];
 
   // Estados del flujo
   const [isDragging, setIsDragging] = useState(false);
@@ -53,12 +69,14 @@ export function FacturaUploadModal({
   const [draftItems, setDraftItems] = useState<EditableDraftItem[]>([]);
   const [isSubmittingBatch, setIsSubmittingBatch] = useState(false);
   const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
+  const [batchErrors, setBatchErrors] = useState<string[]>([]);
 
   const resetModal = () => {
     setScanResult(null);
     setDraftItems([]);
     setIsSubmittingBatch(false);
     setBatchProgress({ current: 0, total: 0 });
+    setBatchErrors([]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -98,6 +116,9 @@ export function FacturaUploadModal({
           area: 'Informática',
           sala: 'Pañol Central',
           cajon: '',
+          type: 'insumo' as ProductType,
+          category_id: '' as const,
+          career_id: '' as const,
           barcode: p.barcode || p.codigoBarras || undefined,
         }),
       );
@@ -135,6 +156,10 @@ export function FacturaUploadModal({
     );
   };
 
+  const applyToAll = (field: 'category_id' | 'career_id' | 'type', value: number | ProductType | '') => {
+    setDraftItems((prev) => prev.map((item) => ({ ...item, [field]: value })));
+  };
+
   const handleRemoveItem = (id: string) => {
     setDraftItems((prev) => prev.filter((item) => item.id !== id));
   };
@@ -149,6 +174,9 @@ export function FacturaUploadModal({
       area: 'Informática',
       sala: 'Pañol Central',
       cajon: '',
+      type: 'insumo',
+      category_id: '',
+      career_id: '',
     };
     setDraftItems((prev) => [...prev, newItem]);
   };
@@ -166,10 +194,29 @@ export function FacturaUploadModal({
       return;
     }
 
+    const badName = draftItems.find((i) => !NAME_REGEX.test(i.name.trim()));
+    if (badName) {
+      toast.error(`"${badName.name}": el nombre solo admite letras, números, espacios y - . , /`);
+      return;
+    }
+    if (draftItems.some((i) => i.category_id === '')) {
+      toast.error('Todos los productos deben tener una categoría');
+      return;
+    }
+    if (draftItems.some((i) => i.career_id === '')) {
+      toast.error('Todos los productos deben tener una carrera');
+      return;
+    }
+    if (draftItems.some((i) => i.type !== 'insumo' && !i.cajon.trim())) {
+      toast.error('Los equipos y maquetas requieren un cajón');
+      return;
+    }
+
     setIsSubmittingBatch(true);
+    setBatchErrors([]);
     setBatchProgress({ current: 0, total: draftItems.length });
 
-    let successCount = 0;
+    const createdIds = new Set<string>();
     const errorsList: string[] = [];
 
     for (let i = 0; i < draftItems.length; i++) {
@@ -179,6 +226,9 @@ export function FacturaUploadModal({
       try {
         const payload: CreateProductoPayload = {
           name: item.name.trim(),
+          type: item.type,
+          category_id: Number(item.category_id),
+          career_id: Number(item.career_id),
           quantity: item.quantity,
           stock_minimo: item.stock_minimo,
           area: item.area,
@@ -187,7 +237,7 @@ export function FacturaUploadModal({
           barcode: item.barcode?.trim() || undefined,
         };
         await createProducto.mutateAsync(payload);
-        successCount++;
+        createdIds.add(item.id);
       } catch (err) {
         errorsList.push(`${item.name}: ${apiErrorToMessage(err)}`);
       }
@@ -195,15 +245,18 @@ export function FacturaUploadModal({
 
     setIsSubmittingBatch(false);
 
-    if (successCount > 0) {
+    if (createdIds.size > 0) {
       toast.success(
-        `Se dieron de alta exitosamente ${successCount} productos en inventario`,
+        `Se dieron de alta exitosamente ${createdIds.size} productos en inventario`,
       );
+      // Quita lo ya creado para que un reintento no lo duplique.
+      setDraftItems((prev) => prev.filter((i) => !createdIds.has(i.id)));
       onSuccess?.();
-      handleClose();
+      if (errorsList.length === 0) handleClose();
     }
 
     if (errorsList.length > 0) {
+      setBatchErrors(errorsList);
       toast.error(`Hubo errores al procesar ${errorsList.length} producto(s)`);
     }
   };
@@ -217,7 +270,7 @@ export function FacturaUploadModal({
       confirmExitDescription="Se han detectado productos de la factura. Si sales ahora, se descartará el lote sin registrarlo en inventario."
       title="Alta de productos vía Factura (OCR)"
       description="Sube una factura de compra electrónica (PDF o imagen) para extraer automáticamente los ítems y dar de alta el stock en pañol."
-      className="max-w-4xl"
+      className="max-w-6xl!"
     >
       <div className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
         {/* Paso 1: Dropzone (si aún no hay resultado) */}
@@ -335,18 +388,73 @@ export function FacturaUploadModal({
               </div>
             </div>
 
+            {/* Valores de lote: se aplican a todos los ítems y se pueden cambiar por ítem */}
+            <div className="flex flex-wrap items-end gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3">
+              <span className="w-full text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                Aplicar a todos los ítems
+              </span>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+                Tipo
+                <select
+                  aria-label="Tipo para todos"
+                  defaultValue=""
+                  disabled={isSubmittingBatch}
+                  onChange={(e) => e.target.value && applyToAll('type', e.target.value as ProductType)}
+                  className={cn(inputClasses, 'w-36')}
+                >
+                  <option value="">Seleccionar…</option>
+                  {Object.entries(TYPE_LABELS).map(([v, l]) => (
+                    <option key={v} value={v}>{l}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+                Categoría
+                <select
+                  aria-label="Categoría para todos"
+                  defaultValue=""
+                  disabled={isSubmittingBatch}
+                  onChange={(e) => e.target.value && applyToAll('category_id', Number(e.target.value))}
+                  className={cn(inputClasses, 'w-48')}
+                >
+                  <option value="">Seleccionar…</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+                Carrera
+                <select
+                  aria-label="Carrera para todos"
+                  defaultValue=""
+                  disabled={isSubmittingBatch}
+                  onChange={(e) => e.target.value && applyToAll('career_id', Number(e.target.value))}
+                  className={cn(inputClasses, 'w-56')}
+                >
+                  <option value="">Seleccionar…</option>
+                  {careers.map((c) => (
+                    <option key={c.id} value={c.id}>{c.code ? `${c.code} · ${c.name}` : c.name}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
             {/* Tabla interactiva editable de borradores */}
             <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
               <table className="w-full border-collapse text-left text-xs font-mono">
                 <thead>
                   <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                    <th className="p-2.5">Producto</th>
-                    <th className="w-20 p-2.5">Cantidad</th>
-                    <th className="w-20 p-2.5">Stock Mín.</th>
-                    <th className="w-24 p-2.5">P. Unitario</th>
-                    <th className="w-32 p-2.5">Área</th>
-                    <th className="w-28 p-2.5">Sala</th>
-                    <th className="w-24 p-2.5">Cajón</th>
+                    <th className="min-w-56 p-2.5">Producto</th>
+                    <th className="w-32 p-2.5">Tipo</th>
+                    <th className="w-44 p-2.5">Categoría</th>
+                    <th className="w-52 p-2.5">Carrera</th>
+                    <th className="w-24 p-2.5">Cantidad</th>
+                    <th className="w-24 p-2.5">Stock Mín.</th>
+                    <th className="w-28 p-2.5">P. Unitario</th>
+                    <th className="w-40 p-2.5">Área</th>
+                    <th className="w-36 p-2.5">Sala</th>
+                    <th className="w-28 p-2.5">Cajón</th>
                     <th className="w-12 p-2.5 text-right" />
                   </tr>
                 </thead>
@@ -363,6 +471,47 @@ export function FacturaUploadModal({
                           }
                           className={inputClasses}
                         />
+                      </td>
+                      <td className="p-2">
+                        <select
+                          aria-label="Tipo"
+                          value={item.type}
+                          disabled={isSubmittingBatch}
+                          onChange={(e) => handleItemChange(item.id, 'type', e.target.value as ProductType)}
+                          className={inputClasses}
+                        >
+                          {Object.entries(TYPE_LABELS).map(([v, l]) => (
+                            <option key={v} value={v}>{l}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-2">
+                        <select
+                          aria-label="Categoría"
+                          value={item.category_id}
+                          disabled={isSubmittingBatch}
+                          onChange={(e) => handleItemChange(item.id, 'category_id', e.target.value ? Number(e.target.value) : '')}
+                          className={inputClasses}
+                        >
+                          <option value="">Seleccionar…</option>
+                          {categories.map((c) => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-2">
+                        <select
+                          aria-label="Carrera"
+                          value={item.career_id}
+                          disabled={isSubmittingBatch}
+                          onChange={(e) => handleItemChange(item.id, 'career_id', e.target.value ? Number(e.target.value) : '')}
+                          className={inputClasses}
+                        >
+                          <option value="">Seleccionar…</option>
+                          {careers.map((c) => (
+                            <option key={c.id} value={c.id}>{c.code ? `${c.code} · ${c.name}` : c.name}</option>
+                          ))}
+                        </select>
                       </td>
                       <td className="p-2">
                         <input
@@ -445,7 +594,7 @@ export function FacturaUploadModal({
                           type="text"
                           value={item.cajon}
                           disabled={isSubmittingBatch}
-                          placeholder="Cajón…"
+                          placeholder={item.type === 'insumo' ? 'Cajón…' : 'Cajón (obligatorio)'}
                           onChange={(e) =>
                             handleItemChange(item.id, 'cajon', e.target.value)
                           }
@@ -468,6 +617,17 @@ export function FacturaUploadModal({
                 </tbody>
               </table>
             </div>
+
+            {batchErrors.length > 0 && (
+              <ul
+                role="alert"
+                className="flex flex-col gap-1 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 text-xs text-rose-800 dark:text-rose-300"
+              >
+                {batchErrors.map((msg) => (
+                  <li key={msg}>{msg}</li>
+                ))}
+              </ul>
+            )}
 
             {/* Barra de progreso de subida en lote */}
             {isSubmittingBatch && (

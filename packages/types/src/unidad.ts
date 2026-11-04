@@ -92,3 +92,15 @@ export interface CreateCareerPayload {
 }
 
 export type UpdateCareerPayload = Partial<CreateCareerPayload>;
+
+export interface Category {
+  id: number;
+  name: string;
+  description?: string | null;
+}
+
+export interface CategoryQueryParams {
+  search?: string;
+  per_page?: number;
+  page?: number;
+}

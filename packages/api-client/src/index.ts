@@ -256,3 +256,5 @@ export * from './services/units';
 export * from './hooks/units';
 export { useUpdateProductCondition } from './hooks/products';
 export { updateProductCondition } from './services/products';
+export * from './services/categories';
+export * from './hooks/categories';

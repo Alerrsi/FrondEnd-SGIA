@@ -122,6 +122,8 @@ export type {
   ProductType,
   MaintenancePriority,
   IncidentRequestType,
+  Category,
+  CategoryQueryParams,
   Career,
   CareerQueryParams,
   CreateCareerPayload,
