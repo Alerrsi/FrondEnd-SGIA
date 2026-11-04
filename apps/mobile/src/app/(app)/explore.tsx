@@ -122,8 +122,7 @@ export default function MisSolicitudesScreen() {
 
   const renderItem = ({ item }: { item: Prestamo }) => {
     const badge = getStatusBadgeStyle(item.estado);
-    const isPending =
-      item.estado === LoanStatus.PENDIENTE || item.estado === LoanStatus.EN_PROCESO;
+    const isPending = item.estado === LoanStatus.PENDIENTE; // la API solo cancela en pendiente
     const isCanceling = cancelingId === item.id;
 
     return (

@@ -16,7 +16,8 @@ export function downloadBlob(blob: Blob, filename: string): void {
 export function printBlob(blob: Blob): void {
   const url = window.URL.createObjectURL(blob);
   const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
+  // display:none hace que Chrome/Firefox impriman en blanco el visor de PDF
+  iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
   iframe.src = url;
   iframe.onload = () => {
     iframe.contentWindow?.print();
