@@ -11,7 +11,7 @@
 
 > **Fechas:** los campos de fecha-hora se devuelven en ISO 8601 con zona (UTC, p. ej. `2026-10-28T15:30:00+00:00`); el cliente debe mostrarlas en `America/Santiago`. Los campos solo-fecha (p. ej. `loan_date`) vienen como `YYYY-MM-DD`.
 >
-> **Errores:** siempre `{"message": "..."}` en español; los de validación (422) añaden `errors` (campo → lista de mensajes). 404 es `Recurso no encontrado.` y 401 es `No autenticado.`.
+> **Errores:** siempre `{"message": "..."}` en español; **todos** los `422` (validación y reglas de negocio) añaden `errors` (campo → lista de mensajes), a veces con claves extra como `allowed_transitions`. 404 es `Recurso no encontrado.` y 401 es `No autenticado.`.
 >
 > **Listados:** paginados con `per_page` (1-100, 15 por defecto) y la estructura `data`, `links`, `meta`.
 
@@ -28,14 +28,63 @@
 
 ---
 
-## 🔄 Guía de cambios para el frontend (plan Equipos, rama `plan/modelos-y-equipos`)
+## 🆕 Guía de cambios para el frontend — entrega noviembre 2026 (REQ-15 a REQ-20 y requisitos no funcionales)
+
+> Todo está en `main`. Contrato de cada Resource en `TASKS/front-end.md` (secciones REQ-15, REQ-18/19, REQ-20, Usuarios/pañoles, REQ-NF-01 y Formato de error). Marca cada punto al terminarlo.
+
+### Cambios que rompen o cambian comportamiento
+
+- [ ] **Unidad en mantención:** con una mantención `en_curso`, `PATCH /api/equipment-units/{id}/status` responde `422` (`errors.status`). El estado lo cambian `POST /api/maintenance-records/{id}/finish` y `.../cancel` (§12.1). Ocultar o deshabilitar el selector de estado en ese caso.
+- [ ] **Errores `422` con `errors`:** todos los `422` traen ahora `message` + `errors` (antes algunos borrados bloqueados y transiciones inválidas traían solo `message`). Las claves extra se mantienen (`allowed_transitions`, `products_count`, `blocked_ids`…). Si el cliente solo leía `message`, no hay que cambiar nada.
+- [ ] **Checkout presencial (§10):** `borrower_name` deja de ser obligatorio cuando se envía `student_id` o `student_rut`. El préstamo trae `student_id` y `student`.
+
+### Endpoints nuevos
+
+| Módulo | Endpoints | Roles | Sección |
+|---|---|---|---|
+| Estudiantes (REQ-20) | `GET/POST /api/students`, `GET /api/students/by-rut/{rut}`, `GET/PATCH /api/students/{id}`, `GET /api/students/{id}/loans`, `DELETE /api/students/{id}` | `PAN-01`, `AD-01` (borrar: `AD-01`) | §11.1 |
+| Mantenciones (REQ-18) | `GET /api/maintenance-records`, `GET /api/maintenance-records/{id}`, `GET/POST /api/equipment-units/{id}/maintenance-records`, `PATCH /api/maintenance-records/{id}`, `POST .../finish`, `POST .../cancel` | lectura `AD-01`/`DIR-01`/`PAN-01`; escritura `AD-01`/`PAN-01` | §12.1 |
+| Documentos (REQ-19) | `GET/POST /api/equipment-units/{id}/maintenance-documents`, `GET /api/maintenance-documents/{id}/file`, `DELETE /api/maintenance-documents/{id}` | lectura y descarga `AD-01`/`DIR-01`/`PAN-01`; subir y borrar `AD-01`/`PAN-01` | §12.2 |
+| Dashboard personalizado (REQ-15) | `GET /api/chart-templates`, `GET/POST /api/me/charts`, `PUT /api/me/charts/positions`, `GET/PATCH/DELETE /api/me/charts/{id}` | `DIR-01`, `AD-01` | §14.1 |
+| Roles | `GET /api/roles` | `AD-01` | §2 |
+| Pañoles | `GET /api/storerooms`, `GET /api/storerooms/{id}` (todos); `POST/PATCH/DELETE /api/storerooms` | escritura `AD-01` | §2.0a |
+| Auditoría (REQ-NF-01) | `GET /api/audit-logs` | `AD-01` | §2.0b |
+
+### Campos nuevos en respuestas
+
+| Recurso | Campos nuevos |
+|---|---|
+| `User` | `storeroom_id`, `careers` (en listado, detalle, alta/edición y `GET /api/me`). `role` sigue siendo el código (`AD-01`…). |
+| `Loan` | `student_id`, `student` (detalle, listado y respuesta del checkout) |
+| `Storeroom` | `locations_count`, `users_count` (listado/detalle), auditoría y fechas |
+| Push / broadcast | Tipos nuevos en `data.type`: `loan_due` (vence hoy), `loan_overdue` (atrasado, una vez), ambos con `loan_id`; `maintenance_due` (a `PAN-01`, con `unit_ids`) |
+| Métricas | `MAINTENANCE` acepta `groupBy: maintenance_type` |
+
+### Cuerpos nuevos en endpoints existentes
+
+- `POST/PATCH /api/users`: `storeroom_id` (pañol por defecto del usuario; `null` lo quita) y `career_ids` (reemplaza las carreras; si no se envía, no se tocan). `GET /api/users` filtra por `storeroom_id` y `career_id`.
+- `POST /api/loans/checkout`: `student_id` **o** `student_rut`.
+
+### Flujos de pantalla sugeridos
+
+1. **Checkout con estudiante:** escanear o digitar el RUT → `GET /api/students/by-rut/{rut}`. Si responde `200`, mostrar el nombre y enviar `student_id`. Si responde `404`, pedir el nombre (opcional) y enviar `student_rut` + `borrower_name`: el backend crea al estudiante.
+2. **Ficha del estudiante:** `GET /api/students/{id}` + `GET /api/students/{id}/loans`.
+3. **Mantención de una unidad:** desde el detalle de la unidad, "Enviar a mantención" (`POST .../maintenance-records`, con `incident_report_id` si viene de un informe). Pantalla de checklist (`PATCH`, REV-A, REV-B, REV-C con opción "No aplica" = `null`, PFG, costos y repuestos). Cerrar con "Operativa" (`finish` `result: operativo`, exige el checklist; `422` en `checklist` si falta) o "Dar de baja" (`result: baja`). "Anular" (`cancel`) devuelve la unidad y el informe a su estado anterior.
+4. **Bandeja de mantenciones:** `GET /api/maintenance-records?status=en_curso` (viene ordenada por prioridad A→C). Las unidades por vencer siguen en `GET /api/equipment-units?maintenance_due=1`.
+5. **Documentos de la unidad:** lista con insignia "Vencido" (`is_expired`) y filtro "Vence pronto" (`expiring_within_days=30`). Subir con `multipart` (PDF ≤ 10 MB). Descargar con `getBlob()` y el token: `file_url` no sirve en un `<a href>`.
+6. **Mi panel (DIR-01/AD-01):** `GET /api/chart-templates` → el usuario elige una plantilla → `POST /api/me/charts`. Para dibujar cada gráfico, mandar su `metric_input` como `input` de `customMetric` en `POST /api/metrics`. Para reordenar con arrastrar y soltar, `PUT /api/me/charts/positions` con todos los que cambian. Ocultar con `PATCH {is_active: false}`. Máximo 5 gráficos.
+7. **Administración:** el formulario de usuario carga `GET /api/roles`, `GET /api/storerooms` y `GET /api/careers`. La pantalla de auditoría usa `GET /api/audit-logs` con filtros por acción, tipo y autor.
+
+---
+
+## 🔄 Guía de cambios anterior: plan Equipos (unidades de equipo)
 
 > Resumen de lo que cambió respecto de la versión anterior de la API. Detalle por campo en las secciones indicadas; contrato de cada Resource en `TASKS/front-end.md`. Marca cada punto al terminarlo.
 
 ### Cambios que rompen (hay que adaptar sí o sí)
 
-- [x] **Alta de producto** (`POST /api/products`, §3): `category_id` es **obligatorio** (hay que listar/elegir categoría). Un `insumo` sin `barcode` exige `career_id` (carrera con `code`). Un `equipo`/`maqueta` con `quantity > 0` exige `career_id` y cajón (`cajon_id`, o `sala` + `cajon`) y crea las unidades; `units: [{serial_number}]` opcional.
-- [x] **Cantidad de un equipo/maqueta es de solo lectura**: `PATCH /api/products/{id}` con `quantity*` → `422` ("La cantidad de un equipo se calcula a partir de sus unidades."). `quantity`, `quantity_in_repair`, `quantity_written_off` se derivan de las unidades (las `prestado` no suman). Quitar los campos de cantidad del formulario de edición de equipos.
+- [ ] **Alta de producto** (`POST /api/products`, §3): `category_id` es **obligatorio** (hay que listar/elegir categoría). Un `insumo` sin `barcode` exige `career_id` (carrera con `code`). Un `equipo`/`maqueta` con `quantity > 0` exige `career_id` y cajón (`cajon_id`, o `sala` + `cajon`) y crea las unidades; `units: [{serial_number}]` opcional.
+- [ ] **Cantidad de un equipo/maqueta es de solo lectura**: `PATCH /api/products/{id}` con `quantity*` → `422` ("La cantidad de un equipo se calcula a partir de sus unidades."). `quantity`, `quantity_in_repair`, `quantity_written_off` se derivan de las unidades (las `prestado` no suman). Quitar los campos de cantidad del formulario de edición de equipos.
 - [ ] **`PATCH /api/products/{id}/condition`** solo vale para `insumo`. En `equipo`/`maqueta` → `422`; usar `PATCH /api/equipment-units/{id}/status`.
 - [ ] **Informes de novedades** (`POST /api/equipment/{id}/reports`, §13): si el producto es `equipo`/`maqueta`, `equipment_unit_id` es **obligatorio** (unidad de ese producto). El formulario debe cargar `GET /api/products/{id}/units` para elegirla.
 - [ ] **Cambio de `type`**: `equipo` → `insumo` con unidades existentes → `422`; `insumo` → `equipo` genera las unidades desde los contadores.
@@ -56,7 +105,7 @@
 | `LoanItem` | `delivered_quantity`, `returned_quantity`, `units[]` (`id`, `code`, `serial_number`, `status`, `returned_at`, `return_condition`) |
 | `IncidentReport` | `equipment_unit_id`, `equipment_unit`, `request_type` (`falla`\|`reposicion`\|`mantencion`), `has_evidence_photo` |
 
-### Endpoints nuevos (todos en la sección 3.1 salvo indicación)
+### Endpoints nuevos del plan Equipos (todos en la sección 3.1 salvo indicación)
 
 - [ ] Unidades: `GET/POST /api/products/{id}/units`, `GET /api/equipment-units`, `GET /api/equipment-units/by-code/{code}` (escaneo), `GET/PATCH/DELETE /api/equipment-units/{id}`, `PATCH /api/equipment-units/{id}/status`, `GET /api/equipment-units/{id}/barcode`.
 - [ ] Hoja de vida por unidad: `GET /api/equipment-units/{id}/technical-sheet` (PDF) y `GET /api/equipment-units/{id}/reports` (JSON o `?format=pdf`).
@@ -73,10 +122,6 @@
 5. **Informe de novedades:** selector de unidad (obligatorio en equipos), `request_type`, foto de evidencia opcional (`multipart/form-data`).
 6. **Estados de unidad:** `disponible` ↔ `en_reparacion`, cualquiera → `dado_de_baja` (final); `prestado` solo lo cambian los préstamos (intentar a mano → `422`).
 
-### Aún sin API (no construir pantallas todavía)
-
-Gráficos por usuario, mantenciones y sus documentos, y estudiantes (REQ-15 a REQ-20). Las tablas existen, pero no hay endpoints.
-
 ---
 
 ## 🟢 Endpoints Implementados (Listos para Uso)
@@ -86,7 +131,7 @@ Gráficos por usuario, mantenciones y sus documentos, y estudiantes (REQ-15 a RE
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
 | `POST` | `/api/login` | Público | Autenticación con email y password. Rate limit: 5 intentos/min. Retorna Bearer token, expiración según dispositivo (`web` 8h, `mobile` 60d) y datos de usuario. <br>**Body:** `email`, `password`, `device_name` (`web` \| `mobile`). | ✅ Implementado |
-| `GET` | `/api/me` | Todos (`auth`) | Retorna el recurso del usuario autenticado (`UserResource`) con rol, área, estado y último login. | ✅ Implementado |
+| `GET` | `/api/me` | Todos (`auth`) | Retorna el recurso del usuario autenticado (`UserResource`) con rol, área, pañol (`storeroom_id`), carreras (`careers`), estado y último login. | ✅ Implementado |
 | `PUT` | `/api/password` | Todos (`auth`) | Cambio de contraseña del usuario autenticado. Valida contraseña actual, complejidad mínima (8 caracteres, letras y números) y revoca automáticamente las demás sesiones remotas.<br>**Body:** `current_password`, `password`, `password_confirmation`. | ✅ Implementado |
 | `POST` | `/api/logout` | Todos (`auth`) | Cierra la sesión activa revocando el Bearer token actual. | ✅ Implementado |
 | `POST` | `/api/devices` | Todos (`auth`) | Registra el token de push de Expo del dispositivo del usuario (si ya existía, pasa a este usuario).<br>**Body:** `token` (`ExponentPushToken[...]`), `platform` (`ios` \| `android`, opcional). Responde `201` con `id`. | ✅ Implementado |
@@ -104,12 +149,29 @@ Gráficos por usuario, mantenciones y sus documentos, y estudiantes (REQ-15 a RE
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `GET` | `/api/users` | `AD-01` | Listado paginado de usuarios con soporte de búsqueda y filtros.<br>**Query Params:** `role`, `area`, `is_active`, `search` (nombre/email), `per_page` (1-100). | ✅ Implementado |
-| `POST` | `/api/users` | `AD-01` | Crea un nuevo usuario en el sistema.<br>**Body:** `name`, `email` (único), `role` (`AD-01`, `DIR-01`, `PAN-01`, `PRO-01`), `area` (opcional), `password`, `password_confirmation`, `is_active` (opcional). | ✅ Implementado |
+| `GET` | `/api/users` | `AD-01` | Listado paginado de usuarios con sus `careers`.<br>**Query Params:** `role`, `area`, `is_active`, `storeroom_id`, `career_id`, `search` (nombre/email), `per_page` (1-100). | ✅ Implementado |
+| `POST` | `/api/users` | `AD-01` | Crea un nuevo usuario en el sistema.<br>**Body:** `name`, `email` (único), `role` (`AD-01`, `DIR-01`, `PAN-01`, `PRO-01`), `area` (opcional), `password`, `password_confirmation`, `is_active` (opcional), `storeroom_id` (opcional, pañol por defecto), `career_ids` (opcional, lista de carreras). | ✅ Implementado |
 | `GET` | `/api/users/{id}` | `AD-01` | Obtiene el detalle de un usuario específico. | ✅ Implementado |
-| `PUT / PATCH` | `/api/users/{id}` | `AD-01` | Actualiza los datos de un usuario (nombre, rol, área, email con validación de unicidad ignorando propio ID, contraseña opcional). | ✅ Implementado |
+| `PUT / PATCH` | `/api/users/{id}` | `AD-01` | Actualiza los datos de un usuario (nombre, rol, área, email con validación de unicidad ignorando propio ID, contraseña opcional, `storeroom_id`, `career_ids`: si se envía reemplaza las carreras). | ✅ Implementado |
 | `DELETE` | `/api/users/{id}` | `AD-01` | Elimina un usuario y borra en cascada sus tokens y registros de sesión. | ✅ Implementado |
+| `GET` | `/api/roles` | `AD-01` | Catálogo fijo de roles (`id`, `code`, `name`) para el formulario de usuarios. | ✅ Implementado |
 | `PATCH` | `/api/users/{id}/status` | `AD-01` | Activa o desactiva la cuenta sin borrarla. Si se desactiva (`is_active = false`), se revocan de inmediato todas sus sesiones activas.<br>**Body:** `is_active` (`true` \| `false`). | ✅ Implementado |
+
+### 2.0a Pañoles
+
+| Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
+|---|---|---|---|:---:|
+| `GET` | `/api/storerooms` | Todos (`auth`) | Listado paginado con `locations_count` y `users_count`.<br>**Query Params:** `search` (nombre o código), `per_page`. | ✅ Implementado |
+| `GET` | `/api/storerooms/{id}` | Todos (`auth`) | Detalle del pañol. | ✅ Implementado |
+| `POST` | `/api/storerooms` | `AD-01` | **Body:** `name`, `code` (se guarda en mayúsculas; letras, números y guiones; único), `general_location` (opcional). `201`. | ✅ Implementado |
+| `PATCH` | `/api/storerooms/{id}` | `AD-01` | Mismos campos, opcionales. | ✅ Implementado |
+| `DELETE` | `/api/storerooms/{id}` | `AD-01` | `204`; `422` (`errors.storeroom`) si tiene salas, usuarios o préstamos. | ✅ Implementado |
+
+### 2.0b Auditoría (`REQ-NF-01`)
+
+| Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
+|---|---|---|---|:---:|
+| `GET` | `/api/audit-logs` | `AD-01` | Registro de eventos críticos (solo lectura, más reciente primero) con su autor (`user`).<br>**Query Params:** `action` (exacta o prefijo con punto: `user.`), `auditable_type` (`user`, `equipment_unit`, `product`, `purchase`, `invoice_intake`), `auditable_id`, `user_id` (autor), `from`, `to`, `per_page`.<br>Acciones: `user.created`, `user.updated`, `user.role_changed`, `user.activated`, `user.deactivated`, `user.password_changed`, `user.deleted`, `equipment_unit.written_off`, `product.written_off`, `purchase.created`, `purchase.status_changed`, `purchase.cancelled`, `invoice_intake.confirmed`, `invoice_intake.cancelled`. | ✅ Implementado |
 
 ### 2.0 Carreras (`FU-06` / `REQ-14`)
 
@@ -178,7 +240,7 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 | `PATCH` | `/api/equipment-units/{id}/status` | `AD-01`, `DIR-01`, `PAN-01` | Cambia el estado con la máquina de estados; `prestado` solo por préstamos (`422`). **Body:** `status`. | ✅ Implementado |
 | `DELETE` | `/api/equipment-units/{id}` | `AD-01`, `DIR-01` | `204`; `422` si está prestada o tiene préstamos, mantenciones o informes. | ✅ Implementado |
 | `GET` | `/api/equipment-units/{id}/barcode` | Todos (`auth`) | Código de la unidad en SVG, Data URI y HTML. | ✅ Implementado |
-| `GET` | `/api/equipment-units/{id}/technical-sheet` | Todos (`auth`) | PDF con la hoja de vida: producto, ubicación (pañol/sala/estante), mantención, préstamos, mantenciones e informes. | ✅ Implementado |
+| `GET` | `/api/equipment-units/{id}/technical-sheet` | Todos (`auth`) | PDF con la hoja de vida: producto, ubicación (pañol/sala/estante), mantención, préstamos, mantenciones (con resultado), documentos vigentes e informes. | ✅ Implementado |
 | `GET` | `/api/equipment-units/{id}/reports` | `AD-01`, `DIR-01`, `PAN-01` | Informes de la unidad (JSON paginado o `?format=pdf`). | ✅ Implementado |
 
 ---
@@ -292,7 +354,7 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 | `GET` | `/api/loans/pending` | `PAN-01`, `AD-01` | Solicitudes remotas en estado `pendiente` por despachar; cada ítem devuelve la **cantidad solicitada**, el **stock disponible** (`available_stock`) y la **ubicación física** (`location`: `sala`, `cajon`, `descripcion`).<br>**Query Params:** `per_page` (1-100). | ✅ Implementado |
 | `POST` | `/api/loans/{id}/approve` | `PAN-01`, `AD-01` | Aprueba la solicitud (en equipos/maquetas asigna unidades `disponible` automáticas): **descuenta el stock** de cada producto (transacción con bloqueo de filas, 422 si no alcanza) y **notifica al solicitante**. Pasa a `en_proceso` y registra `approved_by` / `approved_at`. Evalúa además las alertas de stock (REQ-06). | ✅ Implementado |
 | `POST` | `/api/loans/{id}/reject` | `PAN-01`, `AD-01` | Rechaza la solicitud con **motivo obligatorio** y **notifica al solicitante**. No descuenta stock.<br>**Body:** `rejection_reason` (alias `motivo`, mínimo 5 caracteres). | ✅ Implementado |
-| `POST` | `/api/loans/checkout` | `PAN-01`, `AD-01` | Registra un **préstamo presencial directo** (`items.*.unit_ids` opcional para equipos/maquetas, `storeroom_id` opcional; un `borrower_document` con RUT válido crea/reutiliza el estudiante): crea el préstamo `procesado` con código (`PRE-<año>-XXXXXX`), descuenta stock atómicamente y guarda profesor/estudiante, ítems, asignatura, sala y fecha.<br>**Body:** `borrower_name` (alias `solicitante`), `borrower_document` (alias `credencial`, opcional), `items` (`product_id` + `quantity`, mínimo 1), `subject` (alias `asignatura`), `room` (alias `sala`), `loan_date` (alias `fecha`), `time_block`, `notes` opcionales. | ✅ Implementado |
+| `POST` | `/api/loans/checkout` | `PAN-01`, `AD-01` | Registra un **préstamo presencial directo** (`items.*.unit_ids` opcional para equipos/maquetas, `storeroom_id` opcional): crea el préstamo `procesado` con código (`PRE-<año>-XXXXXX`), descuenta stock atómicamente y guarda profesor/estudiante, ítems, asignatura, sala y fecha.<br>**Estudiante (REQ-20):** `student_id` **o** `student_rut` (no ambos) liga el préstamo al estudiante y toma de él `borrower_name`/`borrower_document`; si el RUT no existe se crea el estudiante (con `borrower_name` si viene). Un `borrower_document` con RUT válido también crea/reutiliza el estudiante. La respuesta trae `student_id` y `student`.<br>**Body:** `borrower_name` (alias `solicitante`; obligatorio sin `student_id`/`student_rut`), `borrower_document` (alias `credencial`, opcional), `student_id`, `student_rut`, `items` (`product_id` + `quantity`, mínimo 1), `subject` (alias `asignatura`), `room` (alias `sala`), `loan_date` (alias `fecha`), `due_date`, `time_block`, `notes` opcionales. | ✅ Implementado |
 | `POST` | `/api/loans/{id}/deliver` | `PAN-01`, `AD-01` | Confirma la entrega material al docente (`en_proceso` → `procesado`; cuerpo opcional `items: [{item_id, unit_ids}]` reemplaza las unidades asignadas por las realmente entregadas), registra `processed_by` / `processed_at` y notifica al solicitante. **Nuevo respecto del catálogo original**, necesario para cerrar el ciclo del préstamo remoto. | ✅ Implementado |
 | `POST` | `/api/loans/checkin` | `PAN-01`, `AD-01` | Registra la devolución de ítems de un préstamo `procesado`; admite devoluciones parciales (`items.*.unit_ids` para devolver unidades concretas de un equipo; `bueno`/`regular` → `disponible`, `danado` → `en_reparacion`, `extraviado` → `dado_de_baja`).<br>**Body:** `loan_id`, `general_notes` (opcional), `items[]` con `item_id` o `product_id`, `condition` (`bueno`, `optimo`, `regular`, `dañado`, `extraviado`) y `damaged` (bool; fuerza `dañado` si el estado era bueno).<br>`bueno`/`regular` reintegran stock; `dañado` suma a `quantity_in_repair`; `extraviado` a `quantity_written_off`. Cuando todos los ítems volvieron, el préstamo trae `returned_at`. | ✅ Implementado |
 
@@ -308,6 +370,20 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 | `GET` | `/api/loans/{id}` | `PAN-01`, `DIR-01`, `AD-01` | Detalle de un préstamo: ítems con producto y ubicación física, solicitante, quién aprobó y quién entregó, motivo de rechazo y `allowed_transitions`. | ✅ Implementado |
 | `GET` | `/api/loans/export` | `DIR-01`, `PAN-01`, `AD-01` | Exporta el historial en `format=csv` (por defecto, abre en Excel; `excel` es alias) o `format=pdf`. Acepta `from`, `to` (fecha del préstamo) y los mismos filtros de `GET /api/loans`. Máximo 5.000 filas. | ✅ Implementado |
 
+### 11.1 Estudiantes (`FU-04` / `REQ-20`)
+
+> RUT normalizado `12345678-K` (sin puntos, DV en mayúscula) y único. Lectura y escritura: `PAN-01`, `AD-01`; borrado solo `AD-01`. `PRO-01` y `DIR-01` → `403`.
+
+| Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
+|---|---|---|---|:---:|
+| `GET` | `/api/students` | `PAN-01`, `AD-01` | Listado paginado con `career` y `loans_count`.<br>**Query Params:** `search` (RUT con o sin puntos, o nombre), `career_id`, `per_page`. | ✅ Implementado |
+| `GET` | `/api/students/by-rut/{rut}` | `PAN-01`, `AD-01` | Búsqueda exacta para el checkout; acepta `12.345.678-5`, `12345678-5` o `123456785`. `404` si no existe. | ✅ Implementado |
+| `POST` | `/api/students` | `PAN-01`, `AD-01` | **Body:** `rut` (obligatorio, dígito verificador validado, único), `full_name`, `email`, `career_id` (opcionales). `201`. | ✅ Implementado |
+| `GET` | `/api/students/{id}` | `PAN-01`, `AD-01` | Detalle con `career` y `loans_count`. | ✅ Implementado |
+| `PATCH` | `/api/students/{id}` | `PAN-01`, `AD-01` | Mismos campos que el alta, todos opcionales. | ✅ Implementado |
+| `DELETE` | `/api/students/{id}` | `AD-01` | `204`; `422` (`errors.student`) si tiene préstamos. | ✅ Implementado |
+| `GET` | `/api/students/{id}/loans` | `PAN-01`, `AD-01` | Historial de préstamos del estudiante (paginado, más reciente primero; mismo formato que `GET /api/loans`). | ✅ Implementado |
+
 ---
 
 ### 12. Fichas Técnicas de Equipos (`FU-05` / `REQ-12`)
@@ -316,6 +392,31 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 |---|---|---|---|:---:|
 | `GET` | `/api/equipment/{id}/technical-sheet` | Todos (`auth`) | Descarga la ficha técnica en PDF: datos del equipo, proveedor, ubicación física e historial de novedades. | ✅ Implementado |
 | `GET` | `/api/equipment/{id}/reports` | Todos (`auth`) | Informes de novedades del equipo, paginados en JSON o en PDF con `?format=pdf`.<br>**Query Params:** `severity` (`leve`, `media`, `critica`), `status`, `per_page` (1-100). | ✅ Implementado |
+
+### 12.1 Mantenciones (`FU-05` / `REQ-18`)
+
+> Máquina de estados (`App\Services\MaintenanceRecordStateMachine`): **`en_curso` → `finalizada` | `anulada`** (ambas finales). Lectura `AD-01`, `DIR-01`, `PAN-01`; escritura `AD-01`, `PAN-01`; `PRO-01` → `403`. Mientras hay una mantención `en_curso`, la unidad está `en_reparacion` y `PATCH /api/equipment-units/{id}/status` responde `422`.
+
+| Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
+|---|---|---|---|:---:|
+| `GET` | `/api/maintenance-records` | `AD-01`, `DIR-01`, `PAN-01` | Listado paginado, ordenado por prioridad de mantención del producto (`A` primero) y fecha de inicio (reciente primero). Incluye `equipment_unit.product`, `responsible`, `external_supplier`.<br>**Query Params:** `equipment_unit_id`, `product_id`, `status`, `maintenance_type`, `execution_mode`, `from`, `to` (fecha de inicio), `per_page`. | ✅ Implementado |
+| `GET` | `/api/maintenance-records/{id}` | `AD-01`, `DIR-01`, `PAN-01` | Detalle con unidad (cajón, sala, pañol), responsable, proveedor, informe asociado y `documents`. | ✅ Implementado |
+| `GET` | `/api/equipment-units/{id}/maintenance-records` | `AD-01`, `DIR-01`, `PAN-01` | Historial de la unidad (más reciente primero), con `documents`. | ✅ Implementado |
+| `POST` | `/api/equipment-units/{id}/maintenance-records` | `AD-01`, `PAN-01` | Abre una mantención `en_curso`; la unidad pasa a `en_reparacion` y el informe asociado a `en_reparacion`.<br>**Body:** `maintenance_type` (`preventiva` \| `correctiva` \| `calibracion`), `execution_mode` (`medios_propios` por defecto \| `externa`), `external_supplier_id` (obligatorio si `externa`), `incident_report_id` (opcional, de la misma unidad y no cerrado), `responsible_id` (opcional, por defecto el usuario autenticado), `technical_notes`. `201`.<br>`422` si la unidad está `prestado` o `dado_de_baja`, o ya tiene una mantención `en_curso` (error en `equipment_unit_id`). | ✅ Implementado |
+| `PATCH` | `/api/maintenance-records/{id}` | `AD-01`, `PAN-01` | Checklist y cierre técnico (solo `en_curso`; si no, `422` en `status`).<br>**Body:** `rev_a_approved`, `rev_b_approved`, `rev_c_approved` (`null` = no aplica), `pfg_approved`, `requires_additional_maintenance`, `applies_recf`, `repair_cost`, `spare_parts_used`, `technical_notes`. | ✅ Implementado |
+| `POST` | `/api/maintenance-records/{id}/finish` | `AD-01`, `PAN-01` | **Body:** `result` (`operativo` \| `baja`), `technical_notes` opcional. `operativo` exige REV-A, REV-B y PFG aprobadas (y REV-C si no es `null`; si no, `422` en `checklist`) y deja la unidad `disponible`; `baja` la deja `dado_de_baja`. Fija `finished_at`, `last_maintenance_at` y `next_maintenance_at` (según `maintenance_frequency_months`; nula si `baja`), cierra el informe asociado (`reparado` / `dado_de_baja`) y recalcula los contadores del producto. | ✅ Implementado |
+| `POST` | `/api/maintenance-records/{id}/cancel` | `AD-01`, `PAN-01` | `anulada`. **Body:** `reason` opcional (se agrega a `technical_notes`). La unidad y el informe vuelven al estado que tenían al abrir la mantención. | ✅ Implementado |
+
+### 12.2 Documentos de mantenimiento (`FU-05` / `REQ-19`)
+
+> PDF por unidad en disco privado; descarga solo por endpoint autenticado (usar `getBlob()`). Lectura y descarga `AD-01`, `DIR-01`, `PAN-01`; subida y borrado `AD-01`, `PAN-01`.
+
+| Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
+|---|---|---|---|:---:|
+| `GET` | `/api/equipment-units/{id}/maintenance-documents` | `AD-01`, `DIR-01`, `PAN-01` | Documentos de la unidad (más reciente primero).<br>**Query Params:** `document_type`, `expiring_within_days` (vigentes que vencen en N días), `current=1` (vigentes o sin vencimiento), `per_page`. Cada documento trae `is_expired` y `file_url`. | ✅ Implementado |
+| `POST` | `/api/equipment-units/{id}/maintenance-documents` | `AD-01`, `PAN-01` | `multipart/form-data`: `document_type` (`certificado_calibracion` \| `informe_tecnico` \| `manual` \| `garantia` \| `otro`), `title`, `file` (PDF, máx. 10 MB), `valid_until` (opcional), `maintenance_record_id` (opcional, de la misma unidad). `uploaded_by` = usuario autenticado. `201`. Límite 10/min. | ✅ Implementado |
+| `GET` | `/api/maintenance-documents/{id}/file` | `AD-01`, `DIR-01`, `PAN-01` | Descarga autenticada del PDF (nombre original). `404` si el archivo no existe. | ✅ Implementado |
+| `DELETE` | `/api/maintenance-documents/{id}` | `AD-01`, `PAN-01` | `204`; borra también el archivo. | ✅ Implementado |
 
 ---
 
@@ -346,6 +447,20 @@ Todos: `DIR-01`, `AD-01`. Aceptan `limit` (1-50, por defecto 10; no aplica a `ca
 | `GET` | `/api/dashboard/top-teachers` | Docentes con más solicitudes. | ✅ Implementado |
 | `GET` | `/api/dashboard/loans-by-teacher` | Préstamos y unidades por docente y asignatura. | ✅ Implementado |
 
+### 14.1 Dashboard personalizado (`FU-06` / `REQ-15`)
+
+> Hasta 5 gráficos por usuario (`position` 1–5, una por gráfico). Roles: `DIR-01`, `AD-01`; cada usuario solo ve los suyos (uno ajeno responde `404`). `entity`, `metric`, `period` y `type` aceptan los mismos valores que `customMetric` (enums `MetricEntity`, `MetricAggregation`, `TimeRange`, `ChartType`); `group_by` los de la tabla de entidades de `TASKS/front-end.md` (C1) o vacío. Cada gráfico trae `metric_input`, listo para `customMetric(input:)`.
+
+| Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
+|---|---|---|---|:---:|
+| `GET` | `/api/chart-templates` | `DIR-01`, `AD-01` | Plantillas sembradas (sin paginar): `code`, `name`, `visualization_type` y la consulta por defecto (`chart_type`, `entity`, `metric`, `group_by`, `period`; nulos en las genéricas `bar`, `line`, `pie`, `kpi`). | ✅ Implementado |
+| `GET` | `/api/me/charts` | `DIR-01`, `AD-01` | Gráficos propios ordenados por `position`, con `template`. `?active=1` solo los visibles. | ✅ Implementado |
+| `POST` | `/api/me/charts` | `DIR-01`, `AD-01` | **Body:** `chart_template_id` (obligatorio), `custom_title`, `type`, `position`, `entity`, `metric`, `group_by`, `period`, `date_from`/`date_to` (solo `CUSTOM`), `is_active`. Lo no enviado se hereda de la plantilla; `position` por defecto = primera libre. `201`. `422` si la posición está ocupada, ya tiene 5 o la combinación no es válida. | ✅ Implementado |
+| `PUT` | `/api/me/charts/positions` | `DIR-01`, `AD-01` | Reordena en bloque en una transacción (permite intercambiar).<br>**Body:** `positions: [{id, position}]`. `422` si un id no es propio o dos quedarían en la misma posición. Responde la lista ordenada. | ✅ Implementado |
+| `GET` | `/api/me/charts/{id}` | `DIR-01`, `AD-01` | Detalle de un gráfico propio. | ✅ Implementado |
+| `PATCH` | `/api/me/charts/{id}` | `DIR-01`, `AD-01` | Edita cualquier campo salvo `user_id` (`422`); `is_active: false` lo oculta sin borrarlo. Cambiar `chart_template_id` toma la consulta de la nueva plantilla. Una posición ocupada → `422`. | ✅ Implementado |
+| `DELETE` | `/api/me/charts/{id}` | `DIR-01`, `AD-01` | `204`. | ✅ Implementado |
+
 ---
 
 ## 🟡 Endpoints Pendientes (Por Implementar)
@@ -358,4 +473,4 @@ Todos: `DIR-01`, `AD-01`. Aceptan `limit` (1-50, por defecto 10; no aplica a `ca
 
 ## 📊 Resumen
 
-Fuente de verdad: `php artisan route:list --path=api` (117 rutas, contando las variantes `PUT`/`PATCH`). Las filas con `PUT/PATCH` o alias comparten el mismo controlador. Los endpoints pendientes están listados arriba.
+Fuente de verdad: `php artisan route:list --path=api` (155 rutas, contando las variantes `PUT`/`PATCH`). Las filas con `PUT/PATCH` o alias comparten el mismo controlador. Los endpoints pendientes están listados arriba.
