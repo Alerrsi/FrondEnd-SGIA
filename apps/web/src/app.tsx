@@ -5,6 +5,7 @@ import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import ComprasPage from '@/features/compras/pages/compras-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
+import EstudiantesPage from '@/features/estudiantes/pages/estudiantes-page';
 import EquiposPage from '@/features/equipos/pages/equipos-page';
 import IngresosFacturaPage from '@/features/ingresos-factura/pages/ingresos-factura-page';
 import PresupuestosPage from '@/features/presupuestos/pages/presupuestos-page';
@@ -212,6 +213,15 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
                   <IngresosFacturaPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/estudiantes"
+              element={
+                <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
+                  <EstudiantesPage />
                 </RequireRole>
               }
             />

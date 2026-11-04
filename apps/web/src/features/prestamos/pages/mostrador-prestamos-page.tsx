@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowDownLeft,
@@ -25,6 +25,12 @@ import {
 import { LoanStatus, type Prestamo, type Producto } from '@sgia/types';
 
 import { Badge, LoanStatusBadge } from '@/components/ui/badge';
+import { StudentLookup } from '@/features/estudiantes/components/student-lookup';
+import {
+  studentBorrowerLabel,
+  studentBorrowerPayload,
+  type StudentBorrower,
+} from '@/features/estudiantes/lib/student-borrower';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { apiErrorToMessage } from '@/lib/api-error';
@@ -43,6 +49,9 @@ export default function MostradorPrestamosPage() {
   const [activeTab, setActiveTab] = useState<'checkout' | 'checkin'>('checkout');
 
   // --- CHECKOUT STATE ---
+  const [borrowerMode, setBorrowerMode] = useState<'docente' | 'estudiante'>('docente');
+  const [studentBorrower, setStudentBorrower] = useState<StudentBorrower | null>(null);
+  const handleStudentChange = useCallback((b: StudentBorrower | null) => setStudentBorrower(b), []);
   const [docenteRun, setDocenteRun] = useState('');
   const [docenteName, setDocenteName] = useState('');
   const [subject, setSubject] = useState('');
@@ -157,8 +166,12 @@ export default function MostradorPrestamosPage() {
   };
 
   const handleConfirmCheckout = async () => {
-    if (!docenteRun.trim()) {
+    if (borrowerMode === 'docente' && !docenteRun.trim()) {
       toast.error('Debes indicar el RUN o credencial del docente solicitante.');
+      return;
+    }
+    if (borrowerMode === 'estudiante' && !studentBorrower) {
+      toast.error('Busca al estudiante por su RUT antes de registrar la entrega.');
       return;
     }
     if (scannedItems.length === 0) {
@@ -167,9 +180,12 @@ export default function MostradorPrestamosPage() {
     }
 
     try {
+      const borrowerFields =
+        borrowerMode === 'estudiante' && studentBorrower
+          ? studentBorrowerPayload(studentBorrower)
+          : { docente_run: docenteRun.trim(), credential_code: docenteRun.trim() };
       const payload = {
-        docente_run: docenteRun.trim(),
-        credential_code: docenteRun.trim(),
+        ...borrowerFields,
         subject: subject.trim() || undefined,
         room: room.trim() || undefined,
         items: scannedItems.map((it) => ({
@@ -177,7 +193,10 @@ export default function MostradorPrestamosPage() {
           product_id: it.producto.id,
           quantity: it.cantidad,
         })),
-        notes: docenteName.trim() ? `Docente: ${docenteName.trim()}` : undefined,
+        notes:
+          borrowerMode === 'docente' && docenteName.trim()
+            ? `Docente: ${docenteName.trim()}`
+            : undefined,
       };
 
       const res = await checkoutMutation.mutateAsync(payload);
@@ -188,6 +207,7 @@ export default function MostradorPrestamosPage() {
       // Limpiar formulario para el siguiente turno
       setDocenteRun('');
       setDocenteName('');
+      setStudentBorrower(null);
       setSubject('');
       setRoom('');
       setScannedItems([]);
@@ -366,10 +386,28 @@ export default function MostradorPrestamosPage() {
           <div className="flex flex-col gap-4 lg:col-span-1">
             <Card className="flex flex-col gap-3 p-4 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-                1. Credencial del Docente
+                1. Quién retira
               </span>
 
+              <div className="flex gap-1" role="group" aria-label="Tipo de solicitante">
+                {(['docente', 'estudiante'] as const).map((mode) => (
+                  <Button
+                    key={mode}
+                    type="button"
+                    size="sm"
+                    variant={borrowerMode === mode ? 'primary' : 'outline'}
+                    aria-pressed={borrowerMode === mode}
+                    onClick={() => setBorrowerMode(mode)}
+                    className="flex-1 text-xs capitalize"
+                  >
+                    {mode}
+                  </Button>
+                ))}
+              </div>
+
               <div className="flex flex-col gap-2">
+                {borrowerMode === 'estudiante' && <StudentLookup onChange={handleStudentChange} />}
+                {borrowerMode === 'docente' && (<>
                 <div>
                   <label
                     htmlFor="docente_run"
@@ -414,6 +452,7 @@ export default function MostradorPrestamosPage() {
                     className="mt-1 h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
                   />
                 </div>
+                </>)}
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
@@ -583,7 +622,13 @@ export default function MostradorPrestamosPage() {
               {/* Botón Culminante de Despacho */}
               <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
                 <div className="text-xs font-mono text-zinc-500">
-                  {docenteRun ? `Docente: ${docenteName || docenteRun}` : 'Falta credencial'}
+                  {borrowerMode === 'estudiante'
+                    ? studentBorrower
+                      ? `Estudiante: ${studentBorrowerLabel(studentBorrower)}`
+                      : 'Falta estudiante'
+                    : docenteRun
+                      ? `Docente: ${docenteName || docenteRun}`
+                      : 'Falta credencial'}
                 </div>
 
                 <Button
@@ -591,7 +636,9 @@ export default function MostradorPrestamosPage() {
                   variant="primary"
                   size="md"
                   onClick={handleConfirmCheckout}
-                  disabled={checkoutMutation.isPending || scannedItems.length === 0 || !docenteRun.trim()}
+                  disabled={checkoutMutation.isPending || scannedItems.length === 0 ||
+                    (borrowerMode === 'docente' ? !docenteRun.trim() : !studentBorrower)
+                  }
                   className="gap-2"
                 >
                   <CheckCircle2 className="h-4 w-4" />
