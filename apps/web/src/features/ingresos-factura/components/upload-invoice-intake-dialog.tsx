@@ -17,17 +17,13 @@ const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
 interface UploadInvoiceIntakeDialogProps {
   open: boolean;
   onClose: () => void;
-  initialBudgetId?: number;
-  initialPurchaseId?: number;
   onUploaded: (intake: InvoiceIntake) => void;
 }
 
-/** Paso 1: solo el archivo (presupuesto y compra solo llegan por URL desde otras vistas). El backend corre el OCR y crea el borrador. */
+/** Paso 1: solo el archivo (la factura ya no se asocia a presupuesto ni orden de compra). El backend corre el OCR y crea el borrador. */
 export function UploadInvoiceIntakeDialog({
   open,
   onClose,
-  initialBudgetId,
-  initialPurchaseId,
   onUploaded,
 }: UploadInvoiceIntakeDialogProps) {
   const upload = useUploadInvoiceIntake();
@@ -69,11 +65,7 @@ export function UploadInvoiceIntakeDialog({
     setErrors({});
 
     try {
-      const intake = await upload.mutateAsync({
-        file,
-        annual_budget_id: initialBudgetId,
-        purchase_id: initialPurchaseId ?? null,
-      });
+      const intake = await upload.mutateAsync({ file });
       toast.success(
         intake.raw_ocr_payload.ocr_available
           ? `Borrador creado: ${intake.raw_ocr_payload.items.length} ítem(s) detectados para revisar.`

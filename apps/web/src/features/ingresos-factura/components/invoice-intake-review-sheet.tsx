@@ -38,7 +38,10 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
   return (
     <>
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent className="w-full sm:max-w-6xl overflow-y-auto">
+        <SheetContent
+          overlayClassName="bg-black/70"
+          className="inset-0! m-auto! h-fit! max-h-[92vh]! w-[75vw]! max-w-[110rem]! sm:max-w-[110rem]! overflow-y-auto rounded-xl border border-zinc-300 dark:border-zinc-700 p-5 shadow-2xl data-[state=open]:slide-in-from-right-0 data-[state=closed]:slide-out-to-right-0 sm:p-6"
+        >
           {isLoading || !intake ? (
             <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -47,13 +50,13 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
           ) : (
             <>
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+                <SheetTitle className="flex items-center gap-2 text-lg text-zinc-900 dark:text-zinc-100">
                   <span className="font-mono">
                     {intake.document_number ?? `Ingreso #${intake.id}`}
                   </span>
                   <InvoiceIntakeStatusBadge status={intake.status} />
                 </SheetTitle>
-                <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+                <SheetDescription className="text-sm text-zinc-600 dark:text-zinc-300">
                   {budget
                     ? `${careerLabel(budget)} · ${budget.year}`
                     : intake.annual_budget_id
@@ -64,7 +67,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              <div className="mt-2 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
                 <InvoiceFilePreview intakeId={intake.id} hasFile={intake.has_file} />
 
                 <div className="flex flex-col gap-3">

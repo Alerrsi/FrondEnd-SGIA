@@ -191,8 +191,6 @@ export default function IngresosFacturaPage() {
           setUploadOpen(false);
           clearParams();
         }}
-        initialBudgetId={budgetParam}
-        initialPurchaseId={purchaseParam}
         onUploaded={(intake) => {
           setUploadOpen(false);
           clearParams();

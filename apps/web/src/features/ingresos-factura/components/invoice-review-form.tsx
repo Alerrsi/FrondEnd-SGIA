@@ -94,9 +94,7 @@ export function InvoiceReviewForm({
         id: intake.id,
         payload: toConfirmPayload(values, productTypes),
       });
-      toast.success(
-        `Factura ${confirmed.document_number ?? `#${confirmed.id}`} confirmada: se descontaron ${formatCLP(confirmed.total_deducted)} e ingresó el stock.`,
-      );
+      toast.success('Elementos agregados al inventario');
       onConfirmed?.(confirmed);
     } catch (error) {
       const fieldErrors = apiFieldErrors(error);
@@ -158,7 +156,7 @@ export function InvoiceReviewForm({
         </div>
 
         <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <table className="w-full border-collapse text-left text-xs">
+          <table className="w-full border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                 <th className="min-w-56 p-2 font-medium">Producto</th>
