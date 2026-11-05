@@ -109,6 +109,16 @@ export interface Prestamo {
   loan_date?: string | null;
   due_date?: string | null;
   time_block?: string | null;
+  /** `HH:MM`; `null` en préstamos anteriores a la solicitud con horario. */
+  start_time?: string | null;
+  end_time?: string | null;
+  storeroom_id?: number | null;
+  storeroom?: { id: number; name: string; code?: string | null } | null;
+  location_id?: number | null;
+  /** Laboratorio (sala o taller) donde se usa el material. */
+  location?: { id: number; nombre: string; tipo?: string | null } | null;
+  /** Profesor que hizo la solicitud (el usuario autenticado). */
+  teacher?: { id: number; name: string } | null;
   fechaDevolucion?: string | null;
   return_date?: string | null;
   returned_at?: string | null;
@@ -142,6 +152,14 @@ export interface CreatePrestamoPayload {
   fechaSolicitada?: string;
   loan_date?: string;
   fecha?: string;
+  /** Solicitud con horario (`HH:MM`); el término debe ser posterior al inicio. */
+  start_time?: string;
+  end_time?: string;
+  /** Pañol que prepara la solicitud. */
+  storeroom_id?: number;
+  /** Laboratorio (`sala` o `taller` de ese pañol). Reemplaza al texto libre `room`. */
+  location_id?: number;
+  /** Solo clientes antiguos: con `start_time`/`end_time` el backend lo regenera. */
   time_block?: string;
   notes?: string;
 }
@@ -256,6 +274,10 @@ export type PrestamoParams = LoanParams;
 export interface LoanRequestQueryParams {
   status?: string;
   estado?: string;
+  storeroom_id?: number;
+  career_id?: number;
+  /** `AAAA-MM-DD`. */
+  loan_date?: string;
   per_page?: number;
   page?: number;
 }
