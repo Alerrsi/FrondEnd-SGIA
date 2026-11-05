@@ -3,19 +3,25 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
+import { ApiRequestError } from '@sgia/api-client';
+
 import { LoanRequestForm } from './components/loan-request-form';
 
 const mutateAsync = vi.fn();
 const locationsSpy = vi.fn();
 
 vi.mock('@/features/auth/context/auth-context', () => ({
-  useAuth: () => ({ user: { id: 5, nombre: 'Ana Docente', rol: 'PRO-01', storeroom_id: 1 } }),
+  useAuth: () => ({
+    user: { id: 5, nombre: 'Ana Docente', rol: 'PRO-01', storeroom_id: 1 },
+  }),
 }));
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
   useCreatePrestamo: () => ({ mutateAsync, isPending: false }),
-  useCareers: () => ({ data: { data: [{ id: 3, name: 'Informática', code: 'ISD' }] } }),
+  useCareers: () => ({
+    data: { data: [{ id: 3, name: 'Informática', code: 'ISD' }] },
+  }),
   useStorerooms: () => ({
     data: {
       data: [
@@ -145,5 +151,51 @@ describe('LoanRequestForm', () => {
     expect(screen.getByLabelText('Cantidad de Cable UTP')).toBeDefined();
     await user.click(screen.getByRole('button', { name: 'Quitar Cable UTP' }));
     expect(screen.queryByLabelText('Cantidad de Cable UTP')).toBeNull();
+  });
+
+  it('muestra el 422 del backend junto a cada campo (stock del pañol y laboratorio)', async () => {
+    const stock =
+      'Stock insuficiente para "Cable UTP" en Pañol Temuco: se solicitaron 3 y hay 1 disponibles.';
+    mutateAsync.mockRejectedValueOnce(
+      new ApiRequestError(422, {
+        message: stock,
+        errors: {
+          'items.0.quantity': [stock],
+          location_id: ['El laboratorio no pertenece al pañol indicado.'],
+        },
+      }),
+    );
+    const user = userEvent.setup();
+    renderForm();
+
+    await user.selectOptions(screen.getByLabelText('Carrera'), '3');
+    await user.type(screen.getByLabelText('Asignatura'), 'Redes');
+    await user.type(screen.getByLabelText('Hora inicio'), '08:30');
+    await user.type(screen.getByLabelText('Hora término'), '10:00');
+    await user.selectOptions(screen.getByLabelText('Laboratorio'), '12');
+    await user.click(screen.getByRole('button', { name: 'Agregar Cable UTP' }));
+    await user.clear(screen.getByLabelText('Cantidad de Cable UTP'));
+    await user.type(screen.getByLabelText('Cantidad de Cable UTP'), '3');
+    await user.click(screen.getByRole('button', { name: /enviar solicitud/i }));
+
+    expect(await screen.findByText(stock)).toBeDefined();
+    expect(screen.getByText('El laboratorio no pertenece al pañol indicado.')).toBeDefined();
+    expect(screen.queryByText('Pantalla solicitudes')).toBeNull();
+  });
+
+  it('envía el vencimiento opcional y rechaza uno anterior a la actividad', async () => {
+    const user = userEvent.setup();
+    renderForm();
+    const date = screen.getByLabelText('Fecha de actividad') as HTMLInputElement;
+    await user.clear(date);
+    await user.type(date, '2999-11-12');
+    const due = screen.getByLabelText('Devolución (opcional)');
+    await user.type(due, '2999-11-10');
+    await user.click(screen.getByRole('button', { name: /enviar solicitud/i }));
+
+    expect(
+      await screen.findByText('El vencimiento no puede ser anterior a la fecha de la actividad.'),
+    ).toBeDefined();
+    expect(mutateAsync).not.toHaveBeenCalled();
   });
 });

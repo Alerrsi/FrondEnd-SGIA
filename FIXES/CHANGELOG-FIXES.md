@@ -367,3 +367,16 @@
   4. **Novedades:** lista propia, detalle con descarga del PDF y formulario con casillas por problema, firma en `<canvas>`, foto y vista previa del equipo por código.
   5. `api-client`/`types`: contrato nuevo de `POST /loans/requests` y lecturas (`career`, `storeroom`, `location`, `teacher`, horas) y filtro `storeroom_id` en ubicaciones.
 - **Verificación:** `pnpm typecheck` y `pnpm --filter @sgia/web test` (325 tests) sin errores. Probado en Chromium contra la API real (`localhost:8000`, `docente@sgia.cl`): login con el acceso rápido, solicitud completa (creada, listada, detallada y cancelada) e informe con firma dibujada, foto y equipo por código (detalle y PDF 200). Hallazgos corregidos en esa prueba: la fecha del informe por defecto usaba el día UTC (`todayIso` ahora es local; de noche daba «fecha futura»), `report_date` se mostraba un día antes en el detalle (`formatDateOnly` compartido) y el detalle ofrecía al profesor los botones de cambio de estado, que el backend rechaza con 403 (`readOnly`). La base local necesitaba `php artisan migrate`. `normalizeRoleCode` devuelve `PRO-01` ante un rol desconocido, así que ese caso ya no se rechaza en el login web (el backend aplica los permisos).
+
+---
+
+## FIX-016: Solicitud remota ampliada en el pañol — cola por pañol, filtros y vencimiento (REQ-21)
+
+- **Fecha:** 2026-11-05
+- **Módulo:** `packages/types`, `packages/api-client`, `apps/web` (`features/prestamos`, `features/profesor`, `components/shared`) — [solicitud-prestamo-profesor](TASKS/solicitud-prestamo-profesor.md)
+- **Cambios:**
+  1. **Cola del pañol (`GET /loans/pending`):** cada tarjeta muestra profesor (`teacher`), fecha y horario, laboratorio, pañol y carrera; los préstamos antiguos caen a `time_block`/`room`. `PAN-01` ve la cola de su pañol (lo filtra el backend); `AD-01` tiene un selector de pañol que envía `?storeroom_id=` (`PendingLoanParams`).
+  2. **Historial y exportación (`GET /loans`, `/loans/export`):** filtros nuevos de pañol, laboratorio (salas y talleres del pañol elegido) y fecha de actividad (`storeroom_id`, `location_id`, `loan_date`), también en la exportación. La columna «Laboratorio / Pañol» y el detalle muestran laboratorio, pañol, fecha de actividad y horario.
+  3. **Formulario del profesor:** vencimiento opcional (`due_date`, no anterior a la fecha de la actividad; vacío = mismo día) y los `422` del backend se muestran junto a cada campo (`items.{i}.quantity` con el stock del pañol, `location_id`, etc.).
+  4. Selectores compartidos `StoreroomSelect` y `LaboratorySelect`; los formateadores de préstamo (`loanSchedule`, `loanLaboratory`, `loanStoreroom`, `loanTeacher`, `loanCareer`) pasan a `features/prestamos/lib/loan-display.ts`.
+- **Verificación:** `pnpm typecheck` (5/5) y `pnpm --filter @sgia/web test` (337 tests) sin errores; lint limpio en los archivos tocados. No probado aún contra la API real.

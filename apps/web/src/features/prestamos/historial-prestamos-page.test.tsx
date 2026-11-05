@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import type { Prestamo } from '@sgia/types';
@@ -114,24 +114,73 @@ const mockHistoricalLoans: Prestamo[] = [
 
 const mockExportMutateAsync = vi.fn();
 const mockRefetchLoans = vi.fn();
+const mockUseLoans = vi.fn();
+
+// Préstamo con los datos de la solicitud ampliada (horario, pañol y laboratorio).
+mockHistoricalLoans.push({
+  id: 104,
+  codigo: 'PREST-2026-104',
+  estado: 'activo',
+  origen: 'remoto',
+  asignatura: 'Redes de Computadores',
+  loan_date: '2026-11-12',
+  start_time: '08:30',
+  end_time: '10:00',
+  storeroom_id: 1,
+  storeroom: { id: 1, name: 'Pañol Temuco', code: 'PAN-TEMUCO' },
+  location_id: 12,
+  location: { id: 12, nombre: 'Laboratorio de Redes', tipo: 'sala' },
+  teacher: { id: 7, name: 'Ana Docente' },
+  items: [],
+});
 
 vi.mock('@sgia/api-client', () => ({
-  useLoans: () => ({
+  useStorerooms: () => ({
+    data: { data: [{ id: 1, name: 'Pañol Temuco', code: 'PAN-TEMUCO' }] },
+    isLoading: false,
+  }),
+  useLocations: () => ({
     data: {
-      data: mockHistoricalLoans,
-      meta: {
-        total: mockHistoricalLoans.length,
-        currentPage: 1,
-        lastPage: 1,
-        perPage: 10,
-      },
+      data: [
+        {
+          id: 12,
+          nombre: 'Laboratorio de Redes',
+          tipo: 'sala',
+          storeroom_id: 1,
+        },
+        { id: 13, nombre: 'Bodega Norte', tipo: 'bodega', storeroom_id: 1 },
+      ],
     },
     isLoading: false,
-    isFetching: false,
-    refetch: mockRefetchLoans,
   }),
+  useLoans: (params: unknown) => {
+    mockUseLoans(params);
+    return {
+      data: {
+        data: mockHistoricalLoans,
+        meta: {
+          total: mockHistoricalLoans.length,
+          currentPage: 1,
+          lastPage: 1,
+          perPage: 10,
+        },
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: mockRefetchLoans,
+    };
+  },
   useCareers: () => ({
-    data: { data: [{ id: 5, name: 'Ingeniería en Informática', code: 'II', level: 'profesional' }] },
+    data: {
+      data: [
+        {
+          id: 5,
+          name: 'Ingeniería en Informática',
+          code: 'II',
+          level: 'profesional',
+        },
+      ],
+    },
     isLoading: false,
   }),
   useExportLoans: () => ({
@@ -157,7 +206,7 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
     render(
       <MemoryRouter>
         <HistorialPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Historial y Auditoría de Préstamos')).toBeDefined();
@@ -181,7 +230,7 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
     render(
       <MemoryRouter>
         <HistorialPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const searchInput = screen.getByPlaceholderText('Código, docente, sala…');
@@ -196,7 +245,7 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
     render(
       <MemoryRouter>
         <HistorialPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const detailButtons = screen.getAllByTitle('Ver bitácora y detalle');
@@ -219,7 +268,7 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
     render(
       <MemoryRouter>
         <HistorialPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const pdfBtn = screen.getByRole('button', { name: /Exportar PDF/i });
@@ -229,7 +278,68 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
       expect(mockExportMutateAsync).toHaveBeenCalledWith(
         expect.objectContaining({
           format: 'pdf',
-        })
+        }),
+      );
+    });
+  });
+
+  it('muestra profesor, laboratorio y pañol de la solicitud ampliada y su horario en el detalle', async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <HistorialPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Ana Docente')).toBeDefined();
+    expect(screen.getAllByText('Laboratorio de Redes').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Pañol Temuco').length).toBeGreaterThanOrEqual(1);
+
+    const detailButtons = screen.getAllByTitle('Ver bitácora y detalle');
+    await user.click(detailButtons[3]!);
+    expect(screen.getByText('08:30 - 10:00')).toBeDefined();
+    expect(screen.getByText('12-11-2026')).toBeDefined();
+  });
+
+  it('filtra por pañol, laboratorio y fecha de actividad en el listado y la exportación', async () => {
+    const mockBlob = new Blob(['x'], { type: 'application/pdf' });
+    mockExportMutateAsync.mockResolvedValueOnce(mockBlob);
+    window.URL.createObjectURL = vi.fn().mockReturnValue('blob:http://localhost/dummy');
+    window.URL.revokeObjectURL = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <HistorialPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    // Solo salas y talleres en el selector de laboratorio.
+    const labSelect = screen.getByLabelText('Filtro de laboratorio');
+    expect(within(labSelect).queryByText('Bodega Norte')).toBeNull();
+
+    await user.selectOptions(screen.getByLabelText('Filtro de pañol'), '1');
+    await user.selectOptions(labSelect, '12');
+    fireEvent.change(screen.getByLabelText('Fecha de la actividad'), {
+      target: { value: '2026-11-12' },
+    });
+
+    expect(mockUseLoans).toHaveBeenCalledWith(
+      expect.objectContaining({
+        storeroom_id: 1,
+        location_id: 12,
+        loan_date: '2026-11-12',
+      }),
+    );
+
+    await user.click(screen.getByRole('button', { name: /Exportar PDF/i }));
+    await waitFor(() => {
+      expect(mockExportMutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({
+          storeroom_id: 1,
+          location_id: 12,
+          loan_date: '2026-11-12',
+        }),
       );
     });
   });

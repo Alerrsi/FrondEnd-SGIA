@@ -6,6 +6,7 @@ import type {
   LoanCheckoutPayload,
   LoanExportParams,
   LoanRequestQueryParams,
+  PendingLoanParams,
   PaginatedResponse,
   Prestamo,
   PrestamoParams,
@@ -149,6 +150,9 @@ export async function fetchLoans(params?: PrestamoParams): Promise<PaginatedResp
   if (sala) query.set('sala', sala);
 
   if (params?.career_id) query.set('career_id', String(params.career_id));
+  if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
+  if (params?.location_id) query.set('location_id', String(params.location_id));
+  if (params?.loan_date) query.set('loan_date', params.loan_date);
 
   if (params?.search) query.set('search', params.search);
 
@@ -172,8 +176,9 @@ export async function fetchLoan(id: number): Promise<Prestamo> {
   return normalizePrestamo(response?.data ?? response);
 }
 
-export async function fetchPendingLoans(params?: { per_page?: number; page?: number }): Promise<PaginatedResponse<Prestamo>> {
+export async function fetchPendingLoans(params?: PendingLoanParams): Promise<PaginatedResponse<Prestamo>> {
   const query = new URLSearchParams();
+  if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
   if (params?.per_page) query.set('per_page', String(params.per_page));
   if (params?.page) query.set('page', String(params.page));
   const qs = query.toString();
@@ -212,6 +217,7 @@ export async function createLoanRequest(
     subject: (payload as any).subject ?? (payload as any).asignatura ?? '',
     career_id: payload.career_id,
     loan_date: (payload as any).loan_date ?? (payload as any).fechaSolicitada ?? (payload as any).fecha ?? '',
+    ...(payload.due_date ? { due_date: payload.due_date } : {}),
     notes: (payload as any).notes,
     ...scheduleFields(payload),
   };
@@ -339,6 +345,9 @@ export async function exportLoans(params?: LoanExportParams | {
   fecha_desde?: string;
   fecha_hasta?: string;
   career_id?: number;
+  storeroom_id?: number;
+  location_id?: number;
+  loan_date?: string;
   format?: 'pdf' | 'excel' | 'xlsx';
 }): Promise<Blob> {
   const query = new URLSearchParams();
@@ -348,6 +357,9 @@ export async function exportLoans(params?: LoanExportParams | {
   if (endDate) query.set('to_date', endDate);
   if (params?.status) query.set('status', params.status);
   if (params?.career_id) query.set('career_id', String(params.career_id));
+  if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
+  if (params?.location_id) query.set('location_id', String(params.location_id));
+  if (params?.loan_date) query.set('loan_date', params.loan_date);
   if (params?.format) query.set('format', params.format);
 
   const qs = query.toString();

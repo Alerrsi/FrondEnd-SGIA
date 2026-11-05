@@ -78,7 +78,10 @@ describe('loanRequestSchema', () => {
   });
 
   it('arma el payload sin profesor, room ni time_block', () => {
-    const payload = toLoanRequestPayload({ ...valid(), notes: ' Traer cables ' });
+    const payload = toLoanRequestPayload({
+      ...valid(),
+      notes: ' Traer cables ',
+    });
     expect(payload).toEqual({
       career_id: 3,
       subject: 'Redes',
@@ -90,5 +93,15 @@ describe('loanRequestSchema', () => {
       notes: 'Traer cables',
       items: [{ product_id: 45, quantity: 3 }],
     });
+  });
+
+  it('el vencimiento es opcional y no puede ser anterior a la fecha de la actividad', () => {
+    expect(paths({ ...valid(), due_date: '' })).toEqual([]);
+    expect(paths({ ...valid(), due_date: '2999-11-12' })).toEqual([]);
+    expect(paths({ ...valid(), due_date: '2999-11-11' })).toEqual(['due_date']);
+    expect(toLoanRequestPayload({ ...valid(), due_date: '2999-11-14' }).due_date).toBe(
+      '2999-11-14',
+    );
+    expect(toLoanRequestPayload({ ...valid(), due_date: '' }).due_date).toBeUndefined();
   });
 });
