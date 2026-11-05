@@ -262,4 +262,45 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     await user.click(logoutButtons[0]!);
     expect(mockLogout).toHaveBeenCalled();
   });
+
+  it('el profesor (PRO-01) ve solo su menú reducido', () => {
+    mockUserRole = 'PRO-01';
+    mockUserName = 'Ana Docente';
+
+    render(
+      <MemoryRouter initialEntries={['/profesor/solicitudes']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/profesor/solicitudes" element={<div>Contenido de Prueba</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole('link', { name: /catálogo/i })).toBeDefined();
+    expect(screen.getByRole('link', { name: /mis solicitudes/i })).toBeDefined();
+    expect(screen.getByRole('link', { name: /novedades/i })).toBeDefined();
+    expect(screen.queryByRole('link', { name: /inventario/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /usuarios/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /compras/i })).toBeNull();
+    expect(screen.getByText('Profesor')).toBeDefined();
+  });
+
+  it('el administrador no ve las entradas del profesor', () => {
+    mockUserRole = 'AD-01';
+    mockUserName = 'Admin Rodrigo';
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Contenido de Prueba</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByRole('link', { name: /mis solicitudes/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /catálogo/i })).toBeNull();
+  });
 });

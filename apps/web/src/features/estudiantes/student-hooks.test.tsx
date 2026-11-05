@@ -142,12 +142,14 @@ describe('Checkout presencial con estudiante (§10)', () => {
 
     const loan = await checkoutLoan({
       student_id: 7,
+      career_id: 2,
       items: [{ product_id: 3, quantity: 2, unit_ids: [11, 12] }],
       subject: 'Redes',
     });
 
     const body = bodyOf(spy);
     expect(body.student_id).toBe(7);
+    expect(body.career_id).toBe(2);
     expect(body).not.toHaveProperty('student_rut');
     expect(body).not.toHaveProperty('borrower_name');
     expect(body.items).toEqual([{ product_id: 3, quantity: 2, unit_ids: [11, 12] }]);
@@ -162,6 +164,7 @@ describe('Checkout presencial con estudiante (§10)', () => {
 
     await checkoutLoan({
       student_rut: '98765432-1',
+      career_id: 2,
       borrower_name: 'Luis Soto',
       items: [{ product_id: 3, quantity: 1 }],
     });
@@ -178,6 +181,7 @@ describe('Checkout presencial con estudiante (§10)', () => {
     await checkoutLoan({
       student_id: 7,
       student_rut: '12345678-5',
+      career_id: 2,
       items: [{ product_id: 3, quantity: 1 }],
     });
 
@@ -191,6 +195,7 @@ describe('Checkout presencial con estudiante (§10)', () => {
 
     await checkoutLoan({
       docente_run: '11111111-1',
+      career_id: 2,
       items: [{ product_id: 3, quantity: 1 }],
       due_date: '2026-11-20',
     });

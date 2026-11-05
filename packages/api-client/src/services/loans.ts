@@ -76,13 +76,23 @@ export function normalizePrestamo(raw: any): Prestamo {
     status_label: raw.status_label,
     asignatura: raw.asignatura ?? raw.subject ?? null,
     subject: raw.subject ?? raw.asignatura ?? null,
-    carrera: raw.carrera ?? raw.career ?? null,
+    carrera:
+      raw.carrera ?? (typeof raw.career === 'string' ? raw.career : raw.career?.name) ?? null,
+    career_id: raw.career_id ?? raw.career?.id ?? null,
+    career: raw.career && typeof raw.career === 'object' ? raw.career : null,
     sala: raw.sala ?? raw.room ?? null,
     room: raw.room ?? raw.sala ?? null,
     fechaSolicitada: raw.fechaSolicitada ?? raw.loan_date ?? raw.fecha ?? null,
     loan_date: raw.loan_date ?? raw.fechaSolicitada ?? raw.fecha ?? null,
     due_date: raw.due_date ?? null,
     time_block: raw.time_block ?? null,
+    start_time: raw.start_time ? String(raw.start_time).slice(0, 5) : null,
+    end_time: raw.end_time ? String(raw.end_time).slice(0, 5) : null,
+    storeroom_id: raw.storeroom_id ?? raw.storeroom?.id ?? null,
+    storeroom: raw.storeroom ?? null,
+    location_id: raw.location_id ?? raw.location?.id ?? null,
+    location: raw.location ?? null,
+    teacher: raw.teacher ?? null,
     fechaDevolucion: raw.fechaDevolucion ?? raw.return_date ?? null,
     return_date: raw.return_date ?? raw.fechaDevolucion ?? null,
     fechaEntrega: raw.fechaEntrega ?? raw.delivery_date ?? null,
@@ -138,6 +148,8 @@ export async function fetchLoans(params?: PrestamoParams): Promise<PaginatedResp
   const sala = params?.sala ?? params?.room;
   if (sala) query.set('sala', sala);
 
+  if (params?.career_id) query.set('career_id', String(params.career_id));
+
   if (params?.search) query.set('search', params.search);
 
   const startDate = params?.start_date ?? params?.fecha_desde;
@@ -169,6 +181,26 @@ export async function fetchPendingLoans(params?: { per_page?: number; page?: num
   return normalizePaginatedLoans(response);
 }
 
+/**
+ * Cliente nuevo (con `location_id`/`storeroom_id`/horas): el backend deriva `room` y `time_block`.
+ * Cliente antiguo (móvil): texto libre `room` y `time_block`.
+ */
+function scheduleFields(payload: RemoteLoanRequestPayload | CreatePrestamoPayload) {
+  const p = payload as CreatePrestamoPayload;
+  if (p.location_id !== undefined || p.start_time !== undefined || p.storeroom_id !== undefined) {
+    return {
+      storeroom_id: p.storeroom_id,
+      location_id: p.location_id,
+      start_time: p.start_time,
+      end_time: p.end_time,
+    };
+  }
+  return {
+    room: p.room ?? p.sala ?? '',
+    time_block: p.time_block ?? '',
+  };
+}
+
 export async function createLoanRequest(
   payload: RemoteLoanRequestPayload | CreatePrestamoPayload,
 ): Promise<Prestamo> {
@@ -178,10 +210,10 @@ export async function createLoanRequest(
       quantity: it.quantity ?? it.cantidad ?? 1,
     })),
     subject: (payload as any).subject ?? (payload as any).asignatura ?? '',
-    room: (payload as any).room ?? (payload as any).sala ?? '',
+    career_id: payload.career_id,
     loan_date: (payload as any).loan_date ?? (payload as any).fechaSolicitada ?? (payload as any).fecha ?? '',
-    time_block: (payload as any).time_block ?? '',
     notes: (payload as any).notes,
+    ...scheduleFields(payload),
   };
   const response = await post<any, any>('/loans/requests', body);
   return normalizePrestamo(response?.data ?? response);
@@ -193,6 +225,9 @@ export async function fetchMyLoanRequests(params?: LoanRequestQueryParams): Prom
   const query = new URLSearchParams();
   const status = params?.status ?? params?.estado;
   if (status) query.set('status', status);
+  if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
+  if (params?.career_id) query.set('career_id', String(params.career_id));
+  if (params?.loan_date) query.set('loan_date', params.loan_date);
   if (params?.per_page) query.set('per_page', String(params.per_page));
   if (params?.page) query.set('page', String(params.page));
   const qs = query.toString();
@@ -273,6 +308,7 @@ export async function checkoutLoan(payload: LoanCheckoutPayload): Promise<Presta
       ...(it.unit_ids && it.unit_ids.length > 0 ? { unit_ids: it.unit_ids } : {}),
     })),
     subject,
+    career_id: payload.career_id,
     room,
     loan_date: loanDate,
     due_date: payload.due_date ?? null,
@@ -302,6 +338,7 @@ export async function exportLoans(params?: LoanExportParams | {
   status?: string;
   fecha_desde?: string;
   fecha_hasta?: string;
+  career_id?: number;
   format?: 'pdf' | 'excel' | 'xlsx';
 }): Promise<Blob> {
   const query = new URLSearchParams();
@@ -310,6 +347,7 @@ export async function exportLoans(params?: LoanExportParams | {
   if (startDate) query.set('from_date', startDate);
   if (endDate) query.set('to_date', endDate);
   if (params?.status) query.set('status', params.status);
+  if (params?.career_id) query.set('career_id', String(params.career_id));
   if (params?.format) query.set('format', params.format);
 
   const qs = query.toString();

@@ -54,11 +54,21 @@ describe('productoFormSchema', () => {
     expect(issuePaths({ ...base, type: 'maqueta', sala: 'Lab 3', cajon: 'C-05' })).toEqual([]);
   });
 
-  it('equipo con cantidad 0 no exige cajón ni carrera', () => {
-    expect(issuePaths({ ...base, type: 'equipo', quantity: 0, career_id: null })).toEqual([]);
+  it('equipo con cantidad 0 no exige cajón pero sí carrera', () => {
+    expect(issuePaths({ ...base, type: 'equipo', quantity: 0, career_id: null })).toEqual([
+      'career_id',
+    ]);
+    expect(issuePaths({ ...base, type: 'equipo', quantity: 0 })).toEqual([]);
   });
 
-  it('en edición no aplica las reglas del alta', () => {
-    expect(issuePaths({ ...base, mode: 'edit', type: 'equipo', career_id: null })).toEqual([]);
+  it('en edición el equipo exige carrera pero no cajón', () => {
+    expect(issuePaths({ ...base, mode: 'edit', type: 'equipo', career_id: null })).toEqual([
+      'career_id',
+    ]);
+    expect(issuePaths({ ...base, mode: 'edit', type: 'equipo' })).toEqual([]);
+  });
+
+  it('en edición un insumo no exige carrera', () => {
+    expect(issuePaths({ ...base, mode: 'edit', career_id: null })).toEqual([]);
   });
 });

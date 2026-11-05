@@ -235,6 +235,26 @@ export {
 } from './hooks/users';
 
 export {
+  createIncidentReport,
+  fetchIncidentReports,
+  fetchMyIncidentReports,
+  fetchIncidentReport,
+  updateIncidentReportStatus,
+  downloadIncidentReportPdf,
+  downloadIncidentReportSignature,
+  downloadIncidentReportPhoto,
+  normalizeIncidentReport,
+} from './services/incident-reports';
+export {
+  incidentKeys,
+  useIncidentReports,
+  useMyIncidentReports,
+  useIncidentReport,
+  useCreateIncidentReport,
+  useUpdateIncidentReportStatus,
+} from './hooks/incident-reports';
+
+export {
   fetchEquipmentSpecs,
   updateEquipmentSpecs,
   fetchEquipmentTechnicalSheet,
@@ -242,10 +262,6 @@ export {
   downloadEquipmentReports,
   fetchEquipos,
   fetchEquipo,
-  createIncidentReport,
-  createNovedad,
-  fetchIncidentReports,
-  updateIncidentReportStatus,
   fetchDashboardStats,
   fetchTopProducts,
   fetchTopSupplies,
@@ -256,7 +272,6 @@ export {
 } from './services/equipments';
 export {
   equipmentKeys,
-  incidentKeys,
   dashboardKeys,
   useEquipos,
   useEquipo,
@@ -266,9 +281,6 @@ export {
   useEquipmentReports,
   useDownloadTechnicalSheet,
   useDownloadEquipmentReports,
-  useCreateNovedad,
-  useIncidentReports,
-  useUpdateIncidentReportStatus,
   useDashboardStats,
   useTopProducts,
   useTopSupplies,

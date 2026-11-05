@@ -42,6 +42,8 @@ export interface CajonEntity {
 export interface LocationQueryParams {
   search?: string;
   tipo?: LocationTipo | string;
+  /** Solo las ubicaciones de ese pañol. */
+  storeroom_id?: number;
   per_page?: number;
   page?: number;
 }

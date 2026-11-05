@@ -41,11 +41,12 @@ Implementar un flujo de autenticación seguro, centralizado y persistente vía L
   - [x] Auto-cierre de sesión (limpieza de token y query cache) ante respuestas HTTP 401.
 - [x] **Rutas Protegidas y RBAC:**
   - [x] Componente `ProtectedRoute` para bloquear accesos no autenticados.
-  - [x] Validación de rol de acceso (`isWebRole` excluye a `PRO-01` en web con redirección/mensaje adecuado).
+  - [x] Validación de rol de acceso (`isWebRole` acepta `PRO-01` en web desde REQ-21; los demás roles desconocidos se rechazan con mensaje adecuado).
   - [x] Redirección automática según el rol al iniciar sesión:
     - `AD-01` ➔ `/usuarios`
     - `DIR-01` ➔ `/` (Dashboard)
     - `PAN-01` ➔ `/inventario`
+    - `PRO-01` ➔ `/profesor/solicitudes` (REQ-21)
   - [x] Pantalla `ForbiddenPage` (403) ante intentos de navegación no autorizados.
 - [x] **Modal de Cambio de Contraseña:**
   - [x] Diálogo accesible con Radix UI para cambio de contraseña desde el header/perfil.

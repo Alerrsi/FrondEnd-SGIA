@@ -6,6 +6,10 @@
 
 ---
 
+> **Web del profesor (REQ-21):** `PRO-01` también crea y sigue sus solicitudes desde la web (`/profesor/catalogo`, `/profesor/solicitudes`), con carrera, asignatura, fecha, horario, laboratorio, pañol e insumos. Ver [REQ-21](./REQ-21-PROFESOR-WEB.md).
+
+---
+
 ## 🎯 Objetivo
 
 Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con antelación desde la aplicación móvil para sus clases y talleres prácticos, validando disponibilidad de inventario en el bloque horario correspondiente.

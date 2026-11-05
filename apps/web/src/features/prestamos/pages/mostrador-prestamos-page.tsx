@@ -31,6 +31,7 @@ import {
   studentBorrowerPayload,
   type StudentBorrower,
 } from '@/features/estudiantes/lib/student-borrower';
+import { CareerSelect } from '@/components/shared/career-select';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { apiErrorToMessage } from '@/lib/api-error';
@@ -55,6 +56,7 @@ export default function MostradorPrestamosPage() {
   const [docenteRun, setDocenteRun] = useState('');
   const [docenteName, setDocenteName] = useState('');
   const [subject, setSubject] = useState('');
+  const [careerId, setCareerId] = useState<number | undefined>(undefined);
   const [room, setRoom] = useState('');
   const [barcodeInput, setBarcodeInput] = useState('');
   const [scannedItems, setScannedItems] = useState<ScannedCheckoutItem[]>([]);
@@ -174,6 +176,10 @@ export default function MostradorPrestamosPage() {
       toast.error('Busca al estudiante por su RUT antes de registrar la entrega.');
       return;
     }
+    if (!careerId) {
+      toast.error('Selecciona la carrera del préstamo.');
+      return;
+    }
     if (scannedItems.length === 0) {
       toast.error('No hay insumos escaneados en la lista de préstamo.');
       return;
@@ -187,6 +193,7 @@ export default function MostradorPrestamosPage() {
       const payload = {
         ...borrowerFields,
         subject: subject.trim() || undefined,
+        career_id: careerId,
         room: room.trim() || undefined,
         items: scannedItems.map((it) => ({
           barcode: it.barcode,
@@ -209,6 +216,7 @@ export default function MostradorPrestamosPage() {
       setDocenteName('');
       setStudentBorrower(null);
       setSubject('');
+      setCareerId(undefined);
       setRoom('');
       setScannedItems([]);
       setBarcodeInput('');
@@ -453,6 +461,18 @@ export default function MostradorPrestamosPage() {
                   />
                 </div>
                 </>)}
+
+                <div>
+                  <label htmlFor="career" className="font-mono text-[11px] text-zinc-500">
+                    Carrera <span className="text-rose-600 dark:text-rose-400">*</span>
+                  </label>
+                  <CareerSelect
+                    id="career"
+                    value={careerId}
+                    onChange={setCareerId}
+                    className="mt-1 h-8 w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                  />
+                </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>

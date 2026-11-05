@@ -35,6 +35,7 @@ export type {
 } from './producto';
 
 export { LoanStatus } from './prestamo';
+export { INCIDENT_PROBLEM_LABELS } from './equipo';
 export type {
   LoanStatus as LoanStatusValue,
   LoanOrigin,
@@ -85,9 +86,10 @@ export type {
   IncidentSeverity,
   IncidentStatus,
   IncidentReport,
+  IncidentProblem,
+  IncidentProblemType,
+  IncidentReportQueryParams,
   CreateIncidentReportPayload,
-  Novedad,
-  CreateNovedadPayload,
   DashboardStats,
   DashboardAnalyticsParams,
   TopDemandedItem,

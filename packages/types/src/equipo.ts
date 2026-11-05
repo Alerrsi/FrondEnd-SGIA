@@ -62,7 +62,7 @@ export interface Equipo {
   user_manual_url?: string | null;
   specs?: EquipmentSpecs;
   fichasTecnicas?: FichaTecnica[];
-  novedades?: Novedad[];
+  novedades?: IncidentReport[];
   maintenances?: EquipmentMaintenanceRecord[];
   createdAt: string;
   created_at?: string;
@@ -84,16 +84,57 @@ export type IncidentStatus =
   | 'en_revision'
   | 'en_reparacion'
   | 'resuelto'
+  | 'descartado'
   | 'reparado'
   | 'dado_de_baja';
 
+/** Casillas del formulario de novedades del docente. */
+export type IncidentProblemType =
+  | 'falla_equipo'
+  | 'falta_equipamiento'
+  | 'falta_insumo'
+  | 'otros';
+
+export const INCIDENT_PROBLEM_LABELS: Record<IncidentProblemType, string> = {
+  falla_equipo: 'Falla de equipos / instrumento / software',
+  falta_equipamiento: 'Falta de equipamiento',
+  falta_insumo: 'Falta de insumo',
+  otros: 'Otros',
+};
+
+export interface IncidentProblem {
+  type: IncidentProblemType;
+  description: string;
+  label?: string;
+}
+
+/**
+ * Informe de novedades. Los informes nuevos (`is_legacy: false`) traen docente, asignatura,
+ * laboratorio, problemas y firma; los anteriores (`is_legacy: true`) conservan
+ * `severity`, `request_type`, `description` y `attachment_url`.
+ */
 export interface IncidentReport {
   id: number;
-  product_id: number;
+  code?: string | null;
+  is_legacy?: boolean;
+  product_id: number | null;
   title?: string | null;
-  description: string;
-  severity: IncidentSeverity;
+  description?: string;
+  severity?: IncidentSeverity;
+  severity_label?: string;
   status: IncidentStatus;
+  teacher_name?: string | null;
+  subject?: string | null;
+  report_date?: string | null;
+  location_id?: number | null;
+  location?: { id: number; nombre: string } | null;
+  problems?: IncidentProblem[] | null;
+  suggestion?: string | null;
+  has_signature?: boolean;
+  signature_url?: string | null;
+  signed_at?: string | null;
+  pdf_url?: string | null;
+  reporter?: { id: number; name: string } | null;
   photo_url?: string | null;
   attachment_url?: string | null;
   equipment_unit_id?: number | null;
@@ -106,6 +147,31 @@ export interface IncidentReport {
   updated_at: string;
 }
 
+export interface CreateIncidentReportPayload {
+  subject: string;
+  /** `YYYY-MM-DD`; si falta el backend usa hoy. No puede ser futura. */
+  report_date?: string;
+  location_id: number;
+  /** Solo las casillas marcadas, una por `type`, con descripción obligatoria. */
+  problems: Array<{ type: IncidentProblemType; description: string }>;
+  suggestion?: string;
+  /** PNG en base64, con o sin prefijo `data:image/png;base64,`. Menos de 512 KB. */
+  signature: string;
+  /** Archivo jpg/png/webp (máx. 10 MB). En móvil: `{ uri, name, type }`. */
+  evidence_photo?: File | Blob | { uri: string; name: string; type: string } | null;
+  /** Código de unidad (equipos/maquetas) o código de barras de un insumo. */
+  equipment_code?: string;
+}
+
+export interface IncidentReportQueryParams {
+  status?: IncidentStatus;
+  product_id?: number;
+  equipment_unit_id?: number;
+  search?: string;
+  per_page?: number;
+  page?: number;
+}
+
 export interface EquipmentReportQueryParams {
   severity?: IncidentSeverity;
   status?: IncidentStatus;
@@ -114,67 +180,7 @@ export interface EquipmentReportQueryParams {
   page?: number;
 }
 
-export interface CreateIncidentReportPayload {
-  product_id?: number;
-  productId?: number;
-  equipoId?: number;
-  productoId?: number;
-  title?: string;
-  titulo?: string;
-  description?: string;
-  descripcion?: string;
-  severity?: IncidentSeverity;
-  gravedad?: IncidentSeverity;
-  equipment_unit_id?: number;
-  request_type?: 'falla' | 'reposicion' | 'mantencion';
-  evidence_photo?: File | Blob | null;
-  photo?: File | Blob | null;
-  attachment?: File | Blob | null;
-  archivo?: File | Blob | null;
-  adjunto?: File | Blob | null;
-  foto?: File | Blob | null;
-}
 
-export interface Novedad {
-  id: number;
-  equipoId?: number | null;
-  productoId?: number | null;
-  product_id?: number | null;
-  reportadoPorId?: number;
-  tipo?: 'falla' | 'reposicion' | 'mantencion';
-  equipment_unit_id?: number;
-  request_type?: 'falla' | 'reposicion' | 'mantencion';
-  evidence_photo?: File | Blob | null;
-  severity?: IncidentSeverity;
-  status?: IncidentStatus;
-  title?: string;
-  titulo?: string;
-  descripcion: string;
-  description?: string;
-  adjuntoUrl?: string | null;
-  photo_url?: string | null;
-  resuelto?: boolean;
-  createdAt?: string;
-  created_at?: string;
-}
-
-export interface CreateNovedadPayload {
-  equipoId?: number;
-  productoId?: number;
-  product_id?: number;
-  tipo?: 'falla' | 'reposicion';
-  severity?: IncidentSeverity;
-  gravedad?: IncidentSeverity;
-  title?: string;
-  titulo?: string;
-  descripcion?: string;
-  description?: string;
-  adjunto?: File | null;
-  photo?: File | null;
-  attachment?: File | null;
-  archivo?: File | null;
-  foto?: File | null;
-}
 
 export interface DashboardStats {
   total_products: {

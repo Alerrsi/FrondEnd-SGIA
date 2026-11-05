@@ -353,3 +353,17 @@
   - `components/budget-execution-bar.tsx` (prop `barClassName` para ancho flexible), `pages/presupuestos-page.tsx`
 - **Cambios:** la tabla del resumen pasa a una grilla de tarjetas (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`) dentro del mismo marco con el selector de año. Cada tarjeta trae el código de la carrera en `font-mono`, el año, el disponible destacado, la barra de ejecución a todo el ancho y el desglose inicial / reservado / consumido. Clic o Enter abre el detalle, y el menú `MoreHorizontal` (editar / eliminar) solo aparece a AD-01 y DIR-01. Las tarjetas se ordenan por carrera; se pierde el ordenamiento por columna de la tabla.
 - **Verificación:** `pnpm --filter @sgia/web typecheck` y `lint` sin errores; 217 tests web pasan (44 archivos, +5 tests).
+
+---
+
+## FIX-015: Interfaces web del profesor (PRO-01) — REQ-21
+
+- **Fecha:** 2026-11-05
+- **Módulo:** `apps/web` (`features/profesor`, `features/auth`, `layouts`), `packages/types`, `packages/api-client` — [REQ-21](TASKS/REQ-21-PROFESOR-WEB.md)
+- **Cambios:**
+  1. **Acceso:** `PRO-01` pasa a ser rol web (`WEB_ROLES`), con inicio en `/profesor/solicitudes`; el menú se reduce a Catálogo, Mis solicitudes y Novedades y las rutas del panel le devuelven acceso denegado (y viceversa). Acceso rápido «PRO-01 (Profesor)» (`docente@sgia.cl`) en el login.
+  2. **Catálogo y nueva solicitud:** carrera, asignatura, fecha, hora de inicio y término, pañol, laboratorio (salas y talleres del pañol elegido) y lista de insumos con cantidad ≤ stock. El profesor es el usuario autenticado. Se envían `start_time`, `end_time`, `storeroom_id` y `location_id`; el backend deriva `room` y `time_block` (el móvil sigue con `room`/`time_block`).
+  3. **Mis solicitudes:** tabla con carrera, horario, laboratorio, pañol y estado, detalle con insumos y motivo de rechazo, y cancelación solo en `pendiente`. Las fechas sin hora (`loan_date`, `report_date`) se muestran sin desfase de zona horaria (`formatDateOnly`).
+  4. **Novedades:** lista propia, detalle con descarga del PDF y formulario con casillas por problema, firma en `<canvas>`, foto y vista previa del equipo por código.
+  5. `api-client`/`types`: contrato nuevo de `POST /loans/requests` y lecturas (`career`, `storeroom`, `location`, `teacher`, horas) y filtro `storeroom_id` en ubicaciones.
+- **Verificación:** `pnpm typecheck` y `pnpm --filter @sgia/web test` (325 tests) sin errores. Probado en Chromium contra la API real (`localhost:8000`, `docente@sgia.cl`): login con el acceso rápido, solicitud completa (creada, listada, detallada y cancelada) e informe con firma dibujada, foto y equipo por código (detalle y PDF 200). Hallazgos corregidos en esa prueba: la fecha del informe por defecto usaba el día UTC (`todayIso` ahora es local; de noche daba «fecha futura»), `report_date` se mostraba un día antes en el detalle (`formatDateOnly` compartido) y el detalle ofrecía al profesor los botones de cambio de estado, que el backend rechaza con 403 (`readOnly`). La base local necesitaba `php artisan migrate`. `normalizeRoleCode` devuelve `PRO-01` ante un rol desconocido, así que ese caso ya no se rechaza en el login web (el backend aplica los permisos).

@@ -78,6 +78,7 @@ export async function fetchLocations(
   const query = new URLSearchParams();
   if (params?.search) query.set('search', params.search);
   if (params?.tipo) query.set('tipo', params.tipo);
+  if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
   if (params?.per_page) query.set('per_page', String(params.per_page));
   if (params?.page) query.set('page', String(params.page));
 

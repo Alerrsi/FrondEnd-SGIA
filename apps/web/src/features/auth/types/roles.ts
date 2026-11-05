@@ -1,13 +1,14 @@
 import type { RoleCode } from '@sgia/types';
 
-export type WebRoleCode = 'AD-01' | 'DIR-01' | 'PAN-01';
+export type WebRoleCode = 'AD-01' | 'DIR-01' | 'PAN-01' | 'PRO-01';
 
-export const WEB_ROLES: readonly WebRoleCode[] = ['AD-01', 'DIR-01', 'PAN-01'] as const;
+export const WEB_ROLES: readonly WebRoleCode[] = ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'] as const;
 
 export const ROLE_DEFAULT_PATH: Record<WebRoleCode, string> = {
   'AD-01': '/usuarios',
   'DIR-01': '/',
   'PAN-01': '/inventario',
+  'PRO-01': '/profesor/solicitudes',
 };
 
 export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
@@ -26,6 +27,10 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/compras': ['PAN-01', 'DIR-01', 'AD-01'],
   '/mantenciones': ['PAN-01', 'DIR-01', 'AD-01'],
   '/estudiantes': ['PAN-01', 'AD-01'],
+  '/profesor': ['PRO-01'],
+  '/profesor/catalogo': ['PRO-01'],
+  '/profesor/solicitudes': ['PRO-01'],
+  '/profesor/novedades': ['PRO-01'],
   '/usuarios': ['AD-01'],
   '/panoles': ['AD-01'],
   '/auditoria': ['AD-01'],
