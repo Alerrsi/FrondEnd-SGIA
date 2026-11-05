@@ -340,7 +340,9 @@ export function ProductoFormDialog({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <Label htmlFor="prod-career">Carrera</Label>
+              <Label htmlFor="prod-career" required={unitTracked}>
+                Carrera
+              </Label>
               <select
                 id="prod-career"
                 disabled={isPending}
@@ -348,7 +350,7 @@ export function ProductoFormDialog({
                 className={cn(inputClasses, 'font-sans')}
                 {...register('career_id', { setValueAs: toNullableNumber })}
               >
-                <option value="">Sin carrera</option>
+                <option value="">{unitTracked ? 'Selecciona…' : 'Sin carrera'}</option>
                 {careers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.code ? `${c.code} · ${c.name}` : c.name}

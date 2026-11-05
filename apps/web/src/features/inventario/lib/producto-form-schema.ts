@@ -61,15 +61,18 @@ export const productoFormSchema = z
       });
     }
 
-    // Alta: equipo/maqueta con cantidad > 0 crea esas unidades (carrera + cajón obligatorios).
+    // Equipo/maqueta: la carrera es siempre obligatoria (asocia el equipo a la carrera y
+    // genera el código de sus unidades).
+    if (unitTracked && !v.career_id) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['career_id'],
+        message: 'Selecciona la carrera a la que pertenece el equipo.',
+      });
+    }
+
+    // Alta: equipo/maqueta con cantidad > 0 crea esas unidades (cajón obligatorio).
     if (isCreate && unitTracked && v.quantity > 0) {
-      if (!v.career_id) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['career_id'],
-          message: 'Las unidades de un equipo necesitan la carrera para generar su código.',
-        });
-      }
       const hasCajon = Boolean(v.cajon_id) || Boolean(v.sala?.trim() && v.cajon?.trim());
       if (!hasCajon) {
         ctx.addIssue({
