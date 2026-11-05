@@ -1,19 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
-  CreateIncidentReportPayload,
-  CreateNovedadPayload,
   DashboardAnalyticsParams,
   EquipmentQueryParams,
   EquipmentReportQueryParams,
   EquipmentSpecs,
-  IncidentReport,
-  IncidentSeverity,
-  IncidentStatus,
-  Novedad,
   UpdateEquipmentSpecsPayload,
 } from '@sgia/types';
 import {
-  createIncidentReport,
   downloadEquipmentReports,
   fetchCareersDistribution,
   fetchDashboardStats,
@@ -22,14 +15,12 @@ import {
   fetchEquipmentSpecs,
   fetchEquipmentTechnicalSheet,
   fetchEquipos,
-  fetchIncidentReports,
   fetchLeastDemanded,
   fetchLoansByTeacher,
   fetchTopProducts,
   fetchTopSupplies,
   fetchTopTeachers,
   updateEquipmentSpecs,
-  updateIncidentReportStatus,
 } from '../services/equipments';
 
 export const equipmentKeys = {
@@ -38,11 +29,6 @@ export const equipmentKeys = {
   specs: (id: number) => ['equipment', 'specs', id] as const,
   detail: (id: number) => ['equipment', 'detail', id] as const,
   reports: (id: number, params?: EquipmentReportQueryParams) => ['equipment', 'reports', id, params] as const,
-};
-
-export const incidentKeys = {
-  all: ['incident-reports'] as const,
-  list: (params?: any) => ['incident-reports', 'list', params] as const,
 };
 
 export const dashboardKeys = {
@@ -123,45 +109,6 @@ export function useDownloadEquipmentReports() {
       }
       return downloadEquipmentReports(arg.id, arg.params);
     },
-  });
-}
-
-export function useCreateNovedad() {
-  const queryClient = useQueryClient();
-  return useMutation<
-    IncidentReport | Novedad,
-    Error,
-    CreateIncidentReportPayload | CreateNovedadPayload
-  >(
-    {
-      mutationFn: createIncidentReport,
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: incidentKeys.all });
-        queryClient.invalidateQueries({ queryKey: equipmentKeys.all });
-      },
-    },
-  );
-}
-
-export function useIncidentReports(params?: {
-  productId?: number;
-  product_id?: number;
-  severity?: IncidentSeverity;
-  status?: IncidentStatus;
-  page?: number;
-  per_page?: number;
-}) {
-  return useQuery({
-    queryKey: incidentKeys.list(params),
-    queryFn: () => fetchIncidentReports(params),
-  });
-}
-
-export function useUpdateIncidentReportStatus() {
-  const queryClient = useQueryClient();
-  return useMutation<IncidentReport, Error, { id: number; status: IncidentStatus }>({
-    mutationFn: ({ id, status }) => updateIncidentReportStatus(id, status),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: incidentKeys.all }),
   });
 }
 

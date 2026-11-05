@@ -85,11 +85,11 @@ Decisiones tomadas:
   - [ ] Estado con el componente `Badge`: `pendiente`, `en_proceso`, `procesado`, `rechazado`.
   - [ ] Motivo de rechazo visible.
   - [ ] Cancelar solo si está `pendiente`, con diálogo de confirmación (`useCancelLoanRequest`).
-- [ ] **Novedades** (equivale a `novedades.tsx` y `new-incident-modal.tsx`):
-  - [ ] Lista de mis informes con `useMyIncidentReports` y descarga del PDF.
-  - [ ] Diálogo de nuevo informe: equipo o unidad (obligatoria en equipo/maqueta), tipo de solicitud, problemas con descripción, sugerencia, foto de evidencia (jpg/png/webp, máx. 10 MB).
-  - [ ] Componente de firma con `<canvas>` que entrega PNG en base64 (menos de 512 KB).
-  - [ ] Envío con `useCreateIncidentReport`.
+- [x] **Novedades** (equivale a `novedades.tsx` y `new-incident-modal.tsx`; `features/profesor/pages/mis-novedades-page.tsx`):
+  - [x] Lista de mis informes con `useMyIncidentReports`, detalle y descarga del PDF (reutiliza `IncidentDetailSheet` de `features/novedades`).
+  - [x] Diálogo de nuevo informe con el contrato vigente (`POST /api/incident-reports`): asignatura, fecha (no futura), laboratorio (`location_id`), problemas marcados con descripción obligatoria, sugerencia, código de equipo o insumo (opcional) y foto de evidencia (jpg/png/webp, máx. 10 MB).
+  - [x] Componente de firma con `<canvas>` que entrega PNG en base64.
+  - [x] Envío con `useCreateIncidentReport`.
 - [ ] Diseño según el skill `sgia-design`; el rojo institucional solo para alertas críticas.
 
 ### 4. Rutas (`apps/web/src/app.tsx`)
@@ -116,7 +116,7 @@ Se sigue el patrón existente de «Accesos rápidos de prueba» (usuarios `@sgia
 - [x] Unit test `roles.test.ts`: `PRO-01` es rol web, su ruta de inicio, accesos permitidos y denegados.
 - [ ] Component test de la solicitud: campos obligatorios, hora de término posterior a la de inicio, fecha no pasada, mínimo 1 insumo, sin productos repetidos y payload enviado (`career_id`, `start_time`, `end_time`, `location_id`, `storeroom_id`, `items`).
 - [ ] Component test de Mis solicitudes: Cancelar solo en `pendiente`.
-- [ ] Component test de Novedades: unidad obligatoria en equipo/maqueta, firma requerida y envío.
+- [x] Component test de Novedades (`new-incident-dialog.test.tsx`, `incident-form-schema.test.ts`): campos obligatorios, descripción por problema, foto y envío.
 - [x] Test de login: `PRO-01` inicia sesión en la web y va a `/profesor/solicitudes`.
 - [ ] Test de rutas: `PRO-01` en `/usuarios` ve `ForbiddenPage`; `AD-01` en `/profesor/*` también.
 - [ ] `pnpm typecheck` y `pnpm --filter @sgia/web test` pasan.

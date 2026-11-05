@@ -30,6 +30,7 @@ import {
   RequireAuth,
   RequireRole,
 } from '@/features/auth/components/protected-route';
+import MisNovedadesPage from '@/features/profesor/pages/mis-novedades-page';
 import { ProfesorPendientePage } from '@/features/profesor/pages/profesor-pendiente-page';
 import { getRoleDefaultPath } from '@/features/auth/types/roles';
 
@@ -243,7 +244,7 @@ function AppContent() {
               path="/profesor/novedades"
               element={
                 <RequireRole allowedRoles={['PRO-01']}>
-                  <ProfesorPendientePage title="Novedades" />
+                  <MisNovedadesPage />
                 </RequireRole>
               }
             />
