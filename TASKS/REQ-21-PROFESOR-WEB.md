@@ -1,0 +1,148 @@
+# REQ-21: Interfaces Web del Profesor (PRO-01) y Atajo de Login de Desarrollo
+
+> **Código:** `REQ-21` | **Módulo:** `FU-04` / `FU-05` (Préstamos remotos e Informes de novedades)
+> **Plataforma:** Web (`apps/web`)
+> **Roles:** Docente / Profesor (`PRO-01`)
+
+---
+
+## 🎯 Objetivo
+
+Nuevo requisito: el profesor deja de ser exclusivo de la app móvil y debe poder trabajar también en la plataforma web con **todas sus funciones** (las mismas que tiene en `apps/mobile`): catálogo y solicitud de préstamo remoto (REQ-09), seguimiento de sus solicitudes e informes de novedades (REQ-13).
+
+Decisiones tomadas:
+
+- Alcance: rol `PRO-01` en web con las funciones del móvil.
+- Layout: el mismo `app-layout` con menú reducido a las rutas permitidas a `PRO-01`.
+- Atajo de login: **autologin de desarrollo**, visible solo con `import.meta.env.DEV`.
+
+### Campos de la solicitud de préstamo
+
+| Campo | Entrada | Obligatorio | Se envía como |
+|---|---|:---:|---|
+| Profesor | Automático (usuario autenticado), solo lectura | Sí | Lo toma el backend del token |
+| Carrera | Selector con todas las carreras (`useCareers`); el profesor no necesita tener carreras asignadas | Sí | `career_id` |
+| Asignatura | Texto | Sí | `subject` |
+| Fecha de actividad | Fecha, no pasada | Sí | `loan_date` (`YYYY-MM-DD`) |
+| Hora de inicio | `HH:MM` | Sí | `start_time` |
+| Hora de término | `HH:MM`, posterior a la de inicio | Sí | `end_time` |
+| Laboratorio | Selector con `GET /api/locations?tipo=sala\|taller&storeroom_id=…`, filtrado por el pañol elegido | Sí | `location_id` |
+| Pañol a solicitar | Selector con `GET /api/storerooms` (por defecto el del profesor, `storeroom_id` de `/api/me`) | Sí | `storeroom_id` |
+| Lista de insumos | Filas de producto + cantidad (mínimo 1, sin repetir producto) | Sí | `items: [{product_id, quantity}]` |
+
+> **Contrato con el backend:** estos campos requieren ampliar `POST /api/loans/requests` (hoy solo `items`, `subject`, `room`, `loan_date`, `time_block`, `notes`). El prompt para el backend está en [REQ-21-PROMPT-BACKEND.md](./REQ-21-PROMPT-BACKEND.md). Hasta que el backend lo implemente, el frontend no puede enviar `start_time`, `end_time`, `location_id` ni `storeroom_id`.
+> **Decisiones:** Laboratorio es un selector alimentado por la API (no texto libre); Profesor es solo el usuario autenticado (`PRO-01`), sin crear solicitudes a nombre de otro.
+
+> Solo la solicitud de préstamo necesita cambios en la API (ver arriba); novedades y cancelación no. `packages/api-client` ya expone `useProducts`, `useCareers`, `useCreatePrestamo`, `useMyLoanRequests`, `useCancelLoanRequest`, `useMyIncidentReports`, `useCreateIncidentReport` y las descargas de PDF, firma y foto del informe.
+
+---
+
+## 📡 Endpoints utilizados (`ENDPOINTS.md`)
+
+| Método | Endpoint | Uso |
+|---|---|---|
+| `GET` | `/api/products` | Catálogo para la solicitud |
+| `POST` | `/api/loans/requests` | Crear solicitud remota (`items`, `subject`, `room`, `loan_date`, `time_block`, `notes`) |
+| `GET` | `/api/loans/my-requests` | Mis solicitudes |
+| `DELETE` | `/api/loans/requests/{id}` | Cancelar solicitud en estado `pendiente` |
+| `POST` | `/api/equipment/{id}/reports` | Crear informe de novedades (`multipart/form-data`) |
+| `GET` | `/api/products/{id}/units` | Elegir la unidad en equipos y maquetas |
+| `GET` | `/api/careers` | Carreras del formulario |
+
+---
+
+## 📋 Lista de Tareas Desglosada
+
+### 1. Roles y acceso (`apps/web/src/features/auth`)
+- [ ] Agregar `PRO-01` a `WebRoleCode` y `WEB_ROLES` en `types/roles.ts`.
+- [ ] Definir la ruta de inicio del profesor en `ROLE_DEFAULT_PATH` (`/profesor/solicitudes`).
+- [ ] Registrar en `ROUTE_PERMISSIONS` las rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` solo para `PRO-01` (`canAccessRoute` deja pasar rutas sin entrada).
+- [ ] Verificar que `PRO-01` no tenga acceso a ninguna ruta del panel administrativo.
+- [ ] Revisar que `isWebRole` (coincidencia por texto) no acepte roles no previstos.
+- [ ] `context/auth-context.tsx`: el rechazo «solo móvil» deja de aplicar a `PRO-01` y sigue para otros roles.
+- [ ] `pages/login.tsx`: reemplazar el texto «Docentes (PRO-01): usan la app móvil».
+- [ ] Actualizar `types/roles.test.ts` (hoy afirma que `PRO-01` queda excluido).
+
+### 2. Layout con menú reducido (`apps/web/src/layouts/app-layout.tsx`)
+- [ ] Agregar las entradas Catálogo, Mis solicitudes y Novedades con `roles: ['PRO-01']`.
+- [ ] Mantener sin cambios las entradas de `AD-01`, `DIR-01` y `PAN-01`; el profesor solo ve las suyas.
+- [ ] Sidebar colapsado (`isCollapsed === true`): `IconBar` siempre vertical (`axis="column"`).
+- [ ] Ajustar `layouts/app-layout.test.tsx`.
+
+### 3. Pantallas (`apps/web/src/features/profesor/`, un componente o hook por archivo)
+- [ ] **Catálogo y nueva solicitud** (equivale a `mobile/(app)/index.tsx`):
+  - [ ] Formulario con React Hook Form + Zod con los campos de la tabla «Campos de la solicitud de préstamo»: profesor (solo lectura), carrera, asignatura, fecha de actividad, hora de inicio, hora de término, laboratorio y pañol.
+  - [ ] Validaciones: fecha no pasada, hora de término posterior a la de inicio, todos los campos obligatorios y mínimo 1 insumo.
+  - [ ] Lista de insumos: cada fila con producto (buscador con `useProducts`, solo activos y con stock) y cantidad; agregar y quitar filas; sin productos repetidos.
+  - [ ] Pañol: selector con `GET /api/storerooms`, precargado con el pañol del profesor.
+  - [ ] Laboratorio: selector con `GET /api/locations` (`tipo` sala o taller), filtrado por el pañol elegido; se reinicia al cambiar de pañol.
+  - [ ] Enviar `career_id`, `storeroom_id`, `location_id`, `start_time` y `end_time`.
+  - [ ] Envío con `useCreatePrestamo` y confirmación con el código `REM-<año>-XXXXXX`.
+  - [ ] Errores 422 del backend (stock, fecha) mostrados con `apiErrorToMessage`.
+- [ ] **Mis solicitudes** (equivale a `explore.tsx`):
+  - [ ] Tabla con TanStack Table, código en `font-mono`; columnas: código, carrera, asignatura, fecha, horario, laboratorio, pañol, estado.
+  - [ ] Detalle de la solicitud con su lista de insumos (producto y cantidad).
+  - [ ] Estado con el componente `Badge`: `pendiente`, `en_proceso`, `procesado`, `rechazado`.
+  - [ ] Motivo de rechazo visible.
+  - [ ] Cancelar solo si está `pendiente`, con diálogo de confirmación (`useCancelLoanRequest`).
+- [ ] **Novedades** (equivale a `novedades.tsx` y `new-incident-modal.tsx`):
+  - [ ] Lista de mis informes con `useMyIncidentReports` y descarga del PDF.
+  - [ ] Diálogo de nuevo informe: equipo o unidad (obligatoria en equipo/maqueta), tipo de solicitud, problemas con descripción, sugerencia, foto de evidencia (jpg/png/webp, máx. 10 MB).
+  - [ ] Componente de firma con `<canvas>` que entrega PNG en base64 (menos de 512 KB).
+  - [ ] Envío con `useCreateIncidentReport`.
+- [ ] Diseño según el skill `sgia-design`; el rojo institucional solo para alertas críticas.
+
+### 4. Rutas (`apps/web/src/app.tsx`)
+- [ ] Tres rutas `/profesor/*` dentro de `RequireAuth` y `RequireRole allowedRoles={['PRO-01']}`.
+- [ ] `RootRoute` redirige a `PRO-01` a su inicio.
+- [ ] Un `AD-01`, `DIR-01` o `PAN-01` que entra a `/profesor/*` ve `ForbiddenPage`.
+
+### 5. Atajo de login de desarrollo (`pages/login.tsx`)
+- [ ] Botón «Entrar como profesor (dev)» visible solo con `import.meta.env.DEV`; ausente en el build de producción.
+- [ ] Credenciales desde variables de Vite (`VITE_DEV_PROFESOR_EMAIL`, `VITE_DEV_PROFESOR_PASSWORD`) en `.env.local` ignorado por git; nada escrito en el código.
+- [ ] Llama al mismo `login()` y redirige con `getRoleDefaultPath`.
+- [ ] Revisar `handleQuickFill`: tiene una contraseña escrita en el código (`Admin1234!`); sacarla a variables de entorno o eliminarla.
+- [ ] Documentar las variables en `.env.example`.
+
+### 6. Documentación
+- [ ] Actualizar `AGENTS.md` (tabla de roles y la línea «Mobile exclusivo para PRO-01»).
+- [ ] Actualizar `CLAUDE.md` (línea «Roles AD-01, DIR-01, PAN-01» de `apps/web`).
+- [ ] Actualizar `TASKS/REQ-01`, `REQ-09` y `REQ-13` (plataforma Web para `PRO-01`).
+- [ ] Registrar el cambio en `FIXES/CHANGELOG-FIXES.md`.
+
+---
+
+## 🧪 Pruebas Requeridas
+
+- [ ] Unit test `roles.test.ts`: `PRO-01` es rol web, su ruta de inicio, accesos permitidos y denegados.
+- [ ] Component test de la solicitud: campos obligatorios, hora de término posterior a la de inicio, fecha no pasada, mínimo 1 insumo, sin productos repetidos y payload enviado (`career_id`, `start_time`, `end_time`, `location_id`, `storeroom_id`, `items`).
+- [ ] Component test de Mis solicitudes: Cancelar solo en `pendiente`.
+- [ ] Component test de Novedades: unidad obligatoria en equipo/maqueta, firma requerida y envío.
+- [ ] Test de login: el botón de dev aparece en desarrollo y no en producción.
+- [ ] Test de rutas: `PRO-01` en `/usuarios` ve `ForbiddenPage`; `AD-01` en `/profesor/*` también.
+- [ ] `pnpm typecheck` y `pnpm --filter @sgia/web test` pasan.
+- [ ] Comprobación visual en Chromium con capturas: login con el botón de dev, menú reducido y las tres pantallas.
+
+---
+
+## ❓ Pendientes de confirmar
+
+- [x] Rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` (confirmadas).
+- [ ] Usuario `PRO-01` disponible en el backend de desarrollo para `.env.local`.
+- [ ] Si se puede quitar la contraseña escrita en `handleQuickFill`.
+- [ ] Backend: implementar el prompt de [REQ-21-PROMPT-BACKEND.md](./REQ-21-PROMPT-BACKEND.md) antes de la pantalla de solicitud (bloquea el envío real).
+- [x] Laboratorio: selector alimentado por la API.
+- [x] Profesor: solo el usuario autenticado (`PRO-01`).
+- [x] Carrera: el profesor no tiene carreras asignadas; el selector lista todas, sin restringir ni preseleccionar (emergencias).
+
+---
+
+## 🔀 Orden de trabajo
+
+1. Roles y acceso, con sus tests.
+2. Layout y rutas.
+3. (Backend) implementar el prompt de `REQ-21-PROMPT-BACKEND.md`.
+4. Solicitudes: catálogo, nueva solicitud y mis solicitudes.
+5. Novedades, con firma y foto.
+6. Atajo de login de desarrollo.
+7. Documentación y verificación.
