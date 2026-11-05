@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 /**
  * Unit test: validación del formulario de cotizaciones.
- * Restricción institucional INACAP: >= 3 proveedores seleccionados.
+ * Restricción institucional INACAP: >= 1 proveedor seleccionados.
  */
 
 // Mock Zod-like validation logic extracted from the form
-const MIN_SUPPLIERS = 3;
+const MIN_SUPPLIERS = 1;
 
 interface CotizacionFormData {
   products: Array<{ id: number; quantity: number }>;
@@ -26,7 +26,7 @@ function validateCotizacionForm(data: CotizacionFormData): {
 
   if (!data.supplier_ids || data.supplier_ids.length < MIN_SUPPLIERS) {
     errors.push(
-      `Debe seleccionar al menos ${MIN_SUPPLIERS} proveedores (regla institucional INACAP). Seleccionados: ${data.supplier_ids?.length ?? 0}.`,
+      `Debe seleccionar al menos ${MIN_SUPPLIERS} proveedores. Seleccionados: ${data.supplier_ids?.length ?? 0}.`,
     );
   }
 
@@ -57,7 +57,7 @@ function validateCotizacionForm(data: CotizacionFormData): {
 }
 
 describe('Validación del formulario de cotizaciones (REQ-07)', () => {
-  describe('Restricción de mínimo de proveedores (>= 3)', () => {
+  describe('Restricción de mínimo de proveedores (>= 1)', () => {
     it('rechaza la cotización con 0 proveedores seleccionados', () => {
       const result = validateCotizacionForm({
         products: [{ id: 1, quantity: 5 }],
@@ -66,31 +66,7 @@ describe('Validación del formulario de cotizaciones (REQ-07)', () => {
 
       expect(result.valid).toBe(false);
       expect(result.errors).toContainEqual(
-        expect.stringContaining('al menos 3 proveedores'),
-      );
-    });
-
-    it('rechaza la cotización con 1 proveedor seleccionado', () => {
-      const result = validateCotizacionForm({
-        products: [{ id: 1, quantity: 5 }],
-        supplier_ids: [10],
-      });
-
-      expect(result.valid).toBe(false);
-      expect(result.errors).toContainEqual(
-        expect.stringContaining('al menos 3 proveedores'),
-      );
-    });
-
-    it('rechaza la cotización con 2 proveedores seleccionados', () => {
-      const result = validateCotizacionForm({
-        products: [{ id: 1, quantity: 5 }],
-        supplier_ids: [10, 20],
-      });
-
-      expect(result.valid).toBe(false);
-      expect(result.errors).toContainEqual(
-        expect.stringContaining('al menos 3 proveedores'),
+        expect.stringContaining('al menos 1 proveedores'),
       );
     });
 
@@ -226,7 +202,7 @@ describe('Validación del formulario de cotizaciones (REQ-07)', () => {
     it('reporta múltiples errores cuando hay varios problemas', () => {
       const result = validateCotizacionForm({
         products: [],
-        supplier_ids: [10],
+        supplier_ids: [],
       });
 
       expect(result.valid).toBe(false);
@@ -235,7 +211,7 @@ describe('Validación del formulario de cotizaciones (REQ-07)', () => {
         expect.stringContaining('al menos un producto'),
       );
       expect(result.errors).toContainEqual(
-        expect.stringContaining('al menos 3 proveedores'),
+        expect.stringContaining('al menos 1 proveedores'),
       );
     });
   });

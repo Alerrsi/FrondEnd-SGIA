@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCajones, useConfirmInvoiceIntake } from '@sgia/api-client';
+import { useCajones, useConfirmInvoiceIntake, usePurchases } from '@sgia/api-client';
 import type { AnnualBudget, InvoiceIntake, Producto } from '@sgia/types';
 import { AlertTriangle, Check, Loader2, Plus, Sparkles, Trash2 } from 'lucide-react';
 
@@ -50,6 +50,10 @@ export function InvoiceReviewForm({
   onConfirmed,
 }: InvoiceReviewFormProps) {
   const confirmIntake = useConfirmInvoiceIntake();
+  const [purchaseId, setPurchaseId] = useState('');
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const { data: linkable } = usePurchases({ linkable: true, per_page: 100 });
+  const openPurchases = linkable?.data ?? [];
   const { data: cajonesPage } = useCajones({ per_page: 100 });
   const [created, setCreated] = useState<Producto[]>([]);
   const [quickFor, setQuickFor] = useState<{
@@ -89,13 +93,21 @@ export function InvoiceReviewForm({
   const autoMatched = (items ?? []).filter((it) => Number.isFinite(it.product_id)).length;
 
   const onSubmit = handleSubmit(async (values) => {
+    setPurchaseError(null);
     try {
       const confirmed = await confirmIntake.mutateAsync({
         id: intake.id,
-        payload: toConfirmPayload(values, productTypes),
+        payload: {
+          ...toConfirmPayload(values, productTypes),
+          ...(purchaseId ? { purchase_id: Number(purchaseId) } : {}),
+        },
       });
       toast.success(
-        `Factura ${confirmed.document_number ?? `#${confirmed.id}`} confirmada: se descontaron ${formatCLP(confirmed.total_deducted)} e ingresó el stock.`,
+        `Stock ingresado. ${
+          confirmed.purchase_id
+            ? `Orden ${confirmed.purchase?.code ?? `#${confirmed.purchase_id}`} asociada; se descontaron ${formatCLP(confirmed.total_deducted)} del presupuesto.`
+            : 'Sin orden de compra asociada (no se pudo asociar automáticamente).'
+        }`,
       );
       onConfirmed?.(confirmed);
     } catch (error) {
@@ -109,6 +121,8 @@ export function InvoiceReviewForm({
               message,
             },
           );
+        } else if (field === 'purchase_id') {
+          setPurchaseError(message);
         } else if (field === 'document_number') {
           setError('document_number', { message });
         }
@@ -157,8 +171,36 @@ export function InvoiceReviewForm({
           )}
         </div>
 
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="ii-purchase"
+            className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+          >
+            Orden de compra (opcional)
+          </label>
+          <select
+            id="ii-purchase"
+            value={purchaseId}
+            onChange={(e) => setPurchaseId(e.target.value)}
+            disabled={pending}
+            className={cn(inputClasses, 'max-w-xs')}
+          >
+            <option value="">Detectar automáticamente</option>
+            {openPurchases.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.code ?? `#${p.id}`}
+              </option>
+            ))}
+          </select>
+          {purchaseError && <p className={errorClasses}>{purchaseError}</p>}
+          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+            Si la factura se asocia a una orden de compra, la orden quedará completa y se descontará
+            del presupuesto el total de la factura.
+          </p>
+        </div>
+
         <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <table className="w-full border-collapse text-left text-xs">
+          <table className="w-full border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                 <th className="min-w-56 p-2 font-medium">Producto</th>

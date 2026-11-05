@@ -31,7 +31,7 @@ interface FormValues {
 const inputClasses =
   'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
 
-const MIN_SUPPLIERS = 3;
+const MIN_SUPPLIERS = 1;
 
 export function CotizacionFormDialog({
   open,
@@ -134,7 +134,7 @@ export function CotizacionFormDialog({
 
   const onSubmit = handleSubmit(async (values) => {
     if (values.supplier_ids.length < MIN_SUPPLIERS) {
-      toast.error(`Debes seleccionar al menos ${MIN_SUPPLIERS} proveedores (regla institucional INACAP).`);
+      toast.error(`Debes seleccionar al menos ${MIN_SUPPLIERS} proveedor.`);
       return;
     }
     if (values.products.length === 0) {
@@ -160,7 +160,7 @@ export function CotizacionFormDialog({
       onClose={onClose}
       hasUnsavedChanges={isDirty}
       title="Nueva cotización múltiple"
-      description="Selecciona productos y al menos 3 proveedores para emitir la solicitud de cotización."
+      description="Selecciona productos y al menos 1 proveedor para emitir la solicitud de cotización."
       className="max-w-2xl"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
@@ -254,7 +254,7 @@ export function CotizacionFormDialog({
             <div className="flex items-start gap-2 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 px-3 py-2">
               <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
               <p className="text-xs text-amber-700 dark:text-amber-300">
-                Regla institucional INACAP: debes seleccionar al menos <strong>{MIN_SUPPLIERS} proveedores</strong> para
+                Debes seleccionar al menos <strong>{MIN_SUPPLIERS} proveedor</strong> para
                 emitir una solicitud de cotización. Seleccionados: <strong>{suppliersCount}</strong>.
               </p>
             </div>

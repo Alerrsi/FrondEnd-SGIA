@@ -99,7 +99,12 @@ export interface Prestamo {
   subject?: string | null;
   carrera?: string | null;
   career_id?: number | null;
-  career?: { id: number; name: string; code?: string | null; level?: string | null } | null;
+  career?: {
+    id: number;
+    name: string;
+    code?: string | null;
+    level?: string | null;
+  } | null;
   sala?: string | null;
   room?: string | null;
   bloqueHorario?: string | null;
@@ -141,7 +146,12 @@ export interface Prestamo {
 }
 
 export interface CreatePrestamoPayload {
-  items: Array<{ product_id?: number; productoId?: number; quantity?: number; cantidad?: number }>;
+  items: Array<{
+    product_id?: number;
+    productoId?: number;
+    quantity?: number;
+    cantidad?: number;
+  }>;
   origen?: LoanOrigin;
   asignatura?: string;
   subject?: string;

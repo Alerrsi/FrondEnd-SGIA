@@ -43,6 +43,9 @@ export interface InvoiceIntake {
   annual_budget_id: number;
   purchase_id: number | null;
   annual_budget?: AnnualBudget;
+  /** Respuesta de confirm/GET (contrato): OC asociada y si hubo vínculo. */
+  purchase?: { code: string | null; status: string } | null;
+  linked?: boolean;
   document_number: string | null;
   status: InvoiceIntakeStatus;
   total_deducted: number;
@@ -65,8 +68,6 @@ export interface InvoiceIntakeQueryParams {
 
 export interface UploadInvoiceIntakePayload {
   file: File;
-  annual_budget_id?: number;
-  purchase_id?: number | null;
 }
 
 export interface ConfirmInvoiceIntakeItem {
@@ -80,5 +81,7 @@ export interface ConfirmInvoiceIntakeItem {
 
 export interface ConfirmInvoiceIntakePayload {
   document_number: string;
+  /** Opcional: si se omite, el backend intenta asociar una orden abierta por productos y cantidades. */
+  purchase_id?: number | null;
   items: ConfirmInvoiceIntakeItem[];
 }

@@ -49,7 +49,7 @@ function normalizeCajon(raw: any): CajonEntity {
 }
 
 function normalizePaginatedLocations(res: any): PaginatedResponse<LocationEntity> {
-  const rawList = Array.isArray(res) ? res : res?.data ?? [];
+  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
   const data = rawList.map(normalizeLocation);
   const meta = res?.meta ?? {
     currentPage: res?.current_page ?? 1,
@@ -61,7 +61,7 @@ function normalizePaginatedLocations(res: any): PaginatedResponse<LocationEntity
 }
 
 function normalizePaginatedCajones(res: any): PaginatedResponse<CajonEntity> {
-  const rawList = Array.isArray(res) ? res : res?.data ?? [];
+  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
   const data = rawList.map(normalizeCajon);
   const meta = res?.meta ?? {
     currentPage: res?.current_page ?? 1,
@@ -92,9 +92,7 @@ export async function fetchLocation(id: number): Promise<LocationEntity> {
   return normalizeLocation(response?.data ?? response);
 }
 
-export async function createLocation(
-  payload: CreateLocationPayload,
-): Promise<LocationEntity> {
+export async function createLocation(payload: CreateLocationPayload): Promise<LocationEntity> {
   const response = await post<CreateLocationPayload, any>('/locations', payload);
   return normalizeLocation(response?.data ?? response);
 }
@@ -130,17 +128,12 @@ export async function fetchCajon(id: number): Promise<CajonEntity> {
   return normalizeCajon(response?.data ?? response);
 }
 
-export async function createCajon(
-  payload: CreateCajonPayload,
-): Promise<CajonEntity> {
+export async function createCajon(payload: CreateCajonPayload): Promise<CajonEntity> {
   const response = await post<CreateCajonPayload, any>('/cajones', payload);
   return normalizeCajon(response?.data ?? response);
 }
 
-export async function updateCajon(
-  id: number,
-  payload: UpdateCajonPayload,
-): Promise<CajonEntity> {
+export async function updateCajon(id: number, payload: UpdateCajonPayload): Promise<CajonEntity> {
   const response = await patch<UpdateCajonPayload, any>(`/cajones/${id}`, payload);
   return normalizeCajon(response?.data ?? response);
 }

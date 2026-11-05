@@ -1,4 +1,10 @@
-import type { ChartType, MetricAggregation, MetricEntity, MetricQueryInput, TimeRange } from './metric';
+import type {
+  ChartType,
+  MetricAggregation,
+  MetricEntity,
+  MetricQueryInput,
+  TimeRange,
+} from './metric';
 
 // Dashboard personalizado (FU-06 / REQ-15): hasta 5 gráficos por usuario, persistidos en el servidor.
 

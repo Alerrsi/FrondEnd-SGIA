@@ -163,7 +163,6 @@ export type {
   UpdateCareerPayload,
 } from './unidad';
 
-
 export type {
   Student,
   StudentQueryParams,
@@ -198,12 +197,7 @@ export type {
 } from './panol';
 
 export { AUDIT_ACTIONS, AUDITABLE_TYPES } from './auditoria';
-export type {
-  AuditAction,
-  AuditableType,
-  AuditLog,
-  AuditLogQueryParams,
-} from './auditoria';
+export type { AuditAction, AuditableType, AuditLog, AuditLogQueryParams } from './auditoria';
 
 export { MAX_USER_CHARTS } from './dashboard-personal';
 export type {

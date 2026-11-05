@@ -4,14 +4,12 @@ import type {
   UpdateUsuarioPayload,
   UserQueryParams,
   UsuarioSinPassword,
-} from "@sgia/types";
-import { del, get, patch, post } from "../http";
-import { normalizeUser } from "./auth";
+} from '@sgia/types';
+import { del, get, patch, post } from '../http';
+import { normalizeUser } from './auth';
 
-function normalizePaginatedUsers(
-  res: any,
-): PaginatedResponse<UsuarioSinPassword> {
-  const rawList = Array.isArray(res) ? res : res?.data ?? [];
+function normalizePaginatedUsers(res: any): PaginatedResponse<UsuarioSinPassword> {
+  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
   const data = rawList.map(normalizeUser);
   const meta = res?.meta ?? {
     currentPage: res?.current_page ?? 1,
@@ -26,19 +24,19 @@ export async function fetchUsers(
   params?: UserQueryParams,
 ): Promise<PaginatedResponse<UsuarioSinPassword>> {
   const query = new URLSearchParams();
-  if (params?.role) query.set("role", params.role);
-  if (params?.rol_id) query.set("rol_id", String(params.rol_id));
-  if (params?.storeroom_id !== undefined && params.storeroom_id !== "")
-    query.set("storeroom_id", String(params.storeroom_id));
-  if (params?.career_id) query.set("career_id", String(params.career_id));
-  if (params?.area) query.set("area", params.area);
-  if (params?.is_active !== undefined) query.set("is_active", String(params.is_active));
-  if (params?.search) query.set("search", params.search);
-  if (params?.per_page) query.set("per_page", String(params.per_page));
-  if (params?.page) query.set("page", String(params.page));
+  if (params?.role) query.set('role', params.role);
+  if (params?.rol_id) query.set('rol_id', String(params.rol_id));
+  if (params?.storeroom_id !== undefined && params.storeroom_id !== '')
+    query.set('storeroom_id', String(params.storeroom_id));
+  if (params?.career_id) query.set('career_id', String(params.career_id));
+  if (params?.area) query.set('area', params.area);
+  if (params?.is_active !== undefined) query.set('is_active', String(params.is_active));
+  if (params?.search) query.set('search', params.search);
+  if (params?.per_page) query.set('per_page', String(params.per_page));
+  if (params?.page) query.set('page', String(params.page));
 
   const qs = query.toString();
-  const response = await get<any>(`/users${qs ? `?${qs}` : ""}`);
+  const response = await get<any>(`/users${qs ? `?${qs}` : ''}`);
   return normalizePaginatedUsers(response);
 }
 
@@ -70,7 +68,7 @@ export async function createUsuario(payload: CreateUsuarioPayload): Promise<Usua
   if (payload.area !== undefined) body.area = payload.area;
   if (payload.run !== undefined) body.run = payload.run;
 
-  const response = await post<any, any>("/users", body);
+  const response = await post<any, any>('/users', body);
   return normalizeUser(response?.data ?? response);
 }
 
@@ -113,9 +111,12 @@ export async function deleteUsuario(id: number): Promise<void> {
 }
 
 export async function setUsuarioActivo(id: number, activo: boolean): Promise<UsuarioSinPassword> {
-  const response = await patch<{ is_active: boolean; activo: boolean }, any>(`/users/${id}/status`, {
-    is_active: activo,
-    activo: activo,
-  });
+  const response = await patch<{ is_active: boolean; activo: boolean }, any>(
+    `/users/${id}/status`,
+    {
+      is_active: activo,
+      activo: activo,
+    },
+  );
   return normalizeUser(response?.data ?? response);
 }

@@ -33,7 +33,10 @@ export function normalizeStudent(raw: RawStudent): Student {
     email: raw.email ?? null,
     career_id: raw.career_id ?? raw.career?.id ?? null,
     career: raw.career ?? null,
-    loans_count: raw.loans_count === undefined || raw.loans_count === null ? undefined : Number(raw.loans_count),
+    loans_count:
+      raw.loans_count === undefined || raw.loans_count === null
+        ? undefined
+        : Number(raw.loans_count),
     created_at: raw.created_at,
     updated_at: raw.updated_at,
   };
@@ -68,7 +71,9 @@ export async function fetchStudent(id: number): Promise<Student> {
 
 export async function createStudent(payload: CreateStudentPayload): Promise<Student> {
   return normalizeStudent(
-    unwrap(await post<CreateStudentPayload, { data?: RawStudent } | RawStudent>('/students', payload)),
+    unwrap(
+      await post<CreateStudentPayload, { data?: RawStudent } | RawStudent>('/students', payload),
+    ),
   );
 }
 

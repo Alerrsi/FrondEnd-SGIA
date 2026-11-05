@@ -1,11 +1,5 @@
 export type MetricEntity =
-  | 'EQUIPMENT'
-  | 'SUPPLIES'
-  | 'LOANS'
-  | 'ALERTS'
-  | 'MAINTENANCE'
-  | 'CAREERS'
-  | 'TEACHERS';
+  'EQUIPMENT' | 'SUPPLIES' | 'LOANS' | 'ALERTS' | 'MAINTENANCE' | 'CAREERS' | 'TEACHERS';
 
 export type MetricAggregation = 'TOTAL' | 'AVERAGE' | 'COUNT' | 'RATE';
 

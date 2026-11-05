@@ -1,10 +1,6 @@
 // Tipos de notificación push / broadcast (`data.type`).
 
-export const PUSH_NOTIFICATION_TYPES = [
-  'loan_due',
-  'loan_overdue',
-  'maintenance_due',
-] as const;
+export const PUSH_NOTIFICATION_TYPES = ['loan_due', 'loan_overdue', 'maintenance_due'] as const;
 
 export type PushNotificationType = (typeof PUSH_NOTIFICATION_TYPES)[number];
 
@@ -56,7 +52,9 @@ export function parsePushNotificationData(raw: unknown): PushNotificationData | 
     return Number.isFinite(loanId) ? { type: data.type, loan_id: loanId } : null;
   }
   if (data.type === 'maintenance_due') {
-    const ids = Array.isArray(data.unit_ids) ? data.unit_ids.map(Number).filter(Number.isFinite) : [];
+    const ids = Array.isArray(data.unit_ids)
+      ? data.unit_ids.map(Number).filter(Number.isFinite)
+      : [];
     return { type: 'maintenance_due', unit_ids: ids };
   }
   return null;

@@ -212,7 +212,9 @@ export async function fetchMaintenanceRecords(
 }
 
 export async function fetchMaintenanceRecord(id: number): Promise<MaintenanceRecord> {
-  return normalizeMaintenanceRecord(unwrap(await get<RecordResponse>(`/maintenance-records/${id}`)));
+  return normalizeMaintenanceRecord(
+    unwrap(await get<RecordResponse>(`/maintenance-records/${id}`)),
+  );
 }
 
 /** Historial de una unidad (más reciente primero), con `documents`. */

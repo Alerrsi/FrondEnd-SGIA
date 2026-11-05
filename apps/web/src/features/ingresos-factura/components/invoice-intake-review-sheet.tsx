@@ -47,13 +47,13 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
           ) : (
             <>
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+                <SheetTitle className="flex items-center gap-2 text-lg text-zinc-900 dark:text-zinc-100">
                   <span className="font-mono">
                     {intake.document_number ?? `Ingreso #${intake.id}`}
                   </span>
                   <InvoiceIntakeStatusBadge status={intake.status} />
                 </SheetTitle>
-                <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+                <SheetDescription className="text-sm text-zinc-600 dark:text-zinc-300">
                   {budget
                     ? `${careerLabel(budget)} · ${budget.year}`
                     : intake.annual_budget_id
@@ -64,7 +64,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              <div className="mt-2 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
                 <InvoiceFilePreview intakeId={intake.id} hasFile={intake.has_file} />
 
                 <div className="flex flex-col gap-3">

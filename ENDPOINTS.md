@@ -228,7 +228,7 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 
 #### 3.1 Unidades de equipo (`equipo` y `maqueta`)
 
-> Los productos `equipo` y `maqueta` se gestionan por **unidades** (`equipment_units`), cada una con su código (`PRO-{carrera}-000001` / `MAQ-{carrera}-000001`), serie opcional y cajón. `quantity`, `quantity_in_repair` y `quantity_written_off` del producto se **derivan** de las unidades (las `prestado` no suman). Lectura: todos; alta/edición/estado: `AD-01`, `DIR-01`, `PAN-01`; borrado: `AD-01`, `DIR-01`. Estados: `disponible`, `prestado` (solo por préstamos), `en_reparacion`, `dado_de_baja` (final).
+> Los productos `equipo` y `maqueta` se gestionan por **unidades** (`equipment_units`), cada una con su código (`EQP-{carrera}-000001` / `MAQ-{carrera}-000001`), serie opcional y cajón. `quantity`, `quantity_in_repair` y `quantity_written_off` del producto se **derivan** de las unidades (las `prestado` no suman). Lectura: todos; alta/edición/estado: `AD-01`, `DIR-01`, `PAN-01`; borrado: `AD-01`, `DIR-01`. Estados: `disponible`, `prestado` (solo por préstamos), `en_reparacion`, `dado_de_baja` (final).
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
@@ -274,12 +274,12 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `POST` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | `multipart`: `file` (PDF/PNG/JPG/WEBP, 10 MB), `annual_budget_id`, `purchase_id` (opcional: compra del mismo presupuesto, no cancelada y con reserva vigente; `422` si no). Guarda el archivo en disco privado, corre el OCR y crea el ingreso en `borrador`; los ítems detectados quedan en `raw_ocr_payload.items`. Si el OCR no está disponible el borrador queda sin ítems (`raw_ocr_payload.ocr_available = false`). `201`. Límite 10/min. | ✅ Implementado |
-| `GET` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | Filtros `status` (`borrador`/`confirmado`/`anulado`), `annual_budget_id`, `from`, `to`, `per_page`. | ✅ Implementado |
-| `GET` | `/api/invoice-intakes/{id}` | `AD-01`, `DIR-01` | Detalle con `annual_budget` e `items` (con `product`). | ✅ Implementado |
+| `POST` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | `multipart`: `file` (PDF/PNG/JPG/WEBP, 10 MB). La factura no se asocia a presupuesto ni a compra. Guarda el archivo en disco privado, corre el OCR y crea el ingreso en `borrador`; los ítems detectados quedan en `raw_ocr_payload.items`. Si el OCR no está disponible el borrador queda sin ítems (`raw_ocr_payload.ocr_available = false`). `201`. Límite 10/min. | ✅ Implementado |
+| `GET` | `/api/invoice-intakes` | `AD-01`, `DIR-01` | Filtros `status` (`borrador`/`confirmado`/`anulado`), `from`, `to`, `per_page`. | ✅ Implementado |
+| `GET` | `/api/invoice-intakes/{id}` | `AD-01`, `DIR-01` | Detalle con `items` (con `product`). | ✅ Implementado |
 | `GET` | `/api/invoice-intakes/{id}/file` | `AD-01`, `DIR-01` | Descarga autenticada del archivo (disco privado). `404` si no tiene. | ✅ Implementado |
-| `POST` | `/api/invoice-intakes/{id}/confirm` | `AD-01`, `DIR-01` | `document_number`, `items: [{product_id, quantity, unit_price, detected_name?, cajon_id?}]`. En una transacción descuenta el presupuesto e ingresa el stock: `insumo` suma `quantity`; `equipo`/`maqueta` crea `quantity` unidades (`cajon_id` obligatorio). Si el ingreso está ligado a una compra, libera su reserva y consume el monto real (la diferencia vuelve al disponible). `422` si el total supera `available_amount` (más la reserva liberada), si no está en `borrador` o falta `cajon_id`. | ✅ Implementado |
-| `POST` | `/api/invoice-intakes/{id}/cancel` | `AD-01`, `DIR-01` | `borrador` → `anulado`, o `confirmado` → `anulado` con reversa completa (todo o nada): resta stock de insumos, da de baja las unidades creadas y repone el monto (`reposicion`). `422` en `items` si un insumo quedaría bajo 0, una unidad no está `disponible` / tiene préstamos o es anterior a la trazabilidad; `422` en `status` si ya está anulado. La compra ligada no cambia de estado. | ✅ Implementado |
+| `POST` | `/api/invoice-intakes/{id}/confirm` | `AD-01`, `DIR-01` | `document_number`, `items: [{product_id, quantity, unit_price, detected_name?, cajon_id?}]`. En una transacción ingresa el stock (no toca presupuestos ni compras): `insumo` suma `quantity`; `equipo`/`maqueta` crea `quantity` unidades (`cajon_id` obligatorio). `422` si no está en `borrador` o falta `cajon_id`. | ✅ Implementado |
+| `POST` | `/api/invoice-intakes/{id}/cancel` | `AD-01`, `DIR-01` | `borrador` → `anulado`, o `confirmado` → `anulado` con reversa completa (todo o nada): resta stock de insumos, da de baja las unidades creadas y, solo en ingresos antiguos ligados a un presupuesto, repone el monto (`reposicion`). `422` en `items` si un insumo quedaría bajo 0, una unidad no está `disponible` / tiene préstamos o es anterior a la trazabilidad; `422` en `status` si ya está anulado. La compra ligada no cambia de estado. | ✅ Implementado |
 
 ---
 
@@ -327,7 +327,7 @@ Catálogo de carreras con su nivel. El `area` del usuario se une por nombre exac
 
 | Método | Endpoint | Roles Permitidos | Descripción / Parámetros | Estado |
 |---|---|---|---|:---:|
-| `POST` | `/api/quotations` | `AD-01`, `DIR-01` | Crea la cotización, persiste ítems y proveedores contactados y **envía por correo la solicitud a los 3+ proveedores seleccionados** (`App\Services\QuotationEmailService` + `QuotationRequestMail`). Devuelve `emails_sent`.<br>**Body:** `products` (array con `id` y `quantity`, mínimo 1), `career_id` y `title` (opcionales), `supplier_ids` (mínimo 3 proveedores distintos), `notes`, `expires_at`. | ✅ Implementado |
+| `POST` | `/api/quotations` | `AD-01`, `DIR-01` | Crea la cotización, persiste ítems y proveedores contactados y **envía por correo la solicitud a los proveedores seleccionados** (`App\Services\QuotationEmailService` + `QuotationRequestMail`). Devuelve `emails_sent`.<br>**Body:** `products` (array con `id` y `quantity`, mínimo 1), `career_id` y `title` (opcionales), `supplier_ids` (mínimo 1, sin repetir), `notes`, `expires_at`. | ✅ Implementado |
 | `GET` | `/api/quotations` | `AD-01`, `DIR-01` | Historial de cotizaciones emitidas con ítems y proveedores contactados.<br>**Query Params:** `status` (alias `estado`: `pendiente`, `aceptada`, `rechazada`, `convertida`), `search` (código), `per_page`. | ✅ Implementado |
 | `GET` | `/api/quotations/{id}` | `AD-01`, `DIR-01` | Detalle de la cotización: ítems, proveedores contactados con su respuesta (`status`, `offer_total`, `responded_at`), orden de compra generada y transiciones permitidas. | ✅ Implementado |
 | `POST` | `/api/quotations/{id}/resend` | `AD-01`, `DIR-01` | Reintenta el correo a los proveedores que no lo recibieron (sin correo o con error). Solo cotizaciones `pendiente`. Responde `emails_sent` y `emails_failed`. Cada proveedor contactado trae `email_sent_at` y `email_error`. | ✅ Implementado |

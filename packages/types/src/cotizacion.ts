@@ -153,11 +153,18 @@ export interface CreatePurchasePayload {
   /** Obligatorio: el total se reserva en este presupuesto. */
   annual_budget_id: number;
   quotation_id?: number | null;
+  /** Mín. 3 cotizaciones `aceptada` distintas; `supplier_id` debe estar contactado en todas. */
+  quotation_ids?: number[];
   supplier_id?: number;
   quotation_reference?: string | null;
   expected_at?: string | null;
   notes?: string | null;
-  items?: Array<{ name?: string; product_id?: number; quantity: number; unit_price: number }>;
+  items?: Array<{
+    name?: string;
+    product_id?: number;
+    quantity: number;
+    unit_price: number;
+  }>;
 }
 
 export interface PurchaseQueryParams {
@@ -165,6 +172,8 @@ export interface PurchaseQueryParams {
   estado?: PurchaseStatus | string;
   supplier_id?: number;
   quotation_id?: number;
+  /** OC que esperan factura (selector manual de ingreso de factura). */
+  linkable?: boolean;
   search?: string;
   per_page?: number;
   page?: number;

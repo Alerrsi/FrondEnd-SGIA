@@ -1,9 +1,4 @@
-import type {
-  ExecutiveKpis,
-  KpiTimeRange,
-  MetricQueryInput,
-  MetricResult,
-} from '@sgia/types';
+import type { ExecutiveKpis, KpiTimeRange, MetricQueryInput, MetricResult } from '@sgia/types';
 import { post } from '../http';
 
 interface GraphQLResponse<TData> {
@@ -86,19 +81,15 @@ export function buildMetricInput(input: MetricQueryInput): Record<string, unknow
 export async function fetchExecutiveKpis(
   timeRange: KpiTimeRange = 'LAST_30_DAYS',
 ): Promise<ExecutiveKpis> {
-  const res = await executeGraphQL<{ executiveKpis: ExecutiveKpis }>(
-    EXECUTIVE_KPIS_QUERY,
-    { timeRange },
-  );
+  const res = await executeGraphQL<{ executiveKpis: ExecutiveKpis }>(EXECUTIVE_KPIS_QUERY, {
+    timeRange,
+  });
   return res.executiveKpis;
 }
 
-export async function fetchCustomMetric(
-  input: MetricQueryInput,
-): Promise<MetricResult> {
-  const res = await executeGraphQL<{ customMetric: MetricResult }>(
-    CUSTOM_METRIC_QUERY,
-    { input: buildMetricInput(input) },
-  );
+export async function fetchCustomMetric(input: MetricQueryInput): Promise<MetricResult> {
+  const res = await executeGraphQL<{ customMetric: MetricResult }>(CUSTOM_METRIC_QUERY, {
+    input: buildMetricInput(input),
+  });
   return res.customMetric;
 }

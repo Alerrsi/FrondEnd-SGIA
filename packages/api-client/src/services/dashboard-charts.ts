@@ -130,7 +130,8 @@ export function normalizeUserChart(raw: RawUserChart): UserChart {
     period: upper<TimeRange>(raw.period),
     date_from: raw.date_from ?? null,
     date_to: raw.date_to ?? null,
-    is_active: raw.is_active === undefined || raw.is_active === null ? true : Boolean(raw.is_active),
+    is_active:
+      raw.is_active === undefined || raw.is_active === null ? true : Boolean(raw.is_active),
     metric_input: normalizeMetricInput(raw.metric_input, title),
     created_at: raw.created_at,
     updated_at: raw.updated_at,
@@ -184,9 +185,7 @@ export async function updateMyChart(
 }
 
 /** Reordena en bloque en una transacción (permite intercambiar). Responde la lista ordenada. */
-export async function updateMyChartPositions(
-  positions: UserChartPosition[],
-): Promise<UserChart[]> {
+export async function updateMyChartPositions(positions: UserChartPosition[]): Promise<UserChart[]> {
   const res = await put<{ positions: UserChartPosition[] }, ChartListResponse>(
     '/me/charts/positions',
     { positions },

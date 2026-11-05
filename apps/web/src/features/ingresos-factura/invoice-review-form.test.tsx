@@ -13,6 +13,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
     data: { data: [{ id: 7, codigo: 'CAJ-A2', location: { nombre: 'Pañol TI' } }] },
   }),
   useConfirmInvoiceIntake: () => ({ mutateAsync: mockConfirm, isPending: false }),
+  usePurchases: () => ({ data: { data: [] } }),
   useCategories: () => ({ data: { data: [] } }),
   useCareers: () => ({ data: { data: [] } }),
   useCreateProducto: () => ({ mutateAsync: vi.fn(), isPending: false }),

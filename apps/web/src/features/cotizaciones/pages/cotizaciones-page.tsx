@@ -76,7 +76,7 @@ export default function CotizacionesPage() {
         {data.data.length === 0 && (
           <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-xs text-zinc-400 dark:text-zinc-500">
             No hay cotizaciones registradas actualmente. Emite una nueva cotización seleccionando
-            productos y al menos 3 proveedores.
+            productos y al menos 1 proveedor.
           </div>
         )}
         {data.data.map((cotizacion) => (

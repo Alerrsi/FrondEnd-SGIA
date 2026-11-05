@@ -69,7 +69,7 @@ export async function fetchEquipos(params?: EquipmentQueryParams): Promise<Equip
 
   const qs = query.toString();
   const response = await get<any>(`/equipment${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }
 
 export async function fetchEquipo(id: number): Promise<Equipo> {
@@ -83,51 +83,61 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
   return response?.data ?? response;
 }
 
-export async function fetchTopProducts(params?: DashboardAnalyticsParams): Promise<TopDemandedItem[]> {
+export async function fetchTopProducts(
+  params?: DashboardAnalyticsParams,
+): Promise<TopDemandedItem[]> {
   const query = new URLSearchParams();
   if (params?.limit) query.set('limit', String(params.limit));
   if (params?.since) query.set('since', params.since);
   const qs = query.toString();
   const response = await get<any>(`/dashboard/top-products${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }
 
-export async function fetchTopSupplies(params?: DashboardAnalyticsParams): Promise<TopDemandedItem[]> {
+export async function fetchTopSupplies(
+  params?: DashboardAnalyticsParams,
+): Promise<TopDemandedItem[]> {
   const query = new URLSearchParams();
   if (params?.limit) query.set('limit', String(params.limit));
   if (params?.since) query.set('since', params.since);
   const qs = query.toString();
   const response = await get<any>(`/dashboard/top-supplies${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }
 
-export async function fetchCareersDistribution(params?: { since?: string }): Promise<CareerDistribution[]> {
+export async function fetchCareersDistribution(params?: {
+  since?: string;
+}): Promise<CareerDistribution[]> {
   const query = new URLSearchParams();
   if (params?.since) query.set('since', params.since);
   const qs = query.toString();
   const response = await get<any>(`/dashboard/careers-distribution${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }
 
-export async function fetchLeastDemanded(params?: DashboardAnalyticsParams): Promise<TopDemandedItem[]> {
+export async function fetchLeastDemanded(
+  params?: DashboardAnalyticsParams,
+): Promise<TopDemandedItem[]> {
   const query = new URLSearchParams();
   if (params?.limit) query.set('limit', String(params.limit));
   if (params?.since) query.set('since', params.since);
   const qs = query.toString();
   const response = await get<any>(`/dashboard/least-demanded${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }
 
-export async function fetchTopTeachers(params?: DashboardAnalyticsParams): Promise<TeacherLoanRanking[]> {
+export async function fetchTopTeachers(
+  params?: DashboardAnalyticsParams,
+): Promise<TeacherLoanRanking[]> {
   const query = new URLSearchParams();
   if (params?.limit) query.set('limit', String(params.limit));
   if (params?.since) query.set('since', params.since);
   const qs = query.toString();
   const response = await get<any>(`/dashboard/top-teachers${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }
 
 export async function fetchLoansByTeacher(): Promise<any[]> {
   const response = await get<any>('/dashboard/loans-by-teacher');
-  return Array.isArray(response) ? response : response?.data ?? [];
+  return Array.isArray(response) ? response : (response?.data ?? []);
 }

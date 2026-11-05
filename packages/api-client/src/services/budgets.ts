@@ -15,7 +15,14 @@ import type {
   Usuario,
 } from '@sgia/types';
 import { del, get, patch, post } from '../http';
-import { buildQuery, toAmount, toPaginated, unwrap, type Amount, type RawPaginated } from './shared';
+import {
+  buildQuery,
+  toAmount,
+  toPaginated,
+  unwrap,
+  type Amount,
+  type RawPaginated,
+} from './shared';
 
 // Presupuestos anuales (FU-03 / REQ-16). Los montos llegan como string decimal ("150000.00").
 

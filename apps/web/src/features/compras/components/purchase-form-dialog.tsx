@@ -10,6 +10,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { formatCLP } from '@/features/compras/lib/format';
 import {
   EMPTY_PURCHASE_FORM,
+  MIN_QUOTATIONS,
   purchaseFormSchema,
   purchaseTotal,
   type PurchaseFormValues,
@@ -69,12 +70,13 @@ export function PurchaseFormDialog({
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
   const origin = useWatch({ control, name: 'origin' });
   const items = useWatch({ control, name: 'items' });
+  const quotationIds = useWatch({ control, name: 'quotation_ids' });
 
   useEffect(() => {
     if (!open) return;
     reset({
       ...EMPTY_PURCHASE_FORM,
-      quotation_id: initialQuotationId ?? undefined,
+      quotation_ids: initialQuotationId ? [initialQuotationId] : [],
     });
     setBudget(undefined);
   }, [open, initialQuotationId, reset]);
@@ -104,7 +106,11 @@ export function PurchaseFormDialog({
     };
     const payload: CreatePurchasePayload =
       values.origin === 'quotation'
-        ? { ...base, quotation_id: values.quotation_id }
+        ? {
+            ...base,
+            quotation_ids: values.quotation_ids,
+            supplier_id: values.supplier_id,
+          }
         : {
             ...base,
             supplier_id: values.supplier_id,
@@ -127,6 +133,9 @@ export function PurchaseFormDialog({
       const fieldErrors = apiFieldErrors(error);
       // El 422 por monto llega en `total`: se muestra junto al presupuesto elegido.
       if (fieldErrors.total) setError('annual_budget_id', { message: fieldErrors.total });
+      if (fieldErrors.quotation_ids)
+        setError('quotation_ids', { message: fieldErrors.quotation_ids });
+      if (fieldErrors.supplier_id) setError('supplier_id', { message: fieldErrors.supplier_id });
       if (fieldErrors.annual_budget_id)
         setError('annual_budget_id', { message: fieldErrors.annual_budget_id });
       for (const [field, message] of Object.entries(fieldErrors)) {
@@ -146,7 +155,7 @@ export function PurchaseFormDialog({
       onClose={onClose}
       hasUnsavedChanges={isDirty}
       title="Nueva orden de compra"
-      description="Genérala desde una cotización aceptada o registra una compra directa. El total se reserva en el presupuesto elegido."
+      description="Genérala desde 3 o más cotizaciones aceptadas o registra una compra directa. El total se reserva en el presupuesto elegido."
       className="max-w-2xl"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
@@ -166,7 +175,7 @@ export function PurchaseFormDialog({
                   onClick={() => field.onChange(value)}
                   disabled={isPending}
                 >
-                  {value === 'quotation' ? 'Desde cotización aceptada' : 'Compra directa'}
+                  {value === 'quotation' ? 'Desde cotizaciones aceptadas' : 'Compra directa'}
                 </Button>
               ))}
             </div>
@@ -210,44 +219,71 @@ export function PurchaseFormDialog({
         </div>
 
         {origin === 'quotation' ? (
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="po-quotation" className={labelClasses}>
-              Cotización aceptada
-            </label>
-            {/* Controlado: la cotización puede venir preseleccionada desde /cotizaciones. */}
-            <Controller
-              control={control}
-              name="quotation_id"
-              render={({ field }) => (
-                <select
-                  id="po-quotation"
-                  name={field.name}
-                  ref={field.ref}
-                  value={field.value ?? ''}
-                  onChange={(e) => field.onChange(optionalId(e.target.value))}
-                  onBlur={field.onBlur}
-                  aria-invalid={Boolean(errors.quotation_id) || undefined}
-                  disabled={isPending}
-                  className={inputClasses}
-                >
-                  <option value="">Selecciona una cotización…</option>
-                  {acceptedQuotations.map((q) => (
-                    <option key={q.id} value={q.id}>
-                      #{q.id} · {q.proveedor ?? 'Múltiples proveedores'} · {q.items.length} ítems
-                    </option>
-                  ))}
-                </select>
+          <>
+            <fieldset className="flex flex-col gap-1.5">
+              <legend className={labelClasses}>
+                Cotizaciones aceptadas ({quotationIds?.length ?? 0}/{MIN_QUOTATIONS} mínimo)
+              </legend>
+              <Controller
+                control={control}
+                name="quotation_ids"
+                render={({ field }) => (
+                  <div className="max-h-40 overflow-y-auto rounded-md border border-zinc-200 dark:border-zinc-800 p-2 space-y-1">
+                    {acceptedQuotations.map((q) => (
+                      <label key={q.id} className="flex items-center gap-2 text-xs font-mono">
+                        <input
+                          type="checkbox"
+                          checked={field.value.includes(q.id)}
+                          disabled={isPending}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.checked
+                                ? [...field.value, q.id]
+                                : field.value.filter((id) => id !== q.id),
+                            )
+                          }
+                        />
+                        #{q.id} · {q.proveedor ?? 'Múltiples proveedores'} · {q.items.length} ítems
+                      </label>
+                    ))}
+                    {acceptedQuotations.length === 0 && (
+                      <p className="text-xs text-zinc-400">
+                        No hay cotizaciones aceptadas disponibles.
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              {errors.quotation_ids && (
+                <p className={errorClasses}>{errors.quotation_ids.message}</p>
               )}
-            />
-            {errors.quotation_id && <p className={errorClasses}>{errors.quotation_id.message}</p>}
-            {acceptedQuotations.length === 0 && (
-              <p className="text-xs text-zinc-400">No hay cotizaciones aceptadas disponibles.</p>
-            )}
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Se copian proveedor, ítems y precios de la oferta aceptada; la cotización pasará a
-              «convertida».
-            </p>
-          </div>
+            </fieldset>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="po-supplier" className={labelClasses}>
+                Proveedor adjudicado
+              </label>
+              <select
+                id="po-supplier"
+                {...register('supplier_id', { setValueAs: optionalId })}
+                aria-invalid={Boolean(errors.supplier_id) || undefined}
+                disabled={isPending}
+                className={inputClasses}
+              >
+                <option value="">Selecciona un proveedor…</option>
+                {(suppliers?.data ?? []).map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              {errors.supplier_id && <p className={errorClasses}>{errors.supplier_id.message}</p>}
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Se consolidan los ítems por producto y el precio sale de la oferta del proveedor;
+                las cotizaciones pasarán a «convertida» y el total quedará reservado en el
+                presupuesto.
+              </p>
+            </div>
+          </>
         ) : (
           <>
             <div className="flex flex-col gap-1.5">
@@ -417,7 +453,12 @@ export function PurchaseFormDialog({
           <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button
+            type="submit"
+            disabled={
+              isPending || (origin === 'quotation' && (quotationIds?.length ?? 0) < MIN_QUOTATIONS)
+            }
+          >
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Generar orden
           </Button>

@@ -105,7 +105,9 @@ export default function ComprasPage() {
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando órdenes de compra…</div>
+        <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          Cargando órdenes de compra…
+        </div>
       ) : isError || !data ? (
         <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
           <AlertCircle className="h-5 w-5 shrink-0" />
@@ -158,7 +160,11 @@ export default function ComprasPage() {
       )}
 
       {canCreate && (
-        <PurchaseFormDialog open={formOpen} onClose={closeForm} initialQuotationId={quotationParam} />
+        <PurchaseFormDialog
+          open={formOpen}
+          onClose={closeForm}
+          initialQuotationId={quotationParam}
+        />
       )}
       <PurchaseDetailSheet
         open={selected !== null}

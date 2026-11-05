@@ -95,3 +95,15 @@ describe('Revisión de borrador de factura (REQ-17)', () => {
     });
   });
 });
+
+describe('matchProduct difuso', () => {
+  const prods = [
+    { id: 1, name: 'Pila Duracell AAA alcalina (pack 24)' },
+    { id: 2, name: 'Pila Duracell AA alcalina (tira x 12)' },
+  ] as never[];
+  it('asocia ignorando mayúsculas, ortografía y diferencia AA/AAA', () => {
+    expect(matchProduct('PILA DURACELL  AAA ALKALINA 2400', prods)?.id).toBe(1);
+    expect(matchProduct('PILA DURACELL AA ALKALINA TIRA X 12', prods)?.id).toBe(2);
+    expect(matchProduct('CARTON CORRUGADO', prods)).toBeUndefined();
+  });
+});

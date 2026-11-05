@@ -62,7 +62,9 @@ function buildQuery(params?: IncidentReportQueryParams): string {
 export async function fetchIncidentReports(
   params?: IncidentReportQueryParams,
 ): Promise<PaginatedResponse<IncidentReport>> {
-  return toPaginated(await get<RawPaginated<IncidentReport>>(`/incident-reports${buildQuery(params)}`));
+  return toPaginated(
+    await get<RawPaginated<IncidentReport>>(`/incident-reports${buildQuery(params)}`),
+  );
 }
 
 /** Seguimiento del docente (`PRO-01`): solo sus informes. */

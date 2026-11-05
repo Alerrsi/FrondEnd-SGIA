@@ -1,4 +1,5 @@
 import type { Cotizacion } from '@sgia/types';
+import { useUpdateQuotationStatus } from '@sgia/api-client';
 import { QuotationStatus } from '@sgia/types';
 import {
   Building2,
@@ -7,6 +8,10 @@ import {
   Package,
   ShoppingCart,
 } from 'lucide-react';
+
+import { useAuth } from '@/features/auth/context/auth-context';
+import { apiErrorToMessage } from '@/lib/api-error';
+import { toast } from '@/lib/toast';
 
 import { QuotationStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,11 +36,25 @@ export function CotizacionDetailSheet({
   cotizacion,
   onGenerateOrder,
 }: CotizacionDetailSheetProps) {
+  const { user } = useAuth();
+  const updateStatus = useUpdateQuotationStatus();
   if (!cotizacion) return null;
 
   const items = cotizacion.items ?? cotizacion.products ?? [];
   const suppliers = cotizacion.suppliers ?? [];
   const canGenerateOrder = cotizacion.estado === QuotationStatus.ACEPTADA;
+
+  // Solo el director cambia el estado; el backend valida la transición.
+  const canChangeStatus = user?.rol === 'DIR-01' && cotizacion.estado === QuotationStatus.PENDIENTE;
+  const changeStatus = async (status: string) => {
+    try {
+      await updateStatus.mutateAsync({ id: cotizacion.id, status });
+      toast.success('Estado de la cotización actualizado.');
+      onClose();
+    } catch (error) {
+      toast.error(apiErrorToMessage(error));
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -127,6 +146,26 @@ export function CotizacionDetailSheet({
               <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
                 {cotizacion.notas ?? cotizacion.notes}
               </p>
+            </div>
+          )}
+
+          {canChangeStatus && (
+            <div className="flex gap-2">
+              <Button
+                variant="primary"
+                disabled={updateStatus.isPending}
+                onClick={() => changeStatus(QuotationStatus.ACEPTADA)}
+                className="flex-1 text-xs"
+              >
+                Aceptar
+              </Button>
+              <Button
+                disabled={updateStatus.isPending}
+                onClick={() => changeStatus(QuotationStatus.RECHAZADA)}
+                className="flex-1 text-xs"
+              >
+                Rechazar
+              </Button>
             </div>
           )}
 

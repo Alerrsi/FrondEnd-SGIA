@@ -13,13 +13,24 @@ const issuePaths = (input: unknown) => {
 
 describe('purchaseFormSchema (REQ-08 + presupuesto)', () => {
   it('exige el presupuesto que financia la compra', () => {
-    expect(issuePaths({ ...EMPTY_PURCHASE_FORM, quotation_id: 4 })).toContain('annual_budget_id');
+    expect(
+      issuePaths({
+        ...EMPTY_PURCHASE_FORM,
+        quotation_ids: [1, 2, 3],
+        supplier_id: 2,
+      }),
+    ).toContain('annual_budget_id');
   });
 
   it('desde cotización basta con presupuesto y cotización', () => {
-    expect(issuePaths({ ...EMPTY_PURCHASE_FORM, annual_budget_id: 3, quotation_id: 4 })).toEqual(
-      [],
-    );
+    expect(
+      issuePaths({
+        ...EMPTY_PURCHASE_FORM,
+        annual_budget_id: 3,
+        quotation_ids: [1, 2, 3],
+        supplier_id: 2,
+      }),
+    ).toEqual([]);
   });
 
   it('en compra directa exige precio unitario en cada ítem', () => {
@@ -38,7 +49,11 @@ describe('purchaseFormSchema (REQ-08 + presupuesto)', () => {
   });
 
   it('en compra directa exige proveedor y al menos un ítem', () => {
-    const paths = issuePaths({ ...EMPTY_PURCHASE_FORM, origin: 'manual', annual_budget_id: 3 });
+    const paths = issuePaths({
+      ...EMPTY_PURCHASE_FORM,
+      origin: 'manual',
+      annual_budget_id: 3,
+    });
     expect(paths).toEqual(expect.arrayContaining(['supplier_id', 'items']));
   });
 

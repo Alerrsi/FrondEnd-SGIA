@@ -31,7 +31,10 @@ function normalizeCotizacion(raw: any): Cotizacion {
 
   return {
     id: raw.id,
-    proveedor: raw.proveedor ?? raw.supplier?.name ?? (raw.suppliers ? raw.suppliers.map((s: any) => s.name).join(', ') : null),
+    proveedor:
+      raw.proveedor ??
+      raw.supplier?.name ??
+      (raw.suppliers ? raw.suppliers.map((s: any) => s.name).join(', ') : null),
     supplier_ids: raw.supplier_ids ?? [],
     suppliers: raw.suppliers ?? [],
     items,
@@ -51,7 +54,7 @@ function normalizeCotizacion(raw: any): Cotizacion {
 }
 
 function normalizePaginatedQuotations(res: any): PaginatedResponse<Cotizacion> {
-  const rawList = Array.isArray(res) ? res : res?.data ?? [];
+  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
   const data = rawList.map(normalizeCotizacion);
   const meta = res?.meta ?? {
     currentPage: res?.current_page ?? 1,
@@ -115,12 +118,17 @@ export async function updateQuotationResponse(
   id: number,
   payload: QuotationResponsePayload,
 ): Promise<Cotizacion> {
-  const response = await patch<QuotationResponsePayload, any>(`/quotations/${id}/responses`, payload);
+  const response = await patch<QuotationResponsePayload, any>(
+    `/quotations/${id}/responses`,
+    payload,
+  );
   return normalizeCotizacion(response?.data ?? response);
 }
 
 // Proveedores (FU-03 / REQ-07)
-export async function fetchSuppliers(params?: SupplierQueryParams): Promise<PaginatedResponse<Supplier>> {
+export async function fetchSuppliers(
+  params?: SupplierQueryParams,
+): Promise<PaginatedResponse<Supplier>> {
   const query = new URLSearchParams();
   if (params?.search) query.set('search', params.search);
   if (params?.category) query.set('category', params.category);
@@ -140,7 +148,10 @@ export async function createSupplier(payload: CreateSupplierPayload): Promise<Su
   return post<CreateSupplierPayload, Supplier>('/suppliers', payload);
 }
 
-export async function updateSupplier(id: number, payload: Partial<CreateSupplierPayload>): Promise<Supplier> {
+export async function updateSupplier(
+  id: number,
+  payload: Partial<CreateSupplierPayload>,
+): Promise<Supplier> {
   return patch<Partial<CreateSupplierPayload>, Supplier>(`/suppliers/${id}`, payload);
 }
 
@@ -149,7 +160,9 @@ export async function deleteSupplier(id: number): Promise<void> {
 }
 
 export async function setSupplierStatus(id: number, is_active: boolean): Promise<Supplier> {
-  return patch<{ is_active: boolean }, Supplier>(`/suppliers/${id}/status`, { is_active });
+  return patch<{ is_active: boolean }, Supplier>(`/suppliers/${id}/status`, {
+    is_active,
+  });
 }
 
 // Compras y Adquisiciones (FU-03 / REQ-08)
@@ -217,12 +230,15 @@ function unwrapPurchase(response: { data?: RawPurchase } | RawPurchase): Purchas
   return normalizePurchase(raw);
 }
 
-export async function fetchPurchases(params?: PurchaseQueryParams): Promise<PaginatedResponse<PurchaseOrder>> {
+export async function fetchPurchases(
+  params?: PurchaseQueryParams,
+): Promise<PaginatedResponse<PurchaseOrder>> {
   const query = new URLSearchParams();
   const status = params?.status ?? params?.estado;
   if (status) query.set('status', status);
   if (params?.supplier_id) query.set('supplier_id', String(params.supplier_id));
   if (params?.quotation_id) query.set('quotation_id', String(params.quotation_id));
+  if (params?.linkable) query.set('linkable', '1');
   if (params?.search) query.set('search', params.search);
   if (params?.page) query.set('page', String(params.page));
   if (params?.per_page) query.set('per_page', String(params.per_page));
@@ -235,7 +251,12 @@ export async function fetchPurchases(params?: PurchaseQueryParams): Promise<Pagi
   const data = (res?.data ?? []).map(normalizePurchase);
   return {
     data,
-    meta: res?.meta ?? { currentPage: 1, lastPage: 1, perPage: data.length, total: data.length },
+    meta: res?.meta ?? {
+      currentPage: 1,
+      lastPage: 1,
+      perPage: data.length,
+      total: data.length,
+    },
   };
 }
 
@@ -249,7 +270,10 @@ export async function createPurchase(payload: CreatePurchasePayload): Promise<Pu
   );
 }
 
-export async function updatePurchaseStatus(id: number, status: PurchaseStatus | string): Promise<PurchaseOrder> {
+export async function updatePurchaseStatus(
+  id: number,
+  status: PurchaseStatus | string,
+): Promise<PurchaseOrder> {
   return unwrapPurchase(
     await patch<{ status: string }, { data?: RawPurchase }>(`/purchases/${id}/status`, { status }),
   );

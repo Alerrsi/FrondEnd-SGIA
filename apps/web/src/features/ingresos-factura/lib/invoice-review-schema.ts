@@ -51,14 +51,35 @@ const normalize = (s: string) =>
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
-    .replace(/\s+/g, ' ')
+    .replace(/k/g, 'c') // alkalina / alcalina
+    .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
-/** Busca un producto existente con el mismo nombre que el detectado por el OCR (sin tildes ni mayúsculas). */
+const tokens = (s: string) => new Set(normalize(s).split(' ').filter(Boolean));
+
+/**
+ * Busca el producto existente que corresponde al nombre detectado por el OCR, sin importar mayúsculas,
+ * tildes ni puntuación: primero igualdad exacta y, si no, el de mayor coincidencia de palabras (>= 75 % de
+ * las del nombre más corto). Si hay empate no asocia nada.
+ * shortcut: coincidencia por palabras sin tolerar erratas del OCR; subir a distancia de edición si hace falta.
+ */
 export function matchProduct(detectedName: string, products: Producto[]): Producto | undefined {
   const target = normalize(detectedName);
   if (!target) return undefined;
-  return products.find((p) => normalize(p.nombre ?? p.name ?? '') === target);
+  const name = (p: Producto) => p.nombre ?? p.name ?? '';
+  const exact = products.find((p) => normalize(name(p)) === target);
+  if (exact) return exact;
+
+  const a = tokens(detectedName);
+  const scored = products
+    .map((p) => {
+      const b = tokens(name(p));
+      const common = [...a].filter((t) => b.has(t)).length;
+      return { p, score: common / Math.min(a.size, b.size || 1) };
+    })
+    .filter((x) => x.score >= 0.75)
+    .sort((x, y) => y.score - x.score);
+  return scored.length === 1 || (scored[0] && scored[0].score > scored[1].score) ? scored[0].p : undefined;
 }
 
 /** Valores iniciales del formulario a partir del OCR del borrador. */

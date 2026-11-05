@@ -16,11 +16,7 @@ export type MaintenanceStatus = 'en_curso' | 'finalizada' | 'anulada';
 export type MaintenanceResult = 'operativo' | 'baja';
 
 export type MaintenanceDocumentType =
-  | 'certificado_calibracion'
-  | 'informe_tecnico'
-  | 'manual'
-  | 'garantia'
-  | 'otro';
+  'certificado_calibracion' | 'informe_tecnico' | 'manual' | 'garantia' | 'otro';
 
 export interface MaintenanceDocument {
   id: number;
@@ -63,9 +59,15 @@ export interface UploadMaintenanceDocumentPayload {
 export interface MaintenanceRecord {
   id: number;
   equipment_unit_id: number;
-  equipment_unit?: (EquipmentUnit & {
-    product?: { id: number; name: string; maintenance_priority?: MaintenancePriority | null } | null;
-  }) | null;
+  equipment_unit?:
+    | (EquipmentUnit & {
+        product?: {
+          id: number;
+          name: string;
+          maintenance_priority?: MaintenancePriority | null;
+        } | null;
+      })
+    | null;
   incident_report_id?: number | null;
   incident_report?: IncidentReport | null;
   maintenance_type: MaintenanceType;

@@ -102,7 +102,8 @@ export function normalizePrestamo(raw: any): Prestamo {
     observaciones: raw.observaciones ?? raw.notes ?? null,
     notes: raw.notes ?? raw.observaciones ?? null,
     procesadoPorId: raw.procesadoPorId ?? raw.processed_by_id ?? null,
-    procesadoPorNombre: raw.procesadoPorNombre ?? raw.processed_by?.name ?? raw.processor?.nombre ?? null,
+    procesadoPorNombre:
+      raw.procesadoPorNombre ?? raw.processed_by?.name ?? raw.processor?.nombre ?? null,
     tramitadoAt: raw.tramitadoAt ?? raw.processed_at ?? null,
     processed_at: raw.processed_at ?? raw.tramitadoAt ?? null,
     diasAtraso,
@@ -116,7 +117,7 @@ export function normalizePrestamo(raw: any): Prestamo {
 }
 
 function normalizePaginatedLoans(res: any): PaginatedResponse<Prestamo> {
-  const rawList = Array.isArray(res) ? res : res?.data ?? [];
+  const rawList = Array.isArray(res) ? res : (res?.data ?? []);
   const data = rawList.map(normalizePrestamo);
   const meta = res?.meta ?? {
     currentPage: res?.current_page ?? res?.currentPage ?? 1,
@@ -176,7 +177,9 @@ export async function fetchLoan(id: number): Promise<Prestamo> {
   return normalizePrestamo(response?.data ?? response);
 }
 
-export async function fetchPendingLoans(params?: PendingLoanParams): Promise<PaginatedResponse<Prestamo>> {
+export async function fetchPendingLoans(
+  params?: PendingLoanParams,
+): Promise<PaginatedResponse<Prestamo>> {
   const query = new URLSearchParams();
   if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
   if (params?.per_page) query.set('per_page', String(params.per_page));
@@ -216,7 +219,11 @@ export async function createLoanRequest(
     })),
     subject: (payload as any).subject ?? (payload as any).asignatura ?? '',
     career_id: payload.career_id,
-    loan_date: (payload as any).loan_date ?? (payload as any).fechaSolicitada ?? (payload as any).fecha ?? '',
+    loan_date:
+      (payload as any).loan_date ??
+      (payload as any).fechaSolicitada ??
+      (payload as any).fecha ??
+      '',
     ...(payload.due_date ? { due_date: payload.due_date } : {}),
     notes: (payload as any).notes,
     ...scheduleFields(payload),
@@ -238,7 +245,7 @@ export async function fetchMyLoanRequests(params?: LoanRequestQueryParams): Prom
   if (params?.page) query.set('page', String(params.page));
   const qs = query.toString();
   const response = await get<any>(`/loans/requests${qs ? `?${qs}` : ''}`);
-  const list = Array.isArray(response) ? response : response?.data ?? [];
+  const list = Array.isArray(response) ? response : (response?.data ?? []);
   return list.map(normalizePrestamo);
 }
 
@@ -246,10 +253,7 @@ export async function cancelLoanRequest(id: number): Promise<void> {
   return del<void>(`/loans/requests/${id}`);
 }
 
-export async function approveLoan(
-  id: number,
-  payload?: AprobarPrestamoPayload,
-): Promise<Prestamo> {
+export async function approveLoan(id: number, payload?: AprobarPrestamoPayload): Promise<Prestamo> {
   const body = {
     return_date: payload?.return_date ?? payload?.fechaDevolucion,
     notes: payload?.notes,
@@ -260,10 +264,7 @@ export async function approveLoan(
 
 export const approbarPrestamo = approveLoan;
 
-export async function rejectLoan(
-  id: number,
-  payload: RechazarPrestamoPayload,
-): Promise<Prestamo> {
+export async function rejectLoan(id: number, payload: RechazarPrestamoPayload): Promise<Prestamo> {
   const reason = payload.rejection_reason ?? payload.motivoRechazo ?? payload.motivo ?? '';
   const body = {
     rejection_reason: reason,
@@ -336,22 +337,27 @@ export async function checkinLoan(payload: LoanCheckinPayload): Promise<Prestamo
   return normalizePrestamo(response?.data ?? response);
 }
 
-export async function exportLoans(params?: LoanExportParams | {
-  start_date?: string;
-  end_date?: string;
-  from_date?: string;
-  to_date?: string;
-  status?: string;
-  fecha_desde?: string;
-  fecha_hasta?: string;
-  career_id?: number;
-  storeroom_id?: number;
-  location_id?: number;
-  loan_date?: string;
-  format?: 'pdf' | 'excel' | 'xlsx';
-}): Promise<Blob> {
+export async function exportLoans(
+  params?:
+    | LoanExportParams
+    | {
+        start_date?: string;
+        end_date?: string;
+        from_date?: string;
+        to_date?: string;
+        status?: string;
+        fecha_desde?: string;
+        fecha_hasta?: string;
+        career_id?: number;
+        storeroom_id?: number;
+        location_id?: number;
+        loan_date?: string;
+        format?: 'pdf' | 'excel' | 'xlsx';
+      },
+): Promise<Blob> {
   const query = new URLSearchParams();
-  const startDate = params?.start_date ?? (params as any)?.from_date ?? (params as any)?.fecha_desde;
+  const startDate =
+    params?.start_date ?? (params as any)?.from_date ?? (params as any)?.fecha_desde;
   const endDate = params?.end_date ?? (params as any)?.to_date ?? (params as any)?.fecha_hasta;
   if (startDate) query.set('from_date', startDate);
   if (endDate) query.set('to_date', endDate);

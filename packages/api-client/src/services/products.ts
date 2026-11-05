@@ -22,15 +22,12 @@ export function normalizeUbicacion(rawLoc: any, rawCajon?: any): Ubicacion {
   const loc = rawLoc?.location ?? rawLoc;
   const cajonObj = rawCajon ?? rawLoc?.cajon;
 
-  const sala =
-    typeof loc === 'string'
-      ? loc
-      : loc?.sala ?? loc?.nombre ?? '';
+  const sala = typeof loc === 'string' ? loc : (loc?.sala ?? loc?.nombre ?? '');
 
   const cajon =
     typeof cajonObj === 'string'
       ? cajonObj
-      : cajonObj?.codigo ?? cajonObj?.nombre ?? rawLoc?.cajon_nombre ?? '';
+      : (cajonObj?.codigo ?? cajonObj?.nombre ?? rawLoc?.cajon_nombre ?? '');
 
   const descripcion =
     typeof loc?.descripcion === 'string'
@@ -99,11 +96,7 @@ export function normalizeProducto(raw: any): Producto {
         : null;
 
   const nombre =
-    typeof raw.nombre === 'string'
-      ? raw.nombre
-      : typeof raw.name === 'string'
-        ? raw.name
-        : '';
+    typeof raw.nombre === 'string' ? raw.nombre : typeof raw.name === 'string' ? raw.name : '';
 
   const codigoBarras =
     typeof raw.codigoBarras === 'string'
@@ -162,9 +155,7 @@ export function normalizeProducto(raw: any): Producto {
   };
 }
 
-export async function fetchProducts(
-  params?: ProductoParams,
-): Promise<PaginatedResponse<Producto>> {
+export async function fetchProducts(params?: ProductoParams): Promise<PaginatedResponse<Producto>> {
   const query = new URLSearchParams();
   if (params?.search) query.set('search', params.search);
   if (params?.query) query.set('search', params.query);
@@ -292,7 +283,10 @@ export async function extractFactura(fileOrPayload: File | any): Promise<Invoice
     name: p.nombre ?? p.name ?? '',
     codigoBarras: p.codigoBarras ?? p.barcode ?? '',
     barcode: p.codigoBarras ?? p.barcode ?? '',
-    categoria: typeof p.categoria === 'string' ? p.categoria : p.categoria?.nombre ?? p.category ?? 'General',
+    categoria:
+      typeof p.categoria === 'string'
+        ? p.categoria
+        : (p.categoria?.nombre ?? p.category ?? 'General'),
     marca: p.marca ?? p.brand ?? null,
     modelo: p.modelo ?? p.model ?? null,
     stock: Number(p.stock ?? p.quantity ?? p.cantidad ?? 1),
@@ -303,7 +297,7 @@ export async function extractFactura(fileOrPayload: File | any): Promise<Invoice
 
   const supplier = data?.supplier_name
     ? { id: data.supplier_id, name: data.supplier_name }
-    : data?.supplier ?? data?.proveedor;
+    : (data?.supplier ?? data?.proveedor);
 
   return {
     invoice_number: data?.invoice_number ?? data?.numero_factura,

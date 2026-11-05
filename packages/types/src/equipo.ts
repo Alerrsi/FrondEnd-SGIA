@@ -1,9 +1,4 @@
-export type EquipmentStatus =
-  | 'operativo'
-  | 'en_mantencion'
-  | 'critico'
-  | 'baja'
-  | 'en_prestamo';
+export type EquipmentStatus = 'operativo' | 'en_mantencion' | 'critico' | 'baja' | 'en_prestamo';
 
 export interface EquipmentSpecs {
   id?: number;
@@ -89,11 +84,7 @@ export type IncidentStatus =
   | 'dado_de_baja';
 
 /** Casillas del formulario de novedades del docente. */
-export type IncidentProblemType =
-  | 'falla_equipo'
-  | 'falta_equipamiento'
-  | 'falta_insumo'
-  | 'otros';
+export type IncidentProblemType = 'falla_equipo' | 'falta_equipamiento' | 'falta_insumo' | 'otros';
 
 export const INCIDENT_PROBLEM_LABELS: Record<IncidentProblemType, string> = {
   falla_equipo: 'Falla de equipos / instrumento / software',
@@ -138,7 +129,11 @@ export interface IncidentReport {
   photo_url?: string | null;
   attachment_url?: string | null;
   equipment_unit_id?: number | null;
-  equipment_unit?: { id: number; code: string; serial_number?: string | null } | null;
+  equipment_unit?: {
+    id: number;
+    code: string;
+    serial_number?: string | null;
+  } | null;
   request_type?: 'falla' | 'reposicion' | 'mantencion';
   has_evidence_photo?: boolean;
   allowed_transitions?: IncidentStatus[];
@@ -179,8 +174,6 @@ export interface EquipmentReportQueryParams {
   per_page?: number;
   page?: number;
 }
-
-
 
 export interface DashboardStats {
   total_products: {
