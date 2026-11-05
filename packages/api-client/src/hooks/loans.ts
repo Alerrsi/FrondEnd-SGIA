@@ -7,6 +7,7 @@ import type {
   LoanCheckoutPayload,
   LoanExportParams,
   LoanRequestQueryParams,
+  PendingLoanParams,
   Prestamo,
   PrestamoParams,
   RechazarPrestamoPayload,
@@ -30,7 +31,7 @@ import {
 export const loanKeys = {
   all: ['loans'] as const,
   list: (params?: PrestamoParams) => ['loans', 'list', params] as const,
-  pending: (params?: { per_page?: number; page?: number }) => ['loans', 'pending', params] as const,
+  pending: (params?: PendingLoanParams) => ['loans', 'pending', params] as const,
   myRequests: (params?: LoanRequestQueryParams) => ['loans', 'my-requests', params] as const,
   detail: (id: number) => ['loans', 'detail', id] as const,
 };
@@ -42,7 +43,7 @@ export function useLoans(params?: PrestamoParams) {
   });
 }
 
-export function usePendingLoans(params?: { per_page?: number; page?: number }) {
+export function usePendingLoans(params?: PendingLoanParams) {
   return useQuery({
     queryKey: loanKeys.pending(params),
     queryFn: () => fetchPendingLoans(params),

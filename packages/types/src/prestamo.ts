@@ -161,6 +161,8 @@ export interface CreatePrestamoPayload {
   location_id?: number;
   /** Solo clientes antiguos: con `start_time`/`end_time` el backend lo regenera. */
   time_block?: string;
+  /** Vencimiento opcional (`AAAA-MM-DD`), no anterior a `loan_date`; por defecto, la misma fecha. */
+  due_date?: string;
   notes?: string;
 }
 
@@ -238,6 +240,10 @@ export interface LoanExportParams {
   to_date?: string;
   status?: string;
   career_id?: number;
+  storeroom_id?: number;
+  location_id?: number;
+  /** Fecha de la actividad (`AAAA-MM-DD`). */
+  loan_date?: string;
   format: 'pdf' | 'excel' | 'xlsx';
 }
 
@@ -261,6 +267,12 @@ export interface LoanParams {
   asignatura?: string;
   subject?: string;
   career_id?: number;
+  /** Pañol que prepara el préstamo. */
+  storeroom_id?: number;
+  /** Laboratorio (sala o taller). */
+  location_id?: number;
+  /** Fecha de la actividad (`AAAA-MM-DD`). */
+  loan_date?: string;
   sala?: string;
   room?: string;
   start_date?: string;
@@ -270,6 +282,13 @@ export interface LoanParams {
 }
 
 export type PrestamoParams = LoanParams;
+
+/** Cola del pañol (`GET /api/loans/pending`). `storeroom_id` solo lo aplica el backend para `AD-01`. */
+export interface PendingLoanParams {
+  storeroom_id?: number;
+  per_page?: number;
+  page?: number;
+}
 
 export interface LoanRequestQueryParams {
   status?: string;

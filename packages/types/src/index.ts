@@ -53,6 +53,7 @@ export type {
   PrestamoParams,
   LoanExportParams,
   LoanRequestQueryParams,
+  PendingLoanParams,
 } from './prestamo';
 
 export { QuotationStatus, PurchaseStatus } from './cotizacion';

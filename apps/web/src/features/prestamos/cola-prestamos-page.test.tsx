@@ -84,16 +84,50 @@ const mockPendingLoans: Prestamo[] = [
   },
 ];
 
+// Solicitud ampliada: horario, laboratorio y pañol.
+mockPendingLoans.push({
+  id: 3,
+  codigo: 'SOL-2026-003',
+  estado: 'pendiente',
+  origen: 'remoto',
+  asignatura: 'Redes de Computadores',
+  career_id: 3,
+  career: { id: 3, name: 'Ingeniería en Informática', code: 'II' },
+  loan_date: '2026-11-12',
+  start_time: '08:30',
+  end_time: '10:00',
+  storeroom_id: 1,
+  storeroom: { id: 1, name: 'Pañol Temuco', code: 'PAN-TEMUCO' },
+  location_id: 12,
+  location: { id: 12, nombre: 'Laboratorio de Redes', tipo: 'sala' },
+  teacher: { id: 7, name: 'Ana Docente' },
+  items: [],
+} as Prestamo);
+
+const mockAuth = vi.hoisted(() => ({ rol: 'PAN-01' }));
+const mockUsePendingLoans = vi.fn();
+
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useAuth: () => ({ user: { id: 1, nombre: 'Usuario', rol: mockAuth.rol } }),
+}));
+
 const mockAprobarMutateAsync = vi.fn();
 const mockRechazarMutateAsync = vi.fn();
 const mockRefetch = vi.fn();
 
 vi.mock('@sgia/api-client', () => ({
-  usePendingLoans: () => ({
-    data: { data: mockPendingLoans },
+  usePendingLoans: (params: unknown) => {
+    mockUsePendingLoans(params);
+    return {
+      data: { data: mockPendingLoans },
+      isLoading: false,
+      isFetching: false,
+      refetch: mockRefetch,
+    };
+  },
+  useStorerooms: () => ({
+    data: { data: [{ id: 1, name: 'Pañol Temuco', code: 'PAN-TEMUCO' }] },
     isLoading: false,
-    isFetching: false,
-    refetch: mockRefetch,
   }),
   useAprobarPrestamo: () => ({
     mutateAsync: mockAprobarMutateAsync,
@@ -116,13 +150,14 @@ vi.mock('@/lib/toast', () => ({
 describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockAuth.rol = 'PAN-01';
   });
 
   it('renderiza la cola de solicitudes pendientes con datos del docente e ítems', () => {
     render(
       <MemoryRouter>
         <ColaPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Cola de Despacho de Solicitudes Remotas')).toBeDefined();
@@ -139,16 +174,21 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
   });
 
   it('permite aprobar y preparar una solicitud remota', async () => {
-    mockAprobarMutateAsync.mockResolvedValueOnce({ id: 1, estado: 'PREPARADO' });
+    mockAprobarMutateAsync.mockResolvedValueOnce({
+      id: 1,
+      estado: 'PREPARADO',
+    });
     const user = userEvent.setup();
 
     render(
       <MemoryRouter>
         <ColaPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-    const approveButtons = screen.getAllByRole('button', { name: /Aprobar \/ Preparar/i });
+    const approveButtons = screen.getAllByRole('button', {
+      name: /Aprobar \/ Preparar/i,
+    });
     expect(approveButtons.length).toBeGreaterThanOrEqual(1);
 
     await user.click(approveButtons[0]!);
@@ -157,13 +197,16 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
   });
 
   it('abre el modal de rechazo, valida motivo obligatorio y envía el rechazo', async () => {
-    mockRechazarMutateAsync.mockResolvedValueOnce({ id: 2, estado: 'RECHAZADA' });
+    mockRechazarMutateAsync.mockResolvedValueOnce({
+      id: 2,
+      estado: 'RECHAZADA',
+    });
     const user = userEvent.setup();
 
     render(
       <MemoryRouter>
         <ColaPrestamosPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const rejectButtons = screen.getAllByRole('button', { name: /Rechazar/i });
@@ -172,7 +215,9 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
     expect(screen.getByText('Rechazar Solicitud Remota')).toBeDefined();
     expect(screen.getAllByText(/SOL-2026-002/i).length).toBeGreaterThanOrEqual(1);
 
-    const submitRejectBtn = screen.getByRole('button', { name: /Confirmar Rechazo/i }) as HTMLButtonElement;
+    const submitRejectBtn = screen.getByRole('button', {
+      name: /Confirmar Rechazo/i,
+    }) as HTMLButtonElement;
     expect(submitRejectBtn.disabled).toBe(true);
 
     const textarea = screen.getByPlaceholderText(/mantención preventiva|sin stock/i);
@@ -184,8 +229,51 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
     await waitFor(() => {
       expect(mockRechazarMutateAsync).toHaveBeenCalledWith({
         id: 2,
-        payload: { rejection_reason: 'Sin stock disponible de osciloscopios en pañol' },
+        payload: {
+          rejection_reason: 'Sin stock disponible de osciloscopios en pañol',
+        },
       });
     });
+  });
+
+  it('muestra fecha, horario, laboratorio, pañol, carrera y profesor de cada solicitud', () => {
+    render(
+      <MemoryRouter>
+        <ColaPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Ana Docente')).toBeDefined();
+    expect(screen.getByText('12-11-2026 · 08:30 - 10:00')).toBeDefined();
+    expect(screen.getByText('Laboratorio de Redes')).toBeDefined();
+    expect(screen.getByText('Pañol Temuco')).toBeDefined();
+    expect(screen.getByText(/Ingeniería en Informática/)).toBeDefined();
+    // Solicitudes antiguas: el texto libre del bloque y la sala.
+    expect(screen.getByText('08:30 - 10:00')).toBeDefined();
+    expect(screen.getByText('Lab 102')).toBeDefined();
+  });
+
+  it('el pañolero no ve el filtro de pañol: el backend le muestra solo su cola', () => {
+    render(
+      <MemoryRouter>
+        <ColaPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByLabelText('Filtro de pañol')).toBeNull();
+    expect(mockUsePendingLoans).toHaveBeenLastCalledWith(undefined);
+  });
+
+  it('el administrador filtra la cola por pañol', async () => {
+    mockAuth.rol = 'AD-01';
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <ColaPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    await user.selectOptions(screen.getByLabelText('Filtro de pañol'), '1');
+    expect(mockUsePendingLoans).toHaveBeenLastCalledWith({ storeroom_id: 1 });
   });
 });

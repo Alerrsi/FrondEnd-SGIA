@@ -25,6 +25,8 @@ import { LoanStatus, type Prestamo } from '@sgia/types';
 
 import { LoanStatusBadge } from '@/components/ui/badge';
 import { CareerSelect } from '@/components/shared/career-select';
+import { LaboratorySelect } from '@/components/shared/laboratory-select';
+import { StoreroomSelect } from '@/components/shared/storeroom-select';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -33,6 +35,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { formatDateOnly } from '@/features/compras/lib/format';
+import {
+  loanLaboratory,
+  loanSchedule,
+  loanStoreroom,
+  loanTeacher,
+} from '@/features/prestamos/lib/loan-display';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
 
@@ -47,6 +56,9 @@ export default function HistorialPrestamosPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [careerFilter, setCareerFilter] = useState<number | undefined>(undefined);
+  const [storeroomFilter, setStoreroomFilter] = useState<number | undefined>(undefined);
+  const [locationFilter, setLocationFilter] = useState<number | undefined>(undefined);
+  const [loanDateFilter, setLoanDateFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
 
   // Detalle Drawer
@@ -60,10 +72,24 @@ export default function HistorialPrestamosPage() {
       start_date: startDate || undefined,
       end_date: endDate || undefined,
       career_id: careerFilter,
+      storeroom_id: storeroomFilter,
+      location_id: locationFilter,
+      loan_date: loanDateFilter || undefined,
       page,
       per_page: pageSize,
     }),
-    [search, estadoFilter, startDate, endDate, careerFilter, page, pageSize],
+    [
+      search,
+      estadoFilter,
+      startDate,
+      endDate,
+      careerFilter,
+      storeroomFilter,
+      locationFilter,
+      loanDateFilter,
+      page,
+      pageSize,
+    ],
   );
 
   const { data, isLoading, isFetching, refetch } = useLoans(queryParams);
@@ -73,9 +99,18 @@ export default function HistorialPrestamosPage() {
   const meta = data?.meta;
 
   // Metric strip data
-  const { data: allActiveData } = useLoans({ estado: LoanStatus.ACTIVO, per_page: 1 });
-  const { data: allOverdueData } = useLoans({ estado: LoanStatus.ATRASADO, per_page: 1 });
-  const { data: allReturnedData } = useLoans({ estado: LoanStatus.DEVUELTO, per_page: 1 });
+  const { data: allActiveData } = useLoans({
+    estado: LoanStatus.ACTIVO,
+    per_page: 1,
+  });
+  const { data: allOverdueData } = useLoans({
+    estado: LoanStatus.ATRASADO,
+    per_page: 1,
+  });
+  const { data: allReturnedData } = useLoans({
+    estado: LoanStatus.DEVUELTO,
+    per_page: 1,
+  });
 
   const totalLoans = meta?.total ?? loans.length;
   const activeCount = allActiveData?.meta?.total ?? 0;
@@ -90,6 +125,9 @@ export default function HistorialPrestamosPage() {
         start_date: startDate || undefined,
         end_date: endDate || undefined,
         career_id: careerFilter,
+        storeroom_id: storeroomFilter,
+        location_id: locationFilter,
+        loan_date: loanDateFilter || undefined,
         format,
       });
 
@@ -123,7 +161,7 @@ export default function HistorialPrestamosPage() {
           </span>
         ),
       }),
-      columnHelper.accessor((row) => row.solicitanteNombre || row.usuario?.name || 'Docente', {
+      columnHelper.accessor((row) => loanTeacher(row), {
         id: 'docente',
         header: 'Docente Solicitante',
         cell: (info) => {
@@ -154,13 +192,14 @@ export default function HistorialPrestamosPage() {
           </div>
         ),
       }),
-      columnHelper.accessor((row) => row.sala || 'Pañol', {
+      columnHelper.accessor((row) => loanLaboratory(row), {
         id: 'sala',
-        header: 'Sala / Taller',
+        header: 'Laboratorio / Pañol',
         cell: (info) => (
-          <span className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-            {info.getValue()}
-          </span>
+          <div className="flex flex-col text-xs">
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">{info.getValue()}</span>
+            <span className="text-[11px] text-zinc-400">{loanStoreroom(info.row.original)}</span>
+          </div>
         ),
       }),
       columnHelper.accessor((row) => row.items?.length ?? 0, {
@@ -187,9 +226,7 @@ export default function HistorialPrestamosPage() {
             if (!raw || raw === '—') return '—';
             const formatted = raw.length >= 10 ? raw.slice(0, 10) : raw;
             return (
-              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
-                {formatted}
-              </span>
+              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">{formatted}</span>
             );
           },
         },
@@ -202,17 +239,11 @@ export default function HistorialPrestamosPage() {
           cell: (info) => {
             const raw = info.getValue();
             if (!raw || raw === '—') {
-              return (
-                <span className="font-mono text-[11px] text-zinc-400">
-                  Pendiente
-                </span>
-              );
+              return <span className="font-mono text-[11px] text-zinc-400">Pendiente</span>;
             }
             const formatted = raw.length >= 10 ? raw.slice(0, 10) : raw;
             return (
-              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
-                {formatted}
-              </span>
+              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">{formatted}</span>
             );
           },
         },
@@ -282,7 +313,10 @@ export default function HistorialPrestamosPage() {
       {/* Header técnico con miga de pan */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400">
+          <span
+            data-sede-badge="true"
+            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400"
+          >
             <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
@@ -299,7 +333,8 @@ export default function HistorialPrestamosPage() {
               Historial y Auditoría de Préstamos
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Trazabilidad física completa de solicitudes remotas y de mesón, bitácora de eventos y reportes semestrales.
+              Trazabilidad física completa de solicitudes remotas y de mesón, bitácora de eventos y
+              reportes semestrales.
             </p>
           </div>
 
@@ -349,12 +384,16 @@ export default function HistorialPrestamosPage() {
         </div>
 
         <div className="flex items-center gap-2 px-4">
-          <AlertTriangle className={cn('h-3 w-3', overdueCount > 0 ? 'text-rose-500' : 'text-zinc-400')} />
+          <AlertTriangle
+            className={cn('h-3 w-3', overdueCount > 0 ? 'text-rose-500' : 'text-zinc-400')}
+          />
           <span className="text-zinc-400 dark:text-zinc-500">Atrasados Críticos:</span>
           <strong
             className={cn(
               'tabular-nums font-semibold',
-              overdueCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-zinc-700 dark:text-zinc-300',
+              overdueCount > 0
+                ? 'text-rose-600 dark:text-rose-400'
+                : 'text-zinc-700 dark:text-zinc-300',
             )}
           >
             {overdueCount}
@@ -428,6 +467,39 @@ export default function HistorialPrestamosPage() {
               placeholder="Todas las carreras"
               aria-label="Filtro de carrera"
               className={cn(controlClasses, 'px-2.5')}
+            />
+
+            {/* Filtros de pañol y laboratorio (el laboratorio depende del pañol elegido) */}
+            <StoreroomSelect
+              value={storeroomFilter}
+              onChange={(id) => {
+                setStoreroomFilter(id);
+                setLocationFilter(undefined);
+                setPage(1);
+              }}
+              aria-label="Filtro de pañol"
+              className={cn(controlClasses, 'px-2.5')}
+            />
+            <LaboratorySelect
+              value={locationFilter}
+              storeroomId={storeroomFilter}
+              onChange={(id) => {
+                setLocationFilter(id);
+                setPage(1);
+              }}
+              aria-label="Filtro de laboratorio"
+              className={cn(controlClasses, 'px-2.5')}
+            />
+            <input
+              type="date"
+              value={loanDateFilter}
+              onChange={(e) => {
+                setLoanDateFilter(e.target.value);
+                setPage(1);
+              }}
+              aria-label="Fecha de la actividad"
+              title="Fecha de la actividad"
+              className={cn(controlClasses, 'px-2')}
             />
 
             {/* Filtro Rango Fechas */}
@@ -587,7 +659,7 @@ export default function HistorialPrestamosPage() {
                   <LoanStatusBadge estado={selectedLoan.estado} />
                 </div>
                 <SheetTitle className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                  {selectedLoan.solicitanteNombre}
+                  {loanTeacher(selectedLoan)}
                 </SheetTitle>
                 <SheetDescription className="font-mono text-xs text-zinc-400">
                   RUN: {selectedLoan.solicitanteRun || 'No registrado'} · Origen:{' '}
@@ -610,15 +682,29 @@ export default function HistorialPrestamosPage() {
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Sala / Taller</span>
+                  <span className="text-zinc-400 text-[10px]">Laboratorio</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {selectedLoan.sala || '—'}
+                    {loanLaboratory(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Bloque Horario</span>
+                  <span className="text-zinc-400 text-[10px]">Pañol</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {selectedLoan.bloqueHorario || selectedLoan.time_block || 'No especificado'}
+                    {loanStoreroom(selectedLoan)}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-zinc-400 text-[10px]">Fecha de actividad</span>
+                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                    {selectedLoan.loan_date ? formatDateOnly(selectedLoan.loan_date) : '—'}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-zinc-400 text-[10px]">Horario</span>
+                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                    {loanSchedule(selectedLoan) === '—'
+                      ? 'No especificado'
+                      : loanSchedule(selectedLoan)}
                   </p>
                 </div>
                 <div>
@@ -629,7 +715,9 @@ export default function HistorialPrestamosPage() {
                       selectedLoan.diasAtraso ? 'text-rose-600 font-bold' : 'text-zinc-600',
                     )}
                   >
-                    {selectedLoan.diasAtraso ? `${selectedLoan.diasAtraso} días` : '0 días (Al día)'}
+                    {selectedLoan.diasAtraso
+                      ? `${selectedLoan.diasAtraso} días`
+                      : '0 días (Al día)'}
                   </p>
                 </div>
               </div>
@@ -687,9 +775,7 @@ export default function HistorialPrestamosPage() {
                           </span>
                         )}
                         {evt.descripcion && (
-                          <p className="text-[11px] text-zinc-500 italic">
-                            {evt.descripcion}
-                          </p>
+                          <p className="text-[11px] text-zinc-500 italic">{evt.descripcion}</p>
                         )}
                       </div>
                     ))}

@@ -11,12 +11,13 @@ import { useAuth } from '@/features/auth/context/auth-context';
 import { CatalogPanel } from '@/features/profesor/components/catalog-panel';
 import {
   initialLoanRequestValues,
+  LOAN_REQUEST_SERVER_FIELDS,
   loanRequestSchema,
   toLoanRequestPayload,
   todayIso,
   type LoanRequestValues,
 } from '@/features/profesor/lib/loan-request-schema';
-import { apiErrorToMessage } from '@/lib/api-error';
+import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
@@ -38,6 +39,7 @@ export function LoanRequestForm() {
     control,
     handleSubmit,
     setValue,
+    setError,
     watch,
     formState: { errors },
   } = useForm<LoanRequestValues>({
@@ -52,8 +54,10 @@ export function LoanRequestForm() {
   const hasStoreroom = Number.isFinite(storeroomId);
   // Laboratorios = salas y talleres del pañol elegido (el backend rechaza otros tipos).
   const locations = (
-    useLocations({ storeroom_id: hasStoreroom ? storeroomId : undefined, per_page: 100 }).data?.data ??
-    []
+    useLocations({
+      storeroom_id: hasStoreroom ? storeroomId : undefined,
+      per_page: 100,
+    }).data?.data ?? []
   ).filter((l) => l.tipo === 'sala' || l.tipo === 'taller');
 
   // Al cambiar de pañol el laboratorio elegido deja de ser válido.
@@ -71,6 +75,16 @@ export function LoanRequestForm() {
       );
       navigate('/profesor/solicitudes');
     } catch (error) {
+      // 422: cada mensaje junto a su campo (`items.{i}.quantity` trae el stock del pañol).
+      const fieldErrors = apiFieldErrors(error);
+      for (const field of LOAN_REQUEST_SERVER_FIELDS) {
+        if (fieldErrors[field]) setError(field, { message: fieldErrors[field] });
+      }
+      for (const [key, message] of Object.entries(fieldErrors)) {
+        const match = /^items\.(\d+)\.(quantity|product_id)$/.exec(key);
+        if (match) setError(`items.${Number(match[1])}.quantity`, { message });
+        else if (key === 'items') setError('items', { message });
+      }
       toast.error(apiErrorToMessage(error));
     }
   });
@@ -79,17 +93,16 @@ export function LoanRequestForm() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-      <CatalogPanel
-        addedIds={addedIds}
-        onAdd={(item) => items.append({ ...item, quantity: 1 })}
-      />
+      <CatalogPanel addedIds={addedIds} onAdd={(item) => items.append({ ...item, quantity: 1 })} />
 
       <form
         onSubmit={onSubmit}
         noValidate
         className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
       >
-        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Datos de la actividad</h2>
+        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          Datos de la actividad
+        </h2>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
@@ -110,7 +123,11 @@ export function LoanRequestForm() {
             <CareerSelect
               id="lr-career"
               value={Number.isFinite(careerId) ? careerId : undefined}
-              onChange={(id) => setValue('career_id', id ?? Number.NaN, { shouldValidate: true })}
+              onChange={(id) =>
+                setValue('career_id', id ?? Number.NaN, {
+                  shouldValidate: true,
+                })
+              }
               invalid={Boolean(errors.career_id)}
               disabled={pending}
               className={`${inputClasses} mt-1.5`}
@@ -133,7 +150,7 @@ export function LoanRequestForm() {
           {errors.subject && <p className={errorClasses}>{errors.subject.message}</p>}
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="lr-date" className={labelClasses}>
               Fecha de actividad
@@ -149,6 +166,28 @@ export function LoanRequestForm() {
             />
             {errors.loan_date && <p className={errorClasses}>{errors.loan_date.message}</p>}
           </div>
+          <div>
+            <label htmlFor="lr-due" className={labelClasses}>
+              Devolución (opcional)
+            </label>
+            <input
+              id="lr-due"
+              type="date"
+              min={watch('loan_date') || todayIso()}
+              {...register('due_date')}
+              aria-invalid={Boolean(errors.due_date) || undefined}
+              disabled={pending}
+              className={`${inputClasses} mt-1.5`}
+            />
+            {errors.due_date ? (
+              <p className={errorClasses}>{errors.due_date.message}</p>
+            ) : (
+              <p className="mt-1 text-[11px] text-zinc-400">Si lo dejas vacío, el mismo día.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="lr-start" className={labelClasses}>
               Hora inicio
@@ -188,7 +227,9 @@ export function LoanRequestForm() {
               id="lr-storeroom"
               value={hasStoreroom ? storeroomId : ''}
               onChange={(e) =>
-                setValue('storeroom_id', toId(e.target.value), { shouldValidate: true })
+                setValue('storeroom_id', toId(e.target.value), {
+                  shouldValidate: true,
+                })
               }
               aria-invalid={Boolean(errors.storeroom_id) || undefined}
               disabled={pending}
@@ -214,9 +255,7 @@ export function LoanRequestForm() {
               disabled={pending || !hasStoreroom}
               className={`${inputClasses} mt-1.5`}
             >
-              <option value="">
-                {hasStoreroom ? 'Selecciona…' : 'Elige primero el pañol'}
-              </option>
+              <option value="">{hasStoreroom ? 'Selecciona…' : 'Elige primero el pañol'}</option>
               {locations.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.nombre}
@@ -257,7 +296,9 @@ export function LoanRequestForm() {
                           min={1}
                           max={field.available}
                           aria-label={`Cantidad de ${field.name}`}
-                          {...register(`items.${index}.quantity`, { valueAsNumber: true })}
+                          {...register(`items.${index}.quantity`, {
+                            valueAsNumber: true,
+                          })}
                           aria-invalid={Boolean(rowError) || undefined}
                           disabled={pending}
                           className={inputClasses}
@@ -283,7 +324,9 @@ export function LoanRequestForm() {
             </table>
           )}
           {errors.items?.message && <p className={errorClasses}>{errors.items.message}</p>}
-          {errors.items?.root?.message && <p className={errorClasses}>{errors.items.root.message}</p>}
+          {errors.items?.root?.message && (
+            <p className={errorClasses}>{errors.items.root.message}</p>
+          )}
         </fieldset>
 
         <div>
