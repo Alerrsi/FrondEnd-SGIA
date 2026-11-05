@@ -26,7 +26,7 @@ interface InvoiceIntakeReviewSheetProps {
 /** Detalle del ingreso: archivo a la izquierda y, si es borrador, la revisión editable a la derecha. */
 export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeReviewSheetProps) {
   const { data: intake, isLoading } = useInvoiceIntake(intakeId ?? undefined);
-  const { data: budget } = useBudget(intake?.annual_budget_id);
+  const { data: budget } = useBudget(intake?.annual_budget_id ?? undefined);
   const { data: purchase } = usePurchase(intake?.purchase_id ?? undefined);
   // El catálogo se carga antes de montar la revisión para asociar los ítems del OCR por nombre.
   const { data: catalog, isSuccess: catalogReady } = useProducts({ page: 1, per_page: 100 });
@@ -38,7 +38,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
   return (
     <>
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent className="w-full sm:max-w-6xl overflow-y-auto">
+        <SheetContent side="center" className="overflow-y-auto">
           {isLoading || !intake ? (
             <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
