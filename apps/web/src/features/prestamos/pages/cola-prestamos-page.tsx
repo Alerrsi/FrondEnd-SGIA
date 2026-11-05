@@ -276,9 +276,9 @@ export default function ColaPrestamosPage() {
                       <span className="block font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
                         RUN: {docenteRun}
                       </span>
-                      {loan.asignatura && (
+                      {(loan.asignatura || loan.career?.name) && (
                         <span className="block text-[11px] text-zinc-500 dark:text-zinc-400">
-                          {loan.asignatura}
+                          {[loan.asignatura, loan.career?.name].filter(Boolean).join(' · ')}
                         </span>
                       )}
                     </div>

@@ -24,6 +24,7 @@ import { useExportLoans, useLoans } from '@sgia/api-client';
 import { LoanStatus, type Prestamo } from '@sgia/types';
 
 import { LoanStatusBadge } from '@/components/ui/badge';
+import { CareerSelect } from '@/components/shared/career-select';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -45,6 +46,7 @@ export default function HistorialPrestamosPage() {
   const [estadoFilter, setEstadoFilter] = useState<string>('todos');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [careerFilter, setCareerFilter] = useState<number | undefined>(undefined);
   const [sorting, setSorting] = useState<SortingState>([]);
 
   // Detalle Drawer
@@ -57,10 +59,11 @@ export default function HistorialPrestamosPage() {
       estado: estadoFilter === 'todos' ? undefined : estadoFilter,
       start_date: startDate || undefined,
       end_date: endDate || undefined,
+      career_id: careerFilter,
       page,
       per_page: pageSize,
     }),
-    [search, estadoFilter, startDate, endDate, page, pageSize],
+    [search, estadoFilter, startDate, endDate, careerFilter, page, pageSize],
   );
 
   const { data, isLoading, isFetching, refetch } = useLoans(queryParams);
@@ -86,6 +89,7 @@ export default function HistorialPrestamosPage() {
       const blob = await exportMutation.mutateAsync({
         start_date: startDate || undefined,
         end_date: endDate || undefined,
+        career_id: careerFilter,
         format,
       });
 
@@ -142,9 +146,12 @@ export default function HistorialPrestamosPage() {
         id: 'asignatura',
         header: 'Asignatura / Carrera',
         cell: (info) => (
-          <span className="font-sans text-xs text-zinc-600 dark:text-zinc-300">
-            {info.getValue()}
-          </span>
+          <div className="flex flex-col font-sans text-xs">
+            <span className="text-zinc-600 dark:text-zinc-300">{info.getValue()}</span>
+            <span className="text-[11px] text-zinc-400">
+              {info.row.original.career?.name ?? info.row.original.carrera ?? '—'}
+            </span>
+          </div>
         ),
       }),
       columnHelper.accessor((row) => row.sala || 'Pañol', {
@@ -411,6 +418,18 @@ export default function HistorialPrestamosPage() {
               <option value="rechazada">Rechazados</option>
             </select>
 
+            {/* Filtro Carrera */}
+            <CareerSelect
+              value={careerFilter}
+              onChange={(id) => {
+                setCareerFilter(id);
+                setPage(1);
+              }}
+              placeholder="Todas las carreras"
+              aria-label="Filtro de carrera"
+              className={cn(controlClasses, 'px-2.5')}
+            />
+
             {/* Filtro Rango Fechas */}
             <input
               type="date"
@@ -579,9 +598,15 @@ export default function HistorialPrestamosPage() {
               {/* Parámetros de la Clase */}
               <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-zinc-50 dark:bg-zinc-950 p-3 rounded border border-zinc-200 dark:border-zinc-800">
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Asignatura / Carrera</span>
+                  <span className="text-zinc-400 text-[10px]">Asignatura</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {selectedLoan.asignatura || '—'}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-zinc-400 text-[10px]">Carrera</span>
+                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                    {selectedLoan.career?.name ?? selectedLoan.carrera ?? '—'}
                   </p>
                 </div>
                 <div>

@@ -130,6 +130,10 @@ vi.mock('@sgia/api-client', () => ({
     isFetching: false,
     refetch: mockRefetchLoans,
   }),
+  useCareers: () => ({
+    data: { data: [{ id: 5, name: 'Ingeniería en Informática', code: 'II', level: 'profesional' }] },
+    isLoading: false,
+  }),
   useExportLoans: () => ({
     mutateAsync: mockExportMutateAsync,
     isPending: false,

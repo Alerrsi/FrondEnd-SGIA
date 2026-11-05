@@ -98,6 +98,8 @@ export interface Prestamo {
   asignatura?: string | null;
   subject?: string | null;
   carrera?: string | null;
+  career_id?: number | null;
+  career?: { id: number; name: string; code?: string | null; level?: string | null } | null;
   sala?: string | null;
   room?: string | null;
   bloqueHorario?: string | null;
@@ -133,6 +135,8 @@ export interface CreatePrestamoPayload {
   origen?: LoanOrigin;
   asignatura?: string;
   subject?: string;
+  /** Obligatorio al solicitar un préstamo. */
+  career_id: number;
   sala?: string;
   room?: string;
   fechaSolicitada?: string;
@@ -173,6 +177,8 @@ export interface LoanCheckoutPayload {
   credencial?: string;
   docente_run?: string;
   credential_code?: string;
+  /** Obligatorio en el préstamo presencial. */
+  career_id: number;
   subject?: string;
   asignatura?: string;
   room?: string;
@@ -213,6 +219,7 @@ export interface LoanExportParams {
   from_date?: string;
   to_date?: string;
   status?: string;
+  career_id?: number;
   format: 'pdf' | 'excel' | 'xlsx';
 }
 
@@ -235,6 +242,7 @@ export interface LoanParams {
   docente?: string;
   asignatura?: string;
   subject?: string;
+  career_id?: number;
   sala?: string;
   room?: string;
   start_date?: string;

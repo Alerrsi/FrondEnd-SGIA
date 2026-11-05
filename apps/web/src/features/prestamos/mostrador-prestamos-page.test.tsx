@@ -80,6 +80,10 @@ vi.mock('@sgia/api-client', () => ({
   useUsers: () => ({
     data: { data: [] },
   }),
+  useCareers: () => ({
+    data: { data: [{ id: 5, name: 'Ingeniería en Informática', code: 'II', level: 'profesional' }] },
+    isLoading: false,
+  }),
   useCheckoutLoan: () => ({
     mutateAsync: mockCheckoutMutateAsync,
     isPending: false,
@@ -124,6 +128,9 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
     const docenteInput = screen.getByPlaceholderText('Ej. Profesor Carlos Rivera');
     await user.type(docenteInput, 'Prof. Roberto Carrasco');
 
+    // La carrera es obligatoria
+    await user.selectOptions(screen.getByLabelText(/Carrera/), '5');
+
     // Scan / enter barcode in auto-focus input
     const barcodeInput = screen.getByPlaceholderText('Dispara con pistola o escribe SKU + Enter…');
     await user.type(barcodeInput, 'FLUKE-115-01{Enter}');
@@ -142,6 +149,7 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
       expect(mockCheckoutMutateAsync).toHaveBeenCalledWith(
         expect.objectContaining({
           docente_run: '14.567.890-1',
+          career_id: 5,
           items: [
             expect.objectContaining({
               barcode: 'FLUKE-115-01',

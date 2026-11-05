@@ -76,7 +76,10 @@ export function normalizePrestamo(raw: any): Prestamo {
     status_label: raw.status_label,
     asignatura: raw.asignatura ?? raw.subject ?? null,
     subject: raw.subject ?? raw.asignatura ?? null,
-    carrera: raw.carrera ?? raw.career ?? null,
+    carrera:
+      raw.carrera ?? (typeof raw.career === 'string' ? raw.career : raw.career?.name) ?? null,
+    career_id: raw.career_id ?? raw.career?.id ?? null,
+    career: raw.career && typeof raw.career === 'object' ? raw.career : null,
     sala: raw.sala ?? raw.room ?? null,
     room: raw.room ?? raw.sala ?? null,
     fechaSolicitada: raw.fechaSolicitada ?? raw.loan_date ?? raw.fecha ?? null,
@@ -138,6 +141,8 @@ export async function fetchLoans(params?: PrestamoParams): Promise<PaginatedResp
   const sala = params?.sala ?? params?.room;
   if (sala) query.set('sala', sala);
 
+  if (params?.career_id) query.set('career_id', String(params.career_id));
+
   if (params?.search) query.set('search', params.search);
 
   const startDate = params?.start_date ?? params?.fecha_desde;
@@ -178,6 +183,7 @@ export async function createLoanRequest(
       quantity: it.quantity ?? it.cantidad ?? 1,
     })),
     subject: (payload as any).subject ?? (payload as any).asignatura ?? '',
+    career_id: payload.career_id,
     room: (payload as any).room ?? (payload as any).sala ?? '',
     loan_date: (payload as any).loan_date ?? (payload as any).fechaSolicitada ?? (payload as any).fecha ?? '',
     time_block: (payload as any).time_block ?? '',
@@ -273,6 +279,7 @@ export async function checkoutLoan(payload: LoanCheckoutPayload): Promise<Presta
       ...(it.unit_ids && it.unit_ids.length > 0 ? { unit_ids: it.unit_ids } : {}),
     })),
     subject,
+    career_id: payload.career_id,
     room,
     loan_date: loanDate,
     due_date: payload.due_date ?? null,
@@ -302,6 +309,7 @@ export async function exportLoans(params?: LoanExportParams | {
   status?: string;
   fecha_desde?: string;
   fecha_hasta?: string;
+  career_id?: number;
   format?: 'pdf' | 'excel' | 'xlsx';
 }): Promise<Blob> {
   const query = new URLSearchParams();
@@ -310,6 +318,7 @@ export async function exportLoans(params?: LoanExportParams | {
   if (startDate) query.set('from_date', startDate);
   if (endDate) query.set('to_date', endDate);
   if (params?.status) query.set('status', params.status);
+  if (params?.career_id) query.set('career_id', String(params.career_id));
   if (params?.format) query.set('format', params.format);
 
   const qs = query.toString();
