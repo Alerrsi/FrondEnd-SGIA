@@ -17,7 +17,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 
 ## Estructura
 
-- `apps/web/` — panel administrativo (React 19, Vite, Tailwind, Radix/Shadcn). Roles AD-01, DIR-01, PAN-01.
+- `apps/web/` — panel administrativo (React 19, Vite, Tailwind, Radix/Shadcn). Roles AD-01, DIR-01, PAN-01 y PRO-01 (profesor, menú reducido en `/profesor/*`, REQ-21).
 - `apps/mobile/` — app Expo / React Native. Solo rol PRO-01 (profesor).
 - `packages/api-client/` — cliente HTTP tipado y hooks de TanStack Query. Único lugar donde se llama a la API.
 - `packages/types/` — tipos compartidos (Producto, Préstamo, Cotización, Usuario, Equipo). Fuente única de verdad de entidades.

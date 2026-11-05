@@ -30,8 +30,9 @@ import {
   RequireAuth,
   RequireRole,
 } from '@/features/auth/components/protected-route';
+import CatalogoPage from '@/features/profesor/pages/catalogo-page';
+import MisSolicitudesPage from '@/features/profesor/pages/mis-solicitudes-page';
 import MisNovedadesPage from '@/features/profesor/pages/mis-novedades-page';
-import { ProfesorPendientePage } from '@/features/profesor/pages/profesor-pendiente-page';
 import { getRoleDefaultPath } from '@/features/auth/types/roles';
 
 function RootRoute() {
@@ -226,7 +227,7 @@ function AppContent() {
               path="/profesor/catalogo"
               element={
                 <RequireRole allowedRoles={['PRO-01']}>
-                  <ProfesorPendientePage title="Catálogo y nueva solicitud" />
+                  <CatalogoPage />
                 </RequireRole>
               }
             />
@@ -235,7 +236,7 @@ function AppContent() {
               path="/profesor/solicitudes"
               element={
                 <RequireRole allowedRoles={['PRO-01']}>
-                  <ProfesorPendientePage title="Mis solicitudes" />
+                  <MisSolicitudesPage />
                 </RequireRole>
               }
             />

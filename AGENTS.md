@@ -8,8 +8,8 @@ Este archivo entrega contexto de negocio, técnico y de diseño para cualquier a
 
 - No contiene la API (eso vive en `sgia-backend`, Laravel). Ambas apps consumen esa API vía HTTPS/JSON.
 - No implementa reglas de negocio ni validaciones de autoridad final: solo valida en cliente por UX, la fuente de verdad siempre es la respuesta de la API.
-- **Web (`apps/web`)** es para los roles AD-01 (Administrador), DIR-01 (Director/Coordinador) y PAN-01 (Pañol).
-- **Mobile (`apps/mobile`)** es exclusivamente para PRO-01 (Profesor): solicitud de préstamos remotos y reportes de novedades/fallas.
+- **Web (`apps/web`)** es para los roles AD-01 (Administrador), DIR-01 (Director/Coordinador), PAN-01 (Pañol) y PRO-01 (Profesor, con menú reducido: catálogo y nueva solicitud, mis solicitudes y novedades — REQ-21).
+- **Mobile (`apps/mobile`)** es para PRO-01 (Profesor): solicitud de préstamos remotos y reportes de novedades/fallas. El profesor puede usar la web o el móvil.
 - El código compartido (`packages/`) existe para evitar duplicar el cliente de API, los tipos de datos y la lógica de validación entre las dos apps — no para compartir UI visual (web usa DOM, mobile usa componentes nativos, son superficies distintas).
 
 ## 1. Contexto del proyecto
@@ -48,7 +48,7 @@ FrondEnd-SGIA/
 | **AD-01** (Administrador) | web | Gestión integral de usuarios (alta, edición, activar/desactivar), auditoría. |
 | **DIR-01** (Director/Coordinador) | web | Alta vía escaneo de facturas (OCR), cotizaciones a proveedores, fichas técnicas y dashboards analíticos. |
 | **PAN-01** (Pañolero) | web | Control de inventario, stock crítico, ubicaciones físicas, cola de préstamos remotos, registro presencial e historial. |
-| **PRO-01** (Profesor) | mobile | Solicitudes de préstamo remoto, seguimiento de estados e informe de novedades/fallas. |
+| **PRO-01** (Profesor) | web y mobile | Solicitudes de préstamo remoto, seguimiento de estados e informe de novedades/fallas. |
 
 ## 4. Requisitos y especificaciones funcionales
 

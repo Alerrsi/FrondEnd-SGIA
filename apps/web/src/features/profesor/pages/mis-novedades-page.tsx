@@ -3,10 +3,10 @@ import { useMyIncidentReports } from '@sgia/api-client';
 import { AlertCircle, ChevronLeft, ChevronRight, FileWarning, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { formatDate } from '@/features/compras/lib/format';
 import { IncidentDetailSheet } from '@/features/novedades/components/incident-detail-sheet';
 import { IncidentStatusBadge } from '@/features/novedades/components/incident-status-badge';
 import { NewIncidentDialog } from '@/features/profesor/components/new-incident-dialog';
+import { formatDateOnly } from '@/features/profesor/lib/loan-request-format';
 import { toast } from '@/lib/toast';
 
 export default function MisNovedadesPage() {
@@ -77,7 +77,7 @@ export default function MisNovedadesPage() {
                         {report.problems?.length ?? 0}
                       </td>
                       <td className="px-4 py-2.5 font-mono">
-                        {formatDate(report.report_date ?? report.created_at)}
+                        {formatDateOnly(report.report_date ?? report.created_at)}
                       </td>
                       <td className="px-4 py-2.5">
                         <IncidentStatusBadge status={report.status} />

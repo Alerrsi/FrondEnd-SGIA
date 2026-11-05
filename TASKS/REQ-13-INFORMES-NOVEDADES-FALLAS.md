@@ -6,6 +6,10 @@
 
 ---
 
+> **Web del profesor (REQ-21):** `PRO-01` crea y sigue sus informes también desde la web (`/profesor/novedades`), con firma en `<canvas>` y foto. Ver [REQ-21](./REQ-21-PROFESOR-WEB.md).
+
+---
+
 ## 🎯 Objetivo
 
 Canalizar de forma estructurada los reportes de incidentes durante clases o devoluciones (equipos averiados, cables rotos, insumos agotados). Permitir adjuntar fotografías de evidencia y coordinar la derivación técnica del activo (`en_revision` ➔ `en_reparacion` ➔ `reparado` / `dado_de_baja`).
