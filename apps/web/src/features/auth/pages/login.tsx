@@ -10,7 +10,6 @@ import {
   Loader2,
   Lock,
   Mail,
-  Smartphone,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -247,32 +246,36 @@ export default function LoginPage() {
               >
                 PAN-01 (Pañol)
               </button>
+              <button
+                type="button"
+                onClick={() => handleQuickFill('docente@sgia.cl')}
+                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+              >
+                PRO-01 (Profesor)
+              </button>
             </div>
           </div>
 
           {/* Role access guidance */}
           <div className="mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-            <div className="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400 mb-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 dark:text-zinc-400 mb-2">
               <span>Roles autorizados en web:</span>
               <div className="flex gap-1.5 font-mono">
-                <span className="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   AD-01
                 </span>
-                <span className="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   DIR-01
                 </span>
-                <span className="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   PAN-01
+                </span>
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                  PRO-01
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 rounded border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 px-2.5 py-1.5 text-[11px] text-zinc-500 dark:text-zinc-400">
-              <Smartphone className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
-              <span>
-                Docentes (<span className="font-mono text-zinc-700 dark:text-zinc-300">PRO-01</span>): usan la app móvil.
-              </span>
-            </div>
           </div>
         </div>
       </div>

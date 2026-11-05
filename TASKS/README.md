@@ -22,7 +22,7 @@ Este directorio contiene las especificaciones detalladas para cada módulo funci
 | [REQ-13](./REQ-13-INFORMES-NOVEDADES-FALLAS.md) | `REQ-13` | Reportes de Novedades e Incidentes | Mobile + Web | PRO-01, PAN-01, DIR-01 | 🔴 Pendiente (0/17) — sin código |
 | [REQ-14](./REQ-14-DASHBOARDS-ANALITICA.md) | `REQ-14` | Analítica y Dashboards Ejecutivos | Web | DIR-01, AD-01 | 🟡 Casi completo — GraphQL real conectado (`/api/metrics`); falta previsualización en vivo en el menú |
 | [REQ-16-17](./REQ-16-REQ-17-PRESUPUESTOS-INGRESO-FACTURAS.md) | `REQ-16`, `REQ-17` | Presupuestos Anuales e Ingreso de Facturas | Web | DIR-01, AD-01 | 🟢 Completado — `features/presupuestos/` y `features/ingresos-factura/` con tests; sin probar contra el backend real |
-| [REQ-21](./REQ-21-PROFESOR-WEB.md) | `REQ-21` | Interfaces Web del Profesor y Atajo de Login Dev | Web | PRO-01 | 🔴 Pendiente (0/53) — plan definido, sin código; requiere ampliar la API de solicitudes (`REQ-21-PROMPT-BACKEND.md`) |
+| [REQ-21](./REQ-21-PROFESOR-WEB.md) | `REQ-21` | Interfaces Web del Profesor y Atajo de Login Dev | Web | PRO-01 | 🟡 En progreso (21/58) — roles web, menú, rutas y acceso rápido listos; pantallas con marcador; requiere ampliar la API de solicitudes (`REQ-21-PROMPT-BACKEND.md`) |
 | [REQ-CONFIG](./REQ-CONFIG.md) | `REQ-CONFIG` | Configuración de Sistema y Paletas de Color | Web | Todos | 🟢 Completado (8/8) |
 | [REQ-NF](./REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md) | `REQ-NF` | Accesibilidad AA, Performance y Offline | Web + Mobile | Todos | 🟡 En Progreso (17%) — 5/29 tareas |
 

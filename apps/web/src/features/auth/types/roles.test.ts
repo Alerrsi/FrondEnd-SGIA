@@ -6,7 +6,7 @@ describe('Role and Route Permissions', () => {
     expect(isWebRole('AD-01')).toBe(true);
     expect(isWebRole('DIR-01')).toBe(true);
     expect(isWebRole('PAN-01')).toBe(true);
-    expect(isWebRole('PRO-01')).toBe(false);
+    expect(isWebRole('PRO-01')).toBe(true);
     expect(isWebRole('UNKNOWN')).toBe(false);
     expect(isWebRole('Director de carrera')).toBe(true);
     expect(isWebRole('Administrador')).toBe(true);
@@ -18,7 +18,7 @@ describe('Role and Route Permissions', () => {
     expect(getRoleDefaultPath('AD-01')).toBe('/usuarios');
     expect(getRoleDefaultPath('DIR-01')).toBe('/');
     expect(getRoleDefaultPath('PAN-01')).toBe('/inventario');
-    expect(getRoleDefaultPath('PRO-01')).toBe('/login');
+    expect(getRoleDefaultPath('PRO-01')).toBe('/profesor/solicitudes');
   });
 
   describe('canAccessRoute', () => {
@@ -46,12 +46,22 @@ describe('Role and Route Permissions', () => {
       expect(canAccessRoute('PAN-01', '/usuarios')).toBe(false);
     });
 
-    it('rejects PRO-01 from all web routes', () => {
+    it('allows PRO-01 only to its own routes', () => {
+      expect(canAccessRoute('PRO-01', '/profesor/catalogo')).toBe(true);
+      expect(canAccessRoute('PRO-01', '/profesor/solicitudes')).toBe(true);
+      expect(canAccessRoute('PRO-01', '/profesor/novedades')).toBe(true);
       expect(canAccessRoute('PRO-01', '/')).toBe(false);
       expect(canAccessRoute('PRO-01', '/inventario')).toBe(false);
+      expect(canAccessRoute('PRO-01', '/novedades')).toBe(false);
       expect(canAccessRoute('PRO-01', '/prestamos/cola')).toBe(false);
       expect(canAccessRoute('PRO-01', '/cotizaciones')).toBe(false);
       expect(canAccessRoute('PRO-01', '/usuarios')).toBe(false);
+    });
+
+    it('keeps the admin roles out of the professor routes', () => {
+      for (const role of ['AD-01', 'DIR-01', 'PAN-01'] as const) {
+        expect(canAccessRoute(role, '/profesor/solicitudes')).toBe(false);
+      }
     });
   });
 });

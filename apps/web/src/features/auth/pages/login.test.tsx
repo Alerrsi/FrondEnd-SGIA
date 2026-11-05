@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -40,14 +40,14 @@ describe('LoginPage', () => {
   describe('flujo de login (fetch simulado)', () => {
     const user = (role: string) => ({ id: 1, name: 'Ana', email: 'a@sgia.cl', role, is_active: true });
 
-    function mockApi(loginResponse: { status: number; body: unknown }) {
+    function mockApi(loginResponse: { status: number; body: unknown }, meRole = 'PAN-01') {
       vi.stubGlobal(
         'fetch',
         vi.fn(async (url: string) => {
           const isLogin = String(url).endsWith('/login');
           const { status, body } = isLogin
             ? loginResponse
-            : { status: 200, body: { data: user('PAN-01') } };
+            : { status: 200, body: { data: user(meRole) } };
           return new Response(JSON.stringify(body), { status });
         }),
       );
@@ -64,6 +64,7 @@ describe('LoginPage', () => {
                   <Routes>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/inventario" element={<div>Pantalla inventario</div>} />
+                    <Route path="/profesor/solicitudes" element={<div>Pantalla profesor</div>} />
                   </Routes>
                 </MemoryRouter>
               </TooltipProvider>
@@ -90,6 +91,14 @@ describe('LoginPage', () => {
       expect(localStorage.getItem('sgia_token')).toBe('tok-123');
     });
 
+    it('el profesor (PRO-01) entra a la web y va a sus solicitudes', async () => {
+      mockApi({ status: 200, body: { token: 'tok-pro', user: user('PRO-01') } }, 'PRO-01');
+      await submit();
+
+      expect(await screen.findByText('Pantalla profesor')).toBeDefined();
+      expect(localStorage.getItem('sgia_token')).toBe('tok-pro');
+    });
+
     it('401 muestra el mensaje del servidor y no guarda token', async () => {
       mockApi({ status: 401, body: { message: 'Credenciales inválidas.' } });
       await submit();
@@ -106,14 +115,6 @@ describe('LoginPage', () => {
       await submit();
 
       expect((await screen.findByRole('alert')).textContent).toContain('El correo no es válido.');
-    });
-
-    it('un rol de app móvil (PRO-01) es rechazado y se limpia el token', async () => {
-      mockApi({ status: 200, body: { token: 'tok-pro', user: user('PRO-01') } });
-      await submit();
-
-      expect((await screen.findByRole('alert')).textContent).toContain('Acceso restringido');
-      await waitFor(() => expect(localStorage.getItem('sgia_token')).toBeNull());
     });
   });
 });

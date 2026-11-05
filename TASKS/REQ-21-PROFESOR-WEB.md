@@ -54,18 +54,18 @@ Decisiones tomadas:
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. Roles y acceso (`apps/web/src/features/auth`)
-- [ ] Agregar `PRO-01` a `WebRoleCode` y `WEB_ROLES` en `types/roles.ts`.
-- [ ] Definir la ruta de inicio del profesor en `ROLE_DEFAULT_PATH` (`/profesor/solicitudes`).
-- [ ] Registrar en `ROUTE_PERMISSIONS` las rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` solo para `PRO-01` (`canAccessRoute` deja pasar rutas sin entrada).
-- [ ] Verificar que `PRO-01` no tenga acceso a ninguna ruta del panel administrativo.
-- [ ] Revisar que `isWebRole` (coincidencia por texto) no acepte roles no previstos.
-- [ ] `context/auth-context.tsx`: el rechazo «solo móvil» deja de aplicar a `PRO-01` y sigue para otros roles.
-- [ ] `pages/login.tsx`: reemplazar el texto «Docentes (PRO-01): usan la app móvil».
-- [ ] Actualizar `types/roles.test.ts` (hoy afirma que `PRO-01` queda excluido).
+- [x] Agregar `PRO-01` a `WebRoleCode` y `WEB_ROLES` en `types/roles.ts`.
+- [x] Definir la ruta de inicio del profesor en `ROLE_DEFAULT_PATH` (`/profesor/solicitudes`).
+- [x] Registrar en `ROUTE_PERMISSIONS` las rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` solo para `PRO-01` (`canAccessRoute` deja pasar rutas sin entrada).
+- [x] Verificar que `PRO-01` no tenga acceso a ninguna ruta del panel administrativo.
+- [x] Revisar que `isWebRole` (coincidencia por texto) no acepte roles no previstos. (Nota: `normalizeRoleCode` de `api-client` devuelve `PRO-01` como rol por defecto; un rol desconocido ya no se rechaza en web, el backend sigue aplicando permisos.)
+- [x] `context/auth-context.tsx`: el rechazo «solo móvil» deja de aplicar a `PRO-01` y sigue para otros roles.
+- [x] `pages/login.tsx`: reemplazar el texto «Docentes (PRO-01): usan la app móvil».
+- [x] Actualizar `types/roles.test.ts` (hoy afirma que `PRO-01` queda excluido).
 
 ### 2. Layout con menú reducido (`apps/web/src/layouts/app-layout.tsx`)
-- [ ] Agregar las entradas Catálogo, Mis solicitudes y Novedades con `roles: ['PRO-01']`.
-- [ ] Mantener sin cambios las entradas de `AD-01`, `DIR-01` y `PAN-01`; el profesor solo ve las suyas.
+- [x] Agregar las entradas Catálogo, Mis solicitudes y Novedades con `roles: ['PRO-01']`.
+- [x] Mantener sin cambios las entradas de `AD-01`, `DIR-01` y `PAN-01`; el profesor solo ve las suyas.
 - [ ] Sidebar colapsado (`isCollapsed === true`): `IconBar` siempre vertical (`axis="column"`).
 - [ ] Ajustar `layouts/app-layout.test.tsx`.
 
@@ -93,16 +93,15 @@ Decisiones tomadas:
 - [ ] Diseño según el skill `sgia-design`; el rojo institucional solo para alertas críticas.
 
 ### 4. Rutas (`apps/web/src/app.tsx`)
-- [ ] Tres rutas `/profesor/*` dentro de `RequireAuth` y `RequireRole allowedRoles={['PRO-01']}`.
-- [ ] `RootRoute` redirige a `PRO-01` a su inicio.
+- [x] Tres rutas `/profesor/*` dentro de `RequireAuth` y `RequireRole allowedRoles={['PRO-01']}` (por ahora con `ProfesorPendientePage` como marcador; se reemplaza al implementar cada pantalla).
+- [x] `RootRoute` redirige a `PRO-01` a su inicio (vía `getRoleDefaultPath`).
 - [ ] Un `AD-01`, `DIR-01` o `PAN-01` que entra a `/profesor/*` ve `ForbiddenPage`.
 
 ### 5. Atajo de login de desarrollo (`pages/login.tsx`)
-- [ ] Botón «Entrar como profesor (dev)» visible solo con `import.meta.env.DEV`; ausente en el build de producción.
-- [ ] Credenciales desde variables de Vite (`VITE_DEV_PROFESOR_EMAIL`, `VITE_DEV_PROFESOR_PASSWORD`) en `.env.local` ignorado por git; nada escrito en el código.
-- [ ] Llama al mismo `login()` y redirige con `getRoleDefaultPath`.
-- [ ] Revisar `handleQuickFill`: tiene una contraseña escrita en el código (`Admin1234!`); sacarla a variables de entorno o eliminarla.
-- [ ] Documentar las variables en `.env.example`.
+Se sigue el patrón existente de «Accesos rápidos de prueba» (usuarios `@sgia.cl` del seeder del backend con la contraseña de desarrollo compartida); el usuario `docente@sgia.cl` (PRO-01) ya existe en `DatabaseSeeder` del backend.
+- [x] Botón «PRO-01 (Profesor)» en los accesos rápidos, con `docente@sgia.cl`.
+- [x] Lista «Roles autorizados en web» incluye `PRO-01`; se quitó el aviso «Docentes usan la app móvil».
+- [ ] Revisar `handleQuickFill`: la contraseña de desarrollo está escrita en el código; decidir si se saca a una variable de entorno o se oculta fuera de desarrollo (aplica a todos los accesos rápidos).
 
 ### 6. Documentación
 - [ ] Actualizar `AGENTS.md` (tabla de roles y la línea «Mobile exclusivo para PRO-01»).
@@ -114,11 +113,11 @@ Decisiones tomadas:
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test `roles.test.ts`: `PRO-01` es rol web, su ruta de inicio, accesos permitidos y denegados.
+- [x] Unit test `roles.test.ts`: `PRO-01` es rol web, su ruta de inicio, accesos permitidos y denegados.
 - [ ] Component test de la solicitud: campos obligatorios, hora de término posterior a la de inicio, fecha no pasada, mínimo 1 insumo, sin productos repetidos y payload enviado (`career_id`, `start_time`, `end_time`, `location_id`, `storeroom_id`, `items`).
 - [ ] Component test de Mis solicitudes: Cancelar solo en `pendiente`.
 - [ ] Component test de Novedades: unidad obligatoria en equipo/maqueta, firma requerida y envío.
-- [ ] Test de login: el botón de dev aparece en desarrollo y no en producción.
+- [x] Test de login: `PRO-01` inicia sesión en la web y va a `/profesor/solicitudes`.
 - [ ] Test de rutas: `PRO-01` en `/usuarios` ve `ForbiddenPage`; `AD-01` en `/profesor/*` también.
 - [ ] `pnpm typecheck` y `pnpm --filter @sgia/web test` pasan.
 - [ ] Comprobación visual en Chromium con capturas: login con el botón de dev, menú reducido y las tres pantallas.
@@ -128,8 +127,8 @@ Decisiones tomadas:
 ## ❓ Pendientes de confirmar
 
 - [x] Rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` (confirmadas).
-- [ ] Usuario `PRO-01` disponible en el backend de desarrollo para `.env.local`.
-- [ ] Si se puede quitar la contraseña escrita en `handleQuickFill`.
+- [x] Usuario `PRO-01` de desarrollo: `docente@sgia.cl`, ya sembrado en el backend (`DatabaseSeeder`).
+- [ ] Si se puede quitar la contraseña escrita en `handleQuickFill` (afecta a todos los accesos rápidos).
 - [ ] Backend: implementar el prompt de [REQ-21-PROMPT-BACKEND.md](./REQ-21-PROMPT-BACKEND.md) antes de la pantalla de solicitud (bloquea el envío real).
 - [x] Laboratorio: selector alimentado por la API.
 - [x] Profesor: solo el usuario autenticado (`PRO-01`).
