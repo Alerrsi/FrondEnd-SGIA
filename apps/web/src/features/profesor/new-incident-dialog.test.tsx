@@ -5,10 +5,13 @@ import userEvent from '@testing-library/user-event';
 import { NewIncidentDialog } from './components/new-incident-dialog';
 
 const mutateAsync = vi.fn();
+let unitResult: { data?: unknown; isError: boolean } = { data: undefined, isError: false };
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
   useCreateIncidentReport: () => ({ mutateAsync, isPending: false }),
+  useEquipmentUnitByCode: (code?: string) =>
+    code ? unitResult : { data: undefined, isError: false },
   useLocations: () => ({ data: { data: [{ id: 3, nombre: 'Laboratorio 3' }] } }),
 }));
 
@@ -24,6 +27,7 @@ vi.mock('./components/signature-pad', () => ({
 describe('NewIncidentDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    unitResult = { data: undefined, isError: false };
     mutateAsync.mockResolvedValue({ id: 1, code: 'NOV-0001' });
   });
 
@@ -73,5 +77,23 @@ describe('NewIncidentDialog', () => {
     );
     expect(onCreated).toHaveBeenCalledWith('NOV-0001');
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('muestra el equipo al salir del campo de código', async () => {
+    unitResult = { data: { code: 'PRO-ISD-000001', product: { name: 'Osciloscopio' } }, isError: false };
+    const user = userEvent.setup();
+    render(<NewIncidentDialog open onClose={vi.fn()} onCreated={vi.fn()} />);
+    await user.type(screen.getByLabelText(/código del equipo/i), 'PRO-ISD-000001');
+    await user.tab();
+    expect(await screen.findByText(/Osciloscopio/)).toBeDefined();
+  });
+
+  it('si el código no es una unidad avisa que se enviará igual', async () => {
+    unitResult = { data: undefined, isError: true };
+    const user = userEvent.setup();
+    render(<NewIncidentDialog open onClose={vi.fn()} onCreated={vi.fn()} />);
+    await user.type(screen.getByLabelText(/código del equipo/i), '7801234567890');
+    await user.tab();
+    expect(await screen.findByText(/se enviará igual/i)).toBeDefined();
   });
 });

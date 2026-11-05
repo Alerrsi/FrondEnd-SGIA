@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCreateIncidentReport, useLocations } from '@sgia/api-client';
+import { useCreateIncidentReport, useEquipmentUnitByCode, useLocations } from '@sgia/api-client';
 import { INCIDENT_PROBLEM_LABELS } from '@sgia/types';
 import { Loader2 } from 'lucide-react';
 
@@ -48,10 +48,16 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
   });
 
   useEffect(() => {
-    if (open) reset(initialIncidentValues());
+    if (open) {
+      reset(initialIncidentValues());
+      setLookupCode(undefined);
+    }
   }, [open, reset]);
 
   const problems = watch('problems');
+  // Vista previa del equipo al salir del campo; si es un insumo (404) se envía igual.
+  const [lookupCode, setLookupCode] = useState<string | undefined>();
+  const unit = useEquipmentUnitByCode(lookupCode);
 
   const onSubmit = handleSubmit(async (values) => {
     try {
@@ -136,11 +142,23 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             </label>
             <input
               id="inc-code"
-              {...register('equipment_code')}
+              {...register('equipment_code', {
+                onBlur: (e) => setLookupCode(e.target.value.trim() || undefined),
+              })}
               disabled={pending}
               placeholder="PRO-ISD-000001"
               className={`${inputClasses} mt-1.5`}
             />
+            {lookupCode && unit.data && (
+              <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+                {unit.data.product?.name ?? 'Equipo'} · <span className="font-mono">{unit.data.code}</span>
+              </p>
+            )}
+            {lookupCode && unit.isError && (
+              <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+                Sin vista previa (puede ser un insumo); se enviará igual.
+              </p>
+            )}
           </div>
         </div>
 

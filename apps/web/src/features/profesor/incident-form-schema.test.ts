@@ -31,6 +31,14 @@ describe('incidentFormSchema', () => {
     expect(paths(values)).toEqual(expect.arrayContaining(['subject', 'location_id', 'signature']));
   });
 
+  it('respeta los largos máximos del backend', () => {
+    expect(paths({ ...valid(), subject: 'x'.repeat(101) })).toContain('subject');
+    expect(paths({ ...valid(), suggestion: 'x'.repeat(2001) })).toContain('suggestion');
+    const values = valid();
+    values.problems[0] = { type: 'falla_equipo', checked: true, description: 'x'.repeat(1001) };
+    expect(paths(values)).toContain('problems.0.description');
+  });
+
   it('rechaza una fecha futura', () => {
     expect(paths({ ...valid(), report_date: '2999-01-01' })).toContain('report_date');
   });

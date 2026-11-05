@@ -18,7 +18,7 @@ export const todayIso = (): string => new Date().toISOString().slice(0, 10);
  */
 export const incidentFormSchema = z
   .object({
-    subject: z.string().trim().min(1, 'Indica el nombre de la asignatura.').max(255),
+    subject: z.string().trim().min(1, 'Indica el nombre de la asignatura.').max(100, 'Máximo 100 caracteres.'),
     report_date: z
       .string()
       .min(1, 'Indica la fecha del informe.')
@@ -39,6 +39,13 @@ export const incidentFormSchema = z
         ctx.addIssue({ code: 'custom', message: 'Marca al menos un tipo de problema.' });
       }
       problems.forEach((p, index) => {
+        if (p.checked && p.description.length > 1000) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [index, 'description'],
+            message: 'Máximo 1000 caracteres.',
+          });
+        }
         if (p.checked && !p.description.trim()) {
           ctx.addIssue({
             code: 'custom',
@@ -48,7 +55,7 @@ export const incidentFormSchema = z
         }
       });
     }),
-    suggestion: z.string().optional(),
+    suggestion: z.string().max(2000, 'Máximo 2000 caracteres.').optional(),
     equipment_code: z.string().optional(),
     signature: z.string().min(1, 'Falta la firma del docente.'),
     evidence_photo: z
