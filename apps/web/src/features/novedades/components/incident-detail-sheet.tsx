@@ -17,7 +17,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { formatDate } from '@/features/compras/lib/format';
+import { formatDate, formatDateOnly } from '@/features/compras/lib/format';
 import { AuthenticatedImage } from '@/features/novedades/components/authenticated-image';
 import { IncidentStatusBadge } from '@/features/novedades/components/incident-status-badge';
 import { INCIDENT_TRANSITION_LABELS } from '@/features/novedades/lib/incident-labels';
@@ -27,6 +27,8 @@ import { toast } from '@/lib/toast';
 interface IncidentDetailSheetProps {
   reportId: number | null;
   onClose: () => void;
+  /** El profesor solo consulta su informe: sin botones de cambio de estado. */
+  readOnly?: boolean;
 }
 
 const sectionClasses = 'rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-1.5';
@@ -34,7 +36,7 @@ const headingClasses =
   'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400';
 
 /** Detalle de un informe de novedades; los botones de estado salen de `allowed_transitions`. */
-export function IncidentDetailSheet({ reportId, onClose }: IncidentDetailSheetProps) {
+export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: IncidentDetailSheetProps) {
   const { data: report, isLoading } = useIncidentReport(reportId ?? undefined);
   const updateStatus = useUpdateIncidentReportStatus();
 
@@ -125,7 +127,7 @@ export function IncidentDetailSheet({ reportId, onClose }: IncidentDetailSheetPr
                       <div>
                         <dt className="text-[10px] text-zinc-400">Fecha</dt>
                         <dd className="font-mono text-zinc-800 dark:text-zinc-200">
-                          {formatDate(report.report_date)}
+                          {formatDateOnly(report.report_date)}
                         </dd>
                       </div>
                     </dl>
@@ -199,7 +201,7 @@ export function IncidentDetailSheet({ reportId, onClose }: IncidentDetailSheetPr
                 </Button>
               )}
 
-              {(report.allowed_transitions ?? []).length > 0 && (
+              {!readOnly && (report.allowed_transitions ?? []).length > 0 && (
                 <div className="flex flex-wrap gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
                   {(report.allowed_transitions ?? []).map((status) => (
                     <Button

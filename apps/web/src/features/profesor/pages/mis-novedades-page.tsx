@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { IncidentDetailSheet } from '@/features/novedades/components/incident-detail-sheet';
 import { IncidentStatusBadge } from '@/features/novedades/components/incident-status-badge';
 import { NewIncidentDialog } from '@/features/profesor/components/new-incident-dialog';
-import { formatDateOnly } from '@/features/profesor/lib/loan-request-format';
+import { formatDateOnly } from '@/features/compras/lib/format';
 import { toast } from '@/lib/toast';
 
 export default function MisNovedadesPage() {
@@ -121,7 +121,7 @@ export default function MisNovedadesPage() {
         onClose={() => setFormOpen(false)}
         onCreated={(code) => toast.success(code ? `Informe ${code} registrado.` : 'Informe registrado.')}
       />
-      <IncidentDetailSheet reportId={openId} onClose={() => setOpenId(null)} />
+      <IncidentDetailSheet reportId={openId} onClose={() => setOpenId(null)} readOnly />
     </div>
   );
 }

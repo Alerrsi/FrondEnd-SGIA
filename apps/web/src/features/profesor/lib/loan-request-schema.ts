@@ -1,14 +1,9 @@
 import { z } from 'zod';
 import type { CreatePrestamoPayload } from '@sgia/types';
 
-const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+import { todayIso } from '@/features/profesor/lib/dates';
 
-export const todayIso = (): string => {
-  const d = new Date();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${d.getFullYear()}-${month}-${day}`;
-};
+const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 const timeField = (label: string) =>
   z.string().min(1, `Indica la hora de ${label}.`).regex(TIME_REGEX, 'Usa el formato HH:MM.');
@@ -71,6 +66,7 @@ export const loanRequestSchema = z
     },
   );
 
+export { todayIso };
 export type LoanRequestValues = z.infer<typeof loanRequestSchema>;
 export type LoanRequestItem = LoanRequestValues['items'][number];
 

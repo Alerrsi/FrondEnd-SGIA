@@ -5,12 +5,14 @@ import {
   type IncidentProblemType,
 } from '@sgia/types';
 
+import { todayIso } from '@/features/profesor/lib/dates';
+
 export const PROBLEM_TYPES = Object.keys(INCIDENT_PROBLEM_LABELS) as IncidentProblemType[];
 
 export const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 export const PHOTO_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-export const todayIso = (): string => new Date().toISOString().slice(0, 10);
+export { todayIso };
 
 /**
  * Validación de UX del informe de novedades (§13 de ENDPOINTS.md). El backend sigue siendo la

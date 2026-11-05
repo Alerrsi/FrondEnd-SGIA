@@ -9,10 +9,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { formatDateOnly } from '@/features/compras/lib/format';
 import { LoanRequestStatusBadge } from '@/features/profesor/components/loan-request-status-badge';
 import {
   canCancelLoanRequest,
-  formatDateOnly,
   loanCareer,
   loanLaboratory,
   loanSchedule,

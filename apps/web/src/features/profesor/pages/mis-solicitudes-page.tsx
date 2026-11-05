@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { formatDateOnly } from '@/features/compras/lib/format';
 import { LoanRequestStatusBadge } from '@/features/profesor/components/loan-request-status-badge';
 import { LoanRequestDetailSheet } from '@/features/profesor/components/loan-request-detail-sheet';
 import {
   canCancelLoanRequest,
-  formatDateOnly,
   loanCareer,
   loanLaboratory,
   loanSchedule,

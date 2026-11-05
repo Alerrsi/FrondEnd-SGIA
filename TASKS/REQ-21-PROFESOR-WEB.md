@@ -124,6 +124,10 @@ Se sigue el patrón existente de «Accesos rápidos de prueba» (usuarios `@sgia
 
 ---
 
+## ✅ Prueba con la API real (2026-11-05)
+
+Con `docente@sgia.cl` en `localhost:8000` y Chromium: login con el acceso rápido, nueva solicitud (pañol, laboratorio, insumo), listado, detalle y cancelación (`DELETE`); informe de novedades con firma dibujada, foto y equipo por código, detalle con firma y foto, PDF (`200 application/pdf`). Validaciones 422 del backend (horas, fecha pasada, laboratorio de tipo pañol, stock) coinciden con el formulario. El profesor recibe `403` al cambiar el estado de un informe, por eso el detalle es de solo lectura para él. Requiere `php artisan migrate` en el backend. El profesor de prueba no tiene pañol ni carreras asignadas: el selector de pañol parte vacío.
+
 ## ❓ Pendientes de confirmar
 
 - [x] Rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` (confirmadas).
