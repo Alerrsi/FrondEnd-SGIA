@@ -242,8 +242,6 @@ describe('REQ-06: Alertas de Stock Crítico y Preventivo', () => {
         </MemoryRouter>,
       );
 
-      // Encabezado y micro-etiqueta institucional
-      expect(screen.getByText(/SEDE TEMUCO · PAÑOL TI/i)).toBeDefined();
       expect(screen.getByText(/Alertas de Stock Crítico y Preventivo/i)).toBeDefined();
 
       // Cinta Métrica

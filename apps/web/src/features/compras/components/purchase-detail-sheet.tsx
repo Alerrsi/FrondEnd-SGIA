@@ -177,10 +177,6 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
 
             <dl className="grid grid-cols-2 gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs">
               <div>
-                <dt className="text-zinc-500">Llegada estimada</dt>
-                <dd className="font-mono">{formatDate(purchase.expected_at)}</dd>
-              </div>
-              <div>
                 <dt className="text-zinc-500">Recibida</dt>
                 <dd className="font-mono">{formatDate(purchase.received_at)}</dd>
               </div>

@@ -19,6 +19,7 @@ interface ProductItem {
   product_id: number;
   product_name: string;
   quantity: number;
+  unit_price?: number;
   current_stock: number;
 }
 
@@ -114,6 +115,14 @@ export function CotizacionFormDialog({
     }
   };
 
+  const handleProductPriceChange = (index: number, value: string) => {
+    const current = [...(watchedProducts ?? [])];
+    if (current[index]) {
+      current[index] = { ...current[index], unit_price: value === '' ? undefined : Math.max(0, Number(value)) };
+      setValue('products', current, { shouldDirty: true });
+    }
+  };
+
   const handleToggleSupplier = (supplierId: number) => {
     const current = watchedSupplierIds ?? [];
     if (current.includes(supplierId)) {
@@ -143,7 +152,7 @@ export function CotizacionFormDialog({
     }
     try {
       await createCotizacion.mutateAsync({
-        products: values.products.map((p) => ({ id: p.product_id, quantity: p.quantity })),
+        products: values.products.map((p) => ({ id: p.product_id, quantity: p.quantity, unit_price: p.unit_price })),
         supplier_ids: values.supplier_ids,
         notes: values.notes.trim() || undefined,
       });
@@ -161,7 +170,7 @@ export function CotizacionFormDialog({
       hasUnsavedChanges={isDirty}
       title="Nueva cotización múltiple"
       description="Selecciona productos y al menos 1 proveedor para emitir la solicitud de cotización."
-      className="max-w-2xl"
+      className="max-w-4xl max-h-[90vh] overflow-y-auto"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Productos a cotizar */}
@@ -228,6 +237,16 @@ export function CotizacionFormDialog({
                     disabled={isPending}
                     className="w-16 h-7 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 px-2 text-center font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
                     aria-label={`Cantidad de ${item.product_name}`}
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    placeholder="Precio unit."
+                    value={item.unit_price ?? ''}
+                    onChange={(e) => handleProductPriceChange(index, e.target.value)}
+                    disabled={isPending}
+                    className="w-24 h-7 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 px-2 text-right font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                    aria-label={`Precio unitario de ${item.product_name}`}
                   />
                   <button
                     type="button"

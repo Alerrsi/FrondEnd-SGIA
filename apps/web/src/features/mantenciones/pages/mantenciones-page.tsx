@@ -85,7 +85,7 @@ export default function MantencionesPage() {
           Mantenciones
         </h1>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla (REQ-18).
+          Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla.
         </p>
       </div>
 

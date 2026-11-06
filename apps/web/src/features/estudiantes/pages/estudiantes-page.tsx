@@ -74,7 +74,7 @@ export default function EstudiantesPage() {
             Estudiantes
           </h1>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Registro de estudiantes que retiran préstamos presenciales (REQ-20).
+            Registro de estudiantes que retiran préstamos presenciales.
           </p>
         </div>
         <Button

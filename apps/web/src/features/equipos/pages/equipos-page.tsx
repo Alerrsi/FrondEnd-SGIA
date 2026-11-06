@@ -372,15 +372,13 @@ export default function EquiposPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+              <Cpu className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
               Fichas Técnicas de Equipos
             </h1>
-            <Badge tone="neutral" mono>
-              FU-05 · REQ-12
-            </Badge>
           </div>
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Gestión de especificaciones de hardware, ciclo de vida útil y manuales de activos críticos (INACAP Sede Temuco).
+            Gestión de especificaciones de hardware, ciclo de vida útil y manuales de activos críticos.
           </p>
         </div>
 

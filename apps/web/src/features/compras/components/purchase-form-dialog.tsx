@@ -307,18 +307,6 @@ export function PurchaseFormDialog({
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="po-expected" className={labelClasses}>
-              Llegada estimada
-            </label>
-            <input
-              id="po-expected"
-              type="date"
-              {...register('expected_at')}
-              disabled={isPending}
-              className={inputClasses}
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
             <label htmlFor="po-notes" className={labelClasses}>
               Notas
             </label>

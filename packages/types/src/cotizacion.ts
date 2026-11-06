@@ -84,7 +84,7 @@ export interface Cotizacion {
 export interface CreateCotizacionPayload {
   proveedor?: string;
   items?: CotizacionItem[];
-  products?: Array<{ id: number; quantity: number; name?: string }>;
+  products?: Array<{ id: number; quantity: number; name?: string; unit_price?: number }>;
   supplier_ids?: number[];
   fechaRequerida?: string;
   expires_at?: string;

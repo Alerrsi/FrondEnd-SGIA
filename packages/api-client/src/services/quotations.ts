@@ -106,6 +106,7 @@ export async function createCotizacion(payload: CreateCotizacionPayload): Promis
     id: it.id ?? it.product_id ?? it.productoId,
     quantity: it.quantity ?? it.cantidad ?? 1,
     name: it.name,
+    unit_price: it.unit_price,
   }));
 
   const body = {

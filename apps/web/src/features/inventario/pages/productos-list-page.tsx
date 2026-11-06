@@ -7,6 +7,7 @@ import {
 import type { Producto, ProductoParams } from '@sgia/types';
 import {
   AlertCircle,
+  Boxes,
   FileUp,
   Plus,
 } from 'lucide-react';
@@ -185,14 +186,8 @@ export default function ProductosListPage() {
       {/* 1. Encabezado Técnico Compacto y Acciones */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-              SEDE TEMUCO · PAÑOL TI
-            </span>
-            <span className="text-zinc-400 dark:text-zinc-600 text-xs font-mono">/ Módulo FU-02</span>
-          </div>
-          <h1 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <Boxes className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
             Control de Inventario y Activos
           </h1>
         </div>

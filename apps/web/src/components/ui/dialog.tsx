@@ -99,7 +99,9 @@ export function Dialog({
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <DialogPrimitive.Content
               className={cn(
-                'relative w-full max-w-lg rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-md transition-all animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
+                'relative w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-md transition-all animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
+                // max-w por defecto solo si el llamador no define el suyo (cn no resuelve conflictos).
+                !className?.includes('max-w-') && 'max-w-lg',
                 className,
               )}
               onPointerDownOutside={(e) => {

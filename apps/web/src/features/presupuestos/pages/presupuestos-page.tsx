@@ -69,19 +69,6 @@ export default function PresupuestosPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span
-            data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
-            SEDE TEMUCO · ADQUISICIONES
-          </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-            Presupuestos
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -90,8 +77,7 @@ export default function PresupuestosPage() {
               Presupuestos anuales
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Ejecución por carrera: las compras reservan y las facturas confirmadas consumen
-              (REQ-16).
+              Ejecución por carrera: las compras reservan y las facturas confirmadas consumen.
             </p>
           </div>
           {canManage && (

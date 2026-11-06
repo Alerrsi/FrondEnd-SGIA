@@ -173,15 +173,6 @@ export default function UbicacionesPage() {
     <div className="flex flex-col gap-5">
       {/* Encabezado Principal */}
       <div className="flex flex-col gap-1 border-b border-zinc-200 dark:border-zinc-800 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold text-red-600 dark:text-red-500 uppercase tracking-wider">
-            SEDE TEMUCO · PAÑOL TI
-          </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-            Estructura Física
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -190,7 +181,7 @@ export default function UbicacionesPage() {
               Gestión de Ubicaciones Físicas y Cajones
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol (REQ-05).
+              Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol.
             </p>
           </div>
 
