@@ -1,3 +1,6 @@
+import type { InvoiceIntake } from './ingreso-factura';
+import type { BudgetMovement } from './presupuesto';
+
 export const QuotationStatus = {
   BORRADOR: 'borrador',
   ENVIADA: 'enviada',
@@ -103,7 +106,9 @@ export interface QuotationResponsePayload {
   supplier_id: number;
   status: 'aceptada' | 'rechazada';
   offer_total?: number;
+  quotation_number?: string;
   notes?: string;
+  items?: Array<{ product_id: number; offered_unit_price: number }>;
 }
 
 export const PurchaseStatus = {
@@ -149,10 +154,21 @@ export interface PurchaseOrder {
   updated_at: string;
 }
 
+/** Respuesta de `GET /api/purchases/{id}/trace`. */
+export interface PurchaseTrace {
+  purchase: PurchaseOrder;
+  quotations: Cotizacion[];
+  invoices: InvoiceIntake[];
+  budget_movements: BudgetMovement[];
+  stock_entries: { product_id: number; name: string; quantity: number }[];
+}
+
 export interface CreatePurchasePayload {
   /** Obligatorio: el total se reserva en este presupuesto. */
   annual_budget_id: number;
   quotation_id?: number | null;
+  /** Obligatoria con `quotation_id` si respondieron menos de 3 proveedores. */
+  quotation_justification?: string;
   /** Mín. 3 cotizaciones `aceptada` distintas; `supplier_id` debe estar contactado en todas. */
   quotation_ids?: number[];
   supplier_id?: number;

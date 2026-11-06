@@ -50,7 +50,10 @@ describe('CancelInvoiceIntakeDialog (REQ-17)', () => {
     const reason =
       'No se puede anular: la unidad PRO-ISD-000004 de Osciloscopio Rigol no está disponible o ya tiene préstamos.';
     mockCancel.mockRejectedValueOnce(
-      new ApiRequestError(422, { message: reason, errors: { items: [reason] } }),
+      new ApiRequestError(422, {
+        message: reason,
+        errors: { items: [reason] },
+      }),
     );
     const onClose = vi.fn();
     const user = userEvent.setup();

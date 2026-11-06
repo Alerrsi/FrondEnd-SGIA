@@ -29,7 +29,10 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
   const { data: budget } = useBudget(intake?.annual_budget_id ?? undefined);
   const { data: purchase } = usePurchase(intake?.purchase_id ?? undefined);
   // El catálogo se carga antes de montar la revisión para asociar los ítems del OCR por nombre.
-  const { data: catalog, isSuccess: catalogReady } = useProducts({ page: 1, per_page: 100 });
+  const { data: catalog, isSuccess: catalogReady } = useProducts({
+    page: 1,
+    per_page: 100,
+  });
   const [cancelling, setCancelling] = useState(false);
 
   const isDraft = intake?.status === InvoiceIntakeStatus.BORRADOR;

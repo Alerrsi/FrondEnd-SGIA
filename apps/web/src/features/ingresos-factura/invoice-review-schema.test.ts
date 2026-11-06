@@ -5,6 +5,7 @@ import {
   buildInvoiceReviewSchema,
   initialReviewValues,
   matchProduct,
+  suggestProducts,
   toConfirmPayload,
 } from '@/features/ingresos-factura/lib/invoice-review-schema';
 
@@ -69,7 +70,14 @@ describe('Revisión de borrador de factura (REQ-17)', () => {
     const schema = buildInvoiceReviewSchema(types);
     const result = schema.safeParse({
       document_number: ' ',
-      items: [{ product_id: Number.NaN, detected_name: 'x', quantity: 1, unit_price: 0 }],
+      items: [
+        {
+          product_id: Number.NaN,
+          detected_name: 'x',
+          quantity: 1,
+          unit_price: 0,
+        },
+      ],
     });
     const paths = result.success ? [] : result.error.issues.map((i) => i.path.join('.'));
     expect(paths).toEqual(expect.arrayContaining(['document_number', 'items.0.product_id']));
@@ -80,8 +88,20 @@ describe('Revisión de borrador de factura (REQ-17)', () => {
       {
         document_number: ' F-881 ',
         items: [
-          { product_id: 1, detected_name: 'cable', quantity: 10, unit_price: 990, cajon_id: 4 },
-          { product_id: 2, detected_name: '', quantity: 2, unit_price: 350000, cajon_id: 7 },
+          {
+            product_id: 1,
+            detected_name: 'cable',
+            quantity: 10,
+            unit_price: 990,
+            cajon_id: 4,
+          },
+          {
+            product_id: 2,
+            detected_name: '',
+            quantity: 2,
+            unit_price: 350000,
+            cajon_id: 7,
+          },
         ],
       },
       types,
@@ -89,8 +109,19 @@ describe('Revisión de borrador de factura (REQ-17)', () => {
     expect(payload).toEqual({
       document_number: 'F-881',
       items: [
-        { product_id: 1, quantity: 10, unit_price: 990, detected_name: 'cable' },
-        { product_id: 2, quantity: 2, unit_price: 350000, detected_name: null, cajon_id: 7 },
+        {
+          product_id: 1,
+          quantity: 10,
+          unit_price: 990,
+          detected_name: 'cable',
+        },
+        {
+          product_id: 2,
+          quantity: 2,
+          unit_price: 350000,
+          detected_name: null,
+          cajon_id: 7,
+        },
       ],
     });
   });
@@ -105,5 +136,27 @@ describe('matchProduct difuso', () => {
     expect(matchProduct('PILA DURACELL  AAA ALKALINA 2400', prods)?.id).toBe(1);
     expect(matchProduct('PILA DURACELL AA ALKALINA TIRA X 12', prods)?.id).toBe(2);
     expect(matchProduct('CARTON CORRUGADO', prods)).toBeUndefined();
+    const c = [{ id: 7, name: 'Cartón corrugado 1,2x5' }] as never[];
+    expect(matchProduct('CARTON CORRUGADO1.2x5', c)?.id).toBe(7);
+  });
+});
+
+describe('suggestProducts', () => {
+  const prods = [
+    { id: 1, name: 'Cartón corrugado 1,2x5' },
+    { id: 2, name: 'Cartón piedra' },
+    { id: 3, name: 'Pila Duracell AA' },
+    { id: 4, name: 'Cartón corrugado doble' },
+    { id: 5, name: 'Papel corrugado' },
+  ] as never[];
+  it('devuelve hasta 3 parecidos, el más cercano primero, ignorando mayúsculas y tildes', () => {
+    const ids = suggestProducts('CARTON CORRUGADO', prods).map((p) => p.id);
+    expect(ids).toHaveLength(3);
+    expect(ids.slice(0, 2).sort()).toEqual([1, 4]);
+    expect(ids).not.toContain(3);
+  });
+  it('devuelve vacío si nada se parece', () => {
+    expect(suggestProducts('Osciloscopio', prods)).toEqual([]);
+    expect(suggestProducts('', prods)).toEqual([]);
   });
 });

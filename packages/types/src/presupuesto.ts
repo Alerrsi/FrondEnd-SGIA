@@ -8,8 +8,11 @@ export interface AnnualBudget {
   career?: Career;
   year: number;
   initial_amount: number;
+  /** Inicial − consumido; NO baja al reservar. */
   available_amount: number;
   reserved_amount: number;
+  /** available − reserved: lo realmente gastable. Puede ser negativo tras un exceso autorizado. */
+  free_amount: number;
   consumed_amount: number;
   created_by?: number | null;
   updated_by?: number | null;
@@ -27,6 +30,7 @@ export interface BudgetSummaryRow {
   reserved_amount: number;
   consumed_amount: number;
   available_amount: number;
+  free_amount: number;
   /** (consumido + reservado) / inicial × 100. */
   execution_percent: number;
 }

@@ -3,6 +3,7 @@ import { Toaster } from 'sileo';
 
 import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import ComprasPage from '@/features/compras/pages/compras-page';
+import CompraTrazabilidadPage from '@/features/compras/pages/compra-trazabilidad-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import AuditoriaPage from '@/features/administracion/pages/auditoria-page';
@@ -32,8 +33,9 @@ import {
 } from '@/features/auth/components/protected-route';
 import CatalogoPage from '@/features/profesor/pages/catalogo-page';
 import MisSolicitudesPage from '@/features/profesor/pages/mis-solicitudes-page';
+import NovedadesPage from '@/features/novedades/pages/novedades-page';
 import MisNovedadesPage from '@/features/profesor/pages/mis-novedades-page';
-import { getRoleDefaultPath } from '@/features/auth/types/roles';
+import { getRoleDefaultPath, rolesForRoute } from '@/features/auth/types/roles';
 
 function RootRoute() {
   const { user } = useAuth();
@@ -77,7 +79,7 @@ function AppContent() {
             <Route
               path="/dashboard"
               element={
-                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/dashboard') ?? []}>
                   <DashboardPage />
                 </RequireRole>
               }
@@ -86,7 +88,7 @@ function AppContent() {
             <Route
               path="/inventario"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/inventario') ?? []}>
                   <ProductosListPage />
                 </RequireRole>
               }
@@ -95,7 +97,7 @@ function AppContent() {
             <Route
               path="/ubicaciones"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/ubicaciones') ?? []}>
                   <UbicacionesPage />
                 </RequireRole>
               }
@@ -104,7 +106,7 @@ function AppContent() {
             <Route
               path="/equipos"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/equipos') ?? []}>
                   <EquiposPage />
                 </RequireRole>
               }
@@ -113,7 +115,7 @@ function AppContent() {
             <Route
               path="/equipos/:id"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/equipos') ?? []}>
                   <EquiposPage />
                 </RequireRole>
               }
@@ -122,7 +124,7 @@ function AppContent() {
             <Route
               path="/alertas"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/alertas') ?? []}>
                   <AlertasStockPage />
                 </RequireRole>
               }
@@ -131,7 +133,7 @@ function AppContent() {
             <Route
               path="/prestamos"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/prestamos') ?? []}>
                   <PrestamosMenuPage />
                 </RequireRole>
               }
@@ -140,7 +142,7 @@ function AppContent() {
             <Route
               path="/prestamos/cola"
               element={
-                <RequireRole allowedRoles={['PAN-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/prestamos/cola') ?? []}>
                   <ColaPrestamosPage />
                 </RequireRole>
               }
@@ -149,7 +151,7 @@ function AppContent() {
             <Route
               path="/prestamos/mostrador"
               element={
-                <RequireRole allowedRoles={['PAN-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/prestamos/mostrador') ?? []}>
                   <MostradorPrestamosPage />
                 </RequireRole>
               }
@@ -163,7 +165,7 @@ function AppContent() {
             <Route
               path="/prestamos/historial"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/prestamos/historial') ?? []}>
                   <HistorialPrestamosPage />
                 </RequireRole>
               }
@@ -172,7 +174,7 @@ function AppContent() {
             <Route
               path="/historial"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/historial') ?? []}>
                   <HistorialPrestamosPage />
                 </RequireRole>
               }
@@ -181,7 +183,7 @@ function AppContent() {
             <Route
               path="/proveedores"
               element={
-                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/proveedores') ?? []}>
                   <ProveedoresPage />
                 </RequireRole>
               }
@@ -190,7 +192,7 @@ function AppContent() {
             <Route
               path="/cotizaciones"
               element={
-                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/cotizaciones') ?? []}>
                   <CotizacionesPage />
                 </RequireRole>
               }
@@ -199,8 +201,17 @@ function AppContent() {
             <Route
               path="/compras"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/compras') ?? []}>
                   <ComprasPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/compras/:id/trazabilidad"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/compras') ?? []}>
+                  <CompraTrazabilidadPage />
                 </RequireRole>
               }
             />
@@ -208,7 +219,7 @@ function AppContent() {
             <Route
               path="/presupuestos"
               element={
-                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/presupuestos') ?? []}>
                   <PresupuestosPage />
                 </RequireRole>
               }
@@ -217,7 +228,7 @@ function AppContent() {
             <Route
               path="/ingresos-factura"
               element={
-                <RequireRole allowedRoles={['DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/ingresos-factura') ?? []}>
                   <IngresosFacturaPage />
                 </RequireRole>
               }
@@ -226,7 +237,7 @@ function AppContent() {
             <Route
               path="/profesor/catalogo"
               element={
-                <RequireRole allowedRoles={['PRO-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/profesor/catalogo') ?? []}>
                   <CatalogoPage />
                 </RequireRole>
               }
@@ -235,7 +246,7 @@ function AppContent() {
             <Route
               path="/profesor/solicitudes"
               element={
-                <RequireRole allowedRoles={['PRO-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/profesor/solicitudes') ?? []}>
                   <MisSolicitudesPage />
                 </RequireRole>
               }
@@ -244,8 +255,17 @@ function AppContent() {
             <Route
               path="/profesor/novedades"
               element={
-                <RequireRole allowedRoles={['PRO-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/profesor/novedades') ?? []}>
                   <MisNovedadesPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/novedades"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/novedades') ?? []}>
+                  <NovedadesPage />
                 </RequireRole>
               }
             />
@@ -253,7 +273,7 @@ function AppContent() {
             <Route
               path="/mantenciones"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'DIR-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/mantenciones') ?? []}>
                   <MantencionesPage />
                 </RequireRole>
               }
@@ -262,7 +282,7 @@ function AppContent() {
             <Route
               path="/estudiantes"
               element={
-                <RequireRole allowedRoles={['PAN-01', 'AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/estudiantes') ?? []}>
                   <EstudiantesPage />
                 </RequireRole>
               }
@@ -271,7 +291,7 @@ function AppContent() {
             <Route
               path="/panoles"
               element={
-                <RequireRole allowedRoles={['AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/panoles') ?? []}>
                   <PanolesPage />
                 </RequireRole>
               }
@@ -280,7 +300,7 @@ function AppContent() {
             <Route
               path="/auditoria"
               element={
-                <RequireRole allowedRoles={['AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/auditoria') ?? []}>
                   <AuditoriaPage />
                 </RequireRole>
               }
@@ -289,7 +309,7 @@ function AppContent() {
             <Route
               path="/usuarios"
               element={
-                <RequireRole allowedRoles={['AD-01']}>
+                <RequireRole allowedRoles={rolesForRoute('/usuarios') ?? []}>
                   <UsuariosPage />
                 </RequireRole>
               }

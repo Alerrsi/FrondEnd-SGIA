@@ -42,6 +42,9 @@ export interface InvoiceIntake {
   user_id: number | null;
   annual_budget_id: number;
   purchase_id: number | null;
+  /** Borrador sin OC ni carrera detectada: el usuario elige presupuesto al confirmar. */
+  needs_budget?: boolean;
+  detected_career_id?: number | null;
   annual_budget?: AnnualBudget;
   /** Respuesta de confirm/GET (contrato): OC asociada y si hubo vínculo. */
   purchase?: { code: string | null; status: string } | null;
@@ -83,5 +86,7 @@ export interface ConfirmInvoiceIntakePayload {
   document_number: string;
   /** Opcional: si se omite, el backend intenta asociar una orden abierta por productos y cantidades. */
   purchase_id?: number | null;
+  /** Solo DIR-01: autoriza facturar por sobre lo libre del presupuesto (tras el 422 `over_budget`). */
+  allow_over_budget?: boolean;
   items: ConfirmInvoiceIntakeItem[];
 }

@@ -6,15 +6,22 @@ import type { AnnualBudget, InvoiceIntake, Producto } from '@sgia/types';
 import { AlertTriangle, Check, Loader2, Plus, Sparkles, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { useOptionalAuth } from '@/features/auth/context/auth-context';
+import { canDo } from '@/features/auth/types/roles';
 import { formatCLP } from '@/features/compras/lib/format';
+import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
+import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
 import { QuickProductDialog } from '@/features/ingresos-factura/components/quick-product-dialog';
 import {
   buildInvoiceReviewSchema,
   initialReviewValues,
   reviewTotal,
+  suggestProducts,
   toConfirmPayload,
   type InvoiceReviewValues,
 } from '@/features/ingresos-factura/lib/invoice-review-schema';
+import { parseOverBudget, type OverBudgetInfo } from '@/features/ingresos-factura/lib/over-budget';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -50,8 +57,21 @@ export function InvoiceReviewForm({
   onConfirmed,
 }: InvoiceReviewFormProps) {
   const confirmIntake = useConfirmInvoiceIntake();
+  const canAuthorize = canDo(useOptionalAuth()?.user?.rol, 'authorizeOverBudget');
+  // Exceso detectado por el servidor: DIR-01 pasa por alerta → cartel final; el resto solo ve el aviso.
+  const [overBudget, setOverBudget] = useState<{
+    info: OverBudgetInfo;
+    stage: 'alert' | 'final' | 'blocked';
+    values: InvoiceReviewValues;
+  } | null>(null);
   const [purchaseId, setPurchaseId] = useState('');
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  // Factura sin OC: el backend pide el presupuesto (needs_budget o 422 en annual_budget_id).
+  const [budgetId, setBudgetId] = useState<number | undefined>(undefined);
+  const [pickedBudget, setPickedBudget] = useState<AnnualBudget | undefined>(undefined);
+  const [budgetError, setBudgetError] = useState<string | null>(null);
+  const [budgetRequired, setBudgetRequired] = useState(false);
+  const showBudgetSelect = !purchaseId && (intake.needs_budget === true || budgetRequired);
   const { data: linkable } = usePurchases({ linkable: true, per_page: 100 });
   const openPurchases = linkable?.data ?? [];
   const { data: cajonesPage } = useCajones({ per_page: 100 });
@@ -61,10 +81,21 @@ export function InvoiceReviewForm({
     name: string;
   } | null>(null);
 
+  // Paso previo a crear: muestra parecidos y exige confirmar la creación.
+  const [suggestFor, setSuggestFor] = useState<{
+    index: number;
+    name: string;
+  } | null>(null);
+
   const products = useMemo(() => {
     const extra = created.filter((c) => !catalog.some((b) => b.id === c.id));
     return [...extra, ...catalog];
   }, [catalog, created]);
+
+  const suggestions = useMemo(
+    () => (suggestFor ? suggestProducts(suggestFor.name, products) : []),
+    [suggestFor, products],
+  );
 
   const productTypes = useMemo(
     () => new Map<number, ProductType>(products.map((p) => [p.id, p.type ?? 'insumo'])),
@@ -88,18 +119,26 @@ export function InvoiceReviewForm({
   const items = useWatch({ control, name: 'items' });
 
   const total = reviewTotal(items ?? []);
-  const available = (budget?.available_amount ?? 0) + purchaseReserved;
-  const exceeds = budget !== undefined && total > available;
+  const activeBudget = showBudgetSelect ? pickedBudget : budget;
+  const available = (activeBudget?.free_amount ?? 0) + purchaseReserved;
+  const exceeds = activeBudget !== undefined && total > available;
   const autoMatched = (items ?? []).filter((it) => Number.isFinite(it.product_id)).length;
 
-  const onSubmit = handleSubmit(async (values) => {
+  const submitConfirm = async (values: InvoiceReviewValues, allowOverBudget = false) => {
     setPurchaseError(null);
+    setBudgetError(null);
+    if (showBudgetSelect && !budgetId) {
+      setBudgetError('Selecciona el presupuesto al que se imputa la factura.');
+      return;
+    }
     try {
       const confirmed = await confirmIntake.mutateAsync({
         id: intake.id,
         payload: {
           ...toConfirmPayload(values, productTypes),
           ...(purchaseId ? { purchase_id: Number(purchaseId) } : {}),
+          ...(showBudgetSelect && budgetId ? { annual_budget_id: budgetId } : {}),
+          ...(allowOverBudget ? { allow_over_budget: true } : {}),
         },
       });
       toast.success(
@@ -110,7 +149,14 @@ export function InvoiceReviewForm({
         }`,
       );
       onConfirmed?.(confirmed);
+      setOverBudget(null);
     } catch (error) {
+      const over = parseOverBudget(error);
+      if (over) {
+        setOverBudget({ info: over, stage: canAuthorize ? 'alert' : 'blocked', values });
+        return;
+      }
+      setOverBudget(null);
       const fieldErrors = apiFieldErrors(error);
       for (const [field, message] of Object.entries(fieldErrors)) {
         const match = /^items\.(\d+)\.(product_id|quantity|unit_price|cajon_id)$/.exec(field);
@@ -123,13 +169,17 @@ export function InvoiceReviewForm({
           );
         } else if (field === 'purchase_id') {
           setPurchaseError(message);
+        } else if (field === 'annual_budget_id') {
+          setBudgetRequired(true);
+          setBudgetError(message);
         } else if (field === 'document_number') {
           setError('document_number', { message });
         }
       }
       toast.error(apiErrorToMessage(error));
     }
-  });
+  };
+  const onSubmit = handleSubmit((values) => submitConfirm(values));
 
   const pending = confirmIntake.isPending;
 
@@ -199,6 +249,43 @@ export function InvoiceReviewForm({
           </p>
         </div>
 
+        {showBudgetSelect && (
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="ii-budget"
+              className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+            >
+              Presupuesto
+            </label>
+            <BudgetSelect
+              id="ii-budget"
+              value={budgetId}
+              onChange={(id, selected) => {
+                setBudgetId(id);
+                setPickedBudget(selected);
+              }}
+              invalid={Boolean(budgetError)}
+              disabled={pending}
+              className={cn(inputClasses, 'max-w-xs')}
+            />
+            {budgetError && <p className={errorClasses}>{budgetError}</p>}
+            {pickedBudget && (
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                Inicial <span className="font-mono">{formatCLP(pickedBudget.initial_amount)}</span>
+                {' · '}reservado{' '}
+                <span className="font-mono">{formatCLP(pickedBudget.reserved_amount)}</span>
+                {' · '}consumido{' '}
+                <span className="font-mono">{formatCLP(pickedBudget.consumed_amount)}</span>
+                {' · '}libre <BudgetFreeAmount amount={pickedBudget.free_amount} />
+              </p>
+            )}
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              La factura no tiene orden de compra asociada: elige la carrera y el año a los que se
+              consume el monto.
+            </p>
+          </div>
+        )}
+
         <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
           <table className="w-full border-collapse text-left text-sm">
             <thead>
@@ -267,7 +354,7 @@ export function InvoiceReviewForm({
                           aria-label={`Crear producto nuevo para el ítem ${index + 1}`}
                           disabled={pending}
                           onClick={() =>
-                            setQuickFor({
+                            setSuggestFor({
                               index,
                               name: item?.detected_name ?? '',
                             })
@@ -277,6 +364,58 @@ export function InvoiceReviewForm({
                           <Plus className="h-3.5 w-3.5" />
                         </Button>
                       </div>
+                      {suggestFor?.index === index && (
+                        <div className="mt-1 space-y-1 rounded border border-zinc-200 dark:border-zinc-800 p-2 text-xs">
+                          {suggestions.length > 0 ? (
+                            <>
+                              <p className="text-zinc-500">¿Es alguno de estos productos?</p>
+                              {suggestions.map((p) => (
+                                <Button
+                                  key={p.id}
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  className="mr-1"
+                                  onClick={() => {
+                                    setValue(`items.${index}.product_id`, p.id, {
+                                      shouldValidate: true,
+                                    });
+                                    setSuggestFor(null);
+                                  }}
+                                >
+                                  {productName(p)}
+                                </Button>
+                              ))}
+                            </>
+                          ) : (
+                            <p className="text-zinc-500">
+                              No existe un producto parecido; se creará uno nuevo.
+                            </p>
+                          )}
+                          <div className="flex gap-1">
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => {
+                                setQuickFor(suggestFor);
+                                setSuggestFor(null);
+                              }}
+                            >
+                              {suggestions.length > 0
+                                ? 'Ninguno, crear producto nuevo'
+                                : 'Crear producto nuevo'}
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setSuggestFor(null)}
+                            >
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                       {rowErrors?.product_id && (
                         <p className={errorClasses}>{rowErrors.product_id.message}</p>
                       )}
@@ -393,10 +532,10 @@ export function InvoiceReviewForm({
           </Button>
           <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
             <span className="text-zinc-500 dark:text-zinc-400">
-              Disponible
+              Libre
               {purchaseReserved > 0 ? ' (+ reserva de la compra)' : ''}:{' '}
               <span className="font-mono text-zinc-800 dark:text-zinc-200">
-                {budget ? formatCLP(available) : '—'}
+                {activeBudget ? formatCLP(available) : '—'}
               </span>
             </span>
             <span
@@ -415,7 +554,18 @@ export function InvoiceReviewForm({
             className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400"
           >
             <AlertTriangle className="h-3.5 w-3.5" />
-            El total supera el disponible del presupuesto; el servidor rechazará la confirmación.
+            El total supera lo libre del presupuesto; el servidor lo rechazará, salvo que el director de carrera autorice el exceso.
+          </p>
+        )}
+
+        {overBudget?.stage === 'blocked' && (
+          <p
+            role="alert"
+            className="flex items-start gap-1.5 text-xs text-rose-600 dark:text-rose-400"
+          >
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            La factura supera lo libre del presupuesto por {formatCLP(overBudget.info.overBy)}. Solo
+            el director de carrera puede autorizar el exceso; pídele que confirme esta factura.
           </p>
         )}
 
@@ -426,6 +576,25 @@ export function InvoiceReviewForm({
           </Button>
         </div>
       </form>
+      <ConfirmDialog
+        open={overBudget?.stage === 'alert'}
+        title="La factura supera el presupuesto"
+        description={`El total de la factura (${formatCLP(overBudget?.info.total)}) excede lo libre del presupuesto (${formatCLP(overBudget?.info.freeAmount)}) por ${formatCLP(overBudget?.info.overBy)}. Como director de carrera puedes autorizar el exceso.`}
+        confirmLabel="Continuar"
+        variant="danger"
+        onConfirm={() => setOverBudget((o) => (o ? { ...o, stage: 'final' } : o))}
+        onCancel={() => setOverBudget(null)}
+      />
+      <ConfirmDialog
+        open={overBudget?.stage === 'final'}
+        title="Confirmación final: autorizar exceso"
+        description={`Vas a sobrepasar el presupuesto en ${formatCLP(overBudget?.info.overBy)}. Quedará registrado a tu nombre en la auditoría y el presupuesto quedará con saldo libre negativo. Esta acción no se puede deshacer.`}
+        confirmLabel="Autorizar exceso y confirmar factura"
+        variant="danger"
+        loading={pending}
+        onConfirm={() => overBudget && void submitConfirm(overBudget.values, true)}
+        onCancel={() => setOverBudget(null)}
+      />
       <QuickProductDialog
         open={quickFor !== null}
         onClose={() => setQuickFor(null)}

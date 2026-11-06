@@ -52,6 +52,8 @@ const normalize = (s: string) =>
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
     .replace(/k/g, 'c') // alkalina / alcalina
+    .replace(/([a-z])(\d)/g, '$1 $2') // corrugado1 -> corrugado 1
+    .replace(/(\d)([a-z])/g, '$1 $2') // 2x5 -> 2 x 5
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 
@@ -79,7 +81,27 @@ export function matchProduct(detectedName: string, products: Producto[]): Produc
     })
     .filter((x) => x.score >= 0.75)
     .sort((x, y) => y.score - x.score);
-  return scored.length === 1 || (scored[0] && scored[0].score > scored[1].score) ? scored[0].p : undefined;
+  const [best, second] = scored;
+  return best && (!second || best.score > second.score) ? best.p : undefined;
+}
+
+/**
+ * Productos parecidos al nombre del OCR (hasta `limit`), por similitud de palabras (Jaccard >= 0.25) con la
+ * misma normalización de `matchProduct`. Sirve para ofrecer elegir uno antes de crear un producto nuevo.
+ */
+export function suggestProducts(detectedName: string, products: Producto[], limit = 3): Producto[] {
+  const a = tokens(detectedName);
+  if (a.size === 0) return [];
+  return products
+    .map((p) => {
+      const b = tokens(p.nombre ?? p.name ?? '');
+      const common = [...a].filter((t) => b.has(t)).length;
+      return { p, score: common / (a.size + b.size - common) };
+    })
+    .filter((x) => x.score >= 0.25)
+    .sort((x, y) => y.score - x.score)
+    .slice(0, limit)
+    .map((x) => x.p);
 }
 
 /** Valores iniciales del formulario a partir del OCR del borrador. */

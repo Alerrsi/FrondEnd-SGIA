@@ -22,6 +22,7 @@ import {
   createSupplier,
   fetchPurchase,
   fetchPurchases,
+  fetchPurchaseTrace,
   fetchQuotation,
   fetchQuotations,
   fetchSupplier,
@@ -141,6 +142,14 @@ export function usePurchase(id: number | undefined) {
   return useQuery({
     queryKey: purchaseKeys.detail(id!),
     queryFn: () => fetchPurchase(id!),
+    enabled: id !== undefined,
+  });
+}
+
+export function usePurchaseTrace(id: number | undefined) {
+  return useQuery({
+    queryKey: ['purchases', 'trace', id] as const,
+    queryFn: () => fetchPurchaseTrace(id!),
     enabled: id !== undefined,
   });
 }

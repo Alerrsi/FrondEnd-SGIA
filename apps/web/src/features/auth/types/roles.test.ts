@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canAccessRoute, getRoleDefaultPath, isWebRole } from './roles';
+import { canAccessRoute, canDo, getRoleDefaultPath, isWebRole } from './roles';
 
 describe('Role and Route Permissions', () => {
   it('identifies web roles correctly', () => {
@@ -26,7 +26,8 @@ describe('Role and Route Permissions', () => {
       expect(canAccessRoute('AD-01', '/usuarios')).toBe(true);
       expect(canAccessRoute('AD-01', '/inventario')).toBe(true);
       expect(canAccessRoute('AD-01', '/cotizaciones')).toBe(true);
-      expect(canAccessRoute('AD-01', '/')).toBe(false);
+      expect(canAccessRoute('AD-01', '/')).toBe(true);
+      expect(canAccessRoute('AD-01', '/presupuestos')).toBe(true);
       expect(canAccessRoute('AD-01', '/prestamos/cola')).toBe(false);
     });
 
@@ -56,6 +57,13 @@ describe('Role and Route Permissions', () => {
       expect(canAccessRoute('PRO-01', '/prestamos/cola')).toBe(false);
       expect(canAccessRoute('PRO-01', '/cotizaciones')).toBe(false);
       expect(canAccessRoute('PRO-01', '/usuarios')).toBe(false);
+    });
+
+    it('gates actions like the backend', () => {
+      expect(canDo('DIR-01', 'changeQuotationStatus')).toBe(true);
+      expect(canDo('AD-01', 'changeQuotationStatus')).toBe(false);
+      expect(canDo('PAN-01', 'createPurchase')).toBe(false);
+      expect(canDo(undefined, 'manageBudgets')).toBe(false);
     });
 
     it('keeps the admin roles out of the professor routes', () => {

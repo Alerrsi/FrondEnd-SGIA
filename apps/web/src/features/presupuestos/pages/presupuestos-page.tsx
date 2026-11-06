@@ -5,6 +5,7 @@ import { AlertCircle, Plus, Wallet } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { formatCLP } from '@/features/compras/lib/format';
 import { BudgetDetailSheet } from '@/features/presupuestos/components/budget-detail-sheet';
@@ -21,7 +22,7 @@ const YEARS = [CURRENT_YEAR + 1, CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 
 export default function PresupuestosPage() {
   const { user } = useAuth();
   // AD-01 y DIR-01 (director del Área de Informática) administran todas las carreras.
-  const canManage = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
+  const canManage = canDo(user?.rol, 'manageBudgets');
 
   const [year, setYear] = useState<number>(CURRENT_YEAR);
   const [createOpen, setCreateOpen] = useState(false);
@@ -42,9 +43,9 @@ export default function PresupuestosPage() {
           initial: acc.initial + r.initial_amount,
           reserved: acc.reserved + r.reserved_amount,
           consumed: acc.consumed + r.consumed_amount,
-          available: acc.available + r.available_amount,
+          free: acc.free + r.free_amount,
         }),
-        { initial: 0, reserved: 0, consumed: 0, available: 0 },
+        { initial: 0, reserved: 0, consumed: 0, free: 0 },
       ),
     [rows],
   );
@@ -132,9 +133,9 @@ export default function PresupuestosPage() {
         </div>
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Disponible:</span>
+          <span className="text-zinc-500 dark:text-zinc-400">Libre:</span>
           <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
-            {formatCLP(totals.available)}
+            {formatCLP(totals.free)}
           </span>
         </div>
       </div>

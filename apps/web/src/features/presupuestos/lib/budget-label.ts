@@ -11,7 +11,7 @@ export function careerLabel(
   return career.code ? `${career.code} · ${career.name}` : career.name;
 }
 
-/** Etiqueta de un presupuesto para selectores: carrera, año y disponible. */
+/** Etiqueta de un presupuesto para selectores: carrera, año y monto libre. */
 export function budgetOptionLabel(budget: AnnualBudget): string {
-  return `${careerLabel(budget)} · ${budget.year} — disponible ${formatCLP(budget.available_amount)}`;
+  return `${careerLabel(budget)} · ${budget.year} — libre ${formatCLP(budget.free_amount)}`;
 }

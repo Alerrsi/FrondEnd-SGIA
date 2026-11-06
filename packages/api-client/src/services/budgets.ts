@@ -37,6 +37,7 @@ export interface RawAnnualBudget {
   initial_amount?: Amount;
   available_amount?: Amount;
   reserved_amount?: Amount;
+  free_amount?: Amount;
   consumed_amount?: Amount;
   created_by?: number | null;
   updated_by?: number | null;
@@ -53,6 +54,7 @@ export function normalizeBudget(raw: RawAnnualBudget): AnnualBudget {
     initial_amount: toAmount(raw.initial_amount),
     available_amount: toAmount(raw.available_amount),
     reserved_amount: toAmount(raw.reserved_amount),
+    free_amount: raw.free_amount == null ? toAmount(raw.available_amount) - toAmount(raw.reserved_amount) : toAmount(raw.free_amount),
     consumed_amount: toAmount(raw.consumed_amount),
     created_by: raw.created_by ?? null,
     updated_by: raw.updated_by ?? null,
@@ -76,6 +78,7 @@ function normalizeSummaryRow(raw: RawSummaryRow): BudgetSummaryRow {
     reserved_amount: budget.reserved_amount,
     consumed_amount: budget.consumed_amount,
     available_amount: budget.available_amount,
+    free_amount: budget.free_amount,
     execution_percent: toAmount(raw.execution_percent),
   };
 }
@@ -93,7 +96,7 @@ interface RawMovement {
   created_at?: string;
 }
 
-function normalizeMovement(raw: RawMovement): BudgetMovement {
+export function normalizeMovement(raw: RawMovement): BudgetMovement {
   return {
     id: raw.id,
     annual_budget_id: raw.annual_budget_id,

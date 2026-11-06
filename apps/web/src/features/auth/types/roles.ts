@@ -12,7 +12,8 @@ export const ROLE_DEFAULT_PATH: Record<WebRoleCode, string> = {
 };
 
 export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
-  '/': ['DIR-01'],
+  '/': ['DIR-01', 'AD-01'],
+  '/dashboard': ['DIR-01', 'AD-01'],
   '/inventario': ['PAN-01', 'DIR-01', 'AD-01'],
   '/prestamos': ['PAN-01', 'AD-01'],
   '/prestamos/cola': ['PAN-01'],
@@ -25,6 +26,9 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/proveedores': ['DIR-01', 'AD-01'],
   '/cotizaciones': ['DIR-01', 'AD-01'],
   '/compras': ['PAN-01', 'DIR-01', 'AD-01'],
+  '/presupuestos': ['DIR-01', 'AD-01'],
+  '/ingresos-factura': ['DIR-01', 'AD-01'],
+  '/novedades': ['PAN-01', 'DIR-01', 'AD-01'],
   '/mantenciones': ['PAN-01', 'DIR-01', 'AD-01'],
   '/estudiantes': ['PAN-01', 'AD-01'],
   '/profesor': ['PRO-01'],
@@ -35,6 +39,22 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/panoles': ['AD-01'],
   '/auditoria': ['AD-01'],
 };
+
+/** Acciones (botones) por rol; espejo de `routes/api.php` y las policies del backend. */
+export const ACTION_ROLES = {
+  changeQuotationStatus: ['DIR-01'],
+  respondQuotation: ['DIR-01', 'AD-01'],
+  createPurchase: ['DIR-01', 'AD-01'],
+  cancelPurchase: ['DIR-01', 'AD-01'],
+  manageBudgets: ['DIR-01', 'AD-01'],
+  authorizeOverBudget: ['DIR-01'],
+  scanInvoice: ['DIR-01', 'AD-01'],
+  deleteProduct: ['DIR-01', 'AD-01'],
+} as const satisfies Record<string, readonly WebRoleCode[]>;
+
+export function canDo(role: string | undefined, action: keyof typeof ACTION_ROLES): boolean {
+  return (ACTION_ROLES[action] as readonly string[]).includes(role ?? '');
+}
 
 export function isWebRole(role: string): role is WebRoleCode {
   if ((WEB_ROLES as readonly string[]).includes(role as WebRoleCode)) {
@@ -54,23 +74,18 @@ export function getRoleDefaultPath(role: RoleCode): string {
   return '/login';
 }
 
-export function canAccessRoute(role: RoleCode, pathname: string): boolean {
-  if (!isWebRole(role)) return false;
-
-  // Exact match
+/** Roles que pueden abrir `pathname` (coincidencia exacta o por prefijo); `undefined` si la ruta no tiene regla. */
+export function rolesForRoute(pathname: string): WebRoleCode[] | undefined {
   const exact = ROUTE_PERMISSIONS[pathname];
-  if (exact) {
-    return exact.includes(role);
-  }
-
-  // Prefix match (e.g., /prestamos/...)
-  const matchingPrefix = Object.keys(ROUTE_PERMISSIONS)
+  if (exact) return exact;
+  const prefix = Object.keys(ROUTE_PERMISSIONS)
     .filter((route) => route !== '/')
     .find((route) => pathname.startsWith(route));
+  return prefix ? ROUTE_PERMISSIONS[prefix] : undefined;
+}
 
-  if (matchingPrefix && ROUTE_PERMISSIONS[matchingPrefix]) {
-    return ROUTE_PERMISSIONS[matchingPrefix].includes(role);
-  }
-
-  return true;
+export function canAccessRoute(role: RoleCode, pathname: string): boolean {
+  if (!isWebRole(role)) return false;
+  const allowed = rolesForRoute(pathname);
+  return allowed ? allowed.includes(role) : true;
 }

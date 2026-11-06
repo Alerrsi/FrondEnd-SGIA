@@ -13,6 +13,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
@@ -33,8 +34,8 @@ export default function ProductosListPage() {
   const deleteProducto = useDeleteProducto();
 
   // Roles permitidos para acciones especiales. El alta por factura se hace en este mismo menú (REQ-17).
-  const canScanInvoice = user?.rol === 'DIR-01' || user?.rol === 'AD-01';
-  const canDelete = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
+  const canScanInvoice = canDo(user?.rol, 'scanInvoice');
+  const canDelete = canDo(user?.rol, 'deleteProduct');
 
   // Server-side query filters & pagination
   const [page, setPage] = useState(1);

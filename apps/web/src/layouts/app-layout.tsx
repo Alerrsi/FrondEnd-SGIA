@@ -1,4 +1,4 @@
-import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { useEffect, useState } from 'react';
 import {
   BarChart3,
@@ -37,7 +37,7 @@ import { GlassIconBar } from '@/components/ui/iconbar';
 import { useTheme } from '@/contexts/theme-context';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/features/auth/context/auth-context';
-import type { WebRoleCode } from '@/features/auth/types/roles';
+import { ROUTE_PERMISSIONS, type WebRoleCode } from '@/features/auth/types/roles';
 import { toast } from '@/lib/toast';
 import { NotificationBell } from '@/features/alertas/components/notification-bell';
 import { SettingsModal } from '@/components/settings/settings-modal';
@@ -53,26 +53,133 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
-  { to: '/', label: 'Dashboards', icon: BarChart3, end: true, roles: ['AD-01', 'DIR-01'] },
-  { to: '/inventario', label: 'Inventario', icon: Boxes, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
-  { to: '/prestamos', label: 'Préstamos', icon: CalendarClock, roles: ['AD-01', 'PAN-01'] },
-  { to: '/ubicaciones', label: 'Ubicaciones', icon: Layers, roles: ['AD-01', 'PAN-01'] },
-  { to: '/equipos', label: 'Fichas Técnicas', icon: Cpu, roles: ['AD-01', 'DIR-01'] },
-  { to: '/cotizaciones', label: 'Cotizaciones', icon: ClipboardList, roles: ['AD-01', 'DIR-01'] },
-  { to: '/compras', label: 'Compras', icon: ShoppingCart, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
-  { to: '/presupuestos', label: 'Presupuestos', icon: Wallet, roles: ['AD-01', 'DIR-01'] },
-  { to: '/ingresos-factura', label: 'Ingresos de factura', icon: ReceiptText, roles: ['AD-01', 'DIR-01'] },
-  { to: '/proveedores', label: 'Proveedores', icon: Building2, roles: ['AD-01', 'DIR-01'] },
-  { to: '/mantenciones', label: 'Mantenciones', icon: Wrench, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
-  { to: '/estudiantes', label: 'Estudiantes', icon: GraduationCap, roles: ['AD-01', 'PAN-01'] },
-  { to: '/historial', label: 'Historial', icon: History, roles: ['AD-01', 'PAN-01'] },
-  { to: '/alertas', label: 'Stock Crítico', icon: Bell, roles: ['AD-01', 'DIR-01', 'PAN-01'] },
-  { to: '/profesor/catalogo', label: 'Catálogo', icon: PackageSearch, roles: ['PRO-01'] },
-  { to: '/profesor/solicitudes', label: 'Mis solicitudes', icon: ClipboardPlus, roles: ['PRO-01'] },
-  { to: '/profesor/novedades', label: 'Novedades', icon: FileWarning, roles: ['PRO-01'] },
-  { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['AD-01'] },
-  { to: '/panoles', label: 'Pañoles', icon: Warehouse, roles: ['AD-01'] },
-  { to: '/auditoria', label: 'Auditoría', icon: ScrollText, roles: ['AD-01'] },
+  {
+    to: '/',
+    label: 'Dashboards',
+    icon: BarChart3,
+    end: true,
+    roles: ROUTE_PERMISSIONS['/'] ?? [],
+  },
+  {
+    to: '/inventario',
+    label: 'Inventario',
+    icon: Boxes,
+    roles: ROUTE_PERMISSIONS['/inventario'] ?? [],
+  },
+  {
+    to: '/prestamos',
+    label: 'Préstamos',
+    icon: CalendarClock,
+    roles: ROUTE_PERMISSIONS['/prestamos'] ?? [],
+  },
+  {
+    to: '/ubicaciones',
+    label: 'Ubicaciones',
+    icon: Layers,
+    roles: ROUTE_PERMISSIONS['/ubicaciones'] ?? [],
+  },
+  {
+    to: '/equipos',
+    label: 'Fichas Técnicas',
+    icon: Cpu,
+    roles: ROUTE_PERMISSIONS['/equipos'] ?? [],
+  },
+  {
+    to: '/cotizaciones',
+    label: 'Cotizaciones',
+    icon: ClipboardList,
+    roles: ROUTE_PERMISSIONS['/cotizaciones'] ?? [],
+  },
+  {
+    to: '/compras',
+    label: 'Compras',
+    icon: ShoppingCart,
+    roles: ROUTE_PERMISSIONS['/compras'] ?? [],
+  },
+  {
+    to: '/presupuestos',
+    label: 'Presupuestos',
+    icon: Wallet,
+    roles: ROUTE_PERMISSIONS['/presupuestos'] ?? [],
+  },
+  {
+    to: '/ingresos-factura',
+    label: 'Ingresos de factura',
+    icon: ReceiptText,
+    roles: ROUTE_PERMISSIONS['/ingresos-factura'] ?? [],
+  },
+  {
+    to: '/proveedores',
+    label: 'Proveedores',
+    icon: Building2,
+    roles: ROUTE_PERMISSIONS['/proveedores'] ?? [],
+  },
+  {
+    to: '/novedades',
+    label: 'Novedades',
+    icon: FileWarning,
+    roles: ROUTE_PERMISSIONS['/novedades'] ?? [],
+  },
+  {
+    to: '/mantenciones',
+    label: 'Mantenciones',
+    icon: Wrench,
+    roles: ROUTE_PERMISSIONS['/mantenciones'] ?? [],
+  },
+  {
+    to: '/estudiantes',
+    label: 'Estudiantes',
+    icon: GraduationCap,
+    roles: ROUTE_PERMISSIONS['/estudiantes'] ?? [],
+  },
+  {
+    to: '/historial',
+    label: 'Historial',
+    icon: History,
+    roles: ROUTE_PERMISSIONS['/historial'] ?? [],
+  },
+  {
+    to: '/alertas',
+    label: 'Stock Crítico',
+    icon: Bell,
+    roles: ROUTE_PERMISSIONS['/alertas'] ?? [],
+  },
+  {
+    to: '/profesor/catalogo',
+    label: 'Catálogo',
+    icon: PackageSearch,
+    roles: ROUTE_PERMISSIONS['/profesor/catalogo'] ?? [],
+  },
+  {
+    to: '/profesor/solicitudes',
+    label: 'Mis solicitudes',
+    icon: ClipboardPlus,
+    roles: ROUTE_PERMISSIONS['/profesor/solicitudes'] ?? [],
+  },
+  {
+    to: '/profesor/novedades',
+    label: 'Novedades',
+    icon: FileWarning,
+    roles: ROUTE_PERMISSIONS['/profesor/novedades'] ?? [],
+  },
+  {
+    to: '/usuarios',
+    label: 'Usuarios',
+    icon: Users,
+    roles: ROUTE_PERMISSIONS['/usuarios'] ?? [],
+  },
+  {
+    to: '/panoles',
+    label: 'Pañoles',
+    icon: Warehouse,
+    roles: ROUTE_PERMISSIONS['/panoles'] ?? [],
+  },
+  {
+    to: '/auditoria',
+    label: 'Auditoría',
+    icon: ScrollText,
+    roles: ROUTE_PERMISSIONS['/auditoria'] ?? [],
+  },
 ];
 
 export default function AppLayout() {
@@ -136,9 +243,7 @@ export default function AppLayout() {
   const userRole = (user?.rol as WebRoleCode) ?? 'PAN-01';
   const roleLabel = ROLE_LABELS[userRole as RoleCode] ?? userRole;
 
-  const allowedNavItems = navigation.filter((item) =>
-    item.roles.includes(userRole),
-  );
+  const allowedNavItems = navigation.filter((item) => item.roles.includes(userRole));
 
   const userInitials = (user?.nombre ?? 'U')
     .split(' ')
@@ -261,7 +366,11 @@ export default function AppLayout() {
                       className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
                     >
                       {isLight ? (
-                        <Moon size={18} strokeWidth={2} className="text-zinc-600 dark:text-zinc-400" />
+                        <Moon
+                          size={18}
+                          strokeWidth={2}
+                          className="text-zinc-600 dark:text-zinc-400"
+                        />
                       ) : (
                         <Sun size={18} strokeWidth={2} className="text-amber-400" />
                       )}
@@ -325,10 +434,7 @@ export default function AppLayout() {
                 </div>
 
                 {/* Lista Completa de Enlaces de Navegación */}
-                <nav
-                  aria-label="Navegación principal"
-                  className="flex flex-col gap-1"
-                >
+                <nav aria-label="Navegación principal" className="flex flex-col gap-1">
                   {allowedNavItems.map(({ to, label, icon: Icon, end }) => (
                     <NavLink
                       key={to}
@@ -349,7 +455,9 @@ export default function AppLayout() {
                           <Icon
                             className={cn(
                               'h-4 w-4 shrink-0',
-                              isActive ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-400',
+                              isActive
+                                ? 'text-zinc-900 dark:text-zinc-100'
+                                : 'text-zinc-500 dark:text-zinc-400',
                             )}
                           />
                           <span className="truncate">{label}</span>
@@ -373,7 +481,9 @@ export default function AppLayout() {
                         <span className="truncate text-xs font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
                           {user?.nombre ?? 'Usuario'}
                         </span>
-                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate">{roleLabel}</span>
+                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate">
+                          {roleLabel}
+                        </span>
                       </div>
                     </div>
 
@@ -408,14 +518,20 @@ export default function AppLayout() {
                       <Moon
                         className={cn(
                           'h-3 w-3 transition-colors',
-                          !isLight ? 'text-indigo-400 font-bold' : 'text-zinc-400 dark:text-zinc-500',
+                          !isLight
+                            ? 'text-indigo-400 font-bold'
+                            : 'text-zinc-400 dark:text-zinc-500',
                         )}
                       />
                       <Toggle
                         size="sm"
                         checked={isLight}
                         onCheckedChange={(light) => setTheme(light ? 'light' : 'dark')}
-                        aria-label={isLight ? 'Modo Claro activo, cambiar a Oscuro' : 'Modo Oscuro activo, cambiar a Claro'}
+                        aria-label={
+                          isLight
+                            ? 'Modo Claro activo, cambiar a Oscuro'
+                            : 'Modo Oscuro activo, cambiar a Claro'
+                        }
                       />
                       <Sun
                         className={cn(
@@ -440,7 +556,7 @@ export default function AppLayout() {
           className={cn(
             'relative flex w-1 items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-col-resize z-30 group',
             isDragging && 'bg-zinc-400 dark:bg-zinc-600',
-            isCollapsed && 'opacity-0 hover:opacity-100'
+            isCollapsed && 'opacity-0 hover:opacity-100',
           )}
         >
           <div className="h-6 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-zinc-500 dark:group-hover:bg-zinc-400 transition-colors" />

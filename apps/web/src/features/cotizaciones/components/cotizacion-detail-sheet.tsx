@@ -1,18 +1,15 @@
-import type { Cotizacion } from '@sgia/types';
+import { useState } from 'react';
+import type { Cotizacion, Supplier } from '@sgia/types';
 import { useUpdateQuotationStatus } from '@sgia/api-client';
 import { QuotationStatus } from '@sgia/types';
-import {
-  Building2,
-  Calendar,
-  FileText,
-  Package,
-  ShoppingCart,
-} from 'lucide-react';
+import { Building2, Calendar, FileText, Package, ShoppingCart } from 'lucide-react';
 
+import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
+import { QuotationResponseDialog } from '@/features/cotizaciones/components/quotation-response-dialog';
 import { QuotationStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,6 +35,7 @@ export function CotizacionDetailSheet({
 }: CotizacionDetailSheetProps) {
   const { user } = useAuth();
   const updateStatus = useUpdateQuotationStatus();
+  const [responding, setResponding] = useState<Supplier | null>(null);
   if (!cotizacion) return null;
 
   const items = cotizacion.items ?? cotizacion.products ?? [];
@@ -45,7 +43,10 @@ export function CotizacionDetailSheet({
   const canGenerateOrder = cotizacion.estado === QuotationStatus.ACEPTADA;
 
   // Solo el director cambia el estado; el backend valida la transición.
-  const canChangeStatus = user?.rol === 'DIR-01' && cotizacion.estado === QuotationStatus.PENDIENTE;
+  const canChangeStatus =
+    canDo(user?.rol, 'changeQuotationStatus') && cotizacion.estado === QuotationStatus.PENDIENTE;
+  const canRespond =
+    canDo(user?.rol, 'respondQuotation') && cotizacion.estado === QuotationStatus.PENDIENTE;
   const changeStatus = async (status: string) => {
     try {
       await updateStatus.mutateAsync({ id: cotizacion.id, status });
@@ -97,7 +98,7 @@ export function CotizacionDetailSheet({
                     className="flex items-center justify-between rounded border border-zinc-100 dark:border-zinc-800 px-3 py-1.5 text-xs"
                   >
                     <span className="text-zinc-700 dark:text-zinc-300 font-medium">
-                      Producto #{item.productoId ?? item.product_id}
+                      {item.name ?? `Producto #${item.productoId ?? item.product_id}`}
                     </span>
                     <span className="font-mono text-zinc-500">
                       ×{item.cantidad ?? item.quantity}
@@ -128,9 +129,12 @@ export function CotizacionDetailSheet({
                     <span className="text-zinc-700 dark:text-zinc-300 font-medium">
                       {supplier.name}
                     </span>
-                    <span className="font-mono text-zinc-400 text-[10px]">
-                      {supplier.email}
-                    </span>
+                    <span className="font-mono text-zinc-400 text-[10px]">{supplier.email}</span>
+                    {canRespond && (
+                      <Button size="sm" onClick={() => setResponding(supplier)}>
+                        Registrar respuesta
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -182,6 +186,17 @@ export function CotizacionDetailSheet({
           )}
         </div>
       </SheetContent>
+      {responding && (
+        <QuotationResponseDialog
+          open
+          onClose={() => {
+            setResponding(null);
+            onClose();
+          }}
+          cotizacion={cotizacion}
+          supplier={responding}
+        />
+      )}
     </Sheet>
   );
 }

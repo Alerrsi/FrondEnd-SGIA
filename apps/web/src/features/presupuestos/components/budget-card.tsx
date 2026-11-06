@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatCLP } from '@/features/compras/lib/format';
+import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
 import { BudgetExecutionBar } from '@/features/presupuestos/components/budget-execution-bar';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 
@@ -87,11 +88,12 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
 
       <div>
         <div className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-          Disponible
+          Libre (gastable)
         </div>
-        <div className="font-mono text-lg font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
-          {formatCLP(budget.available_amount)}
-        </div>
+        <BudgetFreeAmount
+          amount={budget.free_amount}
+          className="block text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+        />
       </div>
 
       <BudgetExecutionBar
@@ -106,8 +108,8 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
         {(
           [
             ['Inicial', budget.initial_amount],
-            ['Reservado', budget.reserved_amount],
-            ['Consumido', budget.consumed_amount],
+            ['Reservado (OC pend.)', budget.reserved_amount],
+            ['Consumido (facturado)', budget.consumed_amount],
           ] as const
         ).map(([term, value]) => (
           <div key={term} className="min-w-0">

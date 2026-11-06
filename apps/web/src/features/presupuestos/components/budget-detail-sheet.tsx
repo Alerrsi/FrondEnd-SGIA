@@ -9,6 +9,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { formatCLP } from '@/features/compras/lib/format';
+import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
 import { BudgetExecutionBar } from '@/features/presupuestos/components/budget-execution-bar';
 import { BudgetIntakesPanel } from '@/features/presupuestos/components/budget-intakes-panel';
 import { BudgetMonthlyChart } from '@/features/presupuestos/components/budget-monthly-chart';
@@ -39,7 +40,7 @@ export function BudgetDetailSheet({ budget, onClose }: BudgetDetailSheetProps) {
                 {careerLabel(budget)} · <span className="font-mono">{budget.year}</span>
               </SheetTitle>
               <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
-                Disponible = inicial − consumido − reservado. Valores calculados por el servidor.
+                Libre = inicial − consumido − reservado (lo que se puede gastar). Valores calculados por el servidor.
               </SheetDescription>
             </SheetHeader>
 
@@ -47,9 +48,8 @@ export function BudgetDetailSheet({ budget, onClose }: BudgetDetailSheetProps) {
               {(
                 [
                   ['Inicial', budget.initial_amount],
-                  ['Reservado', budget.reserved_amount],
-                  ['Consumido', budget.consumed_amount],
-                  ['Disponible', budget.available_amount],
+                  ['Reservado (OC pendientes)', budget.reserved_amount],
+                  ['Consumido (facturado)', budget.consumed_amount],
                 ] as const
               ).map(([label, value]) => (
                 <div key={label} className="flex items-center gap-1.5">
@@ -59,6 +59,13 @@ export function BudgetDetailSheet({ budget, onClose }: BudgetDetailSheetProps) {
                   </span>
                 </div>
               ))}
+              <div className="flex items-center gap-1.5">
+                <span className="text-zinc-500 dark:text-zinc-400">Libre</span>
+                <BudgetFreeAmount
+                  amount={budget.free_amount}
+                  className="font-medium text-zinc-900 dark:text-zinc-100"
+                />
+              </div>
               <BudgetExecutionBar
                 className="ml-auto"
                 initial={budget.initial_amount}

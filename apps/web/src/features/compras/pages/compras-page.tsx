@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { PurchaseStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { PurchaseDetailSheet } from '@/features/compras/components/purchase-detail-sheet';
 import { PurchaseFormDialog } from '@/features/compras/components/purchase-form-dialog';
@@ -21,7 +22,7 @@ const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
 
 export default function ComprasPage() {
   const { user } = useAuth();
-  const canCreate = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
+  const canCreate = canDo(user?.rol, 'createPurchase');
   const [searchParams, setSearchParams] = useSearchParams();
   const quotationParam = Number(searchParams.get('cotizacion')) || null;
 

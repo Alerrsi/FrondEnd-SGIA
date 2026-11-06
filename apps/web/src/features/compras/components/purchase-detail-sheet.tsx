@@ -17,7 +17,7 @@ import {
   ScanLine,
   Truck,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { PurchaseStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,8 +29,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
+import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
@@ -60,7 +62,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
 
   if (!purchase) return null;
 
-  const isManager = user?.rol === 'AD-01' || user?.rol === 'DIR-01';
+  const isManager = canDo(user?.rol, 'cancelPurchase');
   const isOpen =
     purchase.status === PurchaseStatus.PENDIENTE || purchase.status === PurchaseStatus.EN_CAMINO;
   const canShip = purchase.allowed_transitions?.includes(PurchaseStatus.EN_CAMINO) ?? false;
@@ -156,6 +158,12 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
               {purchase.supplier?.name ?? 'Proveedor sin nombre'}
               {purchase.quotation_id ? ` · Cotización #${purchase.quotation_id}` : ''}
             </SheetDescription>
+            <Link
+              to={`/compras/${purchase.id}/trazabilidad`}
+              className="w-fit rounded text-xs font-medium text-zinc-700 underline underline-offset-2 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:text-zinc-300 dark:hover:text-zinc-100"
+            >
+              Ver trazabilidad
+            </Link>
           </SheetHeader>
 
           <div className="mt-4 flex flex-col gap-4">
@@ -199,8 +207,8 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 <dd className="font-mono">{formatCLP(purchase.reserved_amount)}</dd>
               </div>
               <div>
-                <dt className="text-zinc-500">Disponible del presupuesto</dt>
-                <dd className="font-mono">{budget ? formatCLP(budget.available_amount) : '—'}</dd>
+                <dt className="text-zinc-500">Libre del presupuesto</dt>
+                <dd className="font-mono">{budget ? <BudgetFreeAmount amount={budget.free_amount} /> : '—'}</dd>
               </div>
             </dl>
 

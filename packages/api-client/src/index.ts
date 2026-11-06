@@ -164,6 +164,7 @@ export {
   useUpdateSupplier,
   useSetSupplierStatus,
   usePurchases,
+  usePurchaseTrace,
   usePurchase,
   useCreatePurchase,
   useUpdatePurchaseStatus,

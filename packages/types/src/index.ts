@@ -72,6 +72,7 @@ export type {
   PurchaseOrder,
   CreatePurchasePayload,
   PurchaseQueryParams,
+  PurchaseTrace,
   PurchaseArrivalScanPayload,
 } from './cotizacion';
 

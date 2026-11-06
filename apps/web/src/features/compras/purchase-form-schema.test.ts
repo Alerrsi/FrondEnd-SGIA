@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   EMPTY_PURCHASE_FORM,
   purchaseFormSchema,
-  purchaseTotal,
 } from '@/features/compras/lib/purchase-form-schema';
 
 const issuePaths = (input: unknown) => {
@@ -16,16 +15,16 @@ describe('purchaseFormSchema (REQ-08 + presupuesto)', () => {
     expect(
       issuePaths({
         ...EMPTY_PURCHASE_FORM,
-        quotation_ids: [1, 2, 3],
-        supplier_id: 2,
+        quotation_id: 1,
       }),
     ).toContain('annual_budget_id');
   });
 
-  it('desde cotización basta con presupuesto y cotización', () => {
+  it('desde 3 cotizaciones basta con presupuesto, cotizaciones y proveedor', () => {
     expect(
       issuePaths({
         ...EMPTY_PURCHASE_FORM,
+        origin: 'multiple',
         annual_budget_id: 3,
         quotation_ids: [1, 2, 3],
         supplier_id: 2,
@@ -33,36 +32,20 @@ describe('purchaseFormSchema (REQ-08 + presupuesto)', () => {
     ).toEqual([]);
   });
 
-  it('en compra directa exige precio unitario en cada ítem', () => {
-    const paths = issuePaths({
-      ...EMPTY_PURCHASE_FORM,
-      origin: 'manual',
-      annual_budget_id: 3,
-      supplier_id: 2,
-      items: [
-        { name: 'Cable UTP', quantity: 2, unit_price: Number.NaN },
-        { name: 'Conector RJ45', quantity: 10, unit_price: 0 },
-      ],
-    });
-    expect(paths).toContain('items.0.unit_price');
-    expect(paths).toContain('items.1.unit_price');
+  it('con una cotización exige elegirla', () => {
+    expect(issuePaths({ ...EMPTY_PURCHASE_FORM, annual_budget_id: 3 })).toContain('quotation_id');
+    expect(issuePaths({ ...EMPTY_PURCHASE_FORM, annual_budget_id: 3, quotation_id: 4 })).toEqual(
+      [],
+    );
   });
 
-  it('en compra directa exige proveedor y al menos un ítem', () => {
+  it('con varias cotizaciones exige 3 y proveedor', () => {
     const paths = issuePaths({
       ...EMPTY_PURCHASE_FORM,
-      origin: 'manual',
+      origin: 'multiple',
       annual_budget_id: 3,
+      quotation_ids: [1, 2],
     });
-    expect(paths).toEqual(expect.arrayContaining(['supplier_id', 'items']));
-  });
-
-  it('purchaseTotal ignora los valores aún vacíos', () => {
-    expect(
-      purchaseTotal([
-        { name: 'a', quantity: 2, unit_price: 1500 },
-        { name: 'b', quantity: 1, unit_price: Number.NaN },
-      ]),
-    ).toBe(3000);
+    expect(paths).toEqual(expect.arrayContaining(['quotation_ids', 'supplier_id']));
   });
 });

@@ -10,14 +10,17 @@ import type {
   PurchaseOrder,
   PurchaseQueryParams,
   PurchaseStatus,
+  PurchaseTrace,
   QuotationResponsePayload,
   QuotationStatus,
   Supplier,
   SupplierQueryParams,
 } from '@sgia/types';
 import { del, get, getBlob, patch, post } from '../http';
+import { normalizeMovement } from './budgets';
+import { normalizeInvoiceIntake } from './invoice-intakes';
 
-function normalizeCotizacion(raw: any): Cotizacion {
+export function normalizeCotizacion(raw: any): Cotizacion {
   if (!raw) return raw;
   const items = (raw.items ?? raw.products ?? []).map((it: any) => ({
     productoId: it.productoId ?? it.product_id ?? it.id ?? 0,
@@ -29,14 +32,24 @@ function normalizeCotizacion(raw: any): Cotizacion {
     unit_price: it.unit_price ?? it.precioUnitario ?? null,
   }));
 
+  // La API entrega proveedores contactados ({supplier_id, supplier:{name,email}, status…}); la UI usa el proveedor plano.
+  const suppliers = (raw.suppliers ?? []).map((s: any) => ({
+    ...s,
+    ...(s.supplier ?? {}),
+    id: s.supplier_id ?? s.supplier?.id ?? s.id,
+    name: s.supplier?.name ?? s.name,
+    email: s.supplier?.email ?? s.email,
+    status: s.status,
+  }));
+
   return {
     id: raw.id,
     proveedor:
       raw.proveedor ??
       raw.supplier?.name ??
-      (raw.suppliers ? raw.suppliers.map((s: any) => s.name).join(', ') : null),
-    supplier_ids: raw.supplier_ids ?? [],
-    suppliers: raw.suppliers ?? [],
+      (suppliers.length ? suppliers.map((s: any) => s.name).join(', ') : null),
+    supplier_ids: raw.supplier_ids ?? suppliers.map((s: any) => s.id),
+    suppliers,
     items,
     products: items,
     estado: raw.estado ?? raw.status ?? 'pendiente',
@@ -191,7 +204,7 @@ interface RawPurchase {
   updated_at?: string;
 }
 
-function normalizePurchase(raw: RawPurchase): PurchaseOrder {
+export function normalizePurchase(raw: RawPurchase): PurchaseOrder {
   const items = (raw.items ?? []).map((it) => ({
     ...it,
     quantity: Number(it.quantity ?? 0),
@@ -307,4 +320,22 @@ export async function scanPurchaseArrival(
 
 export async function downloadPurchaseArrivalDocument(id: number): Promise<Blob> {
   return getBlob(`/purchases/${id}/arrival-document`);
+}
+
+/** Cadena OC → cotizaciones → facturas → stock → movimientos de presupuesto (`GET /purchases/{id}/trace`). */
+export async function fetchPurchaseTrace(id: number): Promise<PurchaseTrace> {
+  const res = await get<{
+    purchase: Parameters<typeof normalizePurchase>[0];
+    quotations?: unknown[];
+    invoices?: Parameters<typeof normalizeInvoiceIntake>[0][];
+    budget_movements?: Parameters<typeof normalizeMovement>[0][];
+    stock_entries?: { product_id: number; name: string; quantity: number | string }[];
+  }>(`/purchases/${id}/trace`);
+  return {
+    purchase: normalizePurchase(res.purchase),
+    quotations: (res.quotations ?? []).map(normalizeCotizacion),
+    invoices: (res.invoices ?? []).map(normalizeInvoiceIntake),
+    budget_movements: (res.budget_movements ?? []).map(normalizeMovement),
+    stock_entries: (res.stock_entries ?? []).map((s) => ({ ...s, quantity: Number(s.quantity) })),
+  };
 }
