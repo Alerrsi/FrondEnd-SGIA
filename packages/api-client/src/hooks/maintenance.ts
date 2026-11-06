@@ -13,6 +13,7 @@ import type {
   MaintenanceDocumentQueryParams,
   MaintenanceRecord,
   MaintenanceRecordQueryParams,
+  MaintenanceSummaryQueryParams,
   UpdateMaintenanceRecordPayload,
   UploadMaintenanceDocumentPayload,
 } from '@sgia/types';
@@ -23,6 +24,7 @@ import {
   downloadMaintenanceDocumentFile,
   fetchMaintenanceRecord,
   fetchMaintenanceRecords,
+  fetchMaintenanceSummary,
   fetchUnitMaintenanceDocuments,
   fetchUnitMaintenanceRecords,
   finishMaintenanceRecord,
@@ -60,6 +62,13 @@ export function useMaintenanceRecords(params?: MaintenanceRecordQueryParams) {
     queryKey: maintenanceKeys.list(params),
     queryFn: () => fetchMaintenanceRecords(params),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useMaintenanceSummary(params?: MaintenanceSummaryQueryParams) {
+  return useQuery({
+    queryKey: ['maintenance', 'summary', params] as const,
+    queryFn: () => fetchMaintenanceSummary(params),
   });
 }
 

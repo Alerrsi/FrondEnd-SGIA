@@ -7,6 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/features/compras/lib/format';
+import { MaintenanceCareerSummary } from '@/features/mantenciones/components/maintenance-career-summary';
 import { MaintenanceChecklistSheet } from '@/features/mantenciones/components/maintenance-checklist-sheet';
 import { MaintenanceStatusBadge } from '@/features/mantenciones/components/maintenance-status-badge';
 import {
@@ -87,6 +88,8 @@ export default function MantencionesPage() {
           Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla (REQ-18).
         </p>
       </div>
+
+      <MaintenanceCareerSummary />
 
       {(showDue || (due.data?.meta.total ?? 0) > 0) && (
         <section

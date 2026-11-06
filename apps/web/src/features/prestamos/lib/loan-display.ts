@@ -11,6 +11,11 @@ export function loanLaboratory(loan: Prestamo): string {
   return loan.location?.nombre ?? loan.room ?? loan.sala ?? '—';
 }
 
+/** Asignatura; `—` en préstamos antiguos sin dato. */
+export function loanSubject(loan: Prestamo): string {
+  return loan.subject ?? loan.asignatura ?? '—';
+}
+
 export function loanCareer(loan: Prestamo): string {
   return loan.career?.name ?? loan.carrera ?? '—';
 }

@@ -163,7 +163,10 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
     expect(screen.getByText('Cola de Despacho de Solicitudes Remotas')).toBeDefined();
     expect(screen.getByText('SOL-2026-001')).toBeDefined();
     expect(screen.getByText('Prof. Carlos Rivera')).toBeDefined();
-    expect(screen.getByText('Redes Avanzadas CCNA')).toBeDefined();
+    expect(screen.getByText('Asignatura: Redes Avanzadas CCNA · Carrera: —')).toBeDefined();
+    expect(
+      screen.getByText('Asignatura: Redes de Computadores · Carrera: Ingeniería en Informática'),
+    ).toBeDefined();
     expect(screen.getByText('Router Cisco Catalyst 2960')).toBeDefined();
     expect(screen.getByText(/Rack R-01/)).toBeDefined();
 

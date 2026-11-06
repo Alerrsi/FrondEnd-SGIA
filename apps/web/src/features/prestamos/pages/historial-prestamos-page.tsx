@@ -37,8 +37,10 @@ import {
 } from '@/components/ui/sheet';
 import { formatDateOnly } from '@/features/compras/lib/format';
 import {
+  loanCareer,
   loanLaboratory,
   loanSchedule,
+  loanSubject,
   loanStoreroom,
   loanTeacher,
 } from '@/features/prestamos/lib/loan-display';
@@ -180,14 +182,14 @@ export default function HistorialPrestamosPage() {
           );
         },
       }),
-      columnHelper.accessor((row) => row.asignatura || 'General', {
+      columnHelper.accessor((row) => loanSubject(row), {
         id: 'asignatura',
         header: 'Asignatura / Carrera',
         cell: (info) => (
           <div className="flex flex-col font-sans text-xs">
             <span className="text-zinc-600 dark:text-zinc-300">{info.getValue()}</span>
             <span className="text-[11px] text-zinc-400">
-              {info.row.original.career?.name ?? info.row.original.carrera ?? '—'}
+              {loanCareer(info.row.original)}
             </span>
           </div>
         ),
@@ -672,13 +674,13 @@ export default function HistorialPrestamosPage() {
                 <div>
                   <span className="text-zinc-400 text-[10px]">Asignatura</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {selectedLoan.asignatura || '—'}
+                    {loanSubject(selectedLoan)}
                   </p>
                 </div>
                 <div>
                   <span className="text-zinc-400 text-[10px]">Carrera</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {selectedLoan.career?.name ?? selectedLoan.carrera ?? '—'}
+                    {loanCareer(selectedLoan)}
                   </p>
                 </div>
                 <div>

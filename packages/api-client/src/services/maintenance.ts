@@ -11,6 +11,8 @@ import type {
   MaintenanceRecordQueryParams,
   MaintenanceResult,
   MaintenanceStatus,
+  MaintenanceSummary,
+  MaintenanceSummaryQueryParams,
   MaintenanceType,
   PaginatedResponse,
   Supplier,
@@ -209,6 +211,13 @@ export async function fetchMaintenanceRecords(
     `/maintenance-records${buildQuery(params)}`,
   );
   return toPaginated(res, normalizeMaintenanceRecord);
+}
+
+/** Totales por carrera con desglose por estado (el backend ya devuelve números). */
+export async function fetchMaintenanceSummary(
+  params?: MaintenanceSummaryQueryParams,
+): Promise<MaintenanceSummary> {
+  return unwrap(await get<{ data: MaintenanceSummary }>(`/maintenance-records/summary${buildQuery(params)}`));
 }
 
 export async function fetchMaintenanceRecord(id: number): Promise<MaintenanceRecord> {

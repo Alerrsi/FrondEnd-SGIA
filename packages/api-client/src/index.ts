@@ -345,6 +345,7 @@ export {
 // Mantenciones (REQ-18) y documentos de mantenimiento (REQ-19)
 export {
   fetchMaintenanceRecords,
+  fetchMaintenanceSummary,
   fetchMaintenanceRecord,
   fetchUnitMaintenanceRecords,
   createMaintenanceRecord,
@@ -361,6 +362,7 @@ export {
 export {
   maintenanceKeys,
   useMaintenanceRecords,
+  useMaintenanceSummary,
   useMaintenanceRecord,
   useUnitMaintenanceRecords,
   useActiveMaintenance,

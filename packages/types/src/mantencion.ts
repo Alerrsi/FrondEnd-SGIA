@@ -145,3 +145,27 @@ export interface CancelMaintenancePayload {
   /** Se agrega a `technical_notes`. */
   reason?: string | null;
 }
+
+/** `GET /maintenance-records/summary`: mantenciones por carrera del producto. */
+export interface MaintenanceCareerSummary {
+  /** `null` = productos sin carrera. */
+  career_id: number | null;
+  name: string;
+  code: string | null;
+  total: number;
+  by_status: Record<MaintenanceStatus, number>;
+  /** Unidades distintas con mantención. */
+  units: number;
+}
+
+export interface MaintenanceSummary {
+  careers: MaintenanceCareerSummary[];
+  total: Omit<MaintenanceCareerSummary, 'career_id' | 'name' | 'code'>;
+}
+
+export interface MaintenanceSummaryQueryParams {
+  year?: number;
+  /** Fecha de inicio `YYYY-MM-DD`. */
+  from?: string;
+  to?: string;
+}

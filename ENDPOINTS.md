@@ -43,7 +43,7 @@
 | Módulo | Endpoints | Roles | Sección |
 |---|---|---|---|
 | Estudiantes (REQ-20) | `GET/POST /api/students`, `GET /api/students/by-rut/{rut}`, `GET/PATCH /api/students/{id}`, `GET /api/students/{id}/loans`, `DELETE /api/students/{id}` | `PAN-01`, `AD-01` (borrar: `AD-01`) | §11.1 |
-| Mantenciones (REQ-18) | `GET /api/maintenance-records`, `GET /api/maintenance-records/{id}`, `GET/POST /api/equipment-units/{id}/maintenance-records`, `PATCH /api/maintenance-records/{id}`, `POST .../finish`, `POST .../cancel` | lectura `AD-01`/`DIR-01`/`PAN-01`; escritura `AD-01`/`PAN-01` | §12.1 |
+| Mantenciones (REQ-18) | `GET /api/maintenance-records`, `GET /api/maintenance-records/summary` (total por carrera y estado; `year`/`from`/`to`), `GET /api/maintenance-records/{id}`, `GET/POST /api/equipment-units/{id}/maintenance-records`, `PATCH /api/maintenance-records/{id}`, `POST .../finish`, `POST .../cancel` | lectura `AD-01`/`DIR-01`/`PAN-01`; escritura `AD-01`/`PAN-01` | §12.1 |
 | Documentos (REQ-19) | `GET/POST /api/equipment-units/{id}/maintenance-documents`, `GET /api/maintenance-documents/{id}/file`, `DELETE /api/maintenance-documents/{id}` | lectura y descarga `AD-01`/`DIR-01`/`PAN-01`; subir y borrar `AD-01`/`PAN-01` | §12.2 |
 | Dashboard personalizado (REQ-15) | `GET /api/chart-templates`, `GET/POST /api/me/charts`, `PUT /api/me/charts/positions`, `GET/PATCH/DELETE /api/me/charts/{id}` | `DIR-01`, `AD-01` | §14.1 |
 | Roles | `GET /api/roles` | `AD-01` | §2 |
