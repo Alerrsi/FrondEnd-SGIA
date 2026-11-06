@@ -27,17 +27,17 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
   }).length;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs divide-y md:divide-y-0 md:divide-x divide-zinc-200 dark:divide-zinc-800">
+    <div className="grid grid-cols-2 md:grid-cols-4 rounded-lg border border-border bg-surface shadow-xs divide-y md:divide-y-0 md:divide-x divide-border">
       {/* Total Activos Críticos */}
       <div className="flex items-center gap-3 p-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-surface-raised text-text">
           <Cpu className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             Total Equipos
           </p>
-          <p className="font-mono text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 tabular-nums">
+          <p className="font-mono text-xl font-bold tracking-tight text-text tabular-nums">
             {total}
           </p>
         </div>
@@ -45,14 +45,14 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
 
       {/* Operativos */}
       <div className="flex items-center gap-3 p-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-emerald-200/60 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-ok/30 bg-ok-bg text-ok">
           <CheckCircle2 className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             En Operación
           </p>
-          <p className="font-mono text-xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400 tabular-nums">
+          <p className="font-mono text-xl font-bold tracking-tight text-ok tabular-nums">
             {operativos}
           </p>
         </div>
@@ -60,14 +60,14 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
 
       {/* En Mantención / Calibración */}
       <div className="flex items-center gap-3 p-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-200/60 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-warn/30 bg-warn-bg text-warn">
           <Wrench className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             En Mantención / Taller
           </p>
-          <p className="font-mono text-xl font-bold tracking-tight text-amber-600 dark:text-amber-400 tabular-nums">
+          <p className="font-mono text-xl font-bold tracking-tight text-warn tabular-nums">
             {enMantencion}
           </p>
         </div>
@@ -75,14 +75,14 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
 
       {/* Próximos a Obsolescencia */}
       <div className="flex items-center gap-3 p-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-rose-200/60 dark:border-rose-800/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-danger/30 bg-danger-bg text-danger">
           <AlertTriangle className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
             Obsolescencia Próxima
           </p>
-          <p className="font-mono text-xl font-bold tracking-tight text-rose-600 dark:text-rose-400 tabular-nums">
+          <p className="font-mono text-xl font-bold tracking-tight text-danger tabular-nums">
             {obsolescenciaProxima}
           </p>
         </div>

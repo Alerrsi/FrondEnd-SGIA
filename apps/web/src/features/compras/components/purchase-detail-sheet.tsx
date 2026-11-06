@@ -44,7 +44,7 @@ interface PurchaseDetailSheetProps {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailSheetProps) {
   const { user } = useAuth();
@@ -160,7 +160,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             </SheetDescription>
             <Link
               to={`/compras/${purchase.id}/trazabilidad`}
-              className="w-fit rounded text-xs font-medium text-zinc-700 underline underline-offset-2 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:text-zinc-300 dark:hover:text-zinc-100"
+              className="w-fit rounded text-xs font-medium text-text underline underline-offset-2 hover:text-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-info"
             >
               Ver trazabilidad
             </Link>
@@ -192,7 +192,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 <dt className="text-text-muted">N° factura</dt>
                 <dd className="font-mono">{purchase.invoice_number ?? '—'}</dd>
               </div>
-              <div className="col-span-2 border-t border-zinc-100 dark:border-zinc-800 pt-2">
+              <div className="col-span-2 border-t border-border pt-2">
                 <dt className="text-text-muted">Presupuesto</dt>
                 <dd>
                   {budget
@@ -226,7 +226,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                   {purchase.items.map((item, i) => (
                     <tr
                       key={item.id ?? i}
-                      className="border-t border-zinc-100 dark:border-zinc-800"
+                      className="border-t border-border"
                     >
                       <td className="px-3 py-1.5 text-text">
                         {item.name ?? `Producto #${item.product_id}`}

@@ -94,23 +94,23 @@ export default function AlertasStockPage() {
       {/* Encabezado y Miga Técnica */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Gestión de Existencias
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Bell className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <Bell className="h-5 w-5 text-text" />
               Alertas de Stock Crítico y Preventivo
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Monitoreo en tiempo real de quiebres y umbrales mínimos de hardware según especificación REQ-06.
             </p>
           </div>
@@ -141,34 +141,34 @@ export default function AlertasStockPage() {
       </div>
 
       {/* Cinta Métrica Compacta (Metric Strip 36-40px) */}
-      <div className="flex flex-wrap items-center divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2 text-xs font-mono shadow-xs">
+      <div className="flex flex-wrap items-center divide-x divide-border rounded-md border border-border bg-surface px-4 py-2 text-xs font-mono shadow-xs">
         <div className="flex items-center gap-2 pr-4">
-          <span className="text-zinc-400 dark:text-zinc-500">Alertas Activas:</span>
-          <strong className="text-zinc-900 dark:text-zinc-100 tabular-nums font-semibold">
+          <span className="text-text-muted">Alertas Activas:</span>
+          <strong className="text-text tabular-nums font-semibold">
             {totalActive}
           </strong>
         </div>
 
         <div className="flex items-center gap-2 px-4">
           <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
-          <span className="text-zinc-400 dark:text-zinc-500">Nivel Crítico (≤ mín):</span>
-          <strong className="text-rose-600 dark:text-rose-400 tabular-nums font-semibold">
+          <span className="text-text-muted">Nivel Crítico (≤ mín):</span>
+          <strong className="text-danger tabular-nums font-semibold">
             {criticalCount}
           </strong>
         </div>
 
         <div className="flex items-center gap-2 px-4">
           <span className="h-2 w-2 rounded-full bg-amber-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Advertencia (≤ mín + 5):</span>
-          <strong className="text-amber-600 dark:text-amber-400 tabular-nums font-semibold">
+          <span className="text-text-muted">Advertencia (≤ mín + 5):</span>
+          <strong className="text-warn tabular-nums font-semibold">
             {warningCount}
           </strong>
         </div>
 
         <div className="flex items-center gap-2 pl-4">
           <CheckCircle className="h-3 w-3 text-emerald-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Atendidas / Resueltas:</span>
-          <strong className="text-zinc-700 dark:text-zinc-300 tabular-nums font-semibold">
+          <span className="text-text-muted">Atendidas / Resueltas:</span>
+          <strong className="text-text tabular-nums font-semibold">
             {totalResolved}
           </strong>
         </div>

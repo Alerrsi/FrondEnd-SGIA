@@ -109,7 +109,7 @@ export function UploadInvoiceIntakeDialog({
           className={cn(
             'flex flex-col items-center justify-center rounded-md border-2 border-dashed p-6 text-center transition-colors',
             dragging
-              ? 'border-zinc-400 bg-surface-raised'
+              ? 'border-border bg-surface-raised'
               : 'border-border bg-background',
             pending && 'pointer-events-none opacity-60',
           )}
@@ -141,7 +141,7 @@ export function UploadInvoiceIntakeDialog({
                   setFile(null);
                   if (fileRef.current) fileRef.current.value = '';
                 }}
-                className="rounded p-1 text-text-muted hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
+                className="rounded p-1 text-text-muted hover:bg-surface-raised hover:text-text"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

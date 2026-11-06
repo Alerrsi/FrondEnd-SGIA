@@ -109,20 +109,20 @@ export function WidgetPaletteDrawer({
           isDraggingWidget ? 'opacity-0' : 'opacity-100 bg-black/20 backdrop-blur-2xs',
         )}
         className={cn(
-          'w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 flex flex-col p-6 overflow-y-auto transition-transform duration-300',
+          'w-full sm:max-w-md bg-surface border-l border-border text-text flex flex-col p-6 overflow-y-auto transition-transform duration-300',
           isDraggingWidget && 'translate-x-[92%] opacity-30 shadow-none',
         )}
       >
-        <SheetHeader className="pb-3 border-b border-zinc-200 dark:border-zinc-800">
+        <SheetHeader className="pb-3 border-b border-border">
           <div className="flex items-center gap-2 text-xs font-mono text-sky-600 dark:text-sky-500 font-semibold uppercase tracking-wider">
             <span>Catálogo</span>
-            <span className="text-zinc-400">/</span>
+            <span className="text-text-muted">/</span>
             <span>Paleta de Formas</span>
           </div>
-          <SheetTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+          <SheetTitle className="text-base font-bold text-text">
             Formas Gráficas Genéricas
           </SheetTitle>
-          <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+          <SheetDescription className="text-xs text-text-muted">
             Arrastra una forma hacia el lienzo o pulsa «Añadir», y elige qué datos mostrar.
           </SheetDescription>
         </SheetHeader>
@@ -130,9 +130,9 @@ export function WidgetPaletteDrawer({
         {isMaxCapacity && (
           <div
             data-testid="palette-max-capacity-warning"
-            className="flex items-center gap-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-mono"
+            className="flex items-center gap-2 p-3 rounded-md bg-warn-bg border border-warn/30 text-warn text-xs font-mono"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <AlertCircle className="h-4 w-4 shrink-0 text-warn" />
             <span>Límite de 5 gráficos alcanzado. Retira un gráfico del panel para añadir nuevos.</span>
           </div>
         )}
@@ -154,30 +154,30 @@ export function WidgetPaletteDrawer({
                 }}
                 className={`flex flex-col gap-2 rounded-lg border p-3.5 transition select-none ${
                   isMaxCapacity
-                    ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 opacity-60 cursor-not-allowed'
-                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:border-sky-500/60 hover:shadow-xs cursor-grab active:cursor-grabbing'
+                    ? 'border-border bg-surface-raised opacity-60 cursor-not-allowed'
+                    : 'border-border bg-surface hover:border-sky-500/60 hover:shadow-xs cursor-grab active:cursor-grabbing'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                    <div className="flex h-7 w-7 items-center justify-center rounded bg-surface-raised text-text">
                       <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      <div className="text-sm font-semibold text-text">
                         {shape.title}
                       </div>
-                      <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                      <div className="text-xs text-text-muted">
                         {shape.subtitle}
                       </div>
                     </div>
                   </div>
-                  <Badge tone="neutral" className="text-[10px] font-mono">
+                  <Badge tone="neutral" className="text-xs font-mono">
                     {shape.type}
                   </Badge>
                 </div>
 
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                <p className="text-xs text-text-muted leading-relaxed">
                   {shape.description}
                 </p>
 
@@ -185,15 +185,15 @@ export function WidgetPaletteDrawer({
                   {shape.badges.map((b) => (
                     <span
                       key={b}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/60"
+                      className="text-xs font-mono px-2 py-0.5 rounded bg-surface-raised text-text-muted border border-border"
                     >
                       {b}
                     </span>
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between gap-2 mt-1 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
-                  <span className="text-[10px] text-zinc-400 font-mono">
+                <div className="flex items-center justify-between gap-2 mt-1 pt-2 border-t border-border">
+                  <span className="text-xs text-text-muted font-mono">
                     Arrastra o pulsa Añadir
                   </span>
                   <Button
@@ -205,7 +205,7 @@ export function WidgetPaletteDrawer({
                       e.stopPropagation();
                       onSelectWidget?.(shape.type);
                     }}
-                    className="h-6 text-[11px] px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
+                    className="h-6 text-xs px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
                   >
                     <Plus className="h-3 w-3" />
                     <span>Añadir</span>

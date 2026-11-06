@@ -30,7 +30,7 @@ interface FormValues {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted dark:placeholder:text-text-muted transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted transition-colors focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 const MIN_SUPPLIERS = 1;
 
@@ -215,7 +215,7 @@ export function CotizacionFormDialog({
               {(watchedProducts ?? []).map((item, index) => (
                 <div
                   key={`${item.product_id}-${index}`}
-                  className="flex items-center gap-2 rounded-md border border-border bg-white dark:bg-zinc-950 px-3 py-2"
+                  className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2"
                 >
                   <span className="flex-1 text-xs font-medium text-text truncate">
                     {item.product_name}
@@ -229,7 +229,7 @@ export function CotizacionFormDialog({
                     value={item.quantity}
                     onChange={(e) => handleProductQuantityChange(index, parseInt(e.target.value, 10) || 1)}
                     disabled={isPending}
-                    className="w-16 h-7 rounded border border-border bg-surface-raised px-2 text-center font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                    className="w-16 h-7 rounded border border-border bg-surface-raised px-2 text-center font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info"
                     aria-label={`Cantidad de ${item.product_name}`}
                   />
                   <button
@@ -274,15 +274,15 @@ export function CotizacionFormDialog({
                   disabled={isPending}
                   className={`flex items-center gap-2 rounded-md border px-3 py-2 text-left text-xs transition-colors ${
                     isSelected
-                      ? 'border-emerald-300 dark:border-emerald-800 bg-ok-bg text-emerald-800 dark:text-emerald-300'
-                      : 'border-border bg-white dark:bg-zinc-950 text-text hover:border-zinc-300 dark:hover:border-zinc-700'
+                      ? 'border-ok/30 bg-ok-bg text-ok'
+                      : 'border-border bg-surface text-text hover:border-text-muted'
                   }`}
                 >
                   <div
                     className={`h-4 w-4 shrink-0 rounded border flex items-center justify-center transition-colors ${
                       isSelected
                         ? 'border-emerald-500 bg-emerald-500 text-white'
-                        : 'border-zinc-300 dark:border-zinc-600'
+                        : 'border-border'
                     }`}
                   >
                     {isSelected && (
@@ -323,7 +323,7 @@ export function CotizacionFormDialog({
           />
         </fieldset>
 
-        <div className="mt-1 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
+        <div className="mt-1 flex items-center justify-between border-t border-border pt-3">
           <span className="text-xs text-text-muted font-mono">
             {productsCount} producto{productsCount !== 1 ? 's' : ''} · {suppliersCount} proveedor{suppliersCount !== 1 ? 'es' : ''}
           </span>

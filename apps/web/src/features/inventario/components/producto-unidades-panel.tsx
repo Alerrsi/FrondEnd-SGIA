@@ -47,7 +47,7 @@ function allowedStatuses(unit: EquipmentUnit): EquipmentUnitStatus[] {
 }
 
 const controlClasses =
-  'h-7 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600';
+  'h-7 rounded border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info';
 
 /**
  * Con una mantención `en_curso` el backend rechaza `PATCH /equipment-units/{id}/status` (422): en ese
@@ -184,10 +184,10 @@ export function ProductoUnidadesPanel({
   return (
     <section
       aria-label="Unidades del producto"
-      className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs"
+      className="rounded-md border border-border bg-surface shadow-xs"
     >
-      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
-        <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+      <div className="flex flex-wrap items-center gap-2 border-b border-border p-2.5">
+        <span className="font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
           Unidades{meta ? ` · ${meta.total}` : ''}
         </span>
         <input
@@ -230,23 +230,23 @@ export function ProductoUnidadesPanel({
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center gap-2 p-6 text-xs text-zinc-500 font-mono">
+        <div className="flex items-center justify-center gap-2 p-6 text-xs text-text-muted font-mono">
           <Loader2 className="h-4 w-4 animate-spin" />
           Cargando unidades…
         </div>
       ) : isError ? (
-        <p role="alert" className="p-4 text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="p-4 text-xs text-danger">
           {apiErrorToMessage(error)}
         </p>
       ) : units.length === 0 ? (
-        <p className="p-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="p-6 text-center text-xs text-text-muted">
           Sin unidades registradas para este filtro.
         </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
                 <th className="px-2.5 py-1.5 font-medium">Código</th>
                 <th className="px-2.5 py-1.5 font-medium">Serie</th>
                 <th className="px-2.5 py-1.5 font-medium">Cajón</th>
@@ -254,26 +254,26 @@ export function ProductoUnidadesPanel({
                 <th className="px-2.5 py-1.5 font-medium text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody className="divide-y divide-border/60">
               {units.map((unit) => {
                 return (
                   <tr key={unit.id}>
                     <td className="px-2.5 py-1.5">
-                      <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60">
+                      <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-surface-raised text-text border border-border">
                         {unit.code}
                       </span>
                     </td>
-                    <td className="px-2.5 py-1.5 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className="px-2.5 py-1.5 font-mono text-text-muted">
                       {unit.serial_number || '—'}
                     </td>
-                    <td className="px-2.5 py-1.5 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className="px-2.5 py-1.5 font-mono text-text-muted">
                       {unit.cajon?.codigo ?? '—'}
                     </td>
                     <td className="px-2.5 py-1.5">
                       <div className="flex flex-col gap-0.5">
                         <UnidadStatusBadge status={unit.status} />
                         {unit.active_loan?.code && (
-                          <span className="font-mono text-[10px] text-zinc-500">
+                          <span className="font-mono text-xs text-text-muted">
                             {unit.active_loan.code}
                           </span>
                         )}
@@ -358,7 +358,7 @@ export function ProductoUnidadesPanel({
                             title="Eliminar unidad"
                             onClick={() => setDeleteUnit(unit)}
                           >
-                            <Trash2 className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
+                            <Trash2 className="h-3.5 w-3.5 text-danger" />
                           </Button>
                         )}
                       </div>
@@ -372,7 +372,7 @@ export function ProductoUnidadesPanel({
       )}
 
       {meta && meta.lastPage > 1 && (
-        <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 p-2 font-mono text-xs text-zinc-500">
+        <div className="flex items-center justify-between border-t border-border p-2 font-mono text-xs text-text-muted">
           <span>
             Página {meta.currentPage} de {meta.lastPage}
           </span>

@@ -40,21 +40,21 @@ export function StudentDetailSheet({
         </SheetHeader>
 
         {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+          <Loader2 className="h-4 w-4 animate-spin text-text-muted" />
         ) : (
           student && (
             <dl className="grid grid-cols-2 gap-2 text-xs">
-              <dt className="text-zinc-500">Correo</dt>
+              <dt className="text-text-muted">Correo</dt>
               <dd className="font-mono">{student.email || '—'}</dd>
-              <dt className="text-zinc-500">Carrera</dt>
+              <dt className="text-text-muted">Carrera</dt>
               <dd>{student.career?.name ?? '—'}</dd>
-              <dt className="text-zinc-500">Préstamos</dt>
+              <dt className="text-text-muted">Préstamos</dt>
               <dd className="font-mono">{student.loans_count ?? 0}</dd>
             </dl>
           )
         )}
 
-        <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+        <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
           Historial de préstamos
         </h3>
         <div className="flex-1 overflow-y-auto">
@@ -63,14 +63,14 @@ export function StudentDetailSheet({
               {apiErrorToMessage(loans.error)}
             </p>
           ) : (loans.data?.data ?? []).length === 0 ? (
-            <p className="text-xs text-zinc-500">Sin préstamos registrados.</p>
+            <p className="text-xs text-text-muted">Sin préstamos registrados.</p>
           ) : (
-            <ul className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <ul className="divide-y divide-border/60">
               {loans.data?.data.map((loan) => (
                 <li key={loan.id} className="flex items-center justify-between gap-2 py-2 text-xs">
                   <div>
                     <span className="font-mono font-semibold">{loan.codigo}</span>
-                    <p className="text-zinc-500">
+                    <p className="text-text-muted">
                       {formatDate(loan.loan_date ?? loan.created_at)} ·{' '}
                       {loan.items.map((i) => i.nombre).join(', ') || 'Sin ítems'}
                     </p>
@@ -82,7 +82,7 @@ export function StudentDetailSheet({
           )}
         </div>
         {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-between font-mono text-xs text-zinc-500">
+          <div className="flex items-center justify-between font-mono text-xs text-text-muted">
             <span>
               {meta.currentPage} / {meta.lastPage}
             </span>

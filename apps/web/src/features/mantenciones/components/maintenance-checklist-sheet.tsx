@@ -40,7 +40,7 @@ type Checklist = Required<
 >;
 
 const inputClasses =
-  'w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  'w-full rounded-md border border-border bg-surface px-3 text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 function toForm(r: MaintenanceRecord) {
   return {
@@ -175,13 +175,13 @@ export function MaintenanceChecklistSheet({
         </SheetHeader>
 
         {isLoading || !record || !form ? (
-          <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+          <Loader2 className="h-4 w-4 animate-spin text-text-muted" />
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <MaintenanceStatusBadge status={record.status} />
               <span>{MAINTENANCE_TYPE_LABELS[record.maintenance_type]}</span>
-              <span className="text-zinc-400">·</span>
+              <span className="text-text-muted">·</span>
               <span>{EXECUTION_MODE_LABELS[record.execution_mode]}</span>
               {record.external_supplier && <span>({record.external_supplier.name})</span>}
               {record.result && (
@@ -189,8 +189,8 @@ export function MaintenanceChecklistSheet({
               )}
             </div>
 
-            <fieldset className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
-              <legend className="px-1 font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            <fieldset className="flex flex-col gap-2 rounded-md border border-border p-3">
+              <legend className="px-1 font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Checklist
               </legend>
               {check('rev_a_approved', 'REV-A aprobada')}
@@ -221,7 +221,7 @@ export function MaintenanceChecklistSheet({
               {check('requires_additional_maintenance', 'Requiere mantención adicional')}
               {check('applies_recf', 'Aplica RECF')}
               {checklistError && (
-                <p role="alert" className="text-[11px] text-rose-600 dark:text-rose-400">
+                <p role="alert" className="text-xs text-danger">
                   {checklistError}
                 </p>
               )}
@@ -229,7 +229,7 @@ export function MaintenanceChecklistSheet({
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="mt-cost" className="font-mono text-[11px] text-zinc-500">
+                <label htmlFor="mt-cost" className="font-mono text-xs text-text-muted">
                   Costo de reparación (CLP)
                 </label>
                 <input
@@ -243,7 +243,7 @@ export function MaintenanceChecklistSheet({
                 />
               </div>
               <div>
-                <label htmlFor="mt-parts" className="font-mono text-[11px] text-zinc-500">
+                <label htmlFor="mt-parts" className="font-mono text-xs text-text-muted">
                   Repuestos usados
                 </label>
                 <input
@@ -256,7 +256,7 @@ export function MaintenanceChecklistSheet({
               </div>
             </div>
             <div>
-              <label htmlFor="mt-tech-notes" className="font-mono text-[11px] text-zinc-500">
+              <label htmlFor="mt-tech-notes" className="font-mono text-xs text-text-muted">
                 Notas técnicas
               </label>
               <textarea
@@ -270,7 +270,7 @@ export function MaintenanceChecklistSheet({
             </div>
 
             {editable && (
-              <div className="mt-auto flex flex-wrap justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+              <div className="mt-auto flex flex-wrap justify-end gap-2 border-t border-border pt-3">
                 <Button variant="ghost" disabled={busy} onClick={() => setConfirm('cancel')}>
                   Anular
                 </Button>

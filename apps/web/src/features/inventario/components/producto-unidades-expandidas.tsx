@@ -18,7 +18,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 px-4 py-3 font-mono text-xs text-zinc-500">
+      <div className="flex items-center gap-2 px-4 py-3 font-mono text-xs text-text-muted">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         Cargando instancias…
       </div>
@@ -27,7 +27,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
 
   if (isError) {
     return (
-      <p role="alert" className="px-4 py-3 text-xs text-rose-600 dark:text-rose-400">
+      <p role="alert" className="px-4 py-3 text-xs text-danger">
         {apiErrorToMessage(error)}
       </p>
     );
@@ -35,7 +35,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
 
   if (units.length === 0) {
     return (
-      <p className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="px-4 py-3 text-xs text-text-muted">
         Este producto no tiene instancias registradas.
       </p>
     );
@@ -45,7 +45,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
     <div className="px-4 py-2">
       <table className="w-full text-left text-xs" aria-label={`Instancias de ${producto.nombre}`}>
         <thead>
-          <tr className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <tr className="font-mono text-xs uppercase tracking-wider text-text-muted">
             <th className="py-1 pr-3 font-medium">Código</th>
             <th className="py-1 pr-3 font-medium">Serie</th>
             <th className="py-1 pr-3 font-medium">Ubicación</th>
@@ -53,22 +53,22 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
             <th className="py-1 font-medium">Préstamo</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+        <tbody className="divide-y divide-border/60">
           {units.map((unit) => {
             const sala = unit.cajon?.location?.nombre ?? unit.cajon?.location?.sala;
             return (
               <tr key={unit.id}>
                 <td className="py-1.5 pr-3">
-                  <span className="font-mono px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60">
+                  <span className="font-mono px-1.5 py-0.5 rounded bg-surface-raised text-text border border-border">
                     {unit.code}
                   </span>
                 </td>
-                <td className="py-1.5 pr-3 font-mono text-zinc-600 dark:text-zinc-400">
+                <td className="py-1.5 pr-3 font-mono text-text-muted">
                   {unit.serial_number || '—'}
                 </td>
-                <td className="py-1.5 pr-3 font-mono text-zinc-600 dark:text-zinc-400">
+                <td className="py-1.5 pr-3 font-mono text-text-muted">
                   <span className="inline-flex items-center gap-1">
-                    <MapPin className="h-3 w-3 shrink-0 text-zinc-400" />
+                    <MapPin className="h-3 w-3 shrink-0 text-text-muted" />
                     {sala ? `${sala} · ` : ''}
                     {unit.cajon?.codigo ?? 'Sin cajón'}
                   </span>
@@ -76,7 +76,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
                 <td className="py-1.5 pr-3">
                   <UnidadStatusBadge status={unit.status} />
                 </td>
-                <td className="py-1.5 font-mono text-zinc-500">
+                <td className="py-1.5 font-mono text-text-muted">
                   {unit.active_loan?.code ?? '—'}
                 </td>
               </tr>
@@ -85,7 +85,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
         </tbody>
       </table>
       {total > units.length && (
-        <p className="pt-1 font-mono text-[11px] text-zinc-500">
+        <p className="pt-1 font-mono text-xs text-text-muted">
           Mostrando {units.length} de {total}. Abre el detalle para ver todas.
         </p>
       )}

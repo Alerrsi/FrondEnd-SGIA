@@ -9,7 +9,7 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const controlClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  'w-full h-8 rounded border border-border bg-background px-2.5 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 export function AgregarUnidadesDialog({
   open,
@@ -75,7 +75,7 @@ export function AgregarUnidadesDialog({
     >
       <div className="flex flex-col gap-3 text-xs">
         <label className="flex flex-col gap-1">
-          <span className="font-mono text-zinc-500">Cajón</span>
+          <span className="font-mono text-text-muted">Cajón</span>
           <select
             className={controlClasses}
             value={cajonId ?? ''}
@@ -92,7 +92,7 @@ export function AgregarUnidadesDialog({
           </select>
         </label>
         <label className="flex flex-col gap-1">
-          <span className="font-mono text-zinc-500">Cantidad (máx. 200)</span>
+          <span className="font-mono text-text-muted">Cantidad (máx. 200)</span>
           <input
             type="number"
             min={1}
@@ -104,7 +104,7 @@ export function AgregarUnidadesDialog({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="font-mono text-zinc-500">Números de serie (opcional, uno por línea)</span>
+          <span className="font-mono text-text-muted">Números de serie (opcional, uno por línea)</span>
           <textarea
             rows={4}
             className={`${controlClasses} h-auto py-1.5`}
@@ -112,7 +112,7 @@ export function AgregarUnidadesDialog({
             onChange={(e) => setSerials(e.target.value)}
           />
         </label>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cancelar
           </Button>

@@ -13,7 +13,7 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const controlClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 transition-colors placeholder:text-zinc-400 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  'w-full h-8 rounded border border-border bg-background px-2.5 font-mono text-xs text-text transition-colors placeholder:text-text-muted focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 export function ReubicarProductoModal({
   open,
@@ -165,16 +165,16 @@ export function ReubicarProductoModal({
       description={`Asigna o cambia la ubicación física de almacenamiento para ${producto.nombre || producto.name}.`}
       className="max-w-lg"
     >
-      <form onSubmit={handleSave} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
+      <form onSubmit={handleSave} className="flex flex-col gap-4 text-text">
         {/* Ubicación actual */}
-        <div className="flex items-center justify-between rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3">
+        <div className="flex items-center justify-between rounded-md border border-border bg-background p-3">
           <div className="flex items-center gap-2.5">
-            <MapPin className="h-4 w-4 text-zinc-400" />
+            <MapPin className="h-4 w-4 text-text-muted" />
             <div>
-              <span className="block text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="block text-xs font-semibold text-text">
                 Ubicación actual registrada:
               </span>
-              <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
+              <span className="font-mono text-xs text-text-muted">
                 {hasCurrentLocation
                   ? `${currentSala || '—'} · ${currentCajon || '—'}`
                   : 'Sin ubicación física asignada'}
@@ -184,9 +184,9 @@ export function ReubicarProductoModal({
           <button
             type="button"
             onClick={() => setManualMode(!manualMode)}
-            className="flex items-center gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            className="flex items-center gap-1 text-xs font-medium text-text-muted hover:text-text transition-colors"
           >
-            <Sparkles className="h-3.5 w-3.5 text-zinc-400" />
+            <Sparkles className="h-3.5 w-3.5 text-text-muted" />
             <span>{manualMode ? 'Seleccionar de lista' : 'Entrada manual'}</span>
           </button>
         </div>
@@ -197,7 +197,7 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-sala-select"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
                 1. Sala o Almacén principal <span className="text-red-500">*</span>
               </label>
@@ -223,7 +223,7 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-cajon-select"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
                 2. Cajón, Estante o Gaveta
               </label>
@@ -255,7 +255,7 @@ export function ReubicarProductoModal({
                 ))}
               </select>
               {selectedLocationId && cajones.length === 0 && !isLoadingCajones && (
-                <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+                <span className="mt-1 block text-xs text-text-muted font-mono">
                   Puedes guardar solo la sala, o cambiar al modo manual para especificar un cajón nuevo.
                 </span>
               )}
@@ -266,7 +266,7 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-custom-sala"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
                 Nombre de la Sala <span className="text-red-500">*</span>
               </label>
@@ -284,7 +284,7 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-custom-cajon"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
                 Código de Cajón / Estante <span className="text-red-500">*</span>
               </label>
@@ -305,7 +305,7 @@ export function ReubicarProductoModal({
         <div>
           <label
             htmlFor="reubicar-desc"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
           >
             Nota de referencia física (Opcional)
           </label>
@@ -321,7 +321,7 @@ export function ReubicarProductoModal({
         </div>
 
         {/* Botones de acción */}
-        <div className="mt-2 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="mt-2 flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton size="sm" disabled={isPending} className="text-xs">
             Cancelar
           </DialogCloseButton>

@@ -254,10 +254,10 @@ export default function AppLayout() {
 
   return (
     <TooltipProvider>
-      <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 antialiased overflow-hidden">
+      <div className="flex h-screen bg-background font-sans text-text antialiased overflow-hidden">
         <a
           href="#contenido"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-zinc-900 focus:shadow-md dark:focus:bg-zinc-900 dark:focus:text-zinc-100"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-surface focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-zinc-900 focus:shadow-md"
         >
           Saltar al contenido
         </a>
@@ -269,7 +269,7 @@ export default function AppLayout() {
             isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
             isCollapsed
               ? 'py-3 px-2 items-center bg-transparent border-none shadow-none'
-              : 'p-3 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800',
+              : 'p-3 bg-background border-r border-border',
           )}
         >
           {isCollapsed ? (
@@ -279,13 +279,13 @@ export default function AppLayout() {
               <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="gnav-item flex items-center justify-center text-zinc-900 dark:text-zinc-100 cursor-default">
+                    <div className="gnav-item flex items-center justify-center text-text cursor-default">
                       <Boxes size={20} strokeWidth={2.2} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">SGIA · Pañol</p>
-                    <p className="text-[10px] sede-text text-zinc-400">INACAP Sede Temuco</p>
+                    <p className="text-xs sede-text text-text-muted">INACAP Sede Temuco</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -296,7 +296,7 @@ export default function AppLayout() {
                       onClick={() => setIsCollapsed(false)}
                       title="Expandir panel lateral"
                       aria-label="Expandir panel lateral"
-                      className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
+                      className="gnav-item flex items-center justify-center text-text-muted hover:text-text cursor-pointer"
                     >
                       <PanelLeftOpen size={18} strokeWidth={2} />
                     </button>
@@ -330,7 +330,7 @@ export default function AppLayout() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
-                      className="gnav-item flex items-center justify-center font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200 cursor-default"
+                      className="gnav-item flex items-center justify-center font-mono text-xs font-bold text-text cursor-default"
                       title={user?.nombre ?? 'Usuario'}
                       aria-label={`Usuario: ${user?.nombre ?? 'Usuario'}`}
                     >
@@ -339,7 +339,7 @@ export default function AppLayout() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">{user?.nombre ?? 'Usuario'}</p>
-                    <p className="text-[10px] text-zinc-400 font-mono">{roleLabel}</p>
+                    <p className="text-xs text-text-muted font-mono">{roleLabel}</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -351,7 +351,7 @@ export default function AppLayout() {
                       onClick={() => setSettingsOpen(true)}
                       title="Ajustes de usuario y apariencia"
                       aria-label="Ajustes de usuario y apariencia"
-                      className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
+                      className="gnav-item flex items-center justify-center text-text-muted hover:text-text cursor-pointer"
                     >
                       <Settings size={18} strokeWidth={2} />
                     </button>
@@ -369,13 +369,13 @@ export default function AppLayout() {
                       onClick={() => setTheme(isLight ? 'dark' : 'light')}
                       title={isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
                       aria-label={isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
-                      className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
+                      className="gnav-item flex items-center justify-center text-text-muted hover:text-text cursor-pointer"
                     >
                       {isLight ? (
                         <Moon
                           size={18}
                           strokeWidth={2}
-                          className="text-zinc-600 dark:text-zinc-400"
+                          className="text-text-muted"
                         />
                       ) : (
                         <Sun size={18} strokeWidth={2} className="text-amber-400" />
@@ -397,7 +397,7 @@ export default function AppLayout() {
                       onClick={handleLogout}
                       title="Cerrar sesión"
                       aria-label="Cerrar sesión"
-                      className="gnav-item flex items-center justify-center text-zinc-500 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 cursor-pointer"
+                      className="gnav-item flex items-center justify-center text-text-muted hover:text-red-600 cursor-pointer"
                     >
                       <LogOut size={18} strokeWidth={2} />
                     </button>
@@ -415,14 +415,14 @@ export default function AppLayout() {
                 {/* Brand Header */}
                 <div className="flex items-center justify-between px-1.5">
                   <div className="flex items-center gap-2.5 overflow-hidden">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-                      <Boxes className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background text-text">
+                      <Boxes className="h-4 w-4 text-text" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="font-mono text-xs font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                      <span className="font-mono text-xs font-bold tracking-tight text-text">
                         SGIA · Pañol
                       </span>
-                      <span className="truncate text-[10px] sede-text text-zinc-400 dark:text-zinc-500">
+                      <span className="truncate text-xs sede-text text-text-muted">
                         INACAP Sede Temuco
                       </span>
                     </div>
@@ -433,7 +433,7 @@ export default function AppLayout() {
                     onClick={() => setIsCollapsed(true)}
                     title="Encoger panel lateral"
                     aria-label="Encoger panel lateral"
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-border text-text-muted transition-colors hover:bg-surface-raised hover:text-text cursor-pointer"
                   >
                     <PanelLeftClose className="h-3.5 w-3.5" />
                   </button>
@@ -451,8 +451,8 @@ export default function AppLayout() {
                         cn(
                           'relative flex items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
                           isActive
-                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-zinc-900 dark:before:bg-zinc-100'
-                            : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
+                            ? 'bg-surface-raised text-text border border-border font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-ink'
+                            : 'text-text-muted hover:bg-surface-raised hover:text-text',
                         )
                       }
                     >
@@ -462,8 +462,8 @@ export default function AppLayout() {
                             className={cn(
                               'h-4 w-4 shrink-0',
                               isActive
-                                ? 'text-zinc-900 dark:text-zinc-100'
-                                : 'text-zinc-500 dark:text-zinc-400',
+                                ? 'text-text'
+                                : 'text-text-muted',
                             )}
                           />
                           <span className="truncate">{label}</span>
@@ -475,19 +475,19 @@ export default function AppLayout() {
               </div>
 
               {/* User Profile and Bottom Controls */}
-              <div className="border-t border-zinc-200 dark:border-zinc-800 pt-3">
-                <div className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-2.5">
+              <div className="border-t border-border pt-3">
+                <div className="flex flex-col gap-2 rounded-md border border-border bg-background p-2.5">
                   {/* Fila Superior: Perfil del Usuario + Botón de Ajustes + Botón Logout */}
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 shadow-xs">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-border bg-surface font-mono text-xs font-semibold text-text shadow-xs">
                         {userInitials}
                       </div>
                       <div className="flex flex-col min-w-0 flex-1 pr-1">
-                        <span className="truncate text-xs font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
+                        <span className="truncate text-xs font-semibold text-text leading-tight">
                           {user?.nombre ?? 'Usuario'}
                         </span>
-                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate">
+                        <span className="text-xs font-mono text-text-muted truncate">
                           {roleLabel}
                         </span>
                       </div>
@@ -499,7 +499,7 @@ export default function AppLayout() {
                         onClick={() => setSettingsOpen(true)}
                         title="Ajustes de usuario y apariencia"
                         aria-label="Ajustes de usuario y apariencia"
-                        className="p-1 shrink-0 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+                        className="p-1 shrink-0 rounded text-text-muted hover:bg-surface-raised hover:text-text transition-colors cursor-pointer"
                       >
                         <Settings className="h-3.5 w-3.5" />
                       </button>
@@ -508,7 +508,7 @@ export default function AppLayout() {
                         onClick={handleLogout}
                         title="Cerrar sesión"
                         aria-label="Cerrar sesión"
-                        className="p-1 shrink-0 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+                        className="p-1 shrink-0 rounded text-text-muted hover:bg-surface-raised hover:text-text transition-colors cursor-pointer"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                       </button>
@@ -516,17 +516,17 @@ export default function AppLayout() {
                   </div>
 
                   {/* Fila Inferior: Toggle de Modo Oscuro con etiqueta e iconografía */}
-                  <div className="flex items-center justify-between border-t border-zinc-200/60 dark:border-zinc-800/80 pt-2">
-                    <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 select-none">
+                  <div className="flex items-center justify-between border-t border-border pt-2">
+                    <span className="text-xs font-medium text-text-muted select-none">
                       Tema {isLight ? 'Claro' : 'Oscuro'}
                     </span>
-                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-2xs shrink-0">
+                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-border bg-surface/60 shadow-2xs shrink-0">
                       <Moon
                         className={cn(
                           'h-3 w-3 transition-colors',
                           !isLight
                             ? 'text-indigo-400 font-bold'
-                            : 'text-zinc-400 dark:text-zinc-500',
+                            : 'text-text-muted',
                         )}
                       />
                       <Toggle
@@ -542,7 +542,7 @@ export default function AppLayout() {
                       <Sun
                         className={cn(
                           'h-3 w-3 transition-colors',
-                          isLight ? 'text-amber-500 font-bold' : 'text-zinc-400 dark:text-zinc-500',
+                          isLight ? 'text-amber-500 font-bold' : 'text-text-muted',
                         )}
                       />
                     </div>
@@ -560,24 +560,24 @@ export default function AppLayout() {
           aria-label="Ajustar tamaño de panel lateral"
           onMouseDown={() => setIsDragging(true)}
           className={cn(
-            'relative flex w-1 items-center justify-center hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors cursor-col-resize z-30 group',
-            isDragging && 'bg-zinc-400 dark:bg-zinc-600',
+            'relative flex w-1 items-center justify-center hover:bg-surface-raised transition-colors cursor-col-resize z-30 group',
+            isDragging && 'bg-text-muted',
             isCollapsed && 'opacity-0 hover:opacity-100',
           )}
         >
-          <div className="h-6 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-zinc-500 dark:group-hover:bg-zinc-400 transition-colors" />
+          <div className="h-6 w-0.5 rounded-full bg-border group-hover:bg-text-muted transition-colors" />
         </div>
 
         {/* Workspace Central */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          {/* Top Header: Unificado con el mismo color del body (bg-zinc-50 dark:bg-zinc-950) sin discrepancias */}
-          <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-6 transition-colors">
+          {/* Top Header: Unificado con el mismo color del body (bg-background) sin discrepancias */}
+          <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-border bg-background px-6 transition-colors">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-wider sede-text text-zinc-400 dark:text-zinc-500">
+              <span className="font-mono text-xs uppercase tracking-wider sede-text text-text-muted">
                 Módulo Activo
               </span>
-              <span className="text-zinc-300 dark:text-zinc-700">/</span>
-              <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+              <span className="text-text-muted">/</span>
+              <span className="text-xs font-semibold text-text">
                 Sistema de Pañol y Activos
               </span>
             </div>
@@ -587,8 +587,8 @@ export default function AppLayout() {
             </div>
           </header>
 
-          {/* Main Content Area: comparte exactamente el mismo canvas bg-zinc-50 dark:bg-zinc-950 */}
-          <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none overflow-auto bg-zinc-50 dark:bg-zinc-950 p-6 transition-colors">
+          {/* Main Content Area: comparte exactamente el mismo canvas bg-background */}
+          <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none overflow-auto bg-background p-6 transition-colors">
             <div className="mx-auto max-w-7xl">
               <ErrorBoundary>
                 <Outlet />

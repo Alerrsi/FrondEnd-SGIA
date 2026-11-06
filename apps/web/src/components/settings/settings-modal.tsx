@@ -161,9 +161,9 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
       <div className="flex flex-col gap-6 py-2 overflow-y-auto pr-1 max-h-[calc(90vh-140px)]">
         {(onChangePassword || onViewSessions) && (
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-              <KeyRound className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+            <div className="flex items-center gap-2 pb-1 border-b border-border">
+              <KeyRound className="h-4 w-4 text-text shrink-0" />
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-text">
                 Cuenta y seguridad
               </h3>
             </div>
@@ -186,14 +186,14 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
 
         {/* Apartado 1: Paleta de Colores */}
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-            <Palette className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+          <div className="flex items-center gap-2 pb-1 border-b border-border">
+            <Palette className="h-4 w-4 text-text shrink-0" />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-text">
               Paleta de Colores de Interfaz
             </h3>
           </div>
 
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-text-muted">
             Selecciona la identidad cromática del sistema. Todas las configuraciones preservan los fondos neutros
             y cumplen con normas de ergonomía visual para jornadas de alta densidad operativa.
           </p>
@@ -215,10 +215,10 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                   }}
                   className={cn(
                     'group relative flex flex-col justify-between rounded-lg border p-3.5 text-left transition cursor-pointer select-none',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info',
                     isSelected
-                      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50/80 dark:bg-zinc-900/90 shadow-xs ring-1 ring-zinc-900/10 dark:ring-zinc-100/20'
-                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50/40 dark:hover:bg-zinc-900/40',
+                      ? 'border-border bg-surface-raised shadow-xs ring-1 ring-border/10'
+                      : 'border-border bg-surface/60 hover:border-text-muted hover:bg-surface-raised',
                   )}
                   aria-pressed={isSelected}
                   aria-label={`Seleccionar ${opt.name}`}
@@ -227,10 +227,10 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                     {/* Header de la Tarjeta */}
                     <div className="flex items-start justify-between gap-2 min-w-0">
                       <div className="flex flex-col min-w-0 flex-1">
-                        <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                        <span className="text-xs font-bold text-text truncate">
                           {opt.name}
                         </span>
-                        <span className="inline-block mt-0.5 text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
+                        <span className="inline-block mt-0.5 text-xs font-mono text-text-muted">
                           {opt.badge}
                         </span>
                       </div>
@@ -239,8 +239,8 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                         className={cn(
                           'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors',
                           isSelected
-                            ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                            : 'border-zinc-300 dark:border-zinc-700 bg-transparent text-transparent group-hover:border-zinc-400',
+                            ? 'border-border bg-ink text-background'
+                            : 'border-border bg-transparent text-transparent group-hover:border-text-muted',
                         )}
                         aria-hidden="true"
                       >
@@ -249,14 +249,14 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                     </div>
 
                     {/* Descripción de la paleta */}
-                    <p className="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                    <p className="text-xs leading-relaxed text-text-muted line-clamp-2">
                       {opt.description}
                     </p>
                   </div>
 
                   {/* Muestrario de Chips Cromáticos (Swatches) */}
-                  <div className="mt-3 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/80">
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 mb-1.5 font-mono">
+                  <div className="mt-3 pt-2.5 border-t border-border">
+                    <div className="flex items-center justify-between text-xs text-text-muted mb-1.5 font-mono">
                       <span>Muestrario de tonos</span>
                       <span className="tabular-nums">{opt.swatches.length} tonos</span>
                     </div>
@@ -267,7 +267,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                           key={swatch.hex + swatch.name}
                           role="listitem"
                           title={`${swatch.name} (${swatch.hex})${swatch.role ? ` - ${swatch.role}` : ''}`}
-                          className="h-5 w-5 rounded shrink-0 border border-black/10 dark:border-white/10 shadow-2xs transition-transform group-hover:scale-105"
+                          className="h-5 w-5 rounded shrink-0 border border-black/10 shadow-2xs transition-transform group-hover:scale-105"
                           style={{ backgroundColor: swatch.hex }}
                           aria-label={`${swatch.name}: ${swatch.hex}`}
                         />
@@ -282,9 +282,9 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
 
         {/* Apartado 2: Tema (Claro, Oscuro, Sistema) */}
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-            <Sparkles className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+          <div className="flex items-center gap-2 pb-1 border-b border-border">
+            <Sparkles className="h-4 w-4 text-text shrink-0" />
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-text">
               Modo de Visualización
             </h3>
           </div>
@@ -302,8 +302,8 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                   className={cn(
                     'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition cursor-pointer',
                     active
-                      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold shadow-xs'
-                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/80',
+                      ? 'border-border bg-ink text-background font-semibold shadow-xs'
+                      : 'border-border bg-surface/60 text-text-muted hover:bg-surface-raised',
                   )}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -316,7 +316,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
       </div>
 
 
-      <div className="mt-4 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+      <div className="mt-4 flex justify-end gap-2 border-t border-border pt-3">
         <Button variant="outline" size="sm" onClick={onClose}>
           Cerrar
         </Button>

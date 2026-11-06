@@ -25,7 +25,7 @@ const MAX_BYTES = 10 * 1024 * 1024;
 const EXPIRING_DAYS = 30;
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  'h-8 rounded-md border border-border bg-surface px-2 text-xs text-text focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 /** Documentos PDF de la unidad: vencimientos, subida (multipart) y descarga autenticada. */
 export function UnitDocumentsDialog({
@@ -138,24 +138,24 @@ export function UnitDocumentsDialog({
             />
             Vence pronto (≤ {EXPIRING_DAYS} días)
           </label>
-          <span className="font-mono text-xs text-zinc-500">{data?.meta.total ?? 0} documentos</span>
+          <span className="font-mono text-xs text-text-muted">{data?.meta.total ?? 0} documentos</span>
         </div>
 
         {isLoading ? (
-          <Loader2 className="mx-auto h-4 w-4 animate-spin text-zinc-400" />
+          <Loader2 className="mx-auto h-4 w-4 animate-spin text-text-muted" />
         ) : isError ? (
           <p role="alert" className="text-xs text-rose-600">
             {apiErrorToMessage(error)}
           </p>
         ) : docs.length === 0 ? (
-          <p className="py-4 text-center text-xs text-zinc-500">Sin documentos para este filtro.</p>
+          <p className="py-4 text-center text-xs text-text-muted">Sin documentos para este filtro.</p>
         ) : (
-          <ul className="divide-y divide-zinc-100 dark:divide-zinc-800/60 rounded-md border border-zinc-200 dark:border-zinc-800">
+          <ul className="divide-y divide-border/60 rounded-md border border-border">
             {docs.map((doc) => (
               <li key={doc.id} className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-zinc-900 dark:text-zinc-100">{doc.title}</p>
-                  <p className="text-zinc-500">
+                  <p className="truncate font-medium text-text">{doc.title}</p>
+                  <p className="text-text-muted">
                     {DOCUMENT_TYPE_LABELS[doc.document_type]} ·{' '}
                     {doc.valid_until ? `vence ${formatDate(doc.valid_until)}` : 'sin vencimiento'}
                   </p>
@@ -192,7 +192,7 @@ export function UnitDocumentsDialog({
         )}
 
         {canWrite && (
-          <form onSubmit={submit} noValidate className="flex flex-col gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+          <form onSubmit={submit} noValidate className="flex flex-col gap-2 border-t border-border pt-3">
             <div className="grid grid-cols-2 gap-2">
               <select
                 aria-label="Tipo de documento"
@@ -221,7 +221,7 @@ export function UnitDocumentsDialog({
               onChange={(e) => setTitle(e.target.value)}
               className={controlClasses}
             />
-            {errors.title && <p className="text-[11px] text-rose-600">{errors.title}</p>}
+            {errors.title && <p className="text-xs text-rose-600">{errors.title}</p>}
             <div className="flex items-center gap-2">
               <input
                 ref={fileRef}
@@ -241,7 +241,7 @@ export function UnitDocumentsDialog({
               </Button>
             </div>
             {(errors.file || errors.valid_until || errors.document_type) && (
-              <p role="alert" className="text-[11px] text-rose-600">
+              <p role="alert" className="text-xs text-rose-600">
                 {errors.file ?? errors.valid_until ?? errors.document_type}
               </p>
             )}

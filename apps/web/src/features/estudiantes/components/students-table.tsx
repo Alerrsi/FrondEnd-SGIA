@@ -28,7 +28,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
       columnHelper.accessor('rut', {
         header: 'RUT',
         cell: (i) => (
-          <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/60">
+          <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-surface-raised border border-border">
             {formatRun(i.getValue())}
           </span>
         ),
@@ -36,15 +36,15 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
       columnHelper.accessor('full_name', {
         header: 'Nombre',
         cell: (i) => (
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">
-            {i.getValue() || <span className="text-zinc-400">Sin nombre</span>}
+          <span className="font-medium text-text">
+            {i.getValue() || <span className="text-text-muted">Sin nombre</span>}
           </span>
         ),
       }),
       columnHelper.accessor((s) => s.career?.name ?? '', {
         id: 'career',
         header: 'Carrera',
-        cell: (i) => <span className="text-zinc-600 dark:text-zinc-400">{i.getValue() || '—'}</span>,
+        cell: (i) => <span className="text-text-muted">{i.getValue() || '—'}</span>,
       }),
       columnHelper.accessor('loans_count', {
         header: 'Préstamos',
@@ -72,7 +72,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
                 <DropdownMenuItem onSelect={() => onEdit(row.original)}>Editar</DropdownMenuItem>
                 {canDelete && (
                   <DropdownMenuItem
-                    className="text-rose-600 dark:text-rose-400"
+                    className="text-danger"
                     onSelect={() => onDelete(row.original)}
                   >
                     Eliminar
@@ -96,7 +96,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
           {table.getHeaderGroups().map((hg) => (
             <tr
               key={hg.id}
-              className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500"
+              className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted"
             >
               {hg.headers.map((h) => (
                 <th key={h.id} className="px-4 py-2.5 font-medium">
@@ -106,16 +106,16 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
             </tr>
           ))}
         </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+        <tbody className="divide-y divide-border/60">
           {rows.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-10 text-center text-zinc-400">
+              <td colSpan={columns.length} className="px-4 py-10 text-center text-text-muted">
                 No hay estudiantes para el filtro seleccionado.
               </td>
             </tr>
           )}
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
+            <tr key={row.id} className="hover:bg-surface-raised">
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-4 py-2.5">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

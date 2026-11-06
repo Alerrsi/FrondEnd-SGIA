@@ -19,10 +19,10 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
 const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+  'text-xs font-semibold uppercase tracking-wider text-text-muted font-mono';
+const errorClasses = 'mt-1 text-xs text-danger';
 
 interface NewIncidentDialogProps {
   open: boolean;
@@ -150,25 +150,25 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
               className={`${inputClasses} mt-1.5`}
             />
             {lookupCode && unit.data && (
-              <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="mt-1 text-xs text-text-muted">
                 {unit.data.product?.name ?? 'Equipo'} · <span className="font-mono">{unit.data.code}</span>
               </p>
             )}
             {lookupCode && unit.isError && (
-              <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="mt-1 text-xs text-text-muted">
                 Sin vista previa (puede ser un insumo); se enviará igual.
               </p>
             )}
           </div>
         </div>
 
-        <fieldset className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
+        <fieldset className="flex flex-col gap-2 rounded-md border border-border p-3">
           <legend className={`${labelClasses} px-1`}>Problemas</legend>
           {problems.map((problem, index) => {
             const rowError = errors.problems?.[index]?.description;
             return (
               <div key={problem.type} className="flex flex-col gap-1">
-                <label className="flex items-center gap-2 text-xs text-zinc-800 dark:text-zinc-200">
+                <label className="flex items-center gap-2 text-xs text-text">
                   <input
                     type="checkbox"
                     {...register(`problems.${index}.checked`)}
@@ -225,7 +225,7 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             onChange={(e) =>
               setValue('evidence_photo', e.target.files?.[0] ?? null, { shouldValidate: true })
             }
-            className="mt-1.5 block w-full text-xs text-zinc-600 dark:text-zinc-300"
+            className="mt-1.5 block w-full text-xs text-text-muted"
           />
           {errors.evidence_photo && (
             <p className={errorClasses}>{errors.evidence_photo.message}</p>
@@ -249,7 +249,7 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
           {errors.signature && <p className={errorClasses}>{errors.signature.message}</p>}
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}

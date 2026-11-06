@@ -158,7 +158,7 @@ export default function HistorialPrestamosPage() {
         id: 'codigo',
         header: 'Código',
         cell: (info) => (
-          <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+          <span className="font-mono text-xs font-semibold text-text">
             {info.getValue()}
           </span>
         ),
@@ -170,11 +170,11 @@ export default function HistorialPrestamosPage() {
           const loan = info.row.original;
           return (
             <div className="flex flex-col gap-0.5">
-              <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">
+              <span className="font-sans font-medium text-text">
                 {info.getValue()}
               </span>
               {loan.solicitanteRun && (
-                <span className="font-mono text-[10px] text-zinc-400 tabular-nums">
+                <span className="font-mono text-xs text-text-muted tabular-nums">
                   RUN: {loan.solicitanteRun}
                 </span>
               )}
@@ -187,8 +187,8 @@ export default function HistorialPrestamosPage() {
         header: 'Asignatura / Carrera',
         cell: (info) => (
           <div className="flex flex-col font-sans text-xs">
-            <span className="text-zinc-600 dark:text-zinc-300">{info.getValue()}</span>
-            <span className="text-[11px] text-zinc-400">
+            <span className="text-text-muted">{info.getValue()}</span>
+            <span className="text-xs text-text-muted">
               {loanCareer(info.row.original)}
             </span>
           </div>
@@ -199,8 +199,8 @@ export default function HistorialPrestamosPage() {
         header: 'Laboratorio / Pañol',
         cell: (info) => (
           <div className="flex flex-col text-xs">
-            <span className="font-medium text-zinc-700 dark:text-zinc-300">{info.getValue()}</span>
-            <span className="text-[11px] text-zinc-400">{loanStoreroom(info.row.original)}</span>
+            <span className="font-medium text-text">{info.getValue()}</span>
+            <span className="text-xs text-text-muted">{loanStoreroom(info.row.original)}</span>
           </div>
         ),
       }),
@@ -211,7 +211,7 @@ export default function HistorialPrestamosPage() {
           const items = info.row.original.items || [];
           const totalUnits = items.reduce((acc, it) => acc + (it.cantidad ?? 1), 0);
           return (
-            <span className="font-mono text-xs tabular-nums text-zinc-600 dark:text-zinc-300">
+            <span className="font-mono text-xs tabular-nums text-text-muted">
               {items.length} ({totalUnits} un.)
             </span>
           );
@@ -228,7 +228,7 @@ export default function HistorialPrestamosPage() {
             if (!raw || raw === '—') return '—';
             const formatted = raw.length >= 10 ? raw.slice(0, 10) : raw;
             return (
-              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">{formatted}</span>
+              <span className="font-mono text-xs text-text-muted tabular-nums">{formatted}</span>
             );
           },
         },
@@ -241,11 +241,11 @@ export default function HistorialPrestamosPage() {
           cell: (info) => {
             const raw = info.getValue();
             if (!raw || raw === '—') {
-              return <span className="font-mono text-[11px] text-zinc-400">Pendiente</span>;
+              return <span className="font-mono text-xs text-text-muted">Pendiente</span>;
             }
             const formatted = raw.length >= 10 ? raw.slice(0, 10) : raw;
             return (
-              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">{formatted}</span>
+              <span className="font-mono text-xs text-text-muted tabular-nums">{formatted}</span>
             );
           },
         },
@@ -261,7 +261,7 @@ export default function HistorialPrestamosPage() {
             <div className="flex items-center gap-2">
               <LoanStatusBadge estado={estado} />
               {isOverdue && loan.diasAtraso && (
-                <span className="font-mono text-[10px] text-rose-600 dark:text-rose-400 font-semibold tabular-nums">
+                <span className="font-mono text-xs text-danger font-semibold tabular-nums">
                   ({loan.diasAtraso}d atraso)
                 </span>
               )}
@@ -278,7 +278,7 @@ export default function HistorialPrestamosPage() {
             variant="ghost"
             size="icon"
             onClick={() => setSelectedLoan(info.row.original)}
-            className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+            className="h-7 w-7 text-text-muted hover:text-text"
             title="Ver bitácora y detalle"
             aria-label={`Ver detalle del préstamo #${info.row.original.codigo ?? info.row.original.id}`}
           >
@@ -308,7 +308,7 @@ export default function HistorialPrestamosPage() {
   const lastShown = Math.min(currentPage * pageSize, totalLoans);
 
   const controlClasses =
-    'h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none';
+    'h-8.5 rounded-md border border-border bg-background font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none';
 
   return (
     <div className="flex flex-col gap-4">
@@ -317,24 +317,24 @@ export default function HistorialPrestamosPage() {
         <div className="flex items-center gap-2">
           <span
             data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400"
+            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Auditoría de Préstamos
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <History className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <History className="h-5 w-5 text-text" />
               Historial y Auditoría de Préstamos
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Trazabilidad física completa de solicitudes remotas y de mesón, bitácora de eventos y
               reportes semestrales.
             </p>
@@ -349,7 +349,7 @@ export default function HistorialPrestamosPage() {
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >
-              <FileSpreadsheet className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+              <FileSpreadsheet className="h-3.5 w-3.5 text-ok" />
               <span>Exportar Excel</span>
             </Button>
             <Button
@@ -360,7 +360,7 @@ export default function HistorialPrestamosPage() {
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >
-              <FileText className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
+              <FileText className="h-3.5 w-3.5 text-danger" />
               <span>Exportar PDF</span>
             </Button>
           </div>
@@ -368,34 +368,34 @@ export default function HistorialPrestamosPage() {
       </div>
 
       {/* Cinta Métrica Compacta */}
-      <div className="flex flex-wrap items-center divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2 text-xs font-mono shadow-xs">
+      <div className="flex flex-wrap items-center divide-x divide-border rounded-md border border-border bg-surface px-4 py-2 text-xs font-mono shadow-xs">
         <div className="flex items-center gap-2 pr-4">
-          <History className="h-3 w-3 text-zinc-400" />
-          <span className="text-zinc-400 dark:text-zinc-500">Total Histórico:</span>
-          <strong className="text-zinc-900 dark:text-zinc-100 tabular-nums font-semibold">
+          <History className="h-3 w-3 text-text-muted" />
+          <span className="text-text-muted">Total Histórico:</span>
+          <strong className="text-text tabular-nums font-semibold">
             {totalLoans}
           </strong>
         </div>
 
         <div className="flex items-center gap-2 px-4">
           <Clock className="h-3 w-3 text-blue-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Activos en Sala:</span>
-          <strong className="text-blue-600 dark:text-blue-400 tabular-nums font-semibold">
+          <span className="text-text-muted">Activos en Sala:</span>
+          <strong className="text-info tabular-nums font-semibold">
             {activeCount}
           </strong>
         </div>
 
         <div className="flex items-center gap-2 px-4">
           <AlertTriangle
-            className={cn('h-3 w-3', overdueCount > 0 ? 'text-rose-500' : 'text-zinc-400')}
+            className={cn('h-3 w-3', overdueCount > 0 ? 'text-rose-500' : 'text-text-muted')}
           />
-          <span className="text-zinc-400 dark:text-zinc-500">Atrasados Críticos:</span>
+          <span className="text-text-muted">Atrasados Críticos:</span>
           <strong
             className={cn(
               'tabular-nums font-semibold',
               overdueCount > 0
-                ? 'text-rose-600 dark:text-rose-400'
-                : 'text-zinc-700 dark:text-zinc-300',
+                ? 'text-danger'
+                : 'text-text',
             )}
           >
             {overdueCount}
@@ -404,20 +404,20 @@ export default function HistorialPrestamosPage() {
 
         <div className="flex items-center gap-2 pl-4">
           <CheckCircle className="h-3 w-3 text-emerald-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Devueltos Conformes:</span>
-          <strong className="text-zinc-700 dark:text-zinc-300 tabular-nums font-semibold">
+          <span className="text-text-muted">Devueltos Conformes:</span>
+          <strong className="text-text tabular-nums font-semibold">
             {returnedCount}
           </strong>
         </div>
       </div>
 
       {/* TanStack Table Frame y Toolbar Unificado */}
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
+      <div className="rounded-md border border-border bg-surface overflow-hidden shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-border p-3 bg-surface-raised">
           <div className="flex flex-1 flex-wrap items-center gap-2">
             {/* Buscador con / shortcut */}
             <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-64 sm:flex-none">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <input
                 type="search"
                 value={search}
@@ -433,7 +433,7 @@ export default function HistorialPrestamosPage() {
                 <button
                   type="button"
                   onClick={() => setSearch('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -512,7 +512,7 @@ export default function HistorialPrestamosPage() {
               className={cn(controlClasses, 'px-2')}
               title="Fecha inicial"
             />
-            <span className="text-zinc-400 font-mono text-xs">a</span>
+            <span className="text-text-muted font-mono text-xs">a</span>
             <input
               type="date"
               value={endDate}
@@ -540,7 +540,7 @@ export default function HistorialPrestamosPage() {
         {/* Tabla TanStack */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-xs font-mono">
-            <thead className="bg-zinc-50/90 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">
+            <thead className="bg-surface-raised border-b border-border text-xs uppercase tracking-wider text-text-muted font-semibold">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -554,17 +554,17 @@ export default function HistorialPrestamosPage() {
               ))}
             </thead>
 
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-mono text-xs">
+            <tbody className="divide-y divide-border font-mono text-xs">
               {isLoading ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-4 py-12 text-center text-zinc-400">
+                  <td colSpan={columns.length} className="px-4 py-12 text-center text-text-muted">
                     <RefreshCw className="mx-auto mb-2 h-5 w-5 animate-spin" />
                     Cargando bitácora histórica de préstamos…
                   </td>
                 </tr>
               ) : loans.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-4 py-12 text-center text-zinc-400">
+                  <td colSpan={columns.length} className="px-4 py-12 text-center text-text-muted">
                     No se encontraron registros de préstamos con los criterios aplicados.
                   </td>
                 </tr>
@@ -578,9 +578,9 @@ export default function HistorialPrestamosPage() {
                     <tr
                       key={row.id}
                       className={cn(
-                        'transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40',
+                        'transition-colors hover:bg-surface-raised',
                         isReturned && 'opacity-75',
-                        isOverdue && 'bg-rose-50/20 dark:bg-rose-950/20',
+                        isOverdue && 'bg-danger-bg',
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -597,7 +597,7 @@ export default function HistorialPrestamosPage() {
         </div>
 
         {/* Technical Pagination Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 dark:border-zinc-800 p-2.5 text-xs text-zinc-500 font-mono bg-zinc-50/30 dark:bg-zinc-900/30">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-2.5 text-xs text-text-muted font-mono bg-surface-raised">
           <div>
             Mostrando {firstShown} a {lastShown} de {totalLoans} registros
           </div>
@@ -611,7 +611,7 @@ export default function HistorialPrestamosPage() {
                   setPageSize(Number(e.target.value));
                   setPage(1);
                 }}
-                className="h-7 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-1 text-xs"
+                className="h-7 rounded border border-border bg-surface px-1 text-xs"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -630,7 +630,7 @@ export default function HistorialPrestamosPage() {
               >
                 <ChevronLeft className="h-3.5 w-3.5" />
               </Button>
-              <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
+              <span className="px-2 text-text tabular-nums">
                 {totalPages === 0 ? 0 : currentPage} / {totalPages}
               </span>
               <Button
@@ -653,68 +653,68 @@ export default function HistorialPrestamosPage() {
         <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
           {selectedLoan && (
             <div className="flex flex-col gap-5 py-2">
-              <SheetHeader className="text-left border-b border-zinc-200 dark:border-zinc-800 pb-3">
+              <SheetHeader className="text-left border-b border-border pb-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                  <span className="font-mono text-xs font-bold text-text">
                     {selectedLoan.codigo ?? `#${selectedLoan.id}`}
                   </span>
                   <LoanStatusBadge estado={selectedLoan.estado} />
                 </div>
-                <SheetTitle className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                <SheetTitle className="text-base font-semibold text-text">
                   {loanTeacher(selectedLoan)}
                 </SheetTitle>
-                <SheetDescription className="font-mono text-xs text-zinc-400">
+                <SheetDescription className="font-mono text-xs text-text-muted">
                   RUN: {selectedLoan.solicitanteRun || 'No registrado'} · Origen:{' '}
                   {selectedLoan.origen === 'remoto' ? 'Solicitud Remota (App)' : 'Presencial Mesón'}
                 </SheetDescription>
               </SheetHeader>
 
               {/* Parámetros de la Clase */}
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-zinc-50 dark:bg-zinc-950 p-3 rounded border border-zinc-200 dark:border-zinc-800">
+              <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-background p-3 rounded border border-border">
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Asignatura</span>
-                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="text-text-muted text-xs">Asignatura</span>
+                  <p className="font-medium text-text">
                     {loanSubject(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Carrera</span>
-                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="text-text-muted text-xs">Carrera</span>
+                  <p className="font-medium text-text">
                     {loanCareer(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Laboratorio</span>
-                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="text-text-muted text-xs">Laboratorio</span>
+                  <p className="font-medium text-text">
                     {loanLaboratory(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Pañol</span>
-                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="text-text-muted text-xs">Pañol</span>
+                  <p className="font-medium text-text">
                     {loanStoreroom(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Fecha de actividad</span>
-                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="text-text-muted text-xs">Fecha de actividad</span>
+                  <p className="font-medium text-text">
                     {selectedLoan.loan_date ? formatDateOnly(selectedLoan.loan_date) : '—'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Horario</span>
-                  <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="text-text-muted text-xs">Horario</span>
+                  <p className="font-medium text-text">
                     {loanSchedule(selectedLoan) === '—'
                       ? 'No especificado'
                       : loanSchedule(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[10px]">Días de Atraso</span>
+                  <span className="text-text-muted text-xs">Días de Atraso</span>
                   <p
                     className={cn(
                       'font-medium tabular-nums',
-                      selectedLoan.diasAtraso ? 'text-rose-600 font-bold' : 'text-zinc-600',
+                      selectedLoan.diasAtraso ? 'text-rose-600 font-bold' : 'text-text-muted',
                     )}
                   >
                     {selectedLoan.diasAtraso
@@ -726,24 +726,24 @@ export default function HistorialPrestamosPage() {
 
               {/* Lista de Ítems */}
               <div className="flex flex-col gap-2">
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
                   Ítems Prestados ({selectedLoan.items?.length ?? 0})
                 </span>
-                <div className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+                <div className="flex flex-col divide-y divide-border rounded border border-border bg-surface overflow-hidden">
                   {selectedLoan.items?.map((item, idx) => (
                     <div
                       key={idx}
                       className="flex items-center justify-between p-2.5 text-xs font-mono"
                     >
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">
+                        <span className="font-sans font-medium text-text">
                           {item.productoNombre || item.nombre || `Producto #${item.productoId}`}
                         </span>
-                        <span className="text-[10px] text-zinc-400">
+                        <span className="text-xs text-text-muted">
                           SKU: {item.codigoBarras || '—'}
                         </span>
                       </div>
-                      <span className="font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                      <span className="font-semibold tabular-nums text-text">
                         {item.cantidad ?? 1} un.
                       </span>
                     </div>
@@ -753,37 +753,37 @@ export default function HistorialPrestamosPage() {
 
               {/* Bitácora / Timeline de Eventos */}
               <div className="flex flex-col gap-2">
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
                   Bitácora y Trazabilidad
                 </span>
 
                 {selectedLoan.eventos && selectedLoan.eventos.length > 0 ? (
-                  <div className="relative pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 flex flex-col gap-4 py-1 ml-2">
+                  <div className="relative pl-6 border-l-2 border-border flex flex-col gap-4 py-1 ml-2">
                     {selectedLoan.eventos.map((evt, idx) => (
                       <div key={idx} className="relative flex flex-col gap-0.5 text-xs">
                         {/* Dot del timeline */}
-                        <span className="absolute -left-[31px] top-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-900 bg-zinc-400 dark:bg-zinc-600" />
+                        <span className="absolute -left-[31px] top-0.5 h-3 w-3 rounded-full border-2 border-surface bg-text-muted" />
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                          <span className="font-medium text-text">
                             {evt.evento || evt.titulo}
                           </span>
-                          <span className="font-mono text-[10px] text-zinc-400">
+                          <span className="font-mono text-xs text-text-muted">
                             {evt.fecha ? evt.fecha.slice(0, 16).replace('T', ' ') : ''}
                           </span>
                         </div>
                         {evt.usuario && (
-                          <span className="font-mono text-[11px] text-zinc-500">
+                          <span className="font-mono text-xs text-text-muted">
                             Operador: {evt.usuario}
                           </span>
                         )}
                         {evt.descripcion && (
-                          <p className="text-[11px] text-zinc-500 italic">{evt.descripcion}</p>
+                          <p className="text-xs text-text-muted italic">{evt.descripcion}</p>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs font-mono text-zinc-400 italic">
+                  <p className="text-xs font-mono text-text-muted italic">
                     Sin eventos registrados en la bitácora.
                   </p>
                 )}

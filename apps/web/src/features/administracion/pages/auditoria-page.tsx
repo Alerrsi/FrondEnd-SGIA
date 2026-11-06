@@ -12,7 +12,7 @@ import {
 } from '@/features/administracion/lib/audit-labels';
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info';
 
 /** Prefijos por entidad (`user.`) además de cada acción exacta. */
 const ACTION_GROUPS = Array.from(new Set(AUDIT_ACTIONS.map((a) => a.split('.')[0]!)));
@@ -52,17 +52,17 @@ export default function AuditoriaPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-          <ScrollText className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+        <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+          <ScrollText className="h-5 w-5 text-text" />
           Auditoría
         </h1>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-text-muted">
           Registro de eventos críticos del sistema (solo lectura, REQ-NF-01). Horas en America/Santiago.
         </p>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
+      <div className="rounded-md border border-border bg-surface overflow-hidden shadow-xs">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border p-2.5">
           <select aria-label="Filtrar por acción" value={action} onChange={(e) => reset(setAction)(e.target.value)} className={controlClasses}>
             <option value="">Todas las acciones</option>
             {ACTION_GROUPS.map((g) => (
@@ -102,7 +102,7 @@ export default function AuditoriaPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando registros…</div>
+          <div className="py-12 text-center font-mono text-xs text-text-muted">Cargando registros…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle className="h-5 w-5 shrink-0" />
@@ -111,7 +111,7 @@ export default function AuditoriaPage() {
         ) : (
           <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+              <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
                 {['Fecha', 'Acción', 'Entidad', 'Autor', ''].map((h) => (
                   <th key={h || 'd'} className="px-4 py-2.5 font-medium">
                     {h || <span className="sr-only">Detalle</span>}
@@ -119,10 +119,10 @@ export default function AuditoriaPage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody className="divide-y divide-border/60">
               {(data?.data ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-zinc-400">
+                  <td colSpan={5} className="px-4 py-10 text-center text-text-muted">
                     No hay eventos para el filtro seleccionado.
                   </td>
                 </tr>
@@ -132,8 +132,8 @@ export default function AuditoriaPage() {
                 const open = openId === log.id;
                 return (
                   <Fragment key={log.id}>
-                    <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
-                      <td className="px-4 py-2.5 font-mono text-zinc-500">{formatDateTime(log.created_at)}</td>
+                    <tr className="hover:bg-surface-raised">
+                      <td className="px-4 py-2.5 font-mono text-text-muted">{formatDateTime(log.created_at)}</td>
                       <td className="px-4 py-2.5">
                         <Badge tone={log.action.endsWith('deleted') || log.action.endsWith('written_off') || log.action.endsWith('cancelled') ? 'danger' : 'neutral'}>
                           {auditActionLabel(log.action)}
@@ -141,7 +141,7 @@ export default function AuditoriaPage() {
                       </td>
                       <td className="px-4 py-2.5">
                         {AUDITABLE_TYPE_LABELS[log.auditable_type] ?? log.auditable_type}{' '}
-                        <span className="font-mono text-zinc-500">#{log.auditable_id ?? '—'}</span>
+                        <span className="font-mono text-text-muted">#{log.auditable_id ?? '—'}</span>
                       </td>
                       <td className="px-4 py-2.5">{log.user?.name ?? log.user?.nombre ?? '—'}</td>
                       <td className="px-4 py-2.5 text-right">
@@ -154,11 +154,11 @@ export default function AuditoriaPage() {
                     </tr>
                     {open && (
                       <tr>
-                        <td colSpan={5} className="bg-zinc-50/60 dark:bg-zinc-950/40 px-4 py-2">
+                        <td colSpan={5} className="bg-background px-4 py-2">
                           {details.map(([label, value]) => (
                             <div key={label} className="mb-1">
-                              <span className="font-mono text-[11px] uppercase text-zinc-500">{label}</span>
-                              <pre className="overflow-x-auto font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+                              <span className="font-mono text-xs uppercase text-text-muted">{label}</span>
+                              <pre className="overflow-x-auto font-mono text-xs text-text">
                                 {JSON.stringify(value, null, 2)}
                               </pre>
                             </div>
@@ -174,7 +174,7 @@ export default function AuditoriaPage() {
         )}
 
         {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 p-2 text-xs text-zinc-500">
+          <div className="flex items-center justify-end gap-2 border-t border-border p-2 text-xs text-text-muted">
             <span className="font-mono">
               {meta.currentPage} / {meta.lastPage} · {meta.total} eventos
             </span>

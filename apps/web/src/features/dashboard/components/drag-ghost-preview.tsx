@@ -24,7 +24,7 @@ const SHAPE_CONFIGS: Record<
     icon: BarChart3,
     badge: 'BAR',
     renderMiniVisual: () => (
-      <div className="flex items-end justify-between h-14 bg-zinc-950/80 rounded-md p-2 border border-zinc-800 gap-1.5">
+      <div className="flex items-end justify-between h-14 bg-zinc-950/80 rounded-md p-2 border border-border gap-1.5">
         <div className="w-full h-[40%] bg-sky-600/70 rounded-t" />
         <div className="w-full h-[75%] bg-sky-500 rounded-t" />
         <div className="w-full h-[55%] bg-amber-500/80 rounded-t" />
@@ -39,7 +39,7 @@ const SHAPE_CONFIGS: Record<
     icon: TrendingUp,
     badge: 'LINE',
     renderMiniVisual: () => (
-      <div className="h-14 bg-zinc-950/80 rounded-md p-2 border border-zinc-800 flex items-center justify-center">
+      <div className="h-14 bg-zinc-950/80 rounded-md p-2 border border-border flex items-center justify-center">
         <svg className="w-full h-10 overflow-visible" viewBox="0 0 100 40">
           <path
             d="M 5 32 Q 25 10 45 22 T 85 8 L 95 18"
@@ -60,7 +60,7 @@ const SHAPE_CONFIGS: Record<
     icon: PieChart,
     badge: 'DOUGHNUT',
     renderMiniVisual: () => (
-      <div className="h-14 bg-zinc-950/80 rounded-md p-1 border border-zinc-800 flex items-center justify-center">
+      <div className="h-14 bg-zinc-950/80 rounded-md p-1 border border-border flex items-center justify-center">
         <svg className="h-11 w-11" viewBox="0 0 36 36">
           <circle cx="18" cy="18" r="14" fill="transparent" stroke="#27272a" strokeWidth="5" />
           <circle
@@ -103,7 +103,7 @@ const SHAPE_CONFIGS: Record<
     icon: Compass,
     badge: 'POLAR_AREA',
     renderMiniVisual: () => (
-      <div className="h-14 bg-zinc-950/80 rounded-md p-1 border border-zinc-800 flex items-center justify-center">
+      <div className="h-14 bg-zinc-950/80 rounded-md p-1 border border-border flex items-center justify-center">
         <svg className="h-11 w-11" viewBox="0 0 36 36">
           <circle cx="18" cy="18" r="14" fill="transparent" stroke="#27272a" strokeWidth="1" strokeDasharray="2 2" />
           <circle cx="18" cy="18" r="9" fill="transparent" stroke="#3f3f46" strokeWidth="1" strokeDasharray="2 2" />
@@ -148,7 +148,7 @@ export function DragGhostPreview({
         pointerEvents: 'none',
         zIndex: 99999,
       }}
-      className="w-72 select-none rounded-xl border-2 border-sky-500 bg-zinc-900/95 dark:bg-zinc-950/95 p-3.5 shadow-2xl shadow-sky-500/30 backdrop-blur-md text-zinc-100 flex flex-col gap-2.5 transition-transform duration-75 ease-out"
+      className="w-72 select-none rounded-xl border-2 border-sky-500 bg-zinc-900/95 p-3.5 shadow-2xl shadow-sky-500/30 backdrop-blur-md text-zinc-100 flex flex-col gap-2.5 transition-transform duration-75 ease-out"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -159,12 +159,12 @@ export function DragGhostPreview({
             <div className="text-xs font-bold text-zinc-100 leading-tight">
               {config.title}
             </div>
-            <div className="text-[10px] text-zinc-400 font-mono leading-none">
+            <div className="text-xs text-text-muted font-mono leading-none">
               {config.subtitle}
             </div>
           </div>
         </div>
-        <Badge tone="danger" className="text-[10px] font-mono px-1.5 py-0.5">
+        <Badge tone="danger" className="text-xs font-mono px-1.5 py-0.5">
           {config.badge}
         </Badge>
       </div>
@@ -174,12 +174,12 @@ export function DragGhostPreview({
         {config.renderMiniVisual()}
       </div>
 
-      <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-zinc-800">
+      <div className="flex items-center justify-between text-xs font-mono pt-1.5 border-t border-border">
         <span className="flex items-center gap-1.5 text-sky-400 font-semibold" data-testid="drag-ghost-status">
           <span className="h-2 w-2 rounded-full bg-sky-500 animate-ping" />
           Arrastrando gráfico…
         </span>
-        <span className="text-zinc-500 text-[10px]">Suelta en una zona</span>
+        <span className="text-text-muted text-xs">Suelta en una zona</span>
       </div>
     </div>
   );

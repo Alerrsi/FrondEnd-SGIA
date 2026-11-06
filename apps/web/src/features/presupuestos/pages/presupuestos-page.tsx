@@ -113,28 +113,28 @@ export default function PresupuestosPage() {
             {rows?.length ?? 0}
           </span>
         </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-3 w-px bg-surface-raised" />
         <div className="flex items-center gap-2">
           <span className="text-text-muted">Inicial:</span>
           <span className="font-mono font-medium text-text">
             {formatCLP(totals.initial)}
           </span>
         </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-3 w-px bg-surface-raised" />
         <div className="flex items-center gap-2">
           <span className="text-text-muted">Reservado:</span>
           <span className="font-mono text-text">
             {formatCLP(totals.reserved)}
           </span>
         </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-3 w-px bg-surface-raised" />
         <div className="flex items-center gap-2">
           <span className="text-text-muted">Consumido:</span>
           <span className="font-mono text-text">
             {formatCLP(totals.consumed)}
           </span>
         </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-3 w-px bg-surface-raised" />
         <div className="flex items-center gap-2">
           <span className="text-text-muted">Libre:</span>
           <span className="font-mono font-medium text-text">

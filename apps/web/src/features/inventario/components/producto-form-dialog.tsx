@@ -52,11 +52,11 @@ const EMPTY_VALUES: FormValues = {
 };
 
 const inputClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50 font-mono';
+  'w-full h-8 rounded border border-border bg-background px-2.5 text-xs text-text placeholder:text-text-muted transition-colors focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 font-mono';
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="mt-1 block text-xs font-medium text-rose-600 dark:text-rose-400">{message}</span>;
+  return <span className="mt-1 block text-xs font-medium text-danger">{message}</span>;
 }
 
 function Label({
@@ -69,7 +69,7 @@ function Label({
   required?: boolean;
 }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+    <label htmlFor={htmlFor} className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted">
       {children}
       {required && <span className="ml-0.5 text-red-500">*</span>}
     </label>
@@ -270,10 +270,10 @@ export function ProductoFormDialog({
       }
       className="max-w-xl"
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4 text-text" noValidate>
         {/* Fieldset: Identificación de Hardware */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+        <fieldset className="flex flex-col gap-3 rounded-md border border-border bg-background p-3.5">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted">
             Identificación de Hardware
           </legend>
 
@@ -299,7 +299,7 @@ export function ProductoFormDialog({
               rows={2}
               disabled={isPending}
               placeholder="Detalles sobre modelo, rango de medición, conectores incluidos…"
-              className="w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-2 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+              className="w-full rounded border border-border bg-background p-2 text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info"
               {...register('description')}
             />
           </div>
@@ -382,7 +382,7 @@ export function ProductoFormDialog({
                       setValue('auto_barcode', next);
                       if (next) setValue('barcode', '');
                     }}
-                    className="mb-1 flex items-center gap-1 text-[11px] font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    className="mb-1 flex items-center gap-1 text-xs font-medium text-text-muted hover:text-text"
                   >
                     <Sparkles className="h-3 w-3 text-amber-500" />
                     <span>{autoBarcode ? 'Manual' : 'Autogenerar'}</span>
@@ -395,10 +395,10 @@ export function ProductoFormDialog({
                   type="text"
                   disabled={isPending || autoBarcode}
                   placeholder={autoBarcode ? 'SGIA-XXXXXXXX (Automático)' : 'Ej. 7801234567890'}
-                  className={cn(inputClasses, autoBarcode && 'opacity-60 text-zinc-400')}
+                  className={cn(inputClasses, autoBarcode && 'opacity-60 text-text-muted')}
                   {...register('barcode')}
                 />
-                <Barcode className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <Barcode className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               </div>
               <FieldError message={errors.barcode?.message} />
             </div>
@@ -406,8 +406,8 @@ export function ProductoFormDialog({
         </fieldset>
 
         {/* Fieldset: Parámetros de Stock */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+        <fieldset className="flex flex-col gap-3 rounded-md border border-border bg-background p-3.5">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted">
             Parámetros de Stock y Alertas
           </legend>
 
@@ -426,12 +426,12 @@ export function ProductoFormDialog({
                 {...register('quantity', { setValueAs: toNumber })}
               />
               {quantityReadOnly ? (
-                <span className="mt-1 block text-[11px] text-zinc-500 dark:text-zinc-400">
+                <span className="mt-1 block text-xs text-text-muted">
                   Se calcula desde las unidades del equipo.
                 </span>
               ) : (
                 unitTracked && (
-                  <span className="mt-1 block text-[11px] text-zinc-500 dark:text-zinc-400">
+                  <span className="mt-1 block text-xs text-text-muted">
                     Cada unidad recibe su código; requiere carrera y cajón.
                   </span>
                 )
@@ -457,9 +457,9 @@ export function ProductoFormDialog({
         </fieldset>
 
         {/* Fieldset: Ubicación en Pañol */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
-            <MapPin className="h-3 w-3 text-zinc-400" />
+        <fieldset className="flex flex-col gap-3 rounded-md border border-border bg-background p-3.5">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted flex items-center gap-1">
+            <MapPin className="h-3 w-3 text-text-muted" />
             <span>Ubicación en Pañol</span>
           </legend>
 
@@ -533,7 +533,7 @@ export function ProductoFormDialog({
           <FieldError message={errors.cajon_id?.message} />
         </fieldset>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={isPending}>
             Cancelar
           </DialogCloseButton>

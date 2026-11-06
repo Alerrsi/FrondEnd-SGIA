@@ -83,7 +83,7 @@ export default function CotizacionesPage() {
         {data.data.map((cotizacion) => (
           <Card
             key={cotizacion.id}
-            className="flex items-center justify-between gap-4 cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+            className="flex items-center justify-between gap-4 cursor-pointer hover:border-text-muted transition-colors"
             onClick={() => setSelectedCotizacion(cotizacion)}
           >
             <div className="flex flex-col gap-1">

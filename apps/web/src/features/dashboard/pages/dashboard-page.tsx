@@ -293,24 +293,24 @@ export default function DashboardPage() {
       />
 
       {/* Encabezado Superior */}
-      <div className="flex flex-col gap-1 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex flex-col gap-1 border-b border-border pb-4">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold text-red-600 dark:text-red-500 uppercase tracking-wider">
+          <span className="font-mono text-xs font-bold text-danger uppercase tracking-wider">
             SEDE TEMUCO · PAÑOL TI
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Analítica y Métricas Dinámicas
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-text" />
               Dashboards Analíticos y Métricas
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Métricas del pañol. Arrastra un gráfico desde el catálogo o pulsa Añadir, y elige qué datos mostrar.
             </p>
           </div>
@@ -337,7 +337,7 @@ export default function DashboardPage() {
               onClick={handleToggleEditMode}
               className={`text-xs gap-1.5 ${
                 isEditMode
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 shadow-xs'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
                   : ''
               }`}
             >
@@ -396,7 +396,7 @@ export default function DashboardPage() {
               <strong>Zonas de Inserción Enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
           </div>
-          <span className="text-[11px] text-sky-400">
+          <span className="text-xs text-sky-400">
             {panel.canAdd ? `Espacio disponible (${panel.total}/5)` : 'Límite de 5 alcanzado'}
           </span>
         </div>
@@ -406,8 +406,8 @@ export default function DashboardPage() {
       <MetricStrip kpis={kpis} isLoading={isLoadingKpis} error={kpisError} />
 
       {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 5 por usuario) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-2xs">
-        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-2.5 shadow-2xs">
+        <div className="flex items-center gap-2 text-xs font-mono text-text-muted">
           <LayoutGrid className="h-4 w-4" />
           <span>Plantillas de Análisis:</span>
         </div>
@@ -424,14 +424,14 @@ export default function DashboardPage() {
                 disabled={!panel.canAdd || panel.isMutating}
                 onClick={() => handleAddFromTemplate(tmpl)}
                 title={tmpl.description ?? `Añadir "${tmpl.name}" a tu panel`}
-                className="text-xs gap-1.5 text-zinc-600 dark:text-zinc-400"
+                className="text-xs gap-1.5 text-text-muted"
               >
                 <Plus className="h-3 w-3" />
                 <span>{tmpl.name}</span>
               </Button>
             ))}
           {panel.templates.every((t) => t.entity === null) && (
-            <span className="font-mono text-[11px] text-zinc-400">
+            <span className="font-mono text-xs text-text-muted">
               {panel.isLoading ? 'Cargando plantillas…' : 'Sin plantillas con consulta predefinida.'}
             </span>
           )}
@@ -471,7 +471,7 @@ export default function DashboardPage() {
                     ? '¡Suelta aquí para configurar el gráfico!'
                     : 'Suelta tu gráfico aquí para configurarlo'}
                 </h3>
-                <p className="text-xs text-zinc-400 font-mono">
+                <p className="text-xs text-text-muted font-mono">
                   Al soltar se abre el menú para elegir qué datos mostrar ({panel.total + 1}/5)
                 </p>
               </div>
@@ -482,17 +482,17 @@ export default function DashboardPage() {
 
       {/* Grid de Gráficos y Zonas de Soltado (Drag & Drop Canvas) */}
       {panel.isLoading ? (
-        <div className="p-12 text-center font-mono text-xs text-zinc-400">Cargando tu panel…</div>
+        <div className="p-12 text-center font-mono text-xs text-text-muted">Cargando tu panel…</div>
       ) : panel.error ? (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400"
+          className="rounded-lg border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger"
         >
           {apiErrorToMessage(panel.error)}
         </div>
       ) : charts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-center font-mono text-xs text-zinc-400 gap-3">
-          <BarChart3 className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+        <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-border text-center font-mono text-xs text-text-muted gap-3">
+          <BarChart3 className="h-8 w-8 text-text-muted" />
           <p>Tu panel no tiene gráficos visibles. Añade una plantilla o abre el Catálogo de Widgets.</p>
           <div className="flex flex-col items-center gap-3 w-full max-w-md">
             <Button
@@ -576,15 +576,15 @@ export default function DashboardPage() {
       {panel.hidden.length > 0 && (
         <section
           aria-label="Gráficos ocultos"
-          className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"
+          className="rounded-lg border border-border bg-surface p-3"
         >
-          <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+          <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
             Ocultos ({panel.hidden.length})
           </h2>
           <ul className="flex flex-col gap-1.5">
             {panel.hidden.map((hiddenChart) => (
               <li key={hiddenChart.id} className="flex items-center justify-between gap-2 text-xs">
-                <span className="truncate text-zinc-700 dark:text-zinc-300">
+                <span className="truncate text-text">
                   {hiddenChart.custom_title ?? hiddenChart.template?.name ?? `Gráfico #${hiddenChart.id}`}
                 </span>
                 <span className="flex shrink-0 gap-1">

@@ -186,13 +186,13 @@ export default function ProductosListPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
+            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono font-medium bg-danger-bg text-danger border border-danger/30">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
               SEDE TEMUCO · PAÑOL TI
             </span>
-            <span className="text-zinc-400 dark:text-zinc-600 text-xs font-mono">/ Módulo FU-02</span>
+            <span className="text-text-muted text-xs font-mono">/ Módulo FU-02</span>
           </div>
-          <h1 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-lg font-semibold tracking-tight text-text">
             Control de Inventario y Activos
           </h1>
         </div>
@@ -205,7 +205,7 @@ export default function ProductosListPage() {
               onClick={() => setInvoiceUploadOpen(true)}
               className="flex items-center gap-1.5 text-xs h-8"
             >
-              <FileUp className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
+              <FileUp className="h-3.5 w-3.5 text-text-muted" />
               <span>Ingresar por factura</span>
             </Button>
           )}
@@ -219,36 +219,36 @@ export default function ProductosListPage() {
       </div>
 
       {/* 2. Barra métrica horizontal compacta (Sustituye tarjetas gigantes de 150px) */}
-      <div className="flex flex-wrap items-center gap-4 sm:gap-6 px-4 py-2.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs shadow-xs">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6 px-4 py-2.5 rounded-md bg-surface border border-border text-xs shadow-xs">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Total Referencias:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
+          <span className="text-text-muted">Total Referencias:</span>
+          <span className="font-mono font-medium text-text tabular-nums">
             {totalItems}
           </span>
         </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
+        <div className="h-3 w-px bg-surface-raised hidden sm:block" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Stock Crítico:</span>
+          <span className="text-text-muted">Stock Crítico:</span>
           <span
             className={cn(
               'font-mono font-medium',
-              criticalItemsCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400',
+              criticalItemsCount > 0 ? 'text-danger' : 'text-ok',
             )}
           >
             {criticalItemsCount} {criticalItemsCount === 1 ? 'ítem bajo mínimo' : 'bajo mínimo'}
           </span>
         </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
+        <div className="h-3 w-px bg-surface-raised hidden sm:block" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Lector Code128:</span>
-          <span className="font-mono text-zinc-600 dark:text-zinc-400">Listo (Presiona /)</span>
+          <span className="text-text-muted">Lector Code128:</span>
+          <span className="font-mono text-text-muted">Listo (Presiona /)</span>
         </div>
       </div>
 
       {/* Error state */}
       {isError && (
-        <div className="flex items-center gap-2 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 p-3 text-xs text-rose-700 dark:text-rose-400">
-          <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
+        <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-3 text-xs text-danger">
+          <AlertCircle className="h-4 w-4 shrink-0 text-danger" />
           <span>Error de conexión con el catálogo de pañol. Reintentando sincronización…</span>
         </div>
       )}

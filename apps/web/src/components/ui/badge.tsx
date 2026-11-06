@@ -72,7 +72,7 @@ export function Badge({
       data-status={statusStr}
       className={cn(
         'inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-xs font-medium transition-colors',
-        mono ? 'font-mono tracking-tight text-[11px]' : 'font-sans',
+        mono ? 'font-mono tracking-tight text-xs' : 'font-sans',
         toneClasses[tone],
         className,
       )}

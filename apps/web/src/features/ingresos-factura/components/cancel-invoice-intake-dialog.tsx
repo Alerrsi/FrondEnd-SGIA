@@ -81,7 +81,7 @@ export function CancelInvoiceIntakeDialog({
         {blockedReason && (
           <p
             role="alert"
-            className="flex items-start gap-2 rounded-md border border-danger/30 bg-danger-bg p-2.5 text-rose-800 dark:text-rose-300"
+            className="flex items-start gap-2 rounded-md border border-danger/30 bg-danger-bg p-2.5 text-danger"
           >
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {blockedReason}

@@ -13,7 +13,7 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info';
 
 export default function EstudiantesPage() {
   const { user } = useAuth();
@@ -69,11 +69,11 @@ export default function EstudiantesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+          <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-text" />
             Estudiantes
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-text-muted">
             Registro de estudiantes que retiran préstamos presenciales (REQ-20).
           </p>
         </div>
@@ -89,10 +89,10 @@ export default function EstudiantesPage() {
         </Button>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
+      <div className="rounded-md border border-border bg-surface overflow-hidden shadow-xs">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border p-2.5">
           <div className="relative flex-1 max-w-sm">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
             <input
               type="search"
               aria-label="Buscar estudiante"
@@ -121,9 +121,9 @@ export default function EstudiantesPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando estudiantes…</div>
+          <div className="py-12 text-center font-mono text-xs text-text-muted">Cargando estudiantes…</div>
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
+          <div className="m-3 flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
             <AlertCircle className="h-5 w-5 shrink-0" />
             No se pudieron cargar los estudiantes.
           </div>
@@ -138,7 +138,7 @@ export default function EstudiantesPage() {
         )}
 
         {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 p-2 text-xs text-zinc-500">
+          <div className="flex items-center justify-end gap-2 border-t border-border p-2 text-xs text-text-muted">
             <span className="font-mono">
               {meta.currentPage} / {meta.lastPage} · {meta.total} estudiantes
             </span>

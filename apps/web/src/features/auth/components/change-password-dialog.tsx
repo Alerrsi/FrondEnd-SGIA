@@ -30,7 +30,7 @@ type FormValues = z.infer<typeof schema>;
 const EMPTY: FormValues = { current_password: '', password: '', password_confirmation: '' };
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text transition-colors focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 const FIELDS: Array<{ name: keyof FormValues; label: string; autoComplete: string }> = [
   { name: 'current_password', label: 'Contraseña actual', autoComplete: 'current-password' },
@@ -73,12 +73,12 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
       description="Mínimo 8 caracteres con letras y números. Se cerrarán tus sesiones en otros dispositivos."
       className="max-w-md"
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 text-zinc-900 dark:text-zinc-100" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-3 text-text" noValidate>
         {FIELDS.map(({ name, label, autoComplete }) => (
           <div key={name}>
             <label
               htmlFor={`pw-${name}`}
-              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted"
             >
               {label}
             </label>
@@ -92,14 +92,14 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
               {...register(name)}
             />
             {errors[name]?.message && (
-              <span className="mt-1 block text-xs font-medium text-red-600 dark:text-red-400" role="alert">
+              <span className="mt-1 block text-xs font-medium text-danger" role="alert">
                 {errors[name]?.message}
               </span>
             )}
           </div>
         ))}
 
-        <div className="mt-1 flex justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
+        <div className="mt-1 flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={changePassword.isPending} className="text-xs">
             Cancelar
           </DialogCloseButton>

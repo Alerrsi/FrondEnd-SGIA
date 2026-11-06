@@ -119,11 +119,11 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
         {/* Parámetros de Ciclo de Vida y Almacenamiento S3 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-950/50 p-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-lg border border-border bg-background p-3.5">
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="edit-purchase-date"
-              className="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+              className="text-xs font-semibold uppercase tracking-wider text-text-muted"
             >
               Fecha de Adquisición
             </label>
@@ -135,14 +135,14 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setPurchaseDate(e.target.value);
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              className="w-full rounded-md border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="edit-lifespan"
-              className="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+              className="text-xs font-semibold uppercase tracking-wider text-text-muted"
             >
               Vida Útil Proyectada (Años)
             </label>
@@ -156,7 +156,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setLifespanYears(Number(e.target.value));
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              className="w-full rounded-md border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
             <div className="flex items-center justify-between">
               <label
                 htmlFor="edit-manual-url"
-                className="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className="text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
                 URL del Manual de Usuario (PDF en AWS S3 / Cloud Storage)
               </label>
@@ -173,7 +173,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                   href={manualUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 underline"
+                  className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text underline"
                 >
                   <ExternalLink className="h-3 w-3" /> Probar enlace
                 </a>
@@ -188,7 +188,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setManualUrl(e.target.value);
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              className="w-full rounded-md border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info"
             />
           </div>
         </div>
@@ -196,7 +196,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
         {/* Tabla de Especificaciones Clave / Valor Dinámicas */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-text">
               Especificaciones Técnicas Detalladas
             </h4>
             <Button
@@ -211,9 +211,9 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
             </Button>
           </div>
 
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800">
+          <div className="rounded-md border border-border bg-surface overflow-hidden divide-y divide-border">
             {specRows.length === 0 ? (
-              <div className="p-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+              <div className="p-4 text-center text-xs text-text-muted">
                 No hay especificaciones definidas. Haz clic en "Agregar parámetro" para registrar características técnicas.
               </div>
             ) : (
@@ -224,7 +224,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     placeholder="Parámetro (ej: Potencia, Puertos)"
                     value={row.key}
                     onChange={(e) => handleRowChange(idx, 'key', e.target.value)}
-                    className="flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950/40 px-2.5 py-1 text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                    className="flex-1 rounded border border-border bg-background px-2.5 py-1 text-xs font-medium text-text focus:border-text-muted focus:outline-none"
                     aria-label={`Nombre de parámetro ${idx + 1}`}
                   />
                   <input
@@ -232,7 +232,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     placeholder="Valor (ej: 48x GbE PoE+ 370W)"
                     value={row.value}
                     onChange={(e) => handleRowChange(idx, 'value', e.target.value)}
-                    className="flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                    className="flex-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-xs text-text focus:border-text-muted focus:outline-none"
                     aria-label={`Valor de parámetro ${idx + 1}`}
                   />
                   <button
@@ -240,7 +240,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     onClick={() => handleRemoveRow(idx)}
                     title="Eliminar parámetro"
                     aria-label={`Eliminar parámetro ${row.key || idx + 1}`}
-                    className="p-1.5 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors"
+                    className="p-1.5 text-text-muted hover:text-rose-600 rounded transition-colors"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -251,7 +251,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
         </div>
 
         {/* Botones de acción modal */}
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border">
           <DialogCloseButton
             disabled={updateSpecsMutation.isPending}
           >

@@ -31,9 +31,9 @@ interface IncidentDetailSheetProps {
   readOnly?: boolean;
 }
 
-const sectionClasses = 'rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-1.5';
+const sectionClasses = 'rounded-md border border-border p-3 space-y-1.5';
 const headingClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400';
+  'text-xs font-semibold uppercase tracking-wider text-text-muted';
 
 /** Detalle de un informe de novedades; los botones de estado salen de `allowed_transitions`. */
 export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: IncidentDetailSheetProps) {
@@ -79,18 +79,18 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
     <Sheet open={reportId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
         {isLoading || !report ? (
-          <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
+          <div className="flex items-center justify-center py-16 text-xs text-text-muted">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Cargando informe…
           </div>
         ) : (
           <>
             <SheetHeader>
-              <SheetTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+              <SheetTitle className="flex items-center gap-2 text-text">
                 <span className="font-mono">{report.code ?? `Informe #${report.id}`}</span>
                 <IncidentStatusBadge status={report.status} />
               </SheetTitle>
-              <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+              <SheetDescription className="text-xs text-text-muted">
                 {isLegacy
                   ? 'Informe anterior al nuevo formulario.'
                   : `${report.teacher_name ?? 'Docente'} · ${report.subject ?? 'Sin asignatura'}`}
@@ -104,11 +104,11 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     {report.title ?? 'Falla reportada'}
                     {report.severity_label ? ` · ${report.severity_label}` : ''}
                   </h3>
-                  <p className="text-xs whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
+                  <p className="text-xs whitespace-pre-wrap text-text">
                     {report.description}
                   </p>
                   {report.request_type && (
-                    <p className="font-mono text-[11px] text-zinc-500">
+                    <p className="font-mono text-xs text-text-muted">
                       Tipo: {report.request_type}
                     </p>
                   )}
@@ -119,14 +119,14 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     <h3 className={headingClasses}>Datos</h3>
                     <dl className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <dt className="text-[10px] text-zinc-400">Laboratorio</dt>
-                        <dd className="text-zinc-800 dark:text-zinc-200">
+                        <dt className="text-xs text-text-muted">Laboratorio</dt>
+                        <dd className="text-text">
                           {report.location?.nombre ?? '—'}
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-[10px] text-zinc-400">Fecha</dt>
-                        <dd className="font-mono text-zinc-800 dark:text-zinc-200">
+                        <dt className="text-xs text-text-muted">Fecha</dt>
+                        <dd className="font-mono text-text">
                           {formatDateOnly(report.report_date)}
                         </dd>
                       </div>
@@ -138,10 +138,10 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     <ul className="space-y-2">
                       {(report.problems ?? []).map((problem) => (
                         <li key={problem.type} className="text-xs">
-                          <p className="font-medium text-zinc-800 dark:text-zinc-200">
+                          <p className="font-medium text-text">
                             {problem.label ?? INCIDENT_PROBLEM_LABELS[problem.type]}
                           </p>
-                          <p className="whitespace-pre-wrap text-zinc-600 dark:text-zinc-300">
+                          <p className="whitespace-pre-wrap text-text-muted">
                             {problem.description}
                           </p>
                         </li>
@@ -152,7 +152,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                   {report.suggestion && (
                     <div className={sectionClasses}>
                       <h3 className={headingClasses}>Descripción o sugerencia</h3>
-                      <p className="text-xs whitespace-pre-wrap text-zinc-600 dark:text-zinc-300">
+                      <p className="text-xs whitespace-pre-wrap text-text-muted">
                         {report.suggestion}
                       </p>
                     </div>
@@ -164,10 +164,10 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                       <AuthenticatedImage
                         load={loadSignature}
                         alt="Firma del profesor"
-                        className="max-h-24 rounded border border-zinc-200 dark:border-zinc-800 bg-white"
+                        className="max-h-24 rounded border border-border bg-surface"
                       />
                       {report.signed_at && (
-                        <p className="font-mono text-[11px] text-zinc-400">
+                        <p className="font-mono text-xs text-text-muted">
                           Firmado {formatDate(report.signed_at)}
                         </p>
                       )}
@@ -182,13 +182,13 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                   <AuthenticatedImage
                     load={loadPhoto}
                     alt="Foto adjunta al informe"
-                    className="max-h-64 rounded border border-zinc-200 dark:border-zinc-800"
+                    className="max-h-64 rounded border border-border"
                   />
                 </div>
               )}
 
               {(report.equipment_unit || report.product_id) && (
-                <p className="font-mono text-[11px] text-zinc-500">
+                <p className="font-mono text-xs text-text-muted">
                   Equipo asociado:{' '}
                   {report.equipment_unit?.code ?? `producto #${report.product_id}`}
                 </p>
@@ -202,7 +202,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
               )}
 
               {!readOnly && (report.allowed_transitions ?? []).length > 0 && (
-                <div className="flex flex-wrap gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+                <div className="flex flex-wrap gap-2 border-t border-border pt-3">
                   {(report.allowed_transitions ?? []).map((status) => (
                     <Button
                       key={status}

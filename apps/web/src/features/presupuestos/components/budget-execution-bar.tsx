@@ -30,12 +30,12 @@ export function BudgetExecutionBar({
       ? 'bg-rose-500'
       : percent >= 80
         ? 'bg-amber-500'
-        : 'bg-zinc-800 dark:bg-zinc-200';
+        : 'bg-text-muted';
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <div
-        className={cn('flex h-1.5 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800', barClassName)}
+        className={cn('flex h-1.5 overflow-hidden rounded-full bg-surface-raised', barClassName)}
         role="meter"
         aria-label="Ejecución del presupuesto"
         aria-valuemin={0}

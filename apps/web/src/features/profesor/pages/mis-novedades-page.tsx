@@ -20,11 +20,11 @@ export default function MisNovedadesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            <FileWarning className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-text">
+            <FileWarning className="h-5 w-5 text-text" />
             Novedades
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-text-muted">
             Informes de fallas y faltantes que has reportado.
           </p>
         </div>
@@ -34,9 +34,9 @@ export default function MisNovedadesPage() {
         </Button>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="rounded-md border border-border bg-surface">
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando informes…</div>
+          <div className="py-12 text-center font-mono text-xs text-text-muted">Cargando informes…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle className="h-5 w-5 shrink-0" />
@@ -46,7 +46,7 @@ export default function MisNovedadesPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+                <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
                   {['Código', 'Asignatura', 'Laboratorio', 'Problemas', 'Fecha', 'Estado'].map((h) => (
                     <th key={h} className="px-4 py-2.5 font-medium">
                       {h}
@@ -54,10 +54,10 @@ export default function MisNovedadesPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+              <tbody className="divide-y divide-border/60">
                 {(data?.data ?? []).length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-10 text-center text-zinc-400">
+                    <td colSpan={6} className="px-4 py-10 text-center text-text-muted">
                       Aún no has enviado informes.
                     </td>
                   </tr>
@@ -68,7 +68,7 @@ export default function MisNovedadesPage() {
                       tabIndex={0}
                       onClick={() => setOpenId(report.id)}
                       onKeyDown={(e) => e.key === 'Enter' && setOpenId(report.id)}
-                      className="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                      className="cursor-pointer hover:bg-surface-raised"
                     >
                       <td className="px-4 py-2.5 font-mono">{report.code ?? `#${report.id}`}</td>
                       <td className="px-4 py-2.5">{report.subject ?? report.title ?? '—'}</td>
@@ -90,8 +90,8 @@ export default function MisNovedadesPage() {
           </div>
         )}
         {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs">
-            <span className="font-mono text-zinc-500">
+          <div className="flex items-center justify-end gap-2 border-t border-border px-4 py-2 text-xs">
+            <span className="font-mono text-text-muted">
               Página {meta.currentPage} de {meta.lastPage}
             </span>
             <Button

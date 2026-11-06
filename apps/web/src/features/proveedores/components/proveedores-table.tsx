@@ -37,9 +37,9 @@ export interface ProveedoresTableProps {
 }
 
 const thClasses =
-  'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500';
+  'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-text-muted';
 const tdClasses =
-  'px-3 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 whitespace-nowrap';
+  'px-3 py-2.5 text-sm text-text whitespace-nowrap';
 
 export function ProveedoresTable({
   suppliers,
@@ -65,15 +65,15 @@ export function ProveedoresTable({
   return (
     <div className="flex flex-col gap-3">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2">
+      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
             placeholder="Buscar proveedor por nombre, contacto o correo…"
             value={internalSearch}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pl-8 pr-3 text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+            className="w-full h-8 rounded-md border border-border bg-background pl-8 pr-3 text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info"
           />
         </div>
 
@@ -82,7 +82,7 @@ export function ProveedoresTable({
             aria-label="Filtrar por categoría"
             value={categoryFilter}
             onChange={(e) => onCategoryFilterChange?.(e.target.value)}
-            className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+            className="h-8 rounded-md border border-border bg-background px-2 text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info"
           >
             <option value="">Todas las categorías</option>
             {categories.map((cat) => (
@@ -94,17 +94,17 @@ export function ProveedoresTable({
         )}
 
         {isFetching && (
-          <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono animate-pulse">
+          <span className="text-xs text-text-muted font-mono animate-pulse">
             Buscando…
           </span>
         )}
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+      <div className="rounded-lg border border-border bg-surface overflow-hidden">
         {isLoading ? (
           <div
-            className="flex items-center justify-center py-12 text-xs text-zinc-400 dark:text-zinc-500 font-mono"
+            className="flex items-center justify-center py-12 text-xs text-text-muted font-mono"
             role="progressbar"
             aria-label="Cargando proveedores"
           >
@@ -113,7 +113,7 @@ export function ProveedoresTable({
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-zinc-100 dark:border-zinc-800">
+              <tr className="border-b border-border">
                 <th className={thClasses}>Empresa</th>
                 <th className={thClasses}>Contacto</th>
                 <th className={thClasses}>Correo</th>
@@ -123,12 +123,12 @@ export function ProveedoresTable({
                 <th className={`${thClasses} text-right`}>Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-border">
               {suppliers.length === 0 ? (
                 <tr>
                   <td
                     colSpan={7}
-                    className="py-12 text-center text-xs text-zinc-400 dark:text-zinc-500"
+                    className="py-12 text-center text-xs text-text-muted"
                   >
                     No se encontraron proveedores registrados.
                   </td>
@@ -137,29 +137,29 @@ export function ProveedoresTable({
                 suppliers.map((supplier) => (
                   <tr
                     key={supplier.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                    className="hover:bg-surface-raised transition-colors"
                   >
                     <td className={tdClasses}>
                       <div className="flex items-center gap-2">
-                        <Building2 className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                        <Building2 className="h-3.5 w-3.5 text-text-muted shrink-0" />
+                        <span className="font-medium text-text">
                           {supplier.name}
                         </span>
                       </div>
                     </td>
                     <td className={tdClasses}>
-                      <span className="text-xs text-zinc-600 dark:text-zinc-400">
+                      <span className="text-xs text-text-muted">
                         {supplier.contact_name || '—'}
                       </span>
                     </td>
                     <td className={tdClasses}>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                      <span className="inline-flex items-center gap-1 font-mono text-xs text-text-muted">
                         <Mail className="h-3 w-3" />
                         {supplier.email}
                       </span>
                     </td>
                     <td className={tdClasses}>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs text-zinc-500">
+                      <span className="inline-flex items-center gap-1 font-mono text-xs text-text-muted">
                         <Phone className="h-3 w-3" />
                         {supplier.phone || '—'}
                       </span>
@@ -170,7 +170,7 @@ export function ProveedoresTable({
                           {supplier.category}
                         </Badge>
                       ) : (
-                        <span className="text-xs text-zinc-400">—</span>
+                        <span className="text-xs text-text-muted">—</span>
                       )}
                     </td>
                     <td className={tdClasses}>
@@ -187,7 +187,7 @@ export function ProveedoresTable({
                           type="button"
                           title="Editar proveedor"
                           onClick={() => onEdit(supplier)}
-                          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-text-muted hover:text-text hover:bg-surface-raised transition-colors"
                         >
                           <Edit className="h-3.5 w-3.5" />
                         </button>
@@ -197,7 +197,7 @@ export function ProveedoresTable({
                             <button
                               type="button"
                               title="Más acciones"
-                              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-text-muted hover:text-text hover:bg-surface-raised transition-colors"
                             >
                               <MoreHorizontal className="h-3.5 w-3.5" />
                             </button>
@@ -221,7 +221,7 @@ export function ProveedoresTable({
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                   onClick={() => onDelete(supplier)}
-                                  className="text-red-600 dark:text-red-400"
+                                  className="text-danger"
                                 >
                                   <Trash2 className="h-3.5 w-3.5 mr-2" />
                                   Eliminar proveedor

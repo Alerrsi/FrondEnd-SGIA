@@ -25,7 +25,7 @@ interface LoginFormValues {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted transition-colors focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -77,7 +77,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-950 px-4 py-8 text-zinc-900 dark:text-zinc-100">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8 text-text">
       <div className="absolute top-4 right-4">
         <ThemeToggle variant="segmented" />
       </div>
@@ -85,29 +85,29 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Header / Logo */}
         <div className="mb-6 flex flex-col items-center text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
-            <Boxes className="h-6 w-6 text-zinc-800 dark:text-zinc-200" />
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-surface shadow-xs">
+            <Boxes className="h-6 w-6 text-text" />
           </div>
-          <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400 mb-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+          <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger mb-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </div>
-          <h1 className="font-mono text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="font-mono text-xl font-bold tracking-tight text-text">
             SGIA
           </h1>
-          <p className="mt-0.5 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          <p className="mt-0.5 text-xs font-medium text-text-muted">
             Sistema de Gestión de Inventario y Activos
           </p>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">
+          <p className="text-xs text-text-muted font-mono">
             Área Informática y Ciberseguridad · INACAP
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-xs">
-          <div className="mb-5 border-b border-zinc-100 dark:border-zinc-800 pb-3">
-            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Iniciar Sesión</h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="rounded-lg border border-border bg-surface p-6 shadow-xs">
+          <div className="mb-5 border-b border-border pb-3">
+            <h2 className="text-sm font-semibold text-text">Iniciar Sesión</h2>
+            <p className="text-xs text-text-muted">
               Ingresa tus credenciales institucionales para acceder al panel.
             </p>
           </div>
@@ -115,9 +115,9 @@ export default function LoginPage() {
           {authError && (
             <div
               role="alert"
-              className="mb-4 flex items-start gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-2.5 text-xs text-red-700 dark:text-red-400"
+              className="mb-4 flex items-start gap-2 rounded-md border border-danger/30 bg-danger-bg p-2.5 text-xs text-danger"
             >
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
+              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-danger" />
               <span>{authError}</span>
             </div>
           )}
@@ -127,9 +127,9 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email-input"
-                className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+                className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
               >
-                <Mail className="h-3 w-3 text-zinc-400" />
+                <Mail className="h-3 w-3 text-text-muted" />
                 <span>Correo institucional</span>
               </label>
               <input
@@ -152,7 +152,7 @@ export default function LoginPage() {
                 })}
               />
               {errors.email && (
-                <span className="mt-1 block text-xs text-red-600 dark:text-red-400 font-medium">
+                <span className="mt-1 block text-xs text-danger font-medium">
                   {errors.email.message}
                 </span>
               )}
@@ -162,9 +162,9 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password-input"
-                className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+                className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
               >
-                <Lock className="h-3 w-3 text-zinc-400" />
+                <Lock className="h-3 w-3 text-text-muted" />
                 <span>Contraseña</span>
               </label>
               <div className="relative">
@@ -184,7 +184,7 @@ export default function LoginPage() {
                   tabIndex={-1}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors focus:outline-none"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -194,7 +194,7 @@ export default function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <span className="mt-1 block text-xs text-red-600 dark:text-red-400 font-medium">
+                <span className="mt-1 block text-xs text-danger font-medium">
                   {errors.password.message}
                 </span>
               )}
@@ -219,37 +219,37 @@ export default function LoginPage() {
           </form>
 
           {/* Quick fill test accounts */}
-          <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-[11px] text-zinc-500 dark:text-zinc-400">
-            <div className="flex items-center gap-1.5 mb-2 font-medium text-zinc-700 dark:text-zinc-300">
-              <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
+          <div className="mt-5 rounded-md border border-border bg-surface-raised p-2.5 text-xs text-text-muted">
+            <div className="flex items-center gap-1.5 mb-2 font-medium text-text">
+              <KeyRound className="h-3.5 w-3.5 text-text-muted" />
               <span>Accesos rápidos de prueba:</span>
             </div>
             <div className="flex flex-wrap gap-1.5 font-mono">
               <button
                 type="button"
                 onClick={() => handleQuickFill('admin@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                className="rounded border border-border bg-surface px-2 py-0.5 text-xs text-text hover:border-text-muted hover:text-text transition-colors"
               >
                 AD-01 (Admin)
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickFill('director@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                className="rounded border border-border bg-surface px-2 py-0.5 text-xs text-text hover:border-text-muted hover:text-text transition-colors"
               >
                 DIR-01 (Director)
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickFill('panol@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                className="rounded border border-border bg-surface px-2 py-0.5 text-xs text-text hover:border-text-muted hover:text-text transition-colors"
               >
                 PAN-01 (Pañol)
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickFill('docente@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                className="rounded border border-border bg-surface px-2 py-0.5 text-xs text-text hover:border-text-muted hover:text-text transition-colors"
               >
                 PRO-01 (Profesor)
               </button>
@@ -257,20 +257,20 @@ export default function LoginPage() {
           </div>
 
           {/* Role access guidance */}
-          <div className="mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 dark:text-zinc-400 mb-2">
+          <div className="mt-4 border-t border-border pt-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted mb-2">
               <span>Roles autorizados en web:</span>
               <div className="flex gap-1.5 font-mono">
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-surface-raised px-1.5 py-0.5 text-xs text-text border border-border">
                   AD-01
                 </span>
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-surface-raised px-1.5 py-0.5 text-xs text-text border border-border">
                   DIR-01
                 </span>
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-surface-raised px-1.5 py-0.5 text-xs text-text border border-border">
                   PAN-01
                 </span>
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-surface-raised px-1.5 py-0.5 text-xs text-text border border-border">
                   PRO-01
                 </span>
               </div>

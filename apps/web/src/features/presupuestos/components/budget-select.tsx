@@ -40,7 +40,7 @@ export function BudgetSelect({
           budgets.find((b) => b.id === id),
         );
       }}
-      className={cn(className, invalid && 'border-rose-400 dark:border-rose-700')}
+      className={cn(className, invalid && 'border-rose-400')}
     >
       <option value="">
         {isLoading ? 'Cargando presupuestos…' : 'Selecciona un presupuesto…'}

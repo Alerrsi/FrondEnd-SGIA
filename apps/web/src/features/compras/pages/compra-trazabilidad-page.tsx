@@ -16,7 +16,7 @@ function Step({ title, empty, children }: { title: string; empty?: string; child
     <li className="relative pl-6">
       <span
         aria-hidden="true"
-        className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full border border-zinc-400 bg-surface"
+        className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full border border-border bg-surface"
       />
       <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
         {title}
@@ -104,7 +104,7 @@ export default function CompraTrazabilidadPage() {
     <div className="flex flex-col gap-4">
       <Link
         to="/compras"
-        className="inline-flex w-fit items-center gap-1 rounded text-xs text-text-muted hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:hover:text-zinc-100"
+        className="inline-flex w-fit items-center gap-1 rounded text-xs text-text-muted hover:text-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-info"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Volver a compras

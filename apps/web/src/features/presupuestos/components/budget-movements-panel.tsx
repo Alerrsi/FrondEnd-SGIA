@@ -19,7 +19,7 @@ import { MOVEMENT_TYPES, movementMeta } from '@/features/presupuestos/lib/moveme
 const columnHelper = createColumnHelper<BudgetMovement>();
 
 const controlClasses =
-  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info';
 
 const dateTime = formatDateTime;
 
@@ -74,7 +74,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             return (
               <Link
                 to="/compras"
-                className="font-mono text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+                className="font-mono text-text underline-offset-2 hover:underline"
               >
                 Compra #{m.purchase_id}
               </Link>
@@ -84,7 +84,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             return (
               <Link
                 to={`/ingresos-factura?ingreso=${m.invoice_intake_id}`}
-                className="font-mono text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+                className="font-mono text-text underline-offset-2 hover:underline"
               >
                 Ingreso #{m.invoice_intake_id}
               </Link>

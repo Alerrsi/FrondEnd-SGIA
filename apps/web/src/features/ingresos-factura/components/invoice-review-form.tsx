@@ -30,7 +30,7 @@ import { toast } from '@/lib/toast';
 type ProductType = NonNullable<Producto['type']>;
 
 const inputClasses =
-  'w-full h-8 rounded border border-border bg-background px-2 font-mono text-xs text-text focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-danger';
+  'w-full h-8 rounded border border-border bg-background px-2 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 aria-invalid:border-danger';
 const errorClasses = 'mt-0.5 text-xs text-danger';
 
 const toNumber = (v: unknown) =>
@@ -190,7 +190,7 @@ export function InvoiceReviewForm({
     <>
       <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
         {!intake.raw_ocr_payload.ocr_available && (
-          <p className="flex items-center gap-2 rounded-md border border-warn/30 bg-warn-bg p-2.5 text-xs text-amber-800 dark:text-amber-300">
+          <p className="flex items-center gap-2 rounded-md border border-warn/30 bg-warn-bg p-2.5 text-xs text-warn">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             El OCR no estuvo disponible: agrega los ítems de la factura a mano.
           </p>
@@ -497,7 +497,7 @@ export function InvoiceReviewForm({
                         onClick={() => remove(index)}
                         disabled={pending}
                         aria-label={`Quitar ítem ${index + 1}`}
-                        className="rounded p-1 text-text-muted hover:bg-rose-50 hover:text-danger dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
+                        className="rounded p-1 text-text-muted hover:bg-rose-50 hover:text-danger"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

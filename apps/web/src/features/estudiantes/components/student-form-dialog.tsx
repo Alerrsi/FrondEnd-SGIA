@@ -16,10 +16,10 @@ import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 aria-invalid:border-rose-400';
 const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+  'text-xs font-semibold uppercase tracking-wider text-text-muted font-mono';
+const errorClasses = 'mt-1 text-xs text-danger';
 
 const empty: StudentFormValues = { rut: '', full_name: '', email: '', career_id: null };
 
@@ -155,7 +155,7 @@ export function StudentFormDialog({
             ))}
           </select>
         </div>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}

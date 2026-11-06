@@ -25,7 +25,7 @@ interface LoanRequestDetailSheetProps {
 }
 
 const labelClasses =
-  'text-[11px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400';
+  'text-xs font-mono uppercase tracking-wider text-text-muted';
 
 /** Detalle de una solicitud propia: actividad, horario, laboratorio, insumos y motivo de rechazo. */
 export function LoanRequestDetailSheet({
@@ -54,7 +54,7 @@ export function LoanRequestDetailSheet({
                 <span className="font-mono">{loan.codigo ?? loan.code}</span>
                 <LoanRequestStatusBadge estado={String(loan.estado)} />
               </SheetTitle>
-              <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+              <SheetDescription className="text-xs text-text-muted">
                 Solicitud de {loan.teacher?.name ?? loan.solicitanteNombre ?? 'profesor'}
               </SheetDescription>
             </SheetHeader>
@@ -63,7 +63,7 @@ export function LoanRequestDetailSheet({
               {rows.map(([label, value]) => (
                 <div key={label}>
                   <dt className={labelClasses}>{label}</dt>
-                  <dd className="text-xs text-zinc-800 dark:text-zinc-200">{value}</dd>
+                  <dd className="text-xs text-text">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -71,7 +71,7 @@ export function LoanRequestDetailSheet({
             {(loan.motivoRechazo ?? loan.rejection_reason) && (
               <p
                 role="alert"
-                className="rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-2.5 text-xs text-rose-700 dark:text-rose-300"
+                className="rounded-md border border-danger/30 bg-danger-bg p-2.5 text-xs text-danger"
               >
                 Motivo del rechazo: {loan.motivoRechazo ?? loan.rejection_reason}
               </p>
@@ -81,18 +81,18 @@ export function LoanRequestDetailSheet({
               <h3 className={labelClasses}>Insumos solicitados</h3>
               <table className="mt-1 w-full border-collapse text-left text-xs">
                 <thead>
-                  <tr className="border-b border-zinc-200 dark:border-zinc-800 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+                  <tr className="border-b border-border font-mono text-xs uppercase tracking-wider text-text-muted">
                     <th className="py-1.5 font-medium">Producto</th>
                     <th className="py-1.5 text-right font-medium">Cantidad</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                <tbody className="divide-y divide-border/60">
                   {loan.items.map((item, index) => (
                     <tr key={item.id ?? index}>
-                      <td className="py-1.5 text-zinc-800 dark:text-zinc-200">
+                      <td className="py-1.5 text-text">
                         {item.nombre ?? item.productoNombre}
                         {item.codigoBarras && (
-                          <span className="ml-1 font-mono text-[11px] text-zinc-400">
+                          <span className="ml-1 font-mono text-xs text-text-muted">
                             {item.codigoBarras}
                           </span>
                         )}
@@ -107,7 +107,7 @@ export function LoanRequestDetailSheet({
             {(loan.notes ?? loan.observaciones) && (
               <div>
                 <h3 className={labelClasses}>Notas</h3>
-                <p className="text-xs text-zinc-700 dark:text-zinc-300">
+                <p className="text-xs text-text">
                   {loan.notes ?? loan.observaciones}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export function LoanRequestDetailSheet({
             {canCancelLoanRequest(loan) && (
               <Button
                 variant="ghost"
-                className="self-start text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                className="self-start text-xs text-danger hover:bg-rose-50"
                 onClick={() => onCancelRequest(loan)}
               >
                 <Trash2 className="h-4 w-4" />

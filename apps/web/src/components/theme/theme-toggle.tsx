@@ -21,7 +21,7 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
     return (
       <div
         className={cn(
-          'inline-flex items-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-100/70 dark:bg-zinc-950/60 p-0.5',
+          'inline-flex items-center rounded-md border border-border bg-background p-0.5',
           className,
         )}
         role="group"
@@ -39,8 +39,8 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
                   className={cn(
                     'flex h-6 w-6 items-center justify-center rounded transition cursor-pointer text-xs',
                     isActive
-                      ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200/80 dark:border-zinc-700 font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50',
+                      ? 'bg-surface text-text shadow-xs border border-border font-semibold'
+                      : 'text-text-muted hover:text-text hover:bg-surface-raised',
                   )}
                   aria-pressed={isActive}
                   aria-label={opt.label}
@@ -49,7 +49,7 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
                 </button>
               </TooltipTrigger>
               <TooltipContent side="top">
-                <span className="text-[11px] font-medium">{opt.label}</span>
+                <span className="text-xs font-medium">{opt.label}</span>
               </TooltipContent>
             </Tooltip>
           );
@@ -82,8 +82,8 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
           title={tooltipText}
           aria-label={tooltipText}
           className={cn(
-            'flex h-7 w-7 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer',
-            isSystem && 'text-zinc-900 dark:text-zinc-100',
+            'flex h-7 w-7 items-center justify-center rounded border border-border text-text-muted transition-colors hover:bg-surface-raised hover:text-text cursor-pointer',
+            isSystem && 'text-text',
             className,
           )}
         >

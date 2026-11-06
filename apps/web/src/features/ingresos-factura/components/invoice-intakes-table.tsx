@@ -122,7 +122,7 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
               tabIndex={0}
               onClick={() => onOpen(row.original)}
               onKeyDown={(e) => e.key === 'Enter' && onOpen(row.original)}
-              className="cursor-pointer transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 focus:outline-none focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
+              className="cursor-pointer transition-colors hover:bg-surface-raised focus:outline-none focus:bg-surface-raised"
             >
               {row.getVisibleCells().map((cell) => (
                 <td

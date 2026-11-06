@@ -174,24 +174,24 @@ export default function UbicacionesPage() {
   return (
     <div className="flex flex-col gap-5">
       {/* Encabezado Principal */}
-      <div className="flex flex-col gap-1 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex flex-col gap-1 border-b border-border pb-4">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold text-red-600 dark:text-red-500 uppercase tracking-wider">
+          <span className="font-mono text-xs font-bold text-danger uppercase tracking-wider">
             SEDE TEMUCO · PAÑOL TI
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Estructura Física
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Layers className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <Layers className="h-5 w-5 text-text" />
               Gestión de Ubicaciones Físicas y Cajones
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol (REQ-05).
             </p>
           </div>
@@ -212,7 +212,7 @@ export default function UbicacionesPage() {
               variant="primary"
               size="sm"
               onClick={handleOpenCreateLocation}
-              className="text-xs gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+              className="text-xs gap-1.5 bg-ink text-background hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Nueva Sala / Pañol</span>
@@ -222,16 +222,16 @@ export default function UbicacionesPage() {
       </div>
 
       {/* Barra de Filtros */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-2xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface p-2.5 shadow-2xs">
         <div className="flex flex-1 items-center gap-2 min-w-[240px]">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
             <input
               type="search"
               placeholder="Buscar por nombre o descripción…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-800 pl-8 pr-2 text-xs font-mono h-8 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
+              className="w-full rounded-md border border-border pl-8 pr-2 text-xs font-mono h-8 bg-background text-text placeholder:text-text-muted focus:outline-none focus:border-text-muted"
             />
           </div>
         </div>
@@ -240,7 +240,7 @@ export default function UbicacionesPage() {
           <select
             value={tipoFilter}
             onChange={(e) => setTipoFilter(e.target.value)}
-            className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 text-xs font-mono text-zinc-700 dark:text-zinc-300 focus:outline-none"
+            className="h-8 rounded-md border border-border bg-background px-2 text-xs font-mono text-text focus:outline-none"
           >
             <option value="">Todos los tipos</option>
             <option value="sala">Salas</option>
@@ -254,20 +254,20 @@ export default function UbicacionesPage() {
       {/* Grid Split: Lista de Ubicaciones a la izquierda, Cajones/Detalle a la derecha */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
         {/* Columna Izquierda: Salas y Ubicaciones (5 cols) */}
-        <div className="md:col-span-5 flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
-          <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+        <div className="md:col-span-5 flex flex-col gap-2 rounded-md border border-border bg-surface p-3 shadow-xs">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-text-muted">
               Salas y Recintos ({locations.length})
             </span>
           </div>
 
           {isLoading ? (
-            <div className="flex items-center justify-center p-8 text-xs font-mono text-zinc-400 gap-2">
+            <div className="flex items-center justify-center p-8 text-xs font-mono text-text-muted gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
               <span>Cargando ubicaciones…</span>
             </div>
           ) : locations.length === 0 ? (
-            <div className="p-6 text-center text-xs font-mono text-zinc-400">
+            <div className="p-6 text-center text-xs font-mono text-text-muted">
               No se encontraron salas o ubicaciones registradas.
             </div>
           ) : (
@@ -280,22 +280,22 @@ export default function UbicacionesPage() {
                     onClick={() => setSelectedLocation(loc)}
                     className={`flex items-center justify-between gap-2 p-2.5 rounded border transition-colors cursor-pointer ${
                       isSelected
-                        ? 'border-zinc-900 bg-zinc-100 dark:border-zinc-100 dark:bg-zinc-800'
-                        : 'border-zinc-200/70 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
+                        ? 'border-border bg-surface-raised'
+                        : 'border-border hover:bg-surface-raised'
                     }`}
                   >
                     <div className="flex items-start gap-2.5 min-w-0">
                       <Building2
                         className={`h-4 w-4 mt-0.5 shrink-0 ${
-                          isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400'
+                          isSelected ? 'text-text' : 'text-text-muted'
                         }`}
                       />
                       <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                        <span className="text-xs font-semibold text-text truncate">
                           {loc.nombre}
                         </span>
-                        <div className="flex items-center gap-1.5 text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
-                          <span className="uppercase px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
+                        <div className="flex items-center gap-1.5 text-xs font-mono text-text-muted">
+                          <span className="uppercase px-1 rounded bg-surface-raised font-semibold">
                             {loc.tipo}
                           </span>
                           {loc.descripcion && <span className="truncate max-w-[150px]">{loc.descripcion}</span>}
@@ -312,7 +312,7 @@ export default function UbicacionesPage() {
                           e.stopPropagation();
                           handleOpenEditLocation(loc);
                         }}
-                        className="h-6 w-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                        className="h-6 w-6 text-text-muted hover:text-text"
                         title="Editar ubicación"
                       >
                         <Edit2 className="h-3 w-3" />
@@ -325,7 +325,7 @@ export default function UbicacionesPage() {
                           e.stopPropagation();
                           setPendingDelete({ kind: 'location', item: loc });
                         }}
-                        className="h-6 w-6 text-zinc-400 hover:text-rose-600"
+                        className="h-6 w-6 text-text-muted hover:text-rose-600"
                         title="Eliminar ubicación"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -339,13 +339,13 @@ export default function UbicacionesPage() {
         </div>
 
         {/* Columna Derecha: Cajones y Gavetas de la sala activa (7 cols) */}
-        <div className="md:col-span-7 flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
+        <div className="md:col-span-7 flex flex-col gap-3 rounded-md border border-border bg-surface p-3 shadow-xs">
           {activeLocation ? (
             <>
-              <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
                 <div className="flex items-center gap-2">
-                  <FolderTree className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
-                  <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  <FolderTree className="h-4 w-4 text-text-muted" />
+                  <span className="font-mono text-xs font-semibold text-text">
                     Cajones y Gavetas en "{activeLocation.nombre}" ({cajones.length})
                   </span>
                 </div>
@@ -362,12 +362,12 @@ export default function UbicacionesPage() {
               </div>
 
               {isLoadingCajones ? (
-                <div className="flex items-center justify-center p-8 text-xs font-mono text-zinc-400 gap-2">
+                <div className="flex items-center justify-center p-8 text-xs font-mono text-text-muted gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span>Cargando compartimientos…</span>
                 </div>
               ) : cajones.length === 0 ? (
-                <div className="p-8 text-center text-xs font-mono text-zinc-400 border border-dashed border-zinc-200 dark:border-zinc-800 rounded">
+                <div className="p-8 text-center text-xs font-mono text-text-muted border border-dashed border-border rounded">
                   Esta ubicación no tiene cajones o gavetas configuradas. Pulsa en "Nuevo Cajón" para añadir una.
                 </div>
               ) : (
@@ -375,16 +375,16 @@ export default function UbicacionesPage() {
                   {cajones.map((cajon) => (
                     <div
                       key={cajon.id}
-                      className="flex items-start justify-between gap-2 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-xs"
+                      className="flex items-start justify-between gap-2 p-2.5 rounded border border-border bg-background font-mono text-xs"
                     >
                       <div className="flex items-start gap-2 min-w-0">
-                        <MapPin className="h-3.5 w-3.5 text-zinc-500 mt-0.5 shrink-0" />
+                        <MapPin className="h-3.5 w-3.5 text-text-muted mt-0.5 shrink-0" />
                         <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                          <span className="font-bold text-text truncate">
                             {cajon.codigo}
                           </span>
                           {cajon.descripcion && (
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                            <span className="text-xs text-text-muted truncate">
                               {cajon.descripcion}
                             </span>
                           )}
@@ -396,7 +396,7 @@ export default function UbicacionesPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setPendingDelete({ kind: 'cajon', item: cajon })}
-                        className="h-6 w-6 text-zinc-400 hover:text-rose-600 shrink-0"
+                        className="h-6 w-6 text-text-muted hover:text-rose-600 shrink-0"
                         title="Eliminar cajón"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -407,7 +407,7 @@ export default function UbicacionesPage() {
               )}
             </>
           ) : (
-            <div className="p-12 text-center text-xs font-mono text-zinc-400">
+            <div className="p-12 text-center text-xs font-mono text-text-muted">
               Selecciona o crea una sala en la columna izquierda para gestionar sus cajones.
             </div>
           )}
@@ -423,26 +423,26 @@ export default function UbicacionesPage() {
       >
         <form onSubmit={handleSaveLocation} className="flex flex-col gap-3 py-2">
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="font-mono text-xs font-medium text-text">
               Nombre de la Sala / Recinto *
             </label>
             <input
               value={locNombre}
               onChange={(e) => setLocNombre(e.target.value)}
               placeholder="Ej. Pañol Central, Lab 201, Taller Mecánica…"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
+              className="h-8 rounded-md border border-border bg-surface px-2.5 text-xs font-mono text-text placeholder:text-text-muted focus:outline-none focus:border-text-muted"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="font-mono text-xs font-medium text-text">
               Tipo de Espacio
             </label>
             <select
               value={locTipo}
               onChange={(e) => setLocTipo(e.target.value)}
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs font-mono text-zinc-700 dark:text-zinc-300 focus:outline-none"
+              className="h-8 rounded-md border border-border bg-surface px-2 text-xs font-mono text-text focus:outline-none"
             >
               <option value="sala">Sala de Clases</option>
               <option value="panol">Pañol TI</option>
@@ -452,18 +452,18 @@ export default function UbicacionesPage() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="font-mono text-xs font-medium text-text">
               Descripción / Referencia
             </label>
             <input
               value={locDescripcion}
               onChange={(e) => setLocDescripcion(e.target.value)}
               placeholder="Ej. Edificio B, Segundo Piso, Sector Redes"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
+              className="h-8 rounded-md border border-border bg-surface px-2.5 text-xs font-mono text-text placeholder:text-text-muted focus:outline-none focus:border-text-muted"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-border">
             <DialogCloseButton variant="outline" size="sm">
               Cancelar
             </DialogCloseButton>
@@ -483,31 +483,31 @@ export default function UbicacionesPage() {
       >
         <form onSubmit={handleSaveCajon} className="flex flex-col gap-3 py-2">
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="font-mono text-xs font-medium text-text">
               Código / Identificador del Cajón *
             </label>
             <input
               value={cajonCodigo}
               onChange={(e) => setCajonCodigo(e.target.value)}
               placeholder="Ej. Estante 1, Gaveta B-4, Rack Principal…"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
+              className="h-8 rounded-md border border-border bg-surface px-2.5 text-xs font-mono text-text placeholder:text-text-muted focus:outline-none focus:border-text-muted"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <label className="font-mono text-xs font-medium text-text">
               Descripción (Opcional)
             </label>
             <input
               value={cajonDescripcion}
               onChange={(e) => setCajonDescripcion(e.target.value)}
               placeholder="Ej. Cables HDMI y adaptadores VGA"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
+              className="h-8 rounded-md border border-border bg-surface px-2.5 text-xs font-mono text-text placeholder:text-text-muted focus:outline-none focus:border-text-muted"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-border">
             <DialogCloseButton variant="outline" size="sm">
               Cancelar
             </DialogCloseButton>

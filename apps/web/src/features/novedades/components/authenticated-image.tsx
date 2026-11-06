@@ -29,10 +29,10 @@ export function AuthenticatedImage({ load, alt, className }: AuthenticatedImageP
     };
   }, [load]);
 
-  if (failed) return <p className="text-xs text-zinc-400">No se pudo cargar la imagen.</p>;
+  if (failed) return <p className="text-xs text-text-muted">No se pudo cargar la imagen.</p>;
   if (!src)
     return (
-      <div className="flex items-center gap-2 py-4 text-xs text-zinc-400">
+      <div className="flex items-center gap-2 py-4 text-xs text-text-muted">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         Cargando…
       </div>

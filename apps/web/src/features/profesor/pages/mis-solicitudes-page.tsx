@@ -68,11 +68,11 @@ export default function MisSolicitudesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            <ClipboardPlus className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-text">
+            <ClipboardPlus className="h-5 w-5 text-text" />
             Mis solicitudes
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-text-muted">
             Seguimiento de tus solicitudes de préstamo al pañol.
           </p>
         </div>
@@ -82,8 +82,8 @@ export default function MisSolicitudesPage() {
         </Button>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="flex flex-wrap gap-1.5 border-b border-zinc-200 dark:border-zinc-800 p-3">
+      <div className="rounded-md border border-border bg-surface">
+        <div className="flex flex-wrap gap-1.5 border-b border-border p-3">
           {STATUS_FILTERS.map((f) => (
             <Button
               key={f.value}
@@ -97,7 +97,7 @@ export default function MisSolicitudesPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className="py-12 text-center font-mono text-xs text-text-muted">
             Cargando solicitudes…
           </div>
         ) : isError ? (
@@ -109,7 +109,7 @@ export default function MisSolicitudesPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+                <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
                   {HEADERS.map((h, i) => (
                     <th key={`${h}-${i}`} className="px-4 py-2.5 font-medium">
                       {h}
@@ -117,10 +117,10 @@ export default function MisSolicitudesPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+              <tbody className="divide-y divide-border/60">
                 {loans.length === 0 ? (
                   <tr>
-                    <td colSpan={HEADERS.length} className="px-4 py-10 text-center text-zinc-400">
+                    <td colSpan={HEADERS.length} className="px-4 py-10 text-center text-text-muted">
                       No hay solicitudes para el filtro seleccionado.
                     </td>
                   </tr>
@@ -131,7 +131,7 @@ export default function MisSolicitudesPage() {
                       tabIndex={0}
                       onClick={() => setDetail(loan)}
                       onKeyDown={(e) => e.key === 'Enter' && setDetail(loan)}
-                      className="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                      className="cursor-pointer hover:bg-surface-raised"
                     >
                       <td className="whitespace-nowrap px-4 py-2.5 font-mono">{loan.codigo ?? loan.code}</td>
                       <td className="px-4 py-2.5">{loanCareer(loan)}</td>

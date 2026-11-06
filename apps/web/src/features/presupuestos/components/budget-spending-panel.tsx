@@ -93,7 +93,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
                 <td className="px-3 py-2">
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-raised">
                     <div
-                      className="h-full rounded-full bg-zinc-700 dark:bg-zinc-300"
+                      className="h-full rounded-full bg-text-muted"
                       style={{ width: `${(row.amount / max) * 100}%` }}
                     />
                   </div>

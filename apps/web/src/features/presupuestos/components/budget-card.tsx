@@ -37,7 +37,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
           onOpen(budget);
         }
       }}
-      className="group flex cursor-pointer flex-col gap-3 rounded-md border border-border bg-surface p-3.5 shadow-xs transition-colors hover:border-zinc-300 dark:hover:border-zinc-700 focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600"
+      className="group flex cursor-pointer flex-col gap-3 rounded-md border border-border bg-surface p-3.5 shadow-xs transition-colors hover:border-text-muted focus:outline-none focus-visible:ring-1 focus-visible:ring-info"
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
@@ -63,7 +63,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 <button
                   type="button"
                   aria-label={`Acciones de ${label} ${budget.year}`}
-                  className="rounded p-1 text-text-muted hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                  className="rounded p-1 text-text-muted hover:bg-surface-raised hover:text-text"
                 >
                   <MoreHorizontal className="h-3.5 w-3.5" />
                 </button>
@@ -104,7 +104,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
         barClassName="flex-1"
       />
 
-      <dl className="grid grid-cols-3 gap-2 border-t border-zinc-100 dark:border-zinc-800/60 pt-2.5 text-xs">
+      <dl className="grid grid-cols-3 gap-2 border-t border-border pt-2.5 text-xs">
         {(
           [
             ['Inicial', budget.initial_amount],

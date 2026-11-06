@@ -114,9 +114,9 @@ export function EquipmentSpecSheet({
         className="overflow-y-auto max-w-xl w-full flex flex-col gap-6"
       >
         {/* Cabecera Técnica del Drawer */}
-        <SheetHeader className="border-b border-zinc-200 dark:border-zinc-800 pb-4">
+        <SheetHeader className="border-b border-border pb-4">
           <div className="flex items-center justify-between gap-2">
-            <span className="font-mono text-xs px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold tracking-wide">
+            <span className="font-mono text-xs px-2 py-0.5 rounded border border-border bg-surface-raised text-text font-semibold tracking-wide">
               {equipo.codigo || equipo.sku || `ID: ${equipo.id}`}
             </span>
             <Badge tone={statusToneMap[rawStatus] || 'neutral'} dot>
@@ -124,14 +124,14 @@ export function EquipmentSpecSheet({
             </Badge>
           </div>
 
-          <SheetTitle className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mt-2">
+          <SheetTitle className="text-lg font-bold text-text mt-2">
             {equipo.nombre}
           </SheetTitle>
 
-          <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400 flex flex-wrap items-center gap-3 mt-1">
+          <SheetDescription className="text-xs text-text-muted flex flex-wrap items-center gap-3 mt-1">
             {(equipo.marca || equipo.modelo) && (
               <span className="flex items-center gap-1">
-                <HardDrive className="h-3.5 w-3.5 text-zinc-400" />
+                <HardDrive className="h-3.5 w-3.5 text-text-muted" />
                 <span>
                   {[equipo.marca, equipo.modelo].filter(Boolean).join(' · ')}
                 </span>
@@ -139,13 +139,13 @@ export function EquipmentSpecSheet({
             )}
             {equipo.categoria && (
               <span className="flex items-center gap-1">
-                <Layers className="h-3.5 w-3.5 text-zinc-400" />
+                <Layers className="h-3.5 w-3.5 text-text-muted" />
                 <span>{equipo.categoria}</span>
               </span>
             )}
             {equipo.ubicacion && (
-              <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-600 dark:text-zinc-300">
-                <MapPin className="h-3.5 w-3.5 text-zinc-400" />
+              <span className="flex items-center gap-1 font-mono text-xs text-text-muted">
+                <MapPin className="h-3.5 w-3.5 text-text-muted" />
                 <span>{equipo.ubicacion}</span>
               </span>
             )}
@@ -153,7 +153,7 @@ export function EquipmentSpecSheet({
         </SheetHeader>
 
         {/* Acciones Rápidas de Descarga y Edición */}
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-950/60 p-3">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-background p-3">
           <Button
             type="button"
             variant="outline"
@@ -204,10 +204,10 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Ciclo de Vida y Obsolescencia */}
-        <div className="flex flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
+        <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              <Clock className="h-4 w-4 text-zinc-400" />
+            <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
+              <Clock className="h-4 w-4 text-text-muted" />
               <span>Ciclo de Vida y Vida Útil Estimada</span>
             </h4>
             <Badge tone={lifeCycle.statusTone} dot>
@@ -218,12 +218,12 @@ export function EquipmentSpecSheet({
           {/* Barra de progreso de ciclo de vida */}
           <div className="flex flex-col gap-1.5 pt-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-zinc-500 dark:text-zinc-400">Desgaste operativo:</span>
-              <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+              <span className="text-text-muted">Desgaste operativo:</span>
+              <span className="font-mono font-bold text-text tabular-nums">
                 {lifeCycle.percentUsed}%
               </span>
             </div>
-            <div className="h-2 w-full rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+            <div className="h-2 w-full rounded-full bg-surface-raised overflow-hidden">
               <div
                 className={`h-full transition-[width] duration-300 rounded-full ${
                   lifeCycle.percentUsed >= 90
@@ -238,32 +238,32 @@ export function EquipmentSpecSheet({
           </div>
 
           {/* Desglose de Parámetros de Ciclo de Vida */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-border text-xs">
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Adquisición</span>
-              <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
+              <span className="text-xs uppercase font-semibold text-text-muted">Adquisición</span>
+              <span className="font-mono text-text mt-0.5">
                 {lifeCycle.purchaseDateFormatted}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Vida Proyectada</span>
-              <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
+              <span className="text-xs uppercase font-semibold text-text-muted">Vida Proyectada</span>
+              <span className="font-mono text-text mt-0.5">
                 {lifeCycle.lifespanYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Antigüedad</span>
-              <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
+              <span className="text-xs uppercase font-semibold text-text-muted">Antigüedad</span>
+              <span className="font-mono text-text mt-0.5">
                 {lifeCycle.ageYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Restante</span>
+              <span className="text-xs uppercase font-semibold text-text-muted">Restante</span>
               <span
                 className={`font-mono font-bold mt-0.5 ${
                   lifeCycle.isCritical
-                    ? 'text-rose-600 dark:text-rose-400'
-                    : 'text-zinc-800 dark:text-zinc-200'
+                    ? 'text-danger'
+                    : 'text-text'
                 }`}
               >
                 {lifeCycle.remainingYears} años
@@ -273,17 +273,17 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Manual Oficial de Usuario en AWS S3 */}
-        <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
-          <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-            <FileText className="h-4 w-4 text-zinc-400" />
+        <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 shadow-xs">
+          <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
+            <FileText className="h-4 w-4 text-text-muted" />
             <span>Manual Oficial de Usuario (S3 / Cloud)</span>
           </h4>
 
           {manualUrl ? (
-            <div className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-2.5 mt-1">
+            <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-background p-2.5 mt-1">
               <div className="flex items-center gap-2 overflow-hidden">
                 <FileText className="h-4 w-4 text-red-600 shrink-0" />
-                <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300 truncate">
+                <span className="font-mono text-xs text-text truncate">
                   {manualUrl}
                 </span>
               </div>
@@ -291,20 +291,20 @@ export function EquipmentSpecSheet({
                 href={manualUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-red-600 dark:text-red-400 hover:underline"
+                className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-danger hover:underline"
               >
                 <span>Abrir PDF</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
           ) : (
-            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 py-2">
+            <div className="flex items-center justify-between text-xs text-text-muted py-2">
               <span className="italic">Manual de usuario no vinculado en almacenamiento en la nube.</span>
               {canEdit && (
                 <button
                   type="button"
                   onClick={() => onOpenEdit?.(equipo)}
-                  className="text-red-600 dark:text-red-400 font-medium hover:underline"
+                  className="text-danger font-medium hover:underline"
                 >
                   Vincular URL
                 </button>
@@ -314,17 +314,17 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Especificaciones Técnicas Detalladas */}
-        <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
+        <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              <Cpu className="h-4 w-4 text-zinc-400" />
+            <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
+              <Cpu className="h-4 w-4 text-text-muted" />
               <span>Especificaciones Técnicas</span>
             </h4>
             {canEdit && (
               <button
                 type="button"
                 onClick={() => onOpenEdit?.(equipo)}
-                className="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 flex items-center gap-1"
+                className="text-xs text-text-muted hover:text-text flex items-center gap-1"
               >
                 <Edit className="h-3 w-3" />
                 <span>Editar</span>
@@ -333,20 +333,20 @@ export function EquipmentSpecSheet({
           </div>
 
           {specEntries.length === 0 ? (
-            <div className="py-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+            <div className="py-4 text-center text-xs text-text-muted">
               No se han registrado parámetros de hardware para este equipo.
             </div>
           ) : (
-            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800 mt-1">
+            <div className="rounded-md border border-border overflow-hidden divide-y divide-border mt-1">
               {specEntries.map(([key, val]) => (
                 <div
                   key={key}
                   className="flex items-center justify-between gap-4 px-3 py-2 text-xs"
                 >
-                  <span className="font-medium text-zinc-600 dark:text-zinc-400">
+                  <span className="font-medium text-text-muted">
                     {key}
                   </span>
-                  <span className="font-mono text-zinc-900 dark:text-zinc-100 font-semibold text-right">
+                  <span className="font-mono text-text font-semibold text-right">
                     {String(val)}
                   </span>
                 </div>
@@ -356,28 +356,28 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Historial de Mantenciones y Hoja de Vida */}
-        <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
-          <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-            <Wrench className="h-4 w-4 text-zinc-400" />
+        <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 shadow-xs">
+          <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
+            <Wrench className="h-4 w-4 text-text-muted" />
             <span>Historial de Mantenciones e Intervenciones</span>
           </h4>
 
           {equipo.maintenances && equipo.maintenances.length > 0 ? (
-            <div className="flex flex-col gap-2 mt-1 divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="flex flex-col gap-2 mt-1 divide-y divide-border">
               {equipo.maintenances.map((m) => (
                 <div key={m.id} className="pt-2 first:pt-0 flex flex-col gap-1 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-zinc-800 dark:text-zinc-200 capitalize">
+                    <span className="font-semibold text-text capitalize">
                       {m.type} · {m.technician}
                     </span>
-                    <span className="font-mono text-zinc-400">{m.date}</span>
+                    <span className="font-mono text-text-muted">{m.date}</span>
                   </div>
-                  <p className="text-zinc-600 dark:text-zinc-400">{m.description}</p>
+                  <p className="text-text-muted">{m.description}</p>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-3 text-center text-xs text-zinc-400 dark:text-zinc-500">
+            <div className="py-3 text-center text-xs text-text-muted">
               No hay registros de mantenciones o calibraciones pendientes.
             </div>
           )}

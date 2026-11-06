@@ -8,7 +8,7 @@ import { validateRun, normalizeStoredRun } from '@/features/usuarios/lib/run';
 import { apiErrorToMessage } from '@/lib/api-error';
 
 const inputClasses =
-  'h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none';
+  'h-8.5 w-full rounded-md border border-border bg-background px-2.5 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none';
 
 /**
  * Escanear o digitar el RUT (+ Enter): 200 → muestra el estudiante; 404 → pide el nombre (opcional)
@@ -53,7 +53,7 @@ export function StudentLookup({
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <label htmlFor="student_rut" className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="student_rut" className="font-mono text-xs text-text">
           RUT del estudiante <span className="text-red-500">*</span>
         </label>
         <input
@@ -78,39 +78,39 @@ export function StudentLookup({
           className={`${inputClasses} mt-1`}
         />
         {invalid && (
-          <p role="alert" className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">
+          <p role="alert" className="mt-1 text-xs text-danger">
             RUT inválido: revisa el dígito verificador.
           </p>
         )}
       </div>
 
       {isFetching && (
-        <p className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-500">
+        <p className="flex items-center gap-1.5 font-mono text-xs text-text-muted">
           <Loader2 className="h-3 w-3 animate-spin" /> Buscando estudiante…
         </p>
       )}
       {isError && (
-        <p role="alert" className="text-[11px] text-rose-600 dark:text-rose-400">
+        <p role="alert" className="text-xs text-danger">
           {apiErrorToMessage(error)}
         </p>
       )}
       {student && (
-        <div className="flex items-center gap-2 rounded-md border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 p-2 text-xs">
+        <div className="flex items-center gap-2 rounded-md border border-ok/30 bg-ok-bg p-2 text-xs">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
           <div className="min-w-0">
             <p className="truncate font-semibold">{student.full_name || 'Sin nombre'}</p>
-            <p className="truncate font-mono text-[11px] text-zinc-500">
+            <p className="truncate font-mono text-xs text-text-muted">
               {student.career?.name ?? 'Sin carrera'}
             </p>
           </div>
         </div>
       )}
       {notFound && (
-        <div className="flex flex-col gap-1.5 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/20 p-2">
+        <div className="flex flex-col gap-1.5 rounded-md border border-warn/30 bg-warn-bg p-2">
           <Badge tone="warning" icon={<UserPlus className="h-3 w-3" />}>
             No registrado: se creará al confirmar
           </Badge>
-          <label htmlFor="student_name" className="font-mono text-[11px] text-zinc-600">
+          <label htmlFor="student_name" className="font-mono text-xs text-text-muted">
             Nombre (opcional)
           </label>
           <input

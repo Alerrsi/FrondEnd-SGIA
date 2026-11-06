@@ -16,23 +16,23 @@ export function ForbiddenPage() {
   const defaultPath = roleCode ? getRoleDefaultPath(roleCode) : '/login';
 
   return (
-    <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4 text-zinc-900 dark:text-zinc-100">
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 shadow-xs">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4 text-text">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-danger shadow-xs">
         <ShieldAlert className="h-7 w-7" />
       </div>
 
       <div className="mb-2 flex items-center gap-2">
-        <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">HTTP 403</span>
+        <span className="font-mono text-xs text-text-muted">HTTP 403</span>
         <Badge tone="critical">Acceso Restringido</Badge>
       </div>
 
-      <h1 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+      <h1 className="mb-2 text-xl font-semibold text-text">
         No tienes permisos para ver esta sección
       </h1>
 
-      <p className="mb-6 max-w-md text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="mb-6 max-w-md text-sm text-text-muted">
         Tu cuenta está identificada con el rol{' '}
-        <span className="font-mono text-zinc-900 dark:text-zinc-200 font-semibold">
+        <span className="font-mono text-text font-semibold">
           {roleCode} ({roleLabel})
         </span>
         , el cual no cuenta con autorización para acceder a esta ruta.

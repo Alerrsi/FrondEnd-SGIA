@@ -21,7 +21,7 @@ const STATUS_FILTERS: Array<{
 ];
 
 const controlClasses =
-  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info';
 
 const positiveParam = (value: string | null) => {
   const n = Number(value);

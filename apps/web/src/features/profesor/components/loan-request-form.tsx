@@ -21,10 +21,10 @@ import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
 const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+  'text-xs font-semibold uppercase tracking-wider text-text-muted font-mono';
+const errorClasses = 'mt-1 text-xs text-danger';
 const toId = (v: unknown) => (v === '' || v == null ? Number.NaN : Number(v));
 
 /** Nueva solicitud remota de préstamo: datos de la actividad, pañol, laboratorio e insumos. */
@@ -98,9 +98,9 @@ export function LoanRequestForm() {
       <form
         onSubmit={onSubmit}
         noValidate
-        className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
+        className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4"
       >
-        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <h2 className="text-sm font-semibold text-text">
           Datos de la actividad
         </h2>
 
@@ -113,7 +113,7 @@ export function LoanRequestForm() {
               id="lr-teacher"
               readOnly
               value={user?.nombre ?? user?.name ?? ''}
-              className={`${inputClasses} mt-1.5 bg-zinc-50 dark:bg-zinc-950`}
+              className={`${inputClasses} mt-1.5 bg-background`}
             />
           </div>
           <div>
@@ -182,7 +182,7 @@ export function LoanRequestForm() {
             {errors.due_date ? (
               <p className={errorClasses}>{errors.due_date.message}</p>
             ) : (
-              <p className="mt-1 text-[11px] text-zinc-400">Si lo dejas vacío, el mismo día.</p>
+              <p className="mt-1 text-xs text-text-muted">Si lo dejas vacío, el mismo día.</p>
             )}
           </div>
         </div>
@@ -266,27 +266,27 @@ export function LoanRequestForm() {
           </div>
         </div>
 
-        <fieldset className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
+        <fieldset className="flex flex-col gap-2 rounded-md border border-border p-3">
           <legend className={`${labelClasses} px-1`}>Lista de insumos</legend>
           {items.fields.length === 0 ? (
-            <p className="text-xs text-zinc-400">Agrega productos desde el catálogo.</p>
+            <p className="text-xs text-text-muted">Agrega productos desde el catálogo.</p>
           ) : (
             <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+                <tr className="font-mono text-xs uppercase tracking-wider text-text-muted">
                   <th className="py-1 font-medium">Producto</th>
                   <th className="w-24 py-1 font-medium">Cantidad</th>
                   <th className="w-8" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+              <tbody className="divide-y divide-border/60">
                 {items.fields.map((field, index) => {
                   const rowError = errors.items?.[index]?.quantity;
                   return (
                     <tr key={field.id} className="align-top">
-                      <td className="py-1.5 pr-2 text-zinc-800 dark:text-zinc-200">
+                      <td className="py-1.5 pr-2 text-text">
                         {field.name}
-                        <span className="ml-1 font-mono text-[11px] text-zinc-400">
+                        <span className="ml-1 font-mono text-xs text-text-muted">
                           ({field.available} disp.)
                         </span>
                       </td>
@@ -343,7 +343,7 @@ export function LoanRequestForm() {
           {errors.notes && <p className={errorClasses}>{errors.notes.message}</p>}
         </div>
 
-        <div className="flex justify-end border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end border-t border-border pt-3">
           <Button type="submit" disabled={pending}>
             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Enviar solicitud

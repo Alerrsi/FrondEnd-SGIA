@@ -103,7 +103,7 @@ export default function ComprasPage() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por código, guía o factura…"
           aria-label="Buscar órdenes"
-          className="h-8.5 w-full sm:w-72 rounded-md border border-border bg-surface px-3 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400"
+          className="h-8.5 w-full sm:w-72 rounded-md border border-border bg-surface px-3 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-info"
         />
       </div>
 
@@ -142,7 +142,7 @@ export default function ComprasPage() {
                   tabIndex={0}
                   onClick={() => setSelectedId(p.id)}
                   onKeyDown={(e) => e.key === 'Enter' && setSelectedId(p.id)}
-                  className="cursor-pointer border-t border-zinc-100 dark:border-zinc-800 hover:bg-surface-raised/50 focus:outline-none focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
+                  className="cursor-pointer border-t border-border hover:bg-surface-raised/50 focus:outline-none focus:bg-surface-raised"
                 >
                   <td className="px-3 py-2 font-mono font-bold text-text">
                     {p.code ?? `#${p.id}`}

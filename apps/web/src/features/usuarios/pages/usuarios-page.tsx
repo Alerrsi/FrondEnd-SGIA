@@ -141,7 +141,7 @@ export default function UsuariosPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 py-12 justify-center">
+      <div className="flex items-center gap-2 text-xs font-mono text-text-muted py-12 justify-center">
         <span>Cargando directorio de usuarios…</span>
       </div>
     );
@@ -149,8 +149,8 @@ export default function UsuariosPage() {
 
   if (isError || !data) {
     return (
-      <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-        <AlertCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+      <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
+        <AlertCircle className="h-5 w-5 shrink-0 text-danger" />
         <span>No se pudo cargar el listado de usuarios desde el servidor.</span>
       </div>
     );
@@ -161,23 +161,23 @@ export default function UsuariosPage() {
       {/* Vista y Encabezado con Micro-etiqueta Institucional */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
             SEDE TEMUCO · ADMINISTRACIÓN
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Control de Usuarios
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Users className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <Users className="h-5 w-5 text-text" />
               Directorio de Usuarios
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Administración centralizada de cuentas de acceso, roles institucionales y estados de autenticación.
             </p>
           </div>

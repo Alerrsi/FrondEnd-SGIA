@@ -122,25 +122,25 @@ export function DynamicChartCard({
         isEditMode
           ? isDragOverCard
             ? 'cursor-grabbing border-2 border-sky-500 ring-2 ring-sky-500/30 bg-sky-50/30 dark:bg-sky-950/30 scale-[1.01]'
-            : 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-sky-500/70'
+            : 'cursor-grab active:cursor-grabbing border-dashed border-border hover:border-sky-500/70'
           : ''
       }`}
     >
       {/* Overlay feedback cuando se arrastra un gráfico encima para intercambiar lugar */}
       {isEditMode && isDragOverCard && (
         <div className="absolute inset-0 bg-sky-500/10 dark:bg-sky-500/20 rounded-lg flex items-center justify-center z-10 pointer-events-none backdrop-blur-2xs">
-          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-sky-400 dark:border-sky-600 px-3 py-1.5 rounded-md shadow-md text-sky-700 dark:text-sky-400 font-mono text-xs font-semibold">
+          <div className="flex items-center gap-2 bg-surface border border-sky-400 dark:border-sky-600 px-3 py-1.5 rounded-md shadow-md text-sky-700 dark:text-sky-400 font-mono text-xs font-semibold">
             <ArrowLeftRight className="h-4 w-4 animate-pulse" />
             <span>Soltar para mover a posición #{index + 1}</span>
           </div>
         </div>
       )}
 
-      <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-3">
+      <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
         <div className="flex items-center gap-2">
           {isEditMode && (
             <div
-              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing"
+              className="text-text-muted hover:text-text cursor-grab active:cursor-grabbing"
               title="Arrastrar para mover o cambiar de lugar"
               aria-label="Arrastrar para mover o cambiar de lugar"
               data-testid={`drag-handle-${index}`}
@@ -151,16 +151,16 @@ export function DynamicChartCard({
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+              <span className="text-xs font-bold text-text">
                 {title}
               </span>
               {isEditMode && (
-                <span className="font-mono text-[9px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-1 py-0.2 rounded border border-zinc-200 dark:border-zinc-700">
+                <span className="font-mono text-[9px] bg-surface-raised text-text-muted px-1 py-0.2 rounded border border-border">
                   #{index + 1}
                 </span>
               )}
             </div>
-            <span className="font-mono text-[10px] text-zinc-400">
+            <span className="font-mono text-xs text-text-muted">
               {describeRange(input)} · {CHART_TYPE_LABELS[input.chartType]}
             </span>
           </div>
@@ -172,7 +172,7 @@ export function DynamicChartCard({
             variant="ghost"
             size="icon"
             onClick={onHide}
-            className="h-6 w-6 text-zinc-400 hover:text-zinc-700"
+            className="h-6 w-6 text-text-muted hover:text-text"
             title="Ocultar gráfico"
             aria-label="Ocultar gráfico"
           >
@@ -185,7 +185,7 @@ export function DynamicChartCard({
             variant="ghost"
             size="icon"
             onClick={onDelete}
-            className="h-6 w-6 text-zinc-400 hover:text-rose-600"
+            className="h-6 w-6 text-text-muted hover:text-rose-600"
             title="Eliminar gráfico"
             aria-label="Eliminar gráfico"
           >
@@ -196,13 +196,13 @@ export function DynamicChartCard({
 
       <div className="relative h-64 w-full">
         {isLoading ? (
-          <div className="flex h-full items-center justify-center font-mono text-xs text-zinc-400">
+          <div className="flex h-full items-center justify-center font-mono text-xs text-text-muted">
             Cargando datos…
           </div>
         ) : isForbidden ? (
           <div
             role="alert"
-            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-zinc-500"
+            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-text-muted"
           >
             <Lock className="h-5 w-5" />
             <span>Tu rol no tiene permisos para ver las métricas.</span>
@@ -210,7 +210,7 @@ export function DynamicChartCard({
         ) : error ? (
           <div
             role="alert"
-            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-rose-600 dark:text-rose-400"
+            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-danger"
           >
             <AlertTriangle className="h-5 w-5" />
             <span>{apiErrorToMessage(error)}</span>
@@ -218,7 +218,7 @@ export function DynamicChartCard({
         ) : !data || data.points.length === 0 ? (
           <div
             data-testid={`chart-empty-${index}`}
-            className="flex h-full flex-col items-center justify-center gap-2 font-mono text-xs text-zinc-400"
+            className="flex h-full flex-col items-center justify-center gap-2 font-mono text-xs text-text-muted"
           >
             <BarChart3 className="h-5 w-5" />
             <span>Sin datos para el período</span>
@@ -228,10 +228,10 @@ export function DynamicChartCard({
             data-testid={`chart-kpi-${index}`}
             className="flex h-full flex-col items-center justify-center gap-1"
           >
-            <span className="font-mono text-4xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+            <span className="font-mono text-4xl font-bold tabular-nums text-text">
               {formatKpiValue(data.points, input.metric)}
             </span>
-            <span className="font-mono text-[11px] text-zinc-500">{title}</span>
+            <span className="font-mono text-xs text-text-muted">{title}</span>
           </div>
         ) : (
           <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />
@@ -239,7 +239,7 @@ export function DynamicChartCard({
       </div>
 
       {legend.length > 0 && (
-        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
+        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-text-muted">
           {legend.map((item) => (
             <li key={item.label} className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
@@ -252,7 +252,7 @@ export function DynamicChartCard({
       {data?.summary && (
         <p
           title={data.summary}
-          className="mt-2 truncate border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono text-[10px] text-zinc-400"
+          className="mt-2 truncate border-t border-border pt-2 font-mono text-xs text-text-muted"
         >
           {data.summary}
         </p>

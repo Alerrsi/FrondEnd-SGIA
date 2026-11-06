@@ -94,7 +94,7 @@ export function CotizacionDetailSheet({
                 {items.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between rounded border border-zinc-100 dark:border-zinc-800 px-3 py-1.5 text-xs"
+                    className="flex items-center justify-between rounded border border-border px-3 py-1.5 text-xs"
                   >
                     <span className="text-text font-medium">
                       {item.name ?? `Producto #${item.productoId ?? item.product_id}`}
@@ -123,7 +123,7 @@ export function CotizacionDetailSheet({
                 {suppliers.map((supplier) => (
                   <div
                     key={supplier.id}
-                    className="flex items-center justify-between rounded border border-zinc-100 dark:border-zinc-800 px-3 py-1.5 text-xs"
+                    className="flex items-center justify-between rounded border border-border px-3 py-1.5 text-xs"
                   >
                     <span className="text-text font-medium">
                       {supplier.name}

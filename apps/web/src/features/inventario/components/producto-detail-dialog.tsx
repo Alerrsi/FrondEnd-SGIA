@@ -118,27 +118,27 @@ export function ProductoDetailDialog({
       description={`Especificaciones técnicas de hardware y código óptico · ID #${producto.id}`}
       className="max-w-3xl"
     >
-      <div className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
+      <div className="flex flex-col gap-4 text-text">
         {/* Cabecera del producto */}
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3.5">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3.5">
           <div className="space-y-1">
             <h2 className="text-base font-semibold tracking-tight leading-snug">
               {producto.nombre}
             </h2>
             {producto.description ? (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-md">{producto.description}</p>
+              <p className="text-xs text-text-muted leading-relaxed max-w-md">{producto.description}</p>
             ) : (
-              <p className="text-xs text-zinc-400 dark:text-zinc-500 italic">Sin descripción complementaria</p>
+              <p className="text-xs text-text-muted italic">Sin descripción complementaria</p>
             )}
           </div>
           <div className="flex items-center gap-2">
             {producto.categoria && (
-              <span className="font-mono text-xs px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-surface-raised text-text border border-border">
                 {producto.categoria}
               </span>
             )}
             {producto.area && (
-              <span className="font-mono text-xs px-2 py-0.5 rounded bg-zinc-100/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+              <span className="font-mono text-xs px-2 py-0.5 rounded bg-surface-raised text-text-muted border border-border">
                 {producto.area}
               </span>
             )}
@@ -151,19 +151,19 @@ export function ProductoDetailDialog({
         </div>
 
         {/* Módulo de Identificación Óptica Code128 */}
-        <div className="flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-4">
+        <div className="flex flex-col items-center justify-center rounded-md border border-border bg-background p-4">
           <div className="mb-2.5 flex items-center justify-between w-full">
-            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 font-mono">
-              <Barcode className="h-4 w-4 text-zinc-500" />
+            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted font-mono">
+              <Barcode className="h-4 w-4 text-text-muted" />
               Rotulado Code128 de Pañol
             </span>
             <button
               type="button"
               onClick={handleCopyBarcode}
-              className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text transition-colors"
               title="Copiar código al portapapeles"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <Check className="h-3.5 w-3.5 text-ok" /> : <Copy className="h-3.5 w-3.5" />}
               <span>{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
           </div>
@@ -171,11 +171,11 @@ export function ProductoDetailDialog({
           {/* Tarjeta de alto contraste para lectura por pistola (fondo blanco puro) */}
           <div
             data-testid="barcode-container"
-            className="flex min-h-[96px] w-full max-w-sm flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-white p-3 text-black shadow-xs"
+            className="flex min-h-[96px] w-full max-w-sm flex-col items-center justify-center rounded-md border border-border bg-surface p-3 text-black shadow-xs"
           >
             {isBarcodeLoading ? (
-              <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono">
-                <Loader2 className="h-4 w-4 animate-spin text-zinc-600" />
+              <div className="flex items-center gap-2 text-xs text-text-muted font-mono">
+                <Loader2 className="h-4 w-4 animate-spin text-text-muted" />
                 <span>Generando código vectorial…</span>
               </div>
             ) : barcodeData?.svg ? (
@@ -185,9 +185,9 @@ export function ProductoDetailDialog({
                 dangerouslySetInnerHTML={{ __html: barcodeData.svg }}
               />
             ) : (
-              <div className="flex flex-col items-center gap-1 text-zinc-400">
+              <div className="flex flex-col items-center gap-1 text-text-muted">
                 <Barcode className="h-8 w-8 opacity-40" />
-                <span className="text-[11px] font-mono">SVG no disponible</span>
+                <span className="text-xs font-mono">SVG no disponible</span>
               </div>
             )}
             <span className="mt-1 font-mono text-xs font-semibold tracking-widest text-black">
@@ -195,7 +195,7 @@ export function ProductoDetailDialog({
             </span>
           </div>
 
-          <p className="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500 font-mono text-center">
+          <p className="mt-2 text-xs text-text-muted font-mono text-center">
             Lectura continua soportada con escáner USB / Bluetooth en mesón.
           </p>
         </div>
@@ -203,52 +203,52 @@ export function ProductoDetailDialog({
         {/* Especificaciones Técnicas y Parámetros Operativos */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {/* Tarjeta de Stock */}
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="rounded-md border border-border bg-surface p-3.5 shadow-xs">
+            <div className="flex items-center justify-between text-xs text-text-muted">
               <span className="font-mono">Control de Inventario</span>
               <Badge tone={isCritical ? 'critical' : 'available'}>
                 {isCritical ? 'Crítico' : 'Normal'}
               </Badge>
             </div>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+              <span className="font-mono text-2xl font-bold text-text tabular-nums">
                 {producto.stock}
               </span>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">unidades en pañol</span>
+              <span className="text-xs text-text-muted font-medium">unidades en pañol</span>
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-xs border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono">
-              <span className="text-zinc-500 dark:text-zinc-400">Umbral mínimo:</span>
-              <span className="font-semibold text-zinc-800 dark:text-zinc-200 tabular-nums">
+            <div className="mt-2.5 flex items-center justify-between text-xs border-t border-border pt-2 font-mono">
+              <span className="text-text-muted">Umbral mínimo:</span>
+              <span className="font-semibold text-text tabular-nums">
                 {producto.stockCritico ?? producto.stock_minimo ?? 0} uds
               </span>
             </div>
             {isCritical && (
-              <div className="mt-2.5 flex items-center gap-1.5 rounded bg-red-50 dark:bg-red-950/40 border border-red-200/60 dark:border-red-900/40 px-2 py-1 text-xs text-red-700 dark:text-red-400">
-                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" />
+              <div className="mt-2.5 flex items-center gap-1.5 rounded bg-danger-bg border border-danger/30 px-2 py-1 text-xs text-danger">
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-danger" />
                 <span>Nivel de stock bajo umbral crítico</span>
               </div>
             )}
           </div>
 
           {/* Tarjeta de Ubicación Física */}
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="rounded-md border border-border bg-surface p-3.5 shadow-xs">
+            <div className="flex items-center justify-between text-xs text-text-muted">
               <span className="font-mono">Ubicación en Pañol</span>
-              <MapPin className="h-3.5 w-3.5 text-zinc-400" />
+              <MapPin className="h-3.5 w-3.5 text-text-muted" />
             </div>
             <div className="mt-2 flex items-center gap-2">
-              <span className="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="font-mono text-sm font-semibold text-text">
                 {producto.ubicacion?.sala || 'Sala sin asignar'}
               </span>
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-xs border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono">
-              <span className="text-zinc-500 dark:text-zinc-400">Gaveta / Cajón:</span>
-              <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+            <div className="mt-2.5 flex items-center justify-between text-xs border-t border-border pt-2 font-mono">
+              <span className="text-text-muted">Gaveta / Cajón:</span>
+              <span className="font-semibold text-text">
                 {producto.ubicacion?.cajon || 'Sin cajón'}
               </span>
             </div>
             {producto.ubicacion?.descripcion && (
-              <p className="mt-2 text-[11px] text-zinc-500 dark:text-zinc-400 font-mono line-clamp-2">
+              <p className="mt-2 text-xs text-text-muted font-mono line-clamp-2">
                 {producto.ubicacion.descripcion}
               </p>
             )}
@@ -261,9 +261,9 @@ export function ProductoDetailDialog({
         )}
 
         {/* Metadatos de Creación / Auditoría */}
-        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono border-t border-zinc-200 dark:border-zinc-800 pt-2.5">
+        <div className="flex items-center justify-between text-xs text-text-muted font-mono border-t border-border pt-2.5">
           <div className="flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5 text-zinc-400" />
+            <Calendar className="h-3.5 w-3.5 text-text-muted" />
             <span>
               Ingresado:{' '}
               {producto.createdAt
@@ -275,11 +275,11 @@ export function ProductoDetailDialog({
                 : '—'}
             </span>
           </div>
-          <span className="text-zinc-400 dark:text-zinc-500">SGIA · Pañol TI</span>
+          <span className="text-text-muted">SGIA · Pañol TI</span>
         </div>
 
         {/* Acciones de Pie */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3.5">
           <Button
             type="button"
             variant="outline"
@@ -287,7 +287,7 @@ export function ProductoDetailDialog({
             onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
             className="flex items-center gap-1.5 text-xs"
           >
-            <Printer className="h-3.5 w-3.5 text-zinc-500" />
+            <Printer className="h-3.5 w-3.5 text-text-muted" />
             <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
           </Button>
 

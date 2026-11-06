@@ -31,31 +31,31 @@ export function CatalogPanel({ addedIds, onAdd }: CatalogPanelProps) {
   return (
     <section
       aria-label="Catálogo"
-      className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"
+      className="flex flex-col gap-3 rounded-md border border-border bg-surface p-3"
     >
-      <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Catálogo</h2>
+      <h2 className="text-sm font-semibold text-text">Catálogo</h2>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+        <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
         <input
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar insumo o equipo…"
           aria-label="Buscar en el catálogo"
-          className="h-8 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pl-7 pr-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+          className="h-8 w-full rounded-md border border-border bg-background pl-7 pr-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-info"
         />
       </div>
 
       {isLoading ? (
-        <p className="py-6 text-center font-mono text-xs text-zinc-500">Cargando catálogo…</p>
+        <p className="py-6 text-center font-mono text-xs text-text-muted">Cargando catálogo…</p>
       ) : isError ? (
-        <p role="alert" className="py-6 text-center text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="py-6 text-center text-xs text-danger">
           No se pudo cargar el catálogo.
         </p>
       ) : products.length === 0 ? (
-        <p className="py-6 text-center text-xs text-zinc-400">No hay productos disponibles.</p>
+        <p className="py-6 text-center text-xs text-text-muted">No hay productos disponibles.</p>
       ) : (
-        <ul className="flex max-h-[28rem] flex-col divide-y divide-zinc-100 dark:divide-zinc-800/60 overflow-y-auto">
+        <ul className="flex max-h-[28rem] flex-col divide-y divide-border/60 overflow-y-auto">
           {products.map((p) => {
             const name = p.nombre ?? p.name ?? 'Producto';
             const available = p.stock ?? p.quantity ?? 0;
@@ -63,8 +63,8 @@ export function CatalogPanel({ addedIds, onAdd }: CatalogPanelProps) {
             return (
               <li key={p.id} className="flex items-center justify-between gap-2 py-2">
                 <div className="min-w-0">
-                  <p className="truncate text-xs text-zinc-800 dark:text-zinc-200">{name}</p>
-                  <p className="font-mono text-[11px] text-zinc-400">
+                  <p className="truncate text-xs text-text">{name}</p>
+                  <p className="font-mono text-xs text-text-muted">
                     {p.barcode ?? '—'} · {available} disp.
                   </p>
                 </div>

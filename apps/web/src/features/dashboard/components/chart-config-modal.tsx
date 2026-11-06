@@ -38,8 +38,8 @@ interface ChartConfigModalProps {
 }
 
 const FIELD_CLASS =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-400';
-const LABEL_CLASS = 'font-semibold text-zinc-700 dark:text-zinc-300';
+  'h-8 rounded-md border border-border bg-surface px-2 text-xs text-text focus:outline-none focus:border-text-muted';
+const LABEL_CLASS = 'font-semibold text-text';
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -147,8 +147,8 @@ export function ChartConfigModal({
                 className={cn(
                   'h-7 rounded-md border px-2.5 text-xs transition-colors',
                   chartType === type
-                    ? 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
-                    : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900',
+                    ? 'border-border bg-ink text-background '
+                    : 'border-border text-text-muted hover:bg-surface-raised',
                 )}
               >
                 {CHART_TYPE_LABELS[type]}
@@ -165,7 +165,7 @@ export function ChartConfigModal({
                 key={preset.title}
                 type="button"
                 onClick={() => applyPreset(preset)}
-                className="rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 px-2 py-1 text-[11px] text-zinc-600 dark:text-zinc-400 hover:border-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                className="rounded-md border border-dashed border-border px-2 py-1 text-xs text-text-muted hover:border-text-muted hover:text-text"
               >
                 {preset.title}
               </button>
@@ -279,7 +279,7 @@ export function ChartConfigModal({
                 />
               </div>
               {(missingDateFrom || invalidRange) && (
-                <p role="alert" className="sm:col-span-2 text-[11px] text-amber-700 dark:text-amber-400">
+                <p role="alert" className="sm:col-span-2 text-xs text-warn">
                   {missingDateFrom
                     ? 'El rango personalizado requiere una fecha de inicio.'
                     : 'La fecha final no puede ser anterior a la inicial.'}
@@ -310,7 +310,7 @@ export function ChartConfigModal({
               className={cn(FIELD_CLASS, 'disabled:opacity-50')}
             />
             {invalidLimit && (
-              <span role="alert" className="text-[11px] text-amber-700 dark:text-amber-400">
+              <span role="alert" className="text-xs text-warn">
                 Ingresa un entero entre 1 y 50.
               </span>
             )}
@@ -331,13 +331,13 @@ export function ChartConfigModal({
         </div>
 
         {isPieLike(chartType) && timeSeries && (
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-text-muted">
             Las series en el tiempo se leen mejor en barras o línea; agrupa los datos para usar {CHART_TYPE_LABELS[chartType].toLowerCase()}.
           </p>
         )}
 
-        <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
-          <span className="text-[11px] text-zinc-400">
+        <div className="flex items-center justify-between pt-4 border-t border-border">
+          <span className="text-xs text-text-muted">
             Cupo tras añadir: {currentCharts.length + 1} de {MAX_CHARTS}
           </span>
           <div className="flex gap-2">
@@ -349,7 +349,7 @@ export function ChartConfigModal({
               variant="primary"
               size="sm"
               disabled={missingDateFrom || invalidRange || invalidLimit}
-              className="gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+              className="gap-1.5 bg-ink text-background hover:opacity-90"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Añadir al panel</span>

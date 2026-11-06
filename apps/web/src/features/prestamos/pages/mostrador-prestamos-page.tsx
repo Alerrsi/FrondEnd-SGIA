@@ -299,23 +299,23 @@ export default function MostradorPrestamosPage() {
       {/* Header técnico con miga de pan */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Operatoria de Mesón
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Layers className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <Layers className="h-5 w-5 text-text" />
               Mostrador de Pañol: Préstamos Presenciales y Devoluciones
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Atención ágil de mesón con lector de códigos Code128, control de credencial docente y restitución de stock.
             </p>
           </div>
@@ -346,7 +346,7 @@ export default function MostradorPrestamosPage() {
       </div>
 
       {/* Tabs Principales: Checkout vs Devolución */}
-      <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-border pb-2">
         <Button
           type="button"
           variant={activeTab === 'checkout' ? 'primary' : 'ghost'}
@@ -377,8 +377,8 @@ export default function MostradorPrestamosPage() {
             className={cn(
               'flex items-center gap-1.5 rounded px-2 py-1 text-xs font-mono transition-colors border',
               soundEnabled
-                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
-                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border-zinc-200 dark:border-zinc-700',
+                ? 'bg-ok-bg text-ok border-ok/30'
+                : 'bg-surface-raised text-text-muted border-border',
             )}
           >
             <Volume2 className="h-3.5 w-3.5" />
@@ -392,8 +392,8 @@ export default function MostradorPrestamosPage() {
         <div className="grid gap-4 lg:grid-cols-3">
           {/* Columna Izquierda: Datos del Docente y Escáner */}
           <div className="flex flex-col gap-4 lg:col-span-1">
-            <Card className="flex flex-col gap-3 p-4 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
+            <Card className="flex flex-col gap-3 p-4 border border-border bg-surface shadow-xs">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-text-muted">
                 1. Quién retira
               </span>
 
@@ -419,12 +419,12 @@ export default function MostradorPrestamosPage() {
                 <div>
                   <label
                     htmlFor="docente_run"
-                    className="font-mono text-xs text-zinc-700 dark:text-zinc-300"
+                    className="font-mono text-xs text-text"
                   >
                     RUN / Credencial Docente <span className="text-red-500">*</span>
                   </label>
                   <div className="relative mt-1">
-                    <User className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+                    <User className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
                     <input
                       id="docente_run"
                       type="text"
@@ -439,7 +439,7 @@ export default function MostradorPrestamosPage() {
                         if (matched) setDocenteName(matched.nombre);
                       }}
                       placeholder="12.345.678-9 o escanear credencial"
-                      className="h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2.5 pl-8 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+                      className="h-8.5 w-full rounded-md border border-border bg-background px-2.5 pl-8 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none"
                     />
                   </div>
                 </div>
@@ -447,7 +447,7 @@ export default function MostradorPrestamosPage() {
                 <div>
                   <label
                     htmlFor="docente_nombre"
-                    className="font-mono text-xs text-zinc-700 dark:text-zinc-300"
+                    className="font-mono text-xs text-text"
                   >
                     Nombre del Docente
                   </label>
@@ -457,26 +457,26 @@ export default function MostradorPrestamosPage() {
                     value={docenteName}
                     onChange={(e) => setDocenteName(e.target.value)}
                     placeholder="Ej. Profesor Carlos Rivera"
-                    className="mt-1 h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+                    className="mt-1 h-8.5 w-full rounded-md border border-border bg-background px-2.5 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none"
                   />
                 </div>
                 </>)}
 
                 <div>
-                  <label htmlFor="career" className="font-mono text-[11px] text-zinc-500">
-                    Carrera <span className="text-rose-600 dark:text-rose-400">*</span>
+                  <label htmlFor="career" className="font-mono text-xs text-text-muted">
+                    Carrera <span className="text-danger">*</span>
                   </label>
                   <CareerSelect
                     id="career"
                     value={careerId}
                     onChange={setCareerId}
-                    className="mt-1 h-8 w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                    className="mt-1 h-8 w-full rounded border border-border bg-background px-2 font-mono text-xs text-text focus:border-text-muted focus:outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label htmlFor="subject" className="font-mono text-[11px] text-zinc-500">
+                    <label htmlFor="subject" className="font-mono text-xs text-text-muted">
                       Asignatura
                     </label>
                     <input
@@ -485,11 +485,11 @@ export default function MostradorPrestamosPage() {
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
                       placeholder="Redes CCNA"
-                      className="mt-1 h-8 w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+                      className="mt-1 h-8 w-full rounded border border-border bg-background px-2 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label htmlFor="room" className="font-mono text-[11px] text-zinc-500">
+                    <label htmlFor="room" className="font-mono text-xs text-text-muted">
                       Sala / Taller
                     </label>
                     <input
@@ -498,7 +498,7 @@ export default function MostradorPrestamosPage() {
                       value={room}
                       onChange={(e) => setRoom(e.target.value)}
                       placeholder="Lab 201"
-                      className="mt-1 h-8 w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+                      className="mt-1 h-8 w-full rounded border border-border bg-background px-2 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none"
                     />
                   </div>
                 </div>
@@ -506,23 +506,23 @@ export default function MostradorPrestamosPage() {
             </Card>
 
             {/* Captura de Escáner Code128 */}
-            <Card className="flex flex-col gap-2 p-4 border-2 border-red-500/30 bg-red-500/5 dark:bg-red-500/10 shadow-xs">
+            <Card className="flex flex-col gap-2 p-4 border-2 border-red-500/30 bg-red-500/5 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-danger">
                   2. Entrada Lector Code128
                 </span>
-                <span className="inline-flex items-center gap-1 rounded bg-red-100 dark:bg-red-900/40 px-1.5 py-0.5 font-mono text-[10px] text-red-700 dark:text-red-300">
+                <span className="inline-flex items-center gap-1 rounded bg-danger-bg px-1.5 py-0.5 font-mono text-xs text-danger">
                   <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
                   Auto-foco
                 </span>
               </div>
 
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-text-muted">
                 Pistola lectora opera como teclado estándar USB/Bluetooth terminado en [Enter].
               </p>
 
               <div className="relative mt-1">
-                <Barcode className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <Barcode className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                 <input
                   ref={barcodeInputRef}
                   type="text"
@@ -531,7 +531,7 @@ export default function MostradorPrestamosPage() {
                   onKeyDown={handleBarcodeKeyDown}
                   placeholder="Dispara con pistola o escribe SKU + Enter…"
                   aria-label="Código de barras"
-                  className="h-10 w-full rounded-md border-2 border-zinc-300 dark:border-zinc-700 bg-zinc-50/80 dark:bg-zinc-950 px-3 pl-9 font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 placeholder:font-normal placeholder:text-zinc-400 focus:border-red-600 dark:focus:border-red-500 focus:outline-none"
+                  className="h-10 w-full rounded-md border-2 border-border bg-background px-3 pl-9 font-mono text-xs font-semibold text-text placeholder:font-normal placeholder:text-text-muted focus:border-red-600 focus:outline-none"
                 />
               </div>
             </Card>
@@ -539,14 +539,14 @@ export default function MostradorPrestamosPage() {
 
           {/* Columna Derecha: Tabla de Ítems Escaneados y Confirmación */}
           <div className="flex flex-col gap-3 lg:col-span-2">
-            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-              <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
+            <div className="rounded-md border border-border bg-surface overflow-hidden shadow-xs">
+              <div className="flex items-center justify-between border-b border-border p-3 bg-surface-raised">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
+                  <span className="font-mono text-xs font-semibold text-text uppercase tracking-wider">
                     Ítems Agregados al Préstamo
                   </span>
                   <Badge tone="neutral">{scannedItems.length} distintos</Badge>
-                  <span className="font-mono text-xs text-zinc-500 tabular-nums">
+                  <span className="font-mono text-xs text-text-muted tabular-nums">
                     ({scannedItems.reduce((acc, it) => acc + it.cantidad, 0)} unidades totales)
                   </span>
                 </div>
@@ -557,7 +557,7 @@ export default function MostradorPrestamosPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setScannedItems([])}
-                    className="h-7 text-xs text-zinc-400 hover:text-rose-600"
+                    className="h-7 text-xs text-text-muted hover:text-rose-600"
                   >
                     Limpiar lista
                   </Button>
@@ -565,17 +565,17 @@ export default function MostradorPrestamosPage() {
               </div>
 
               {scannedItems.length === 0 ? (
-                <div className="p-12 text-center text-xs font-mono text-zinc-400 flex flex-col items-center gap-2">
-                  <Barcode className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+                <div className="p-12 text-center text-xs font-mono text-text-muted flex flex-col items-center gap-2">
+                  <Barcode className="h-8 w-8 text-text-muted" />
                   <span>No hay ítems escaneados aún.</span>
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="text-xs text-text-muted">
                     Apunta la pistola lectora a las etiquetas de los productos o ingresa su SKU en el campo de escaneo.
                   </span>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left text-xs font-mono">
-                    <thead className="bg-zinc-50/90 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
+                    <thead className="bg-surface-raised border-b border-border text-xs uppercase tracking-wider text-text-muted font-semibold">
                       <tr>
                         <th className="px-3.5 py-2">Código / SKU</th>
                         <th className="px-3.5 py-2">Producto</th>
@@ -584,31 +584,31 @@ export default function MostradorPrestamosPage() {
                         <th className="px-3.5 py-2 text-right">Acción</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                    <tbody className="divide-y divide-border">
                       {scannedItems.map((item) => (
                         <tr
                           key={item.producto.id}
-                          className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40"
+                          className="hover:bg-surface-raised"
                         >
-                          <td className="px-3.5 py-2.5 font-semibold text-zinc-900 dark:text-zinc-100">
+                          <td className="px-3.5 py-2.5 font-semibold text-text">
                             {item.barcode}
                           </td>
-                          <td className="px-3.5 py-2.5 font-sans font-medium text-zinc-800 dark:text-zinc-200">
+                          <td className="px-3.5 py-2.5 font-sans font-medium text-text">
                             {item.producto.nombre}
                           </td>
-                          <td className="px-3.5 py-2.5 text-zinc-500 text-[11px]">
+                          <td className="px-3.5 py-2.5 text-text-muted text-xs">
                             {item.producto.ubicacion
                               ? `${item.producto.ubicacion.sala} · ${item.producto.ubicacion.cajon}`
                               : 'Pañol'}
                           </td>
                           <td className="px-3.5 py-2.5 text-center">
-                            <div className="inline-flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-800 rounded bg-zinc-50 dark:bg-zinc-950 p-0.5">
+                            <div className="inline-flex items-center gap-1.5 border border-border rounded bg-background p-0.5">
                               <button
                                 type="button"
                                 onClick={() => handleUpdateQty(item.producto.id, -1)}
-                                className="h-5 w-5 rounded flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                                className="h-5 w-5 rounded flex items-center justify-center hover:bg-surface-raised"
                               >
-                                <Minus className="h-3 w-3 text-zinc-600 dark:text-zinc-400" />
+                                <Minus className="h-3 w-3 text-text-muted" />
                               </button>
                               <span className="w-6 text-center tabular-nums font-semibold">
                                 {item.cantidad}
@@ -616,9 +616,9 @@ export default function MostradorPrestamosPage() {
                               <button
                                 type="button"
                                 onClick={() => handleUpdateQty(item.producto.id, 1)}
-                                className="h-5 w-5 rounded flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                                className="h-5 w-5 rounded flex items-center justify-center hover:bg-surface-raised"
                               >
-                                <Plus className="h-3 w-3 text-zinc-600 dark:text-zinc-400" />
+                                <Plus className="h-3 w-3 text-text-muted" />
                               </button>
                             </div>
                           </td>
@@ -626,7 +626,7 @@ export default function MostradorPrestamosPage() {
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(item.producto.id)}
-                              className="text-zinc-400 hover:text-rose-600 p-1"
+                              className="text-text-muted hover:text-rose-600 p-1"
                               title="Quitar ítem"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -640,8 +640,8 @@ export default function MostradorPrestamosPage() {
               )}
 
               {/* Botón Culminante de Despacho */}
-              <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-                <div className="text-xs font-mono text-zinc-500">
+              <div className="flex items-center justify-between border-t border-border p-3 bg-surface-raised">
+                <div className="text-xs font-mono text-text-muted">
                   {borrowerMode === 'estudiante'
                     ? studentBorrower
                       ? `Estudiante: ${studentBorrowerLabel(studentBorrower)}`
@@ -673,18 +673,18 @@ export default function MostradorPrestamosPage() {
         <div className="grid gap-4 lg:grid-cols-3">
           {/* Columna Izquierda: Búsqueda de Préstamo Activo */}
           <div className="flex flex-col gap-3 lg:col-span-1">
-            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
+            <div className="rounded-md border border-border bg-surface p-3 shadow-xs">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-text-muted">
                 Buscar Préstamo Activo
               </span>
               <div className="relative mt-2">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
                 <input
                   type="search"
                   value={checkinSearch}
                   onChange={(e) => setCheckinSearch(e.target.value)}
                   placeholder="Docente, RUN o Código…"
-                  className="h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-3 pl-8.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+                  className="h-8.5 w-full rounded-md border border-border bg-background px-3 pl-8.5 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none"
                 />
               </div>
             </div>
@@ -692,7 +692,7 @@ export default function MostradorPrestamosPage() {
             {/* Lista de préstamos activos */}
             <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto">
               {filteredActiveLoans.length === 0 ? (
-                <div className="p-6 text-center text-xs font-mono text-zinc-400 border border-dashed border-zinc-200 dark:border-zinc-800 rounded">
+                <div className="p-6 text-center text-xs font-mono text-text-muted border border-dashed border-border rounded">
                   No se encontraron préstamos activos.
                 </div>
               ) : (
@@ -705,20 +705,20 @@ export default function MostradorPrestamosPage() {
                       className={cn(
                         'cursor-pointer border p-3 transition-colors',
                         isSelected
-                          ? 'border-red-600 bg-red-50/10 dark:border-red-500 dark:bg-red-950/20'
-                          : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700',
+                          ? 'border-red-600 bg-red-50/10'
+                          : 'border-border bg-surface hover:border-text-muted',
                       )}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                        <span className="font-mono text-xs font-bold text-text">
                           {loan.codigo ?? `#${loan.id}`}
                         </span>
                         <LoanStatusBadge estado={loan.estado} />
                       </div>
-                      <p className="mt-1 font-sans text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">
+                      <p className="mt-1 font-sans text-xs font-semibold text-text truncate">
                         {loan.solicitanteNombre}
                       </p>
-                      <div className="mt-2 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                      <div className="mt-2 flex items-center justify-between text-xs font-mono text-text-muted">
                         <span>{loan.items.length} ítems</span>
                         <span>{loan.sala || 'Mesón'}</span>
                       </div>
@@ -732,18 +732,18 @@ export default function MostradorPrestamosPage() {
           {/* Columna Derecha: Verificación y Reintegro de Ítems */}
           <div className="flex flex-col gap-3 lg:col-span-2">
             {!selectedLoan ? (
-              <div className="rounded-md border border-dashed border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 p-16 text-center text-xs font-mono text-zinc-400 flex flex-col items-center gap-2">
-                <ArrowDownLeft className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+              <div className="rounded-md border border-dashed border-border bg-surface p-16 text-center text-xs font-mono text-text-muted flex flex-col items-center gap-2">
+                <ArrowDownLeft className="h-8 w-8 text-text-muted" />
                 <span>Selecciona un préstamo activo del panel izquierdo para recepcionar insumos.</span>
               </div>
             ) : (
-              <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs flex flex-col gap-4">
-                <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+              <div className="rounded-md border border-border bg-surface p-4 shadow-xs flex flex-col gap-4">
+                <div className="flex items-center justify-between border-b border-border pb-3">
                   <div className="flex flex-col">
-                    <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                    <span className="font-mono text-xs font-bold text-text">
                       Recepcionando Préstamo {selectedLoan.codigo ?? `#${selectedLoan.id}`}
                     </span>
-                    <span className="text-xs text-zinc-500">
+                    <span className="text-xs text-text-muted">
                       Docente: {selectedLoan.solicitanteNombre}{' '}
                       {selectedLoan.solicitanteRun ? `(${selectedLoan.solicitanteRun})` : ''}
                     </span>
@@ -753,11 +753,11 @@ export default function MostradorPrestamosPage() {
 
                 {/* Lista de Ítems a devolver */}
                 <div className="flex flex-col gap-2">
-                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-text-muted">
                     Verificación de Estado por Ítem
                   </span>
 
-                  <div className="flex flex-col divide-y divide-zinc-100 dark:divide-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded">
+                  <div className="flex flex-col divide-y divide-border border border-border rounded">
                     {selectedLoan.items.map((it) => {
                       const cond = itemConditions[it.productoId] || {
                         condition: 'bueno',
@@ -768,20 +768,20 @@ export default function MostradorPrestamosPage() {
                       return (
                         <div
                           key={it.productoId}
-                          className="flex flex-col gap-2 p-3 text-xs bg-white dark:bg-zinc-900"
+                          className="flex flex-col gap-2 p-3 text-xs bg-surface"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex flex-col">
-                              <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">
+                              <span className="font-sans font-medium text-text">
                                 {it.nombre || `Producto #${it.productoId}`}
                               </span>
-                              <span className="font-mono text-[10px] text-zinc-400">
+                              <span className="font-mono text-xs text-text-muted">
                                 SKU: {it.codigoBarras || '—'} · Cantidad: {it.cantidad}
                               </span>
                             </div>
 
                             {/* Selector de Condición */}
-                            <div className="flex items-center gap-1 text-[11px] font-mono">
+                            <div className="flex items-center gap-1 text-xs font-mono">
                               <button
                                 type="button"
                                 onClick={() =>
@@ -797,8 +797,8 @@ export default function MostradorPrestamosPage() {
                                 className={cn(
                                   'px-2 py-0.5 rounded border transition-colors',
                                   cond.condition === 'bueno'
-                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 font-semibold'
-                                    : 'text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50',
+                                    ? 'bg-ok-bg text-ok border-ok/30 font-semibold'
+                                    : 'text-text-muted border-border hover:bg-surface-raised',
                                 )}
                               >
                                 Buen estado
@@ -819,8 +819,8 @@ export default function MostradorPrestamosPage() {
                                 className={cn(
                                   'px-2 py-0.5 rounded border transition-colors',
                                   cond.condition === 'dañado'
-                                    ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700 font-semibold'
-                                    : 'text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50',
+                                    ? 'bg-danger-bg text-danger border-danger/30 font-semibold'
+                                    : 'text-text-muted border-border hover:bg-surface-raised',
                                 )}
                               >
                                 Reportar daño / falla
@@ -830,7 +830,7 @@ export default function MostradorPrestamosPage() {
 
                           {cond.damaged && (
                             <div className="mt-1 flex flex-col gap-1">
-                              <label className="text-[11px] font-mono text-rose-600 dark:text-rose-400">
+                              <label className="text-xs font-mono text-danger">
                                 Detalle de daño o novedad para pañol:
                               </label>
                               <input
@@ -846,7 +846,7 @@ export default function MostradorPrestamosPage() {
                                   }))
                                 }
                                 placeholder="Ej. Cable cortado, fusible quemado, punta de prueba faltante…"
-                                className="h-7 w-full rounded border border-rose-300 dark:border-rose-700 bg-rose-50/20 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
+                                className="h-7 w-full rounded border border-danger/30 bg-rose-50/20 px-2 font-mono text-xs text-text placeholder:text-text-muted focus:outline-none"
                               />
                             </div>
                           )}
@@ -857,7 +857,7 @@ export default function MostradorPrestamosPage() {
                 </div>
 
                 <div>
-                  <label className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                  <label className="font-mono text-xs text-text-muted">
                     Observaciones generales de recepción
                   </label>
                   <textarea
@@ -865,11 +865,11 @@ export default function MostradorPrestamosPage() {
                     value={generalCheckinNotes}
                     onChange={(e) => setGeneralCheckinNotes(e.target.value)}
                     placeholder="Comentarios adicionales opcionales…"
-                    className="mt-1 w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 p-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+                    className="mt-1 w-full rounded border border-border bg-background p-2 font-mono text-xs text-text placeholder:text-text-muted focus:border-text-muted focus:outline-none"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
+                <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
                   <Button
                     type="button"
                     variant="outline"
