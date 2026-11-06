@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useMyIncidentReports } from '@sgia/api-client';
 import { AlertCircle, ChevronLeft, ChevronRight, FileWarning, Plus } from 'lucide-react';
@@ -20,7 +21,8 @@ export default function MisNovedadesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-text">
+          <PageEyebrow area="PAÑOL TI" section="Mis novedades" />
+          <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
             <FileWarning aria-hidden="true" className="h-5 w-5 text-text" />
             Novedades
           </h1>

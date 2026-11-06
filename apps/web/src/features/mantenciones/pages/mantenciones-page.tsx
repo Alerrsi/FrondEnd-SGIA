@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useEquipmentUnits, useMaintenanceRecords } from '@sgia/api-client';
 import type { MaintenanceRecord, MaintenanceStatus, MaintenanceType } from '@sgia/types';
@@ -80,12 +81,13 @@ export default function MantencionesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
+          <PageEyebrow area="PAÑOL TI" section="Mantenciones" />
         <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
           <Wrench aria-hidden="true" className="h-5 w-5 text-text" />
           Mantenciones
         </h1>
         <p className="text-xs text-text-muted">
-          Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla (REQ-18).
+          Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla.
         </p>
       </div>
 

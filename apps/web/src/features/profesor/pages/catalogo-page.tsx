@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { PackageSearch } from 'lucide-react';
 
 import { LoanRequestForm } from '@/features/profesor/components/loan-request-form';
@@ -6,7 +7,8 @@ export default function CatalogoPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-text">
+          <PageEyebrow area="PAÑOL TI" section="Catálogo" />
+        <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
           <PackageSearch aria-hidden="true" className="h-5 w-5 text-text" />
           Catálogo y nueva solicitud
         </h1>

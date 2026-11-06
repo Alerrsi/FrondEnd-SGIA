@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState, useMemo } from 'react';
 import {
   Layers,
@@ -175,24 +176,16 @@ export default function UbicacionesPage() {
     <div className="flex flex-col gap-5">
       {/* Encabezado Principal */}
       <div className="flex flex-col gap-1 border-b border-border pb-4">
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold text-danger uppercase tracking-wider">
-            SEDE TEMUCO · PAÑOL TI
-          </span>
-          <span className="text-text-muted text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
-            Estructura Física
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
+          <PageEyebrow area="PAÑOL TI" section="Ubicaciones" />
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
               <Layers aria-hidden="true" className="h-5 w-5 text-text" />
               Gestión de Ubicaciones Físicas y Cajones
             </h1>
             <p className="text-xs text-text-muted">
-              Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol (REQ-05).
+              Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol.
             </p>
           </div>
 

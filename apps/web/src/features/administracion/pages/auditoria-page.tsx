@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { Fragment, useState } from 'react';
 import { useAuditLogs, useUsers } from '@sgia/api-client';
 import { AUDIT_ACTIONS, AUDITABLE_TYPES, type AuditableType } from '@sgia/types';
@@ -52,12 +53,13 @@ export default function AuditoriaPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
+          <PageEyebrow area="ADMINISTRACIÓN" section="Auditoría" />
         <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
           <ScrollText aria-hidden="true" className="h-5 w-5 text-text" />
           Auditoría
         </h1>
         <p className="text-xs text-text-muted">
-          Registro de eventos críticos del sistema (solo lectura, REQ-NF-01). Horas en America/Santiago.
+          Registro de eventos críticos del sistema (solo lectura). Horas en America/Santiago.
         </p>
       </div>
 

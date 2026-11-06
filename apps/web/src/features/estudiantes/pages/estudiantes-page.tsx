@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useCallback, useEffect, useState } from 'react';
 import { useCareers, useDeleteStudent, useStudents } from '@sgia/api-client';
 import type { Student } from '@sgia/types';
@@ -69,12 +70,13 @@ export default function EstudiantesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
+          <PageEyebrow area="PAÑOL TI" section="Estudiantes" />
           <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
             <GraduationCap aria-hidden="true" className="h-5 w-5 text-text" />
             Estudiantes
           </h1>
           <p className="text-xs text-text-muted">
-            Registro de estudiantes que retiran préstamos presenciales (REQ-20).
+            Registro de estudiantes que retiran préstamos presenciales.
           </p>
         </div>
         <Button

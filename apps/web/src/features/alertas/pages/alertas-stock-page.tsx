@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -93,25 +94,16 @@ export default function AlertasStockPage() {
     <div className="flex flex-col gap-4">
       {/* Encabezado y Miga Técnica */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
-            SEDE TEMUCO · PAÑOL TI
-          </span>
-          <span className="text-text-muted text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
-            Gestión de Existencias
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
+          <PageEyebrow area="PAÑOL TI" section="Stock crítico" />
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
               <Bell aria-hidden="true" className="h-5 w-5 text-text" />
               Alertas de Stock Crítico y Preventivo
             </h1>
             <p className="text-xs text-text-muted">
-              Monitoreo en tiempo real de quiebres y umbrales mínimos de hardware según especificación REQ-06.
+              Monitoreo en tiempo real de quiebres y umbrales mínimos de hardware.
             </p>
           </div>
 

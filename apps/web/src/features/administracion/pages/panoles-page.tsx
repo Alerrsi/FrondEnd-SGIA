@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useDeleteStoreroom, useStorerooms } from '@sgia/api-client';
 import type { Storeroom } from '@sgia/types';
@@ -40,6 +41,7 @@ export default function PanolesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
+          <PageEyebrow area="ADMINISTRACIÓN" section="Pañoles" />
           <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
             <Warehouse aria-hidden="true" className="h-5 w-5 text-text" />
             Pañoles

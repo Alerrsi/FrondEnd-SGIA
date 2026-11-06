@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useInvoiceIntakes } from '@sgia/api-client';
 import { InvoiceIntakeStatus } from '@sgia/types';
@@ -61,29 +62,17 @@ export default function IngresosFacturaPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span
-            data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
-            SEDE TEMUCO · ADQUISICIONES
-          </span>
-          <span className="text-text-muted text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
-            Ingresos de factura
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
+          <PageEyebrow area="ADQUISICIONES" section="Facturas" />
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
               <ReceiptText aria-hidden="true" className="h-5 w-5 text-text" />
               Ingresos de factura
             </h1>
             <p className="text-xs text-text-muted">
               Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e
-              ingresar stock (REQ-17).
+              ingresar stock.
             </p>
           </div>
           <Button onClick={() => setUploadOpen(true)} className="text-xs">

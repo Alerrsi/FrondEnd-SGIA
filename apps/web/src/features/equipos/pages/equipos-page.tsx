@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -371,13 +372,11 @@ export default function EquiposPage() {
       {/* Cabecera de Página */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
+          <PageEyebrow area="PAÑOL TI" section="Equipos" />
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text">
+            <h1 className="text-xl font-bold tracking-tight text-text">
               Fichas Técnicas de Equipos
             </h1>
-            <Badge tone="neutral" mono>
-              FU-05 · REQ-12
-            </Badge>
           </div>
           <p className="text-xs sm:text-sm text-text-muted mt-1">
             Gestión de especificaciones de hardware, ciclo de vida útil y manuales de activos críticos (INACAP Sede Temuco).

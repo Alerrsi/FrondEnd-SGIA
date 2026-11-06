@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { usePurchaseTrace } from '@sgia/api-client';
 import type { PurchaseTrace } from '@sgia/types';
 import { formatDateTime } from '@/lib/format';
@@ -109,6 +110,7 @@ export default function CompraTrazabilidadPage() {
         <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
         Volver a compras
       </Link>
+      <PageEyebrow area="ADQUISICIONES" section="Trazabilidad" />
       <h1 className="text-xl font-bold tracking-tight text-text">
         Trazabilidad de la orden {data?.purchase.code ?? (purchaseId ? `#${purchaseId}` : '')}
       </h1>

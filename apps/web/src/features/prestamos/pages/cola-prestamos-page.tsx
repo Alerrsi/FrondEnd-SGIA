@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAprobarPrestamo, usePendingLoans, useRechazarPrestamo } from '@sgia/api-client';
@@ -128,14 +129,8 @@ export default function ColaPrestamosPage() {
       {/* Header técnico con miga de pan */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-text-muted">
-            <span>Operaciones Pañol</span>
-            <span>/</span>
-            <span className="font-semibold text-text">
-              Cola de Préstamos
-            </span>
-          </div>
-          <h1 className="mt-1 text-lg font-bold tracking-tight text-text">
+          <PageEyebrow area="PAÑOL TI" section="Cola de despacho" />
+          <h1 className="text-xl font-bold tracking-tight text-text">
             Cola de Despacho de Solicitudes Remotas
           </h1>
           <p className="text-xs text-text-muted">

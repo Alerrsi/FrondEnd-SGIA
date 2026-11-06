@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@/lib/format';
@@ -44,25 +45,16 @@ export default function CotizacionesPage() {
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
-            SEDE TEMUCO · ADQUISICIONES
-          </span>
-          <span className="text-text-muted text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
-            Cotizaciones
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
+          <PageEyebrow area="ADQUISICIONES" section="Cotizaciones" />
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
               <ClipboardList aria-hidden="true" className="h-5 w-5 text-text" />
               Cotizaciones a Proveedores
             </h1>
             <p className="text-xs text-text-muted">
-              Gestión y seguimiento de cotizaciones y adquisiciones de insumos (REQ-07 / REQ-08).
+              Gestión y seguimiento de cotizaciones y adquisiciones de insumos.
             </p>
           </div>
           <Button variant="primary" onClick={() => setFormOpen(true)} className="text-xs">

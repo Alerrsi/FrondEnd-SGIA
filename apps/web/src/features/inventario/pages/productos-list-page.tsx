@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useEffect, useState } from 'react';
 import {
   useDeleteProducto,
@@ -185,14 +186,8 @@ export default function ProductosListPage() {
       {/* 1. Encabezado Técnico Compacto y Acciones */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono font-medium bg-brand-soft text-brand-strong border border-brand/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-              SEDE TEMUCO · PAÑOL TI
-            </span>
-            <span className="text-text-muted text-xs font-mono">/ Módulo FU-02</span>
-          </div>
-          <h1 className="text-lg font-semibold tracking-tight text-text">
+          <PageEyebrow area="PAÑOL TI" section="Inventario" />
+          <h1 className="text-xl font-bold tracking-tight text-text">
             Control de Inventario y Activos
           </h1>
         </div>

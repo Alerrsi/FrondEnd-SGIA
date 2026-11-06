@@ -320,7 +320,7 @@ export { updateProductCondition } from './services/products';
 export * from './services/categories';
 export * from './hooks/categories';
 
-// Estudiantes (REQ-20)
+// Estudiantes
 export {
   fetchStudents,
   fetchStudentByRut,
@@ -342,7 +342,7 @@ export {
   useDeleteStudent,
 } from './hooks/students';
 
-// Mantenciones (REQ-18) y documentos de mantenimiento (REQ-19)
+// Mantenciones y documentos de mantenimiento (REQ-19)
 export {
   fetchMaintenanceRecords,
   fetchMaintenanceSummary,
@@ -376,7 +376,7 @@ export {
   useDownloadMaintenanceDocument,
 } from './hooks/maintenance';
 
-// Dashboard personalizado (REQ-15)
+// Dashboard personalizado
 export {
   fetchChartTemplates,
   fetchMyCharts,
@@ -399,7 +399,7 @@ export {
   useDeleteMyChart,
 } from './hooks/dashboard-charts';
 
-// Administración: pañoles, roles y auditoría (REQ-NF-01)
+// Administración: pañoles, roles y auditoría
 export {
   fetchStorerooms,
   fetchStoreroom,

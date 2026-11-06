@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useEffect, useState } from 'react';
 import {
   useCareers,
@@ -160,19 +161,10 @@ export default function UsuariosPage() {
     <div className="flex flex-col gap-4">
       {/* Vista y Encabezado con Micro-etiqueta Institucional */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
-            SEDE TEMUCO · ADMINISTRACIÓN
-          </span>
-          <span className="text-text-muted text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
-            Control de Usuarios
-          </span>
-        </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
+          <PageEyebrow area="ADMINISTRACIÓN" section="Usuarios" />
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
               <Users aria-hidden="true" className="h-5 w-5 text-text" />
               Directorio de Usuarios

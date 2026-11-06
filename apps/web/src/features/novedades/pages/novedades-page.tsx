@@ -1,3 +1,4 @@
+import { PageEyebrow } from '@/components/shared/page-eyebrow';
 import { useState } from 'react';
 import { useIncidentReports } from '@sgia/api-client';
 import type { IncidentReport, IncidentStatus } from '@sgia/types';
@@ -37,6 +38,7 @@ export default function NovedadesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
+          <PageEyebrow area="PAÑOL TI" section="Novedades" />
         <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
           <ClipboardCheck aria-hidden="true" className="h-5 w-5 text-text" />
           Informes de novedades

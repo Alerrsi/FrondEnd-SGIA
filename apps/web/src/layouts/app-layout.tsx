@@ -597,7 +597,7 @@ export default function AppLayout() {
           </main>
         </div>
 
-        {/* Modal de Ajustes del Sistema y Paleta de Colores (REQ-CONFIG) */}
+        {/* Modal de Ajustes del Sistema y Paleta de Colores */}
         <SettingsModal
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}

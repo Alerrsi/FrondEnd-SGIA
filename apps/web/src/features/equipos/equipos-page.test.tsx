@@ -134,7 +134,6 @@ describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', 
 
     // Título y badges
     expect(screen.getByText('Fichas Técnicas de Equipos')).toBeDefined();
-    expect(screen.getByText('FU-05 · REQ-12')).toBeDefined();
 
     // Cinta métrica compacta
     expect(screen.getByText('Total Equipos')).toBeDefined();
