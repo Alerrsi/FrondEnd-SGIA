@@ -257,7 +257,7 @@ export default function AppLayout() {
       <div className="flex h-screen bg-background font-sans text-text antialiased overflow-hidden">
         <a
           href="#contenido"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-surface focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-zinc-900 focus:shadow-md"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-surface focus:px-3 focus:py-2 focus:text-sm focus:font-medium  focus:shadow-md"
         >
           Saltar al contenido
         </a>
