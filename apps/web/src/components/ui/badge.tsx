@@ -16,46 +16,30 @@ export type Tone =
   | 'retired';
 
 const toneClasses: Record<Tone, string> = {
-  // Gris técnico atenuado
-  neutral:
-    'bg-zinc-100 text-zinc-700 border-zinc-200/80 dark:bg-zinc-800/80 dark:text-zinc-300 dark:border-zinc-700/60',
-  // Verde esmeralda (Disponible / En stock / Óptimo)
-  success:
-    'bg-emerald-50 text-emerald-700 border-emerald-200/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60',
-  available:
-    'bg-emerald-50 text-emerald-700 border-emerald-200/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60',
-  // Ámbar preventivo (En mantención / Revisión / Alerta preventiva)
-  warning:
-    'bg-amber-50 text-amber-700 border-amber-200/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60',
-  maintenance:
-    'bg-amber-50 text-amber-700 border-amber-200/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60',
-  // Rojo institucional / Error
-  danger:
-    'bg-rose-50 text-rose-700 border-rose-200/60 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/60',
-  // Rosa técnico de stock crítico (< umbral mínimo)
-  critical:
-    'bg-rose-50 text-rose-700 border-rose-200/60 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/60',
-  // Acento institucional INACAP
-  accent:
-    'bg-red-50 text-red-700 border-red-200/60 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/60',
-  // Azul técnico (En préstamo / Asignado en pañol)
-  loaned:
-    'bg-blue-50 text-blue-700 border-blue-200/60 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/60',
-  retired:
-    'bg-zinc-100 text-zinc-700 border-zinc-200/80 dark:bg-zinc-800/80 dark:text-zinc-300 dark:border-zinc-700/60',
+  neutral: 'bg-surface-raised text-text-muted border-border',
+  retired: 'bg-surface-raised text-text-muted border-border',
+  success: 'bg-ok-bg text-ok border-ok/30',
+  available: 'bg-ok-bg text-ok border-ok/30',
+  warning: 'bg-warn-bg text-warn border-warn/30',
+  maintenance: 'bg-warn-bg text-warn border-warn/30',
+  danger: 'bg-danger-bg text-danger border-danger/30',
+  critical: 'bg-danger-bg text-danger border-danger/30',
+  // Marca INACAP: distinto del rojo de error
+  accent: 'bg-brand-soft text-brand-strong border-brand/30',
+  loaned: 'bg-info/10 text-info border-info/30',
 };
 
 const dotClasses: Record<Tone, string> = {
-  neutral: 'bg-zinc-400 dark:bg-zinc-500',
-  success: 'bg-emerald-500',
-  available: 'bg-emerald-500',
-  warning: 'bg-amber-500',
-  maintenance: 'bg-amber-500',
-  danger: 'bg-rose-500',
-  critical: 'bg-rose-600 dark:bg-rose-500 animate-pulse',
-  accent: 'bg-red-600 dark:bg-red-500',
-  loaned: 'bg-blue-500',
-  retired: 'bg-zinc-400 dark:bg-zinc-500',
+  neutral: 'bg-text-muted',
+  retired: 'bg-text-muted',
+  success: 'bg-ok',
+  available: 'bg-ok',
+  warning: 'bg-warn',
+  maintenance: 'bg-warn',
+  danger: 'bg-danger',
+  critical: 'bg-danger animate-pulse',
+  accent: 'bg-brand',
+  loaned: 'bg-info',
 };
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {

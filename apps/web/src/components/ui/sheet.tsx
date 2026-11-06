@@ -36,19 +36,19 @@ export const SheetContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed z-50 flex flex-col gap-4 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-6 shadow-xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out duration-200',
+        'fixed z-50 flex flex-col gap-4 bg-surface text-text p-6 shadow-xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out duration-200',
         side === 'right' &&
-          'inset-y-0 right-0 h-full w-full sm:max-w-lg border-l border-zinc-200 dark:border-zinc-800 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
+          'inset-y-0 right-0 h-full w-full sm:max-w-lg border-l border-border data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
         side === 'left' &&
-          'inset-y-0 left-0 h-full w-full sm:max-w-lg border-r border-zinc-200 dark:border-zinc-800 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
+          'inset-y-0 left-0 h-full w-full sm:max-w-lg border-r border-border data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
         side === 'center' &&
-          'inset-y-0 left-1/2 h-dvh w-[90vw] -translate-x-1/2 border-x border-zinc-200 dark:border-zinc-800 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+          'inset-y-0 left-1/2 h-dvh w-[90vw] -translate-x-1/2 border-x border-border data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded p-1 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded p-1 text-text-muted hover:bg-surface-raised hover:text-text focus-visible:ring-2 focus-visible:ring-info">
         <X className="h-4 w-4" />
         <span className="sr-only">Cerrar</span>
       </DialogPrimitive.Close>
@@ -63,7 +63,7 @@ export const SheetHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col space-y-1 pb-3 border-b border-zinc-200 dark:border-zinc-800 text-left',
+      'flex flex-col space-y-1 pb-3 border-b border-border text-left',
       className,
     )}
     {...props}
@@ -77,7 +77,7 @@ export const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-base font-semibold text-zinc-900 dark:text-zinc-100', className)}
+    className={cn('text-base font-semibold text-text', className)}
     {...props}
   />
 ));
@@ -89,7 +89,7 @@ export const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-xs text-zinc-500 dark:text-zinc-400', className)}
+    className={cn('text-xs text-text-muted', className)}
     {...props}
   />
 ));

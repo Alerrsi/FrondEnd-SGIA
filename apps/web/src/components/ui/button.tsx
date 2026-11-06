@@ -10,17 +10,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  // Botón de Acción Principal Global (CTA): Monocromático de alto contraste técnico según el skill sgia-design
-  primary:
-    'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white shadow-xs font-medium focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600',
+  primary: 'bg-brand text-white hover:brightness-90 shadow-sm font-medium',
   secondary:
-    'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 font-medium focus-visible:ring-zinc-400',
-  ghost:
-    'bg-transparent text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-medium focus-visible:ring-zinc-400',
-  outline:
-    'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 font-medium focus-visible:ring-zinc-400',
-  danger:
-    'bg-rose-600 text-white hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700 font-medium shadow-xs focus-visible:ring-rose-500',
+    'bg-surface-raised text-text hover:brightness-95 border border-border font-medium',
+  ghost: 'bg-transparent text-text hover:bg-surface-raised font-medium',
+  outline: 'bg-surface text-text hover:bg-surface-raised border border-border font-medium',
+  danger: 'bg-danger text-white hover:brightness-90 font-medium shadow-sm',
 };
 
 const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
@@ -42,7 +37,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center rounded-md font-sans transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-1 cursor-pointer',
+        'inline-flex items-center justify-center rounded-md font-sans transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-info focus-visible:outline-none cursor-pointer',
         variantClasses[variant],
         sizeClasses[size],
         className,

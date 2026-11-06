@@ -1480,6 +1480,14 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
 
 /* Fase 1: foco visible, movimiento reducido, scroll en modales */
 @layer base {
+  /* Escala de z-index: contenido < sticky < overlay < modal < toast. Espaciado: escala 4 px de Tailwind (1 = 4 px). */
+  :root {
+    --z-sticky: 20;
+    --z-overlay: 50;
+    --z-modal: 60;
+    --z-toast: 100;
+  }
+
   :focus-visible {
     outline: 2px solid var(--info);
     outline-offset: 2px;
