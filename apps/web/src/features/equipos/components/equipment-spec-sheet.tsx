@@ -227,7 +227,7 @@ export function EquipmentSpecSheet({
               <div
                 className={`h-full transition-[width] duration-300 rounded-full ${
                   lifeCycle.percentUsed >= 90
-                    ? 'bg-rose-500'
+                    ? 'bg-danger-bg0'
                     : lifeCycle.percentUsed >= 70
                       ? 'bg-amber-500'
                       : 'bg-emerald-500'
@@ -282,7 +282,7 @@ export function EquipmentSpecSheet({
           {manualUrl ? (
             <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-background p-2.5 mt-1">
               <div className="flex items-center gap-2 overflow-hidden">
-                <FileText aria-hidden="true" className="h-4 w-4 text-red-600 shrink-0" />
+                <FileText aria-hidden="true" className="h-4 w-4 text-danger shrink-0" />
                 <span className="font-mono text-xs text-text truncate">
                   {manualUrl}
                 </span>

@@ -56,7 +56,7 @@ export function NotificationBell() {
               Alertas de Stock
             </span>
             {totalUnresolved > 0 && (
-              <span className="rounded bg-red-500/10 border border-red-500/20 px-1.5 py-0.2 font-mono text-xs font-bold text-danger">
+              <span className="rounded bg-danger-bg border border-danger/30 px-1.5 py-0.2 font-mono text-xs font-bold text-danger">
                 {totalUnresolved} activas
               </span>
             )}
@@ -115,7 +115,7 @@ export function NotificationBell() {
                   </div>
                   <div className="flex items-center gap-2 text-xs font-mono text-text-muted">
                     {isCritical ? (
-                      <AlertTriangle aria-hidden="true" className="h-3 w-3 text-rose-500 shrink-0" />
+                      <AlertTriangle aria-hidden="true" className="h-3 w-3 text-danger shrink-0" />
                     ) : (
                       <AlertCircle aria-hidden="true" className="h-3 w-3 text-amber-500 shrink-0" />
                     )}

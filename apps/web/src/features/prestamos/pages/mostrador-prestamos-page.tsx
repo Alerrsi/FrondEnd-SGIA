@@ -299,8 +299,8 @@ export default function MostradorPrestamosPage() {
       {/* Header técnico con miga de pan */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
           <span className="text-text-muted text-xs font-mono">/</span>
@@ -421,7 +421,7 @@ export default function MostradorPrestamosPage() {
                     htmlFor="docente_run"
                     className="font-mono text-xs text-text"
                   >
-                    RUN / Credencial Docente <span className="text-red-500">*</span>
+                    RUN / Credencial Docente <span className="text-danger">*</span>
                   </label>
                   <div className="relative mt-1">
                     <User aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
@@ -506,13 +506,13 @@ export default function MostradorPrestamosPage() {
             </Card>
 
             {/* Captura de Escáner Code128 */}
-            <Card className="flex flex-col gap-2 p-4 border-2 border-red-500/30 bg-red-500/5 shadow-xs">
+            <Card className="flex flex-col gap-2 p-4 border-2 border-danger/30 bg-danger-bg shadow-xs">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-danger">
                   2. Entrada Lector Code128
                 </span>
                 <span className="inline-flex items-center gap-1 rounded bg-danger-bg px-1.5 py-0.5 font-mono text-xs text-danger">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
                   Auto-foco
                 </span>
               </div>
@@ -531,7 +531,7 @@ export default function MostradorPrestamosPage() {
                   onKeyDown={handleBarcodeKeyDown}
                   placeholder="Dispara con pistola o escribe SKU + Enter…"
                   aria-label="Código de barras"
-                  className="h-10 w-full rounded-md border-2 border-border bg-background px-3 pl-9 font-mono text-xs font-semibold text-text placeholder:font-normal placeholder:text-text-muted focus:border-red-600 focus:outline-none"
+                  className="h-10 w-full rounded-md border-2 border-border bg-background px-3 pl-9 font-mono text-xs font-semibold text-text placeholder:font-normal placeholder:text-text-muted focus:border-danger focus:outline-none"
                 />
               </div>
             </Card>
@@ -557,7 +557,7 @@ export default function MostradorPrestamosPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setScannedItems([])}
-                    className="h-7 text-xs text-text-muted hover:text-rose-600"
+                    className="h-7 text-xs text-text-muted hover:text-danger"
                   >
                     Limpiar lista
                   </Button>
@@ -626,7 +626,7 @@ export default function MostradorPrestamosPage() {
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(item.producto.id)}
-                              className="text-text-muted hover:text-rose-600 p-1"
+                              className="text-text-muted hover:text-danger p-1"
                               title="Quitar ítem"
                             >
                               <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
@@ -705,7 +705,7 @@ export default function MostradorPrestamosPage() {
                       className={cn(
                         'cursor-pointer border p-3 transition-colors',
                         isSelected
-                          ? 'border-red-600 bg-red-50/10'
+                          ? 'border-danger bg-danger-bg'
                           : 'border-border bg-surface hover:border-text-muted',
                       )}
                     >
@@ -846,7 +846,7 @@ export default function MostradorPrestamosPage() {
                                   }))
                                 }
                                 placeholder="Ej. Cable cortado, fusible quemado, punta de prueba faltante…"
-                                className="h-7 w-full rounded border border-danger/30 bg-rose-50/20 px-2 font-mono text-xs text-text placeholder:text-text-muted focus:outline-none"
+                                className="h-7 w-full rounded border border-danger/30 bg-danger-bg px-2 font-mono text-xs text-text placeholder:text-text-muted focus:outline-none"
                               />
                             </div>
                           )}

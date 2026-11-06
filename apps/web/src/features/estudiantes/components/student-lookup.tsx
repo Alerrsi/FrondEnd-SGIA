@@ -54,7 +54,7 @@ export function StudentLookup({
     <div className="flex flex-col gap-2">
       <div>
         <label htmlFor="student_rut" className="font-mono text-xs text-text">
-          RUT del estudiante <span className="text-red-500">*</span>
+          RUT del estudiante <span className="text-danger">*</span>
         </label>
         <input
           id="student_rut"

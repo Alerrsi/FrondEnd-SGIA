@@ -602,7 +602,7 @@ export default function DashboardPage() {
                     type="button"
                     size="sm"
                     variant="ghost"
-                    className="text-xs text-rose-600"
+                    className="text-xs text-danger"
                     onClick={() => void run(() => panel.remove(hiddenChart.id), 'Gráfico eliminado')}
                   >
                     Eliminar

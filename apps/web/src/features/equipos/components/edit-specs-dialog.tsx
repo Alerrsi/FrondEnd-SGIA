@@ -240,7 +240,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     onClick={() => handleRemoveRow(idx)}
                     title="Eliminar parámetro"
                     aria-label={`Eliminar parámetro ${row.key || idx + 1}`}
-                    className="p-1.5 text-text-muted hover:text-rose-600 rounded transition-colors"
+                    className="p-1.5 text-text-muted hover:text-danger rounded transition-colors"
                   >
                     <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                   </button>

@@ -271,7 +271,7 @@ export function InventarioTable({
                 <div
                   className={cn(
                     'h-full transition-[width] duration-300',
-                    isCritical ? 'bg-rose-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500',
+                    isCritical ? 'bg-danger-bg0' : isWarning ? 'bg-amber-500' : 'bg-emerald-500',
                   )}
                   style={{ width: `${Math.max(ratio, 8)}%` }}
                 />
@@ -373,7 +373,7 @@ export function InventarioTable({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-red-500 hover:text-red-700"
+                  className="h-7 w-7 text-danger hover:text-danger"
                   title="Eliminar producto"
                   aria-label={`Eliminar ${prod.nombre}`}
                   onClick={() => onDelete(prod)}

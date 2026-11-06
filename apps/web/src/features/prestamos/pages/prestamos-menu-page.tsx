@@ -70,7 +70,7 @@ export default function PrestamosMenuPage() {
             </div>
 
             <div>
-              <h2 className="text-sm font-bold text-text group-hover:text-red-600 transition-colors">
+              <h2 className="text-sm font-bold text-text group-hover:text-brand-strong transition-colors">
                 Mostrador y Devoluciones
               </h2>
               <p className="mt-1 text-xs text-text-muted leading-relaxed">
@@ -110,7 +110,7 @@ export default function PrestamosMenuPage() {
             </div>
 
             <div>
-              <h2 className="text-sm font-bold text-text group-hover:text-red-600 transition-colors">
+              <h2 className="text-sm font-bold text-text group-hover:text-brand-strong transition-colors">
                 Cola de Solicitudes Remotas
               </h2>
               <p className="mt-1 text-xs text-text-muted leading-relaxed">
@@ -141,7 +141,7 @@ export default function PrestamosMenuPage() {
                 <History aria-hidden="true" className="h-5 w-5" />
               </div>
               {overdueCount > 0 && (
-                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-danger/30 flex items-center gap-1">
+                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-danger-bg text-danger border border-danger/30 flex items-center gap-1">
                   <AlertTriangle aria-hidden="true" className="h-3 w-3" />
                   {overdueCount} Atrasados
                 </span>
@@ -149,7 +149,7 @@ export default function PrestamosMenuPage() {
             </div>
 
             <div>
-              <h2 className="text-sm font-bold text-text group-hover:text-red-600 transition-colors">
+              <h2 className="text-sm font-bold text-text group-hover:text-brand-strong transition-colors">
                 Historial y Auditoría
               </h2>
               <p className="mt-1 text-xs text-text-muted leading-relaxed">

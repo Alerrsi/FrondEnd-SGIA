@@ -96,7 +96,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 6. Tasa de Atrasos */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <Percent aria-hidden="true" className="h-3 w-3 text-rose-500" />
+          <Percent aria-hidden="true" className="h-3 w-3 text-danger" />
           <span>Tasa Atrasos</span>
         </div>
         <span className="mt-1 text-base font-bold text-danger tabular-nums">
@@ -107,7 +107,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 7. Alertas Críticas */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <AlertOctagon aria-hidden="true" className="h-3 w-3 text-red-600 animate-pulse" />
+          <AlertOctagon aria-hidden="true" className="h-3 w-3 text-danger animate-pulse" />
           <span>Alertas Stock</span>
         </div>
         <span className="mt-1 text-base font-bold text-danger tabular-nums">

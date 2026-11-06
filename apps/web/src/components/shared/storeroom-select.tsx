@@ -32,7 +32,7 @@ export function StoreroomSelect({
       value={value ?? ''}
       aria-invalid={invalid || undefined}
       onChange={(e) => onChange(e.target.value ? Number(e.target.value) : undefined)}
-      className={cn(className, invalid && 'border-rose-400')}
+      className={cn(className, invalid && 'border-danger')}
     >
       <option value="">{isLoading ? 'Cargando pañoles…' : placeholder}</option>
       {storerooms.map((s) => (

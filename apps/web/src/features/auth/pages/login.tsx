@@ -88,8 +88,8 @@ export default function LoginPage() {
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-surface shadow-xs">
             <Boxes aria-hidden="true" className="h-6 w-6 text-text" />
           </div>
-          <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger mb-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+          <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong mb-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </div>
           <h1 className="font-mono text-xl font-bold tracking-tight text-text">

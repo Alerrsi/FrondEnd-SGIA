@@ -254,7 +254,7 @@ export default function EquiposPage() {
                 <div
                   className={`h-full rounded-full transition-[width] ${
                     statusTone === 'critical'
-                      ? 'bg-rose-500'
+                      ? 'bg-danger-bg0'
                       : statusTone === 'warning'
                         ? 'bg-amber-500'
                         : 'bg-emerald-500'
@@ -285,9 +285,9 @@ export default function EquiposPage() {
               target="_blank"
               rel="noopener noreferrer"
               title="Abrir manual en AWS S3"
-              className="inline-flex items-center gap-1 font-mono text-xs text-text-muted hover:text-red-600 hover:underline"
+              className="inline-flex items-center gap-1 font-mono text-xs text-text-muted hover:text-danger hover:underline"
             >
-              <FileText aria-hidden="true" className="h-3 w-3 text-red-600" />
+              <FileText aria-hidden="true" className="h-3 w-3 text-danger" />
               <span>PDF S3</span>
               <ExternalLink aria-hidden="true" className="h-2.5 w-2.5" />
             </a>
@@ -494,7 +494,7 @@ export default function EquiposPage() {
                 </tr>
               ) : isError ? (
                 <tr>
-                  <td colSpan={columns.length} className="py-12 text-center text-rose-500">
+                  <td colSpan={columns.length} className="py-12 text-center text-danger">
                     Error al cargar los equipos. Por favor, reintenta más tarde.
                   </td>
                 </tr>

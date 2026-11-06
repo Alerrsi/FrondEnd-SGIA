@@ -397,7 +397,7 @@ export default function AppLayout() {
                       onClick={handleLogout}
                       title="Cerrar sesión"
                       aria-label="Cerrar sesión"
-                      className="gnav-item flex items-center justify-center text-text-muted hover:text-red-600 cursor-pointer"
+                      className="gnav-item flex items-center justify-center text-text-muted hover:text-danger cursor-pointer"
                     >
                       <LogOut aria-hidden="true" size={18} strokeWidth={2} />
                     </button>

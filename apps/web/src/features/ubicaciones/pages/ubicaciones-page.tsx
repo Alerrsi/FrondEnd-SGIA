@@ -325,7 +325,7 @@ export default function UbicacionesPage() {
                           e.stopPropagation();
                           setPendingDelete({ kind: 'location', item: loc });
                         }}
-                        className="h-6 w-6 text-text-muted hover:text-rose-600"
+                        className="h-6 w-6 text-text-muted hover:text-danger"
                         title="Eliminar ubicación"
                       >
                         <Trash2 aria-hidden="true" className="h-3 w-3" />
@@ -396,7 +396,7 @@ export default function UbicacionesPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setPendingDelete({ kind: 'cajon', item: cajon })}
-                        className="h-6 w-6 text-text-muted hover:text-rose-600 shrink-0"
+                        className="h-6 w-6 text-text-muted hover:text-danger shrink-0"
                         title="Eliminar cajón"
                       >
                         <Trash2 aria-hidden="true" className="h-3 w-3" />

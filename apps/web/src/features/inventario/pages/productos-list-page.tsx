@@ -186,8 +186,8 @@ export default function ProductosListPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono font-medium bg-danger-bg text-danger border border-danger/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-mono font-medium bg-brand-soft text-brand-strong border border-brand/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
               SEDE TEMUCO · PAÑOL TI
             </span>
             <span className="text-text-muted text-xs font-mono">/ Módulo FU-02</span>

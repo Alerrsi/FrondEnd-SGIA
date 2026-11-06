@@ -19,7 +19,7 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text focus:border-text-muted focus:outline-none focus:ring-1 focus:ring-info disabled:opacity-50 aria-invalid:border-danger dark:aria-invalid:border-danger';
 const labelClasses =
   'text-xs font-semibold uppercase tracking-wider text-text-muted font-mono';
 const errorClasses = 'mt-1 text-xs text-danger';

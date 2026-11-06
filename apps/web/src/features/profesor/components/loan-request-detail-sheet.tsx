@@ -116,7 +116,7 @@ export function LoanRequestDetailSheet({
             {canCancelLoanRequest(loan) && (
               <Button
                 variant="ghost"
-                className="self-start text-xs text-danger hover:bg-rose-50"
+                className="self-start text-xs text-danger hover:bg-danger-bg"
                 onClick={() => onCancelRequest(loan)}
               >
                 <Trash2 aria-hidden="true" className="h-4 w-4" />

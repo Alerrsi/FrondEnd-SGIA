@@ -497,7 +497,7 @@ export function InvoiceReviewForm({
                         onClick={() => remove(index)}
                         disabled={pending}
                         aria-label={`Quitar ítem ${index + 1}`}
-                        className="rounded p-1 text-text-muted hover:bg-rose-50 hover:text-danger"
+                        className="rounded p-1 text-text-muted hover:bg-danger-bg hover:text-danger"
                       >
                         <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>

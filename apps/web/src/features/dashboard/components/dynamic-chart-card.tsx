@@ -185,7 +185,7 @@ export function DynamicChartCard({
             variant="ghost"
             size="icon"
             onClick={onDelete}
-            className="h-6 w-6 text-text-muted hover:text-rose-600"
+            className="h-6 w-6 text-text-muted hover:text-danger"
             title="Eliminar gráfico"
             aria-label="Eliminar gráfico"
           >

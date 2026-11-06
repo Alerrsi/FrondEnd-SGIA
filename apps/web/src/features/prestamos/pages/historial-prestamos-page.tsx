@@ -309,9 +309,9 @@ export default function HistorialPrestamosPage() {
         <div className="flex items-center gap-2">
           <span
             data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger"
+            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
           <span className="text-text-muted text-xs font-mono">/</span>
@@ -379,7 +379,7 @@ export default function HistorialPrestamosPage() {
 
         <div className="flex items-center gap-2 px-4">
           <AlertTriangle aria-hidden="true"
-            className={cn('h-3 w-3', overdueCount > 0 ? 'text-rose-500' : 'text-text-muted')}
+            className={cn('h-3 w-3', overdueCount > 0 ? 'text-danger' : 'text-text-muted')}
           />
           <span className="text-text-muted">Atrasados Críticos:</span>
           <strong

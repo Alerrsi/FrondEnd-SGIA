@@ -257,7 +257,7 @@ export function UsuariosTable({
                     'rounded p-1 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-info',
                     isSelf
                       ? 'cursor-not-allowed opacity-30 text-text-muted'
-                      : 'text-text-muted hover:bg-red-500/10 hover:text-red-600',
+                      : 'text-text-muted hover:bg-danger-bg hover:text-danger',
                   )}
                 >
                   <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />

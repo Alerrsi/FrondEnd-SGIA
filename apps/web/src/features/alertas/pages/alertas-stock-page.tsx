@@ -94,8 +94,8 @@ export default function AlertasStockPage() {
       {/* Encabezado y Miga Técnica */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
+          <span data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </span>
           <span className="text-text-muted text-xs font-mono">/</span>
@@ -150,7 +150,7 @@ export default function AlertasStockPage() {
         </div>
 
         <div className="flex items-center gap-2 px-4">
-          <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+          <span className="h-2 w-2 rounded-full bg-danger-bg0 animate-pulse" />
           <span className="text-text-muted">Nivel Crítico (≤ mín):</span>
           <strong className="text-danger tabular-nums font-semibold">
             {criticalCount}

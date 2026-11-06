@@ -86,7 +86,7 @@ export function LoanDetailSheet({ loan, onClose }: { loan: Prestamo | null; onCl
                   <p
                     className={cn(
                       'font-medium tabular-nums',
-                      loan.diasAtraso ? 'text-rose-600 font-bold' : 'text-text-muted',
+                      loan.diasAtraso ? 'text-danger font-bold' : 'text-text-muted',
                     )}
                   >
                     {loan.diasAtraso

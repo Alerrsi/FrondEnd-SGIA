@@ -17,7 +17,7 @@ export function ForbiddenPage() {
 
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4 text-text">
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-danger shadow-xs">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg border border-danger/30 bg-danger-bg text-danger shadow-xs">
         <ShieldAlert aria-hidden="true" className="h-7 w-7" />
       </div>
 

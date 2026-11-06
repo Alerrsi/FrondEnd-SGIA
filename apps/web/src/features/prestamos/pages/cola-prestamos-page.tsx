@@ -199,7 +199,7 @@ export default function ColaPrestamosPage() {
           <Package aria-hidden="true" className="h-5 w-5 text-blue-500" />
         </Card>
 
-        <Card className="flex items-center justify-between p-3 border-l-4 border-l-rose-500">
+        <Card className="flex items-center justify-between p-3 border-l-4 border-l-danger">
           <div>
             <span className="block text-xs font-semibold uppercase tracking-wider text-text-muted">
               Vencidos / Fuera de plazo
@@ -208,7 +208,7 @@ export default function ColaPrestamosPage() {
               {rawLoans.filter((l) => (l.estado || '').toLowerCase() === 'vencido').length}
             </span>
           </div>
-          <AlertTriangle aria-hidden="true" className="h-5 w-5 text-rose-500" />
+          <AlertTriangle aria-hidden="true" className="h-5 w-5 text-danger" />
         </Card>
       </div>
 
@@ -392,7 +392,7 @@ export default function ColaPrestamosPage() {
                     size="sm"
                     onClick={() => openRejectModal(loan)}
                     disabled={rechazarMutation.isPending}
-                    className="text-xs text-rose-600 hover:bg-rose-50 hover:text-rose-700 h-8 px-2.5"
+                    className="text-xs text-danger hover:bg-danger-bg hover:text-danger h-8 px-2.5"
                   >
                     <Ban aria-hidden="true" className="h-3.5 w-3.5 mr-1" />
                     <span>Rechazar</span>
@@ -440,7 +440,7 @@ export default function ColaPrestamosPage() {
               htmlFor="rejection_reason"
               className="font-mono text-xs font-medium text-text"
             >
-              Motivo de Rechazo <span className="text-rose-500">*</span>
+              Motivo de Rechazo <span className="text-danger">*</span>
             </label>
             <textarea
               id="rejection_reason"

@@ -144,7 +144,7 @@ export function UnitDocumentsDialog({
         {isLoading ? (
           <Loader2 aria-hidden="true" className="mx-auto h-4 w-4 animate-spin text-text-muted" />
         ) : isError ? (
-          <p role="alert" className="text-xs text-rose-600">
+          <p role="alert" className="text-xs text-danger">
             {apiErrorToMessage(error)}
           </p>
         ) : docs.length === 0 ? (
@@ -182,7 +182,7 @@ export function UnitDocumentsDialog({
                       aria-label={`Eliminar ${doc.title}`}
                       onClick={() => setToDelete(doc)}
                     >
-                      <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-rose-600" />
+                      <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
                     </Button>
                   )}
                 </div>
@@ -221,7 +221,7 @@ export function UnitDocumentsDialog({
               onChange={(e) => setTitle(e.target.value)}
               className={controlClasses}
             />
-            {errors.title && <p className="text-xs text-rose-600">{errors.title}</p>}
+            {errors.title && <p className="text-xs text-danger">{errors.title}</p>}
             <div className="flex items-center gap-2">
               <input
                 ref={fileRef}
@@ -241,7 +241,7 @@ export function UnitDocumentsDialog({
               </Button>
             </div>
             {(errors.file || errors.valid_until || errors.document_type) && (
-              <p role="alert" className="text-xs text-rose-600">
+              <p role="alert" className="text-xs text-danger">
                 {errors.file ?? errors.valid_until ?? errors.document_type}
               </p>
             )}

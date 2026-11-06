@@ -59,7 +59,7 @@ export function StudentDetailSheet({
         </h3>
         <div className="flex-1 overflow-y-auto">
           {loans.isError ? (
-            <p role="alert" className="text-xs text-rose-600">
+            <p role="alert" className="text-xs text-danger">
               {apiErrorToMessage(loans.error)}
             </p>
           ) : (loans.data?.data ?? []).length === 0 ? (

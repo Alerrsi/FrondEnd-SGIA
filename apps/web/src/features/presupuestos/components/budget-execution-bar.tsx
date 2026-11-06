@@ -27,7 +27,7 @@ export function BudgetExecutionBar({
   const reservedPct = Math.min(100 - consumedPct, (reserved / safe) * 100);
   const tone =
     percent >= 100
-      ? 'bg-rose-500'
+      ? 'bg-danger-bg0'
       : percent >= 80
         ? 'bg-amber-500'
         : 'bg-text-muted';

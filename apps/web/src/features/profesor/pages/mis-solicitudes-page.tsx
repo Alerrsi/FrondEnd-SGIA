@@ -101,7 +101,7 @@ export default function MisSolicitudesPage() {
             Cargando solicitudes…
           </div>
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
+          <div className="m-3 flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar tus solicitudes.
           </div>

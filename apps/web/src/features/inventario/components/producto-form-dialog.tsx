@@ -71,7 +71,7 @@ function Label({
   return (
     <label htmlFor={htmlFor} className="mb-1 block text-xs font-semibold uppercase tracking-wider text-text-muted">
       {children}
-      {required && <span className="ml-0.5 text-red-500">*</span>}
+      {required && <span className="ml-0.5 text-danger">*</span>}
     </label>
   );
 }

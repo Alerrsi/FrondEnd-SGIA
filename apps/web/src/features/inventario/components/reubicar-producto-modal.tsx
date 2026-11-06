@@ -199,7 +199,7 @@ export function ReubicarProductoModal({
                 htmlFor="reubicar-sala-select"
                 className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
-                1. Sala o Almacén principal <span className="text-red-500">*</span>
+                1. Sala o Almacén principal <span className="text-danger">*</span>
               </label>
               <select
                 id="reubicar-sala-select"
@@ -268,7 +268,7 @@ export function ReubicarProductoModal({
                 htmlFor="reubicar-custom-sala"
                 className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
-                Nombre de la Sala <span className="text-red-500">*</span>
+                Nombre de la Sala <span className="text-danger">*</span>
               </label>
               <input
                 id="reubicar-custom-sala"
@@ -286,7 +286,7 @@ export function ReubicarProductoModal({
                 htmlFor="reubicar-custom-cajon"
                 className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted"
               >
-                Código de Cajón / Estante <span className="text-red-500">*</span>
+                Código de Cajón / Estante <span className="text-danger">*</span>
               </label>
               <input
                 id="reubicar-custom-cajon"
