@@ -115,7 +115,7 @@ export function BudgetMonthlyChart({ budgetId, year }: { budgetId: number; year:
 
   if (isLoading)
     return (
-      <div className="py-10 text-center text-xs text-zinc-400">Cargando evolución mensual…</div>
+      <div className="py-10 text-center text-xs text-text-muted">Cargando evolución mensual…</div>
     );
 
   const hasData = rows.some((r) => r.reserved || r.consumed || r.restored);
@@ -131,26 +131,26 @@ export function BudgetMonthlyChart({ budgetId, year }: { budgetId: number; year:
           <Bar data={chartData} options={options} />
         </div>
       ) : (
-        <p className="py-6 text-center text-xs text-zinc-400">
+        <p className="py-6 text-center text-xs text-text-muted">
           Sin movimientos de reserva o consumo en {year}.
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+      <div className="overflow-x-auto rounded-md border border-border">
         <table className="w-full border-collapse text-xs">
           <caption className="sr-only">Detalle mensual del presupuesto {year}</caption>
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
               <th className="px-3 py-2 text-left font-medium">Mes</th>
               <th className="px-3 py-2 text-right font-medium">Reservado</th>
               <th className="px-3 py-2 text-right font-medium">Consumido</th>
               <th className="px-3 py-2 text-right font-medium">Repuesto</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+          <tbody className="divide-y divide-border/60">
             {rows.map((r) => (
               <tr key={r.month}>
-                <td className="px-3 py-1.5 text-zinc-700 dark:text-zinc-300">
+                <td className="px-3 py-1.5 text-text">
                   {MONTHS[r.month - 1]}
                 </td>
                 <td className="px-3 py-1.5 text-right font-mono tabular-nums">

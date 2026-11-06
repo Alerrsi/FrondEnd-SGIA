@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { usePurchases } from '@sgia/api-client';
 import { PurchaseStatus, type PurchaseOrder } from '@sgia/types';
 import { AlertCircle, Plus, ShoppingCart } from 'lucide-react';
+import { useUrlParam } from '@/lib/use-url-param';
 import { useSearchParams } from 'react-router-dom';
 
 import { PurchaseStatusBadge } from '@/components/ui/badge';
@@ -26,8 +27,9 @@ export default function ComprasPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const quotationParam = Number(searchParams.get('cotizacion')) || null;
 
-  const [status, setStatus] = useState<PurchaseStatus | ''>('');
-  const [search, setSearch] = useState('');
+  const [statusParam, setStatus] = useUrlParam('estado');
+  const status = statusParam as PurchaseStatus | '';
+  const [search, setSearch] = useUrlParam('q');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [formOpen, setFormOpen] = useState(quotationParam !== null && canCreate);
 
@@ -51,24 +53,24 @@ export default function ComprasPage() {
         <div className="flex items-center gap-2">
           <span
             data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400"
+            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · ADQUISICIONES
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Compras
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 text-text" />
               Órdenes de Compra
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Seguimiento de adquisiciones y recepción de mercancía (REQ-08).
             </p>
           </div>
@@ -101,23 +103,23 @@ export default function ComprasPage() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por código, guía o factura…"
           aria-label="Buscar órdenes"
-          className="h-8.5 w-full sm:w-72 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400"
+          className="h-8.5 w-full sm:w-72 rounded-md border border-border bg-surface px-3 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400"
         />
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center font-mono text-xs text-zinc-500">
+        <div className="py-12 text-center font-mono text-xs text-text-muted">
           Cargando órdenes de compra…
         </div>
       ) : isError || !data ? (
-        <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
+        <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
           <AlertCircle className="h-5 w-5 shrink-0" />
           <span>No se pudieron cargar las órdenes de compra desde el servidor.</span>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <div className="overflow-x-auto rounded-lg border border-border bg-surface">
           <table className="w-full text-xs">
-            <thead className="bg-zinc-50 dark:bg-zinc-950 text-zinc-500">
+            <thead className="bg-background text-text-muted">
               <tr>
                 <th className="px-3 py-2 text-left font-semibold">Código</th>
                 <th className="px-3 py-2 text-left font-semibold">Proveedor</th>
@@ -129,7 +131,7 @@ export default function ComprasPage() {
             <tbody>
               {data.data.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-3 py-8 text-center text-zinc-400">
+                  <td colSpan={5} className="px-3 py-8 text-center text-text-muted">
                     No hay órdenes de compra para el filtro seleccionado.
                   </td>
                 </tr>
@@ -140,19 +142,19 @@ export default function ComprasPage() {
                   tabIndex={0}
                   onClick={() => setSelectedId(p.id)}
                   onKeyDown={(e) => e.key === 'Enter' && setSelectedId(p.id)}
-                  className="cursor-pointer border-t border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 focus:outline-none focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
+                  className="cursor-pointer border-t border-zinc-100 dark:border-zinc-800 hover:bg-surface-raised/50 focus:outline-none focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
                 >
-                  <td className="px-3 py-2 font-mono font-bold text-zinc-900 dark:text-zinc-100">
+                  <td className="px-3 py-2 font-mono font-bold text-text">
                     {p.code ?? `#${p.id}`}
                   </td>
-                  <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="px-3 py-2 text-text">
                     {p.supplier?.name ?? '—'}
                   </td>
                   <td className="px-3 py-2 text-right font-mono">{formatCLP(p.total_amount)}</td>
                   <td className="px-3 py-2">
                     <PurchaseStatusBadge status={p.status} />
                   </td>
-                  <td className="px-3 py-2 font-mono text-zinc-500">{formatDate(p.created_at)}</td>
+                  <td className="px-3 py-2 font-mono text-text-muted">{formatDate(p.created_at)}</td>
                 </tr>
               ))}
             </tbody>

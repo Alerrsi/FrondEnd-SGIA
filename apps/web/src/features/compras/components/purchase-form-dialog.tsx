@@ -16,19 +16,20 @@ import {
 } from '@/features/compras/lib/purchase-form-schema';
 import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
 import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
+import { useUnsavedChangesWarning } from '@/lib/use-unsaved-changes';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-danger';
 
 const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
+  'text-xs font-semibold uppercase tracking-wider text-text-muted font-mono';
 
 const NO_PRICE_MESSAGE =
   'El proveedor no cargó precio para este producto: regístralo en la cotización.';
 
-const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-danger';
 
 const optionalId = (v: unknown) =>
   v === '' || v === null || v === undefined ? undefined : Number(v);
@@ -79,6 +80,8 @@ export function PurchaseFormDialog({
 
   const acceptedQuotations = quotations?.data ?? [];
   const isPending = createPurchase.isPending;
+
+  useUnsavedChangesWarning(isDirty);
 
   const onSubmit = handleSubmit(async (values) => {
     setPriceError(null);
@@ -180,7 +183,7 @@ export function PurchaseFormDialog({
             <p className={errorClasses}>{errors.annual_budget_id.message}</p>
           )}
           {budget && (
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Inicial <span className="font-mono">{formatCLP(budget.initial_amount)}</span>
               {' · '}reservado{' '}
               <span className="font-mono">{formatCLP(budget.reserved_amount)}</span>
@@ -189,7 +192,7 @@ export function PurchaseFormDialog({
               {' · '}libre{' '}
               <BudgetFreeAmount
                 amount={budget.free_amount}
-                className="text-zinc-800 dark:text-zinc-200"
+                className="text-text"
               />
             </p>
           )}
@@ -232,7 +235,7 @@ export function PurchaseFormDialog({
               {errors.quotation_justification && (
                 <p className={errorClasses}>{errors.quotation_justification.message}</p>
               )}
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-text-muted">
                 Obligatoria si respondieron menos de 3 proveedores.
               </p>
             </div>
@@ -247,7 +250,7 @@ export function PurchaseFormDialog({
                 control={control}
                 name="quotation_ids"
                 render={({ field }) => (
-                  <div className="max-h-40 overflow-y-auto rounded-md border border-zinc-200 dark:border-zinc-800 p-2 space-y-1">
+                  <div className="max-h-40 overflow-y-auto rounded-md border border-border p-2 space-y-1">
                     {acceptedQuotations.map((q) => (
                       <label key={q.id} className="flex items-center gap-2 text-xs font-mono">
                         <input
@@ -266,7 +269,7 @@ export function PurchaseFormDialog({
                       </label>
                     ))}
                     {acceptedQuotations.length === 0 && (
-                      <p className="text-xs text-zinc-400">
+                      <p className="text-xs text-text-muted">
                         No hay cotizaciones aceptadas disponibles.
                       </p>
                     )}
@@ -296,7 +299,7 @@ export function PurchaseFormDialog({
                 ))}
               </select>
               {errors.supplier_id && <p className={errorClasses}>{errors.supplier_id.message}</p>}
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-text-muted">
                 Se consolidan los ítems por producto y el precio sale de la oferta del proveedor;
                 las cotizaciones pasarán a «convertida» y el total quedará reservado en el
                 presupuesto.
@@ -337,7 +340,7 @@ export function PurchaseFormDialog({
           </p>
         )}
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
             Cancelar
           </Button>

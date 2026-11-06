@@ -19,7 +19,7 @@ import { MOVEMENT_TYPES, movementMeta } from '@/features/presupuestos/lib/moveme
 const columnHelper = createColumnHelper<BudgetMovement>();
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-zinc-400';
 
 const dateTime = formatDateTime;
 
@@ -43,7 +43,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
       columnHelper.accessor('created_at', {
         header: 'Fecha',
         cell: (info) => (
-          <span className="font-mono text-zinc-500">{dateTime(info.getValue())}</span>
+          <span className="font-mono text-text-muted">{dateTime(info.getValue())}</span>
         ),
       }),
       columnHelper.accessor('type', {
@@ -90,16 +90,16 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
               </Link>
             );
           }
-          return <span className="text-zinc-400">—</span>;
+          return <span className="text-text-muted">—</span>;
         },
       }),
       columnHelper.accessor('notes', {
         header: 'Detalle',
         cell: (info) => (
-          <div className="text-zinc-600 dark:text-zinc-300">
+          <div className="text-text-muted">
             {info.getValue() ?? '—'}
             {(info.row.original.user?.nombre ?? info.row.original.user?.name) && (
-              <div className="text-[11px] text-zinc-400">
+              <div className="text-xs text-text-muted">
                 {info.row.original.user?.nombre ?? info.row.original.user?.name}
               </div>
             )}
@@ -156,16 +156,16 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           }}
           className={controlClasses}
         />
-        {isFetching && <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-400" />}
+        {isFetching && <Loader2 className="h-3.5 w-3.5 animate-spin text-text-muted" />}
       </div>
 
-      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+      <div className="overflow-x-auto rounded-md border border-border">
         <table className="w-full border-collapse text-left text-xs">
           <thead>
             {table.getHeaderGroups().map((hg) => (
               <tr
                 key={hg.id}
-                className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+                className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted"
               >
                 {hg.headers.map((h) => (
                   <th
@@ -182,17 +182,17 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+          <tbody className="divide-y divide-border/60">
             {isLoading && (
               <tr>
-                <td colSpan={columns.length} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={columns.length} className="px-3 py-6 text-center text-text-muted">
                   Cargando movimientos…
                 </td>
               </tr>
             )}
             {!isLoading && table.getRowModel().rows.length === 0 && (
               <tr>
-                <td colSpan={columns.length} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={columns.length} className="px-3 py-6 text-center text-text-muted">
                   Sin movimientos para el filtro.
                 </td>
               </tr>
@@ -214,7 +214,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
       </div>
 
       {meta && meta.lastPage > 1 && (
-        <div className="flex items-center justify-end gap-2 text-xs text-zinc-500">
+        <div className="flex items-center justify-end gap-2 text-xs text-text-muted">
           <span className="font-mono">
             {meta.currentPage} / {meta.lastPage}
           </span>
@@ -238,7 +238,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           </Button>
         </div>
       )}
-      <p className="text-[11px] text-zinc-400">
+      <p className="text-xs text-text-muted">
         Los ajustes muestran la diferencia absoluta; el detalle indica el monto anterior y el nuevo.
       </p>
     </div>

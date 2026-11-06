@@ -43,20 +43,20 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
         <SheetContent side="center" className="overflow-y-auto">
           {isLoading || !intake ? (
-            <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
+            <div className="flex items-center justify-center py-16 text-xs text-text-muted">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Cargando ingreso…
             </div>
           ) : (
             <>
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-lg text-zinc-900 dark:text-zinc-100">
+                <SheetTitle className="flex items-center gap-2 text-lg text-text">
                   <span className="font-mono">
                     {intake.document_number ?? `Ingreso #${intake.id}`}
                   </span>
                   <InvoiceIntakeStatusBadge status={intake.status} />
                 </SheetTitle>
-                <SheetDescription className="text-sm text-zinc-600 dark:text-zinc-300">
+                <SheetDescription className="text-sm text-text-muted">
                   {budget
                     ? `${careerLabel(budget)} · ${budget.year}`
                     : intake.annual_budget_id
@@ -72,7 +72,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
 
                 <div className="flex flex-col gap-3">
                   {isDraft && !catalogReady ? (
-                    <div className="flex items-center justify-center py-10 text-xs text-zinc-400">
+                    <div className="flex items-center justify-center py-10 text-xs text-text-muted">
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Cargando catálogo de productos…
                     </div>
@@ -85,27 +85,27 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                       purchaseReserved={purchase?.reserved_amount ?? 0}
                     />
                   ) : (
-                    <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+                    <div className="overflow-x-auto rounded-md border border-border">
                       <table className="w-full border-collapse text-left text-xs">
                         <thead>
-                          <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                          <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
                             <th className="px-3 py-2 font-medium">Producto</th>
                             <th className="px-3 py-2 text-right font-medium">Cant.</th>
                             <th className="px-3 py-2 text-right font-medium">P. unit.</th>
                             <th className="px-3 py-2 text-right font-medium">Subtotal</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                        <tbody className="divide-y divide-border/60">
                           {intake.items.map((item) => (
                             <tr key={item.id}>
                               <td className="px-3 py-2">
-                                <div className="text-zinc-800 dark:text-zinc-200">
+                                <div className="text-text">
                                   {item.product?.nombre ??
                                     item.product?.name ??
                                     `Producto #${item.product_id}`}
                                 </div>
                                 {item.detected_name && (
-                                  <div className="text-[11px] text-zinc-400">
+                                  <div className="text-xs text-text-muted">
                                     OCR: {item.detected_name}
                                   </div>
                                 )}
@@ -123,14 +123,14 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                           ))}
                           {intake.items.length === 0 && (
                             <tr>
-                              <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+                              <td colSpan={4} className="px-3 py-6 text-center text-text-muted">
                                 Sin ítems registrados.
                               </td>
                             </tr>
                           )}
                         </tbody>
                         <tfoot>
-                          <tr className="border-t border-zinc-200 dark:border-zinc-800 font-semibold">
+                          <tr className="border-t border-border font-semibold">
                             <td className="px-3 py-2" colSpan={3}>
                               Total descontado
                             </td>
@@ -147,7 +147,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                     <Button
                       variant="ghost"
                       onClick={() => setCancelling(true)}
-                      className="self-start text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                      className="self-start text-xs text-danger hover:bg-danger-bg"
                     >
                       <Ban className="h-4 w-4" />
                       {isDraft ? 'Anular borrador' : 'Anular factura confirmada'}

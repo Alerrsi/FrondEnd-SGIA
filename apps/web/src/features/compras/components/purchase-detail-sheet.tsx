@@ -44,7 +44,7 @@ interface PurchaseDetailSheetProps {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
 
 export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailSheetProps) {
   const { user } = useAuth();
@@ -151,10 +151,10 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
       <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
         <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
           <SheetHeader>
-            <SheetTitle className="font-mono text-zinc-900 dark:text-zinc-100">
+            <SheetTitle className="font-mono text-text">
               Orden {code}
             </SheetTitle>
-            <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+            <SheetDescription className="text-xs text-text-muted">
               {purchase.supplier?.name ?? 'Proveedor sin nombre'}
               {purchase.quotation_id ? ` · Cotización #${purchase.quotation_id}` : ''}
             </SheetDescription>
@@ -169,31 +169,31 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
           <div className="mt-4 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <PurchaseStatusBadge status={purchase.status} />
-              <span className="inline-flex items-center gap-1 text-xs font-mono text-zinc-400">
+              <span className="inline-flex items-center gap-1 text-xs font-mono text-text-muted">
                 <Calendar className="h-3 w-3" />
                 {formatDate(purchase.created_at)}
               </span>
             </div>
 
-            <dl className="grid grid-cols-2 gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs">
+            <dl className="grid grid-cols-2 gap-3 rounded-md border border-border p-3 text-xs">
               <div>
-                <dt className="text-zinc-500">Llegada estimada</dt>
+                <dt className="text-text-muted">Llegada estimada</dt>
                 <dd className="font-mono">{formatDate(purchase.expected_at)}</dd>
               </div>
               <div>
-                <dt className="text-zinc-500">Recibida</dt>
+                <dt className="text-text-muted">Recibida</dt>
                 <dd className="font-mono">{formatDate(purchase.received_at)}</dd>
               </div>
               <div>
-                <dt className="text-zinc-500">N° guía</dt>
+                <dt className="text-text-muted">N° guía</dt>
                 <dd className="font-mono">{purchase.guide_number ?? '—'}</dd>
               </div>
               <div>
-                <dt className="text-zinc-500">N° factura</dt>
+                <dt className="text-text-muted">N° factura</dt>
                 <dd className="font-mono">{purchase.invoice_number ?? '—'}</dd>
               </div>
               <div className="col-span-2 border-t border-zinc-100 dark:border-zinc-800 pt-2">
-                <dt className="text-zinc-500">Presupuesto</dt>
+                <dt className="text-text-muted">Presupuesto</dt>
                 <dd>
                   {budget
                     ? `${careerLabel(budget)} · ${budget.year}`
@@ -203,18 +203,18 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 </dd>
               </div>
               <div>
-                <dt className="text-zinc-500">Reservado</dt>
+                <dt className="text-text-muted">Reservado</dt>
                 <dd className="font-mono">{formatCLP(purchase.reserved_amount)}</dd>
               </div>
               <div>
-                <dt className="text-zinc-500">Libre del presupuesto</dt>
+                <dt className="text-text-muted">Libre del presupuesto</dt>
                 <dd className="font-mono">{budget ? <BudgetFreeAmount amount={budget.free_amount} /> : '—'}</dd>
               </div>
             </dl>
 
-            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+            <div className="rounded-md border border-border overflow-hidden">
               <table className="w-full text-xs">
-                <thead className="bg-zinc-50 dark:bg-zinc-900 text-zinc-500">
+                <thead className="bg-surface-raised text-text-muted">
                   <tr>
                     <th className="px-3 py-2 text-left font-semibold">Ítem</th>
                     <th className="px-3 py-2 text-right font-semibold">Cant.</th>
@@ -228,7 +228,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                       key={item.id ?? i}
                       className="border-t border-zinc-100 dark:border-zinc-800"
                     >
-                      <td className="px-3 py-1.5 text-zinc-800 dark:text-zinc-200">
+                      <td className="px-3 py-1.5 text-text">
                         {item.name ?? `Producto #${item.product_id}`}
                       </td>
                       <td className="px-3 py-1.5 text-right font-mono">{item.quantity}</td>
@@ -242,7 +242,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-zinc-200 dark:border-zinc-800 font-semibold">
+                  <tr className="border-t border-border font-semibold">
                     <td className="px-3 py-2" colSpan={3}>
                       Total
                     </td>
@@ -255,7 +255,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             </div>
 
             {purchase.notes && (
-              <p className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs text-zinc-600 dark:text-zinc-300 whitespace-pre-wrap">
+              <p className="rounded-md border border-border p-3 text-xs text-text-muted whitespace-pre-wrap">
                 {purchase.notes}
               </p>
             )}
@@ -296,13 +296,13 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             {canScan && (
               <form
                 onSubmit={handleScan}
-                className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3"
+                className="flex flex-col gap-2 rounded-md border border-border p-3"
               >
-                <h3 className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <h3 className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted">
                   <ScanLine className="h-3.5 w-3.5" />
                   Registrar guía / factura de llegada
                 </h3>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-text-muted">
                   Al registrarla la orden pasa a completa y se lee la factura por OCR.
                 </p>
                 <input
@@ -311,7 +311,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                   accept="application/pdf,image/png,image/jpeg,image/webp"
                   aria-label="Documento de llegada"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="text-xs text-zinc-600 dark:text-zinc-300"
+                  className="text-xs text-text-muted"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
@@ -351,7 +351,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
               <Button
                 variant="ghost"
                 onClick={() => setConfirmCancel(true)}
-                className="text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                className="text-xs text-danger hover:bg-danger-bg"
               >
                 <Ban className="h-4 w-4" />
                 Cancelar compra

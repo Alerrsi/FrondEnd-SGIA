@@ -30,7 +30,7 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
       columnHelper.accessor('document_number', {
         header: 'N° factura',
         cell: (info) => (
-          <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">
+          <span className="font-mono font-semibold text-text">
             {info.getValue() ?? `#${info.row.original.id}`}
           </span>
         ),
@@ -40,18 +40,18 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
         cell: (info) => {
           const budget = budgetById.get(info.getValue()) ?? info.row.original.annual_budget;
           return budget ? (
-            <span className="text-zinc-700 dark:text-zinc-300">
+            <span className="text-text">
               {careerLabel(budget)} · <span className="font-mono">{budget.year}</span>
             </span>
           ) : (
-            <span className="font-mono text-zinc-500">#{info.getValue()}</span>
+            <span className="font-mono text-text-muted">#{info.getValue()}</span>
           );
         },
       }),
       columnHelper.accessor('purchase_id', {
         header: 'Compra',
         cell: (info) => (
-          <span className="font-mono text-zinc-500">
+          <span className="font-mono text-text-muted">
             {info.getValue() ? `#${info.getValue()}` : '—'}
           </span>
         ),
@@ -72,7 +72,7 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
         id: 'date',
         header: 'Fecha',
         cell: (info) => (
-          <span className="font-mono text-zinc-500">{formatDate(info.getValue())}</span>
+          <span className="font-mono text-text-muted">{formatDate(info.getValue())}</span>
         ),
       }),
     ],
@@ -92,7 +92,7 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
           {table.getHeaderGroups().map((hg) => (
             <tr
               key={hg.id}
-              className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+              className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted"
             >
               {hg.headers.map((h) => (
                 <th
@@ -108,10 +108,10 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
             </tr>
           ))}
         </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+        <tbody className="divide-y divide-border/60">
           {rows.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-10 text-center text-zinc-400">
+              <td colSpan={columns.length} className="px-4 py-10 text-center text-text-muted">
                 No hay ingresos de factura para el filtro seleccionado.
               </td>
             </tr>

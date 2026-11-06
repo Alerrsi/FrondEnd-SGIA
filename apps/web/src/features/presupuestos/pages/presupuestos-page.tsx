@@ -1,3 +1,4 @@
+import { useUrlParam } from '@/lib/use-url-param';
 import { useCallback, useMemo, useState } from 'react';
 import { useBudgetSummary, useDeleteBudget } from '@sgia/api-client';
 import type { BudgetSummaryRow } from '@sgia/types';
@@ -24,7 +25,9 @@ export default function PresupuestosPage() {
   // AD-01 y DIR-01 (director del Área de Informática) administran todas las carreras.
   const canManage = canDo(user?.rol, 'manageBudgets');
 
-  const [year, setYear] = useState<number>(CURRENT_YEAR);
+  const [yearParam, setYearParam] = useUrlParam('anio', String(CURRENT_YEAR));
+  const year = Number(yearParam) || CURRENT_YEAR;
+  const setYear = (value: number) => setYearParam(String(value));
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<BudgetSummaryRow | null>(null);
   const [deleting, setDeleting] = useState<BudgetSummaryRow | null>(null);
@@ -72,24 +75,24 @@ export default function PresupuestosPage() {
         <div className="flex items-center gap-2">
           <span
             data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400"
+            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · ADQUISICIONES
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Presupuestos
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <Wallet className="h-5 w-5 text-text" />
               Presupuestos anuales
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Ejecución por carrera: las compras reservan y las facturas confirmadas consumen
               (REQ-16).
             </p>
@@ -103,45 +106,45 @@ export default function PresupuestosPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2.5 text-xs">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border border-border bg-surface px-4 py-2.5 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Carreras:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
+          <span className="text-text-muted">Carreras:</span>
+          <span className="font-mono font-medium text-text">
             {rows?.length ?? 0}
           </span>
         </div>
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Inicial:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
+          <span className="text-text-muted">Inicial:</span>
+          <span className="font-mono font-medium text-text">
             {formatCLP(totals.initial)}
           </span>
         </div>
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Reservado:</span>
-          <span className="font-mono text-zinc-700 dark:text-zinc-300">
+          <span className="text-text-muted">Reservado:</span>
+          <span className="font-mono text-text">
             {formatCLP(totals.reserved)}
           </span>
         </div>
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Consumido:</span>
-          <span className="font-mono text-zinc-700 dark:text-zinc-300">
+          <span className="text-text-muted">Consumido:</span>
+          <span className="font-mono text-text">
             {formatCLP(totals.consumed)}
           </span>
         </div>
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Libre:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
+          <span className="text-text-muted">Libre:</span>
+          <span className="font-mono font-medium text-text">
             {formatCLP(totals.free)}
           </span>
         </div>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
+      <div className="rounded-md border border-border bg-surface overflow-hidden shadow-xs">
+        <div className="flex items-center justify-between gap-3 border-b border-border p-2.5">
           <div className="flex gap-1" role="group" aria-label="Año del presupuesto">
             {YEARS.map((y) => (
               <Button
@@ -159,16 +162,16 @@ export default function PresupuestosPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className="py-12 text-center font-mono text-xs text-text-muted">
             Cargando presupuestos…
           </div>
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
+          <div className="m-3 flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
             <AlertCircle className="h-5 w-5 shrink-0" />
             <span>No se pudieron cargar los presupuestos desde el servidor.</span>
           </div>
         ) : (
-          <div className="bg-zinc-50/60 dark:bg-zinc-950/40 p-3">
+          <div className="bg-background p-3">
             <BudgetSummaryGrid
               rows={rows ?? []}
               canManage={canManage}

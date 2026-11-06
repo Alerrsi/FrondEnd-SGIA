@@ -14,27 +14,27 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
   const rows = data?.data ?? [];
 
   return (
-    <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+    <div className="overflow-x-auto rounded-md border border-border">
       <table className="w-full border-collapse text-left text-xs">
         <thead>
-          <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
             <th className="px-3 py-2 font-medium">N° factura</th>
             <th className="px-3 py-2 font-medium">Compra</th>
             <th className="px-3 py-2 font-medium">Recibida</th>
             <th className="px-3 py-2 text-right font-medium">Descontado</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+        <tbody className="divide-y divide-border/60">
           {isLoading && (
             <tr>
-              <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+              <td colSpan={4} className="px-3 py-6 text-center text-text-muted">
                 Cargando ingresos…
               </td>
             </tr>
           )}
           {!isLoading && rows.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+              <td colSpan={4} className="px-3 py-6 text-center text-text-muted">
                 Sin facturas confirmadas.
               </td>
             </tr>
@@ -49,10 +49,10 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
                   {intake.document_number ?? `#${intake.id}`}
                 </Link>
               </td>
-              <td className="px-3 py-2 font-mono text-zinc-500">
+              <td className="px-3 py-2 font-mono text-text-muted">
                 {intake.purchase_id ? `#${intake.purchase_id}` : '—'}
               </td>
-              <td className="px-3 py-2 font-mono text-zinc-500">
+              <td className="px-3 py-2 font-mono text-text-muted">
                 {formatDate(intake.received_at)}
               </td>
               <td className="px-3 py-2 text-right font-mono tabular-nums">

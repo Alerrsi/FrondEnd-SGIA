@@ -37,21 +37,21 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
           onOpen(budget);
         }
       }}
-      className="group flex cursor-pointer flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs transition-colors hover:border-zinc-300 dark:hover:border-zinc-700 focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600"
+      className="group flex cursor-pointer flex-col gap-3 rounded-md border border-border bg-surface p-3.5 shadow-xs transition-colors hover:border-zinc-300 dark:hover:border-zinc-700 focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600"
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
             {code && (
-              <span className="rounded border border-zinc-200/80 dark:border-zinc-700/60 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+              <span className="rounded border border-border bg-surface-raised px-1.5 py-0.5 font-mono text-xs text-text">
                 {code}
               </span>
             )}
-            <span className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+            <span className="font-mono text-xs text-text-muted">
               {budget.year}
             </span>
           </div>
-          <h3 className="mt-1 truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100" title={name}>
+          <h3 className="mt-1 truncate text-sm font-semibold text-text" title={name}>
             {name}
           </h3>
         </div>
@@ -63,7 +63,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 <button
                   type="button"
                   aria-label={`Acciones de ${label} ${budget.year}`}
-                  className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                  className="rounded p-1 text-text-muted hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
                 >
                   <MoreHorizontal className="h-3.5 w-3.5" />
                 </button>
@@ -75,7 +75,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => onDelete(budget)}
-                  className="text-rose-600 dark:text-rose-400"
+                  className="text-danger"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Eliminar
@@ -87,12 +87,12 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
       </header>
 
       <div>
-        <div className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <div className="text-xs font-mono uppercase tracking-wider text-text-muted">
           Libre (gastable)
         </div>
         <BudgetFreeAmount
           amount={budget.free_amount}
-          className="block text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+          className="block text-lg font-semibold text-text"
         />
       </div>
 
@@ -113,8 +113,8 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
           ] as const
         ).map(([term, value]) => (
           <div key={term} className="min-w-0">
-            <dt className="text-[11px] text-zinc-500 dark:text-zinc-400">{term}</dt>
-            <dd className="truncate font-mono tabular-nums text-zinc-700 dark:text-zinc-300">
+            <dt className="text-xs text-text-muted">{term}</dt>
+            <dd className="truncate font-mono tabular-nums text-text">
               {formatCLP(value)}
             </dd>
           </div>

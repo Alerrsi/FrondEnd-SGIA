@@ -21,7 +21,7 @@ export function BudgetSummaryGrid({ rows, ...handlers }: BudgetSummaryGridProps)
 
   if (sorted.length === 0) {
     return (
-      <div className="py-10 text-center text-xs text-zinc-400">
+      <div className="py-10 text-center text-xs text-text-muted">
         No hay presupuestos para el año seleccionado.
       </div>
     );

@@ -12,6 +12,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { useUnsavedChangesWarning } from '@/lib/use-unsaved-changes';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
@@ -29,7 +30,7 @@ interface FormValues {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text placeholder:text-text-muted dark:placeholder:text-text-muted transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
 
 const MIN_SUPPLIERS = 1;
 
@@ -132,6 +133,8 @@ export function CotizacionFormDialog({
   const isFormValid = productsCount > 0 && suppliersCount >= MIN_SUPPLIERS;
   const isPending = createCotizacion.isPending;
 
+  useUnsavedChangesWarning(isDirty);
+
   const onSubmit = handleSubmit(async (values) => {
     if (values.supplier_ids.length < MIN_SUPPLIERS) {
       toast.error(`Debes seleccionar al menos ${MIN_SUPPLIERS} proveedor.`);
@@ -163,11 +166,11 @@ export function CotizacionFormDialog({
       description="Selecciona productos y al menos 1 proveedor para emitir la solicitud de cotización."
       className="max-w-2xl"
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4 text-text" noValidate>
         {/* Fieldset: Productos a cotizar */}
-        <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
-            <Package className="h-3.5 w-3.5 text-zinc-400" />
+        <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
+            <Package className="h-3.5 w-3.5 text-text-muted" />
             Productos a Cotizar
           </legend>
 
@@ -182,18 +185,18 @@ export function CotizacionFormDialog({
               className={inputClasses}
             />
             {productSearch && filteredProducts.length > 0 && (
-              <div className="absolute z-10 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-lg">
+              <div className="absolute z-10 top-full left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-md border border-border bg-surface shadow-lg">
                 {filteredProducts.slice(0, 10).map((product) => (
                   <button
                     key={product.id}
                     type="button"
                     onClick={() => handleAddProduct(product)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-left text-xs hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2 text-left text-xs hover:bg-surface-raised transition-colors"
                   >
-                    <span className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    <span className="text-text font-medium">
                       {product.nombre ?? product.name}
                     </span>
-                    <span className="font-mono text-zinc-400 text-[10px]">
+                    <span className="font-mono text-text-muted text-xs">
                       Stock: {product.stock ?? product.quantity ?? 0}
                     </span>
                   </button>
@@ -204,7 +207,7 @@ export function CotizacionFormDialog({
 
           {/* Selected products list */}
           {(watchedProducts ?? []).length === 0 ? (
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 py-2 text-center">
+            <p className="text-xs text-text-muted py-2 text-center">
               Busca y agrega productos para incluir en la cotización.
             </p>
           ) : (
@@ -212,12 +215,12 @@ export function CotizacionFormDialog({
               {(watchedProducts ?? []).map((item, index) => (
                 <div
                   key={`${item.product_id}-${index}`}
-                  className="flex items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2"
+                  className="flex items-center gap-2 rounded-md border border-border bg-white dark:bg-zinc-950 px-3 py-2"
                 >
-                  <span className="flex-1 text-xs font-medium text-zinc-800 dark:text-zinc-200 truncate">
+                  <span className="flex-1 text-xs font-medium text-text truncate">
                     {item.product_name}
                   </span>
-                  <span className="font-mono text-[10px] text-zinc-400">
+                  <span className="font-mono text-xs text-text-muted">
                     Stock: {item.current_stock}
                   </span>
                   <input
@@ -226,13 +229,13 @@ export function CotizacionFormDialog({
                     value={item.quantity}
                     onChange={(e) => handleProductQuantityChange(index, parseInt(e.target.value, 10) || 1)}
                     disabled={isPending}
-                    className="w-16 h-7 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 px-2 text-center font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                    className="w-16 h-7 rounded border border-border bg-surface-raised px-2 text-center font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-zinc-400"
                     aria-label={`Cantidad de ${item.product_name}`}
                   />
                   <button
                     type="button"
                     onClick={() => handleRemoveProduct(index)}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-text-muted hover:text-danger hover:bg-danger-bg transition-colors"
                     title="Quitar producto"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -244,16 +247,16 @@ export function CotizacionFormDialog({
         </fieldset>
 
         {/* Fieldset: Proveedores */}
-        <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
-            <Building2 className="h-3.5 w-3.5 text-zinc-400" />
+        <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
+            <Building2 className="h-3.5 w-3.5 text-text-muted" />
             Proveedores Destinatarios (Mínimo {MIN_SUPPLIERS})
           </legend>
 
           {suppliersCount < MIN_SUPPLIERS && (
-            <div className="flex items-start gap-2 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 px-3 py-2">
-              <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
-              <p className="text-xs text-amber-700 dark:text-amber-300">
+            <div className="flex items-start gap-2 rounded-md border border-warn/30 bg-warn-bg px-3 py-2">
+              <AlertCircle className="h-4 w-4 shrink-0 text-warn mt-0.5" />
+              <p className="text-xs text-warn">
                 Debes seleccionar al menos <strong>{MIN_SUPPLIERS} proveedor</strong> para
                 emitir una solicitud de cotización. Seleccionados: <strong>{suppliersCount}</strong>.
               </p>
@@ -271,8 +274,8 @@ export function CotizacionFormDialog({
                   disabled={isPending}
                   className={`flex items-center gap-2 rounded-md border px-3 py-2 text-left text-xs transition-colors ${
                     isSelected
-                      ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300'
-                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-700 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700'
+                      ? 'border-emerald-300 dark:border-emerald-800 bg-ok-bg text-emerald-800 dark:text-emerald-300'
+                      : 'border-border bg-white dark:bg-zinc-950 text-text hover:border-zinc-300 dark:hover:border-zinc-700'
                   }`}
                 >
                   <div
@@ -290,7 +293,7 @@ export function CotizacionFormDialog({
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="font-medium block truncate">{supplier.name}</span>
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono truncate block">
+                    <span className="text-xs text-text-muted font-mono truncate block">
                       {supplier.email}
                     </span>
                   </div>
@@ -300,16 +303,16 @@ export function CotizacionFormDialog({
           </div>
 
           {allSuppliers.length === 0 && (
-            <p className="text-xs text-zinc-400 text-center py-2">
+            <p className="text-xs text-text-muted text-center py-2">
               No hay proveedores activos registrados. Registra proveedores primero.
             </p>
           )}
         </fieldset>
 
         {/* Notas */}
-        <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
-            <FileText className="h-3.5 w-3.5 text-zinc-400" />
+        <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
+          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
+            <FileText className="h-3.5 w-3.5 text-text-muted" />
             Notas y Especificaciones
           </legend>
           <textarea
@@ -321,7 +324,7 @@ export function CotizacionFormDialog({
         </fieldset>
 
         <div className="mt-1 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
-          <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
+          <span className="text-xs text-text-muted font-mono">
             {productsCount} producto{productsCount !== 1 ? 's' : ''} · {suppliersCount} proveedor{suppliersCount !== 1 ? 'es' : ''}
           </span>
           <div className="flex gap-2">

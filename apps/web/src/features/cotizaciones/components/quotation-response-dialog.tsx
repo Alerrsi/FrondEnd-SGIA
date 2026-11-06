@@ -10,10 +10,10 @@ import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400';
+  'w-full h-8.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-danger';
 const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
-const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
+  'text-xs font-semibold uppercase tracking-wider text-text-muted font-mono';
+const errorClasses = 'text-xs text-danger';
 
 interface FormValues {
   status: 'aceptada' | 'rechazada';
@@ -123,13 +123,13 @@ export function QuotationResponseDialog({
           )}
         </div>
         {accepted && (
-          <fieldset className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
+          <fieldset className="flex flex-col gap-2 rounded-md border border-border p-3">
             <legend className={`px-1 ${labelClasses}`}>Precio unitario por ítem</legend>
             {items.map((it, i) => (
               <div key={it.productId} className="flex flex-col gap-0.5">
                 <div className="grid grid-cols-[1fr_7rem] items-center gap-2 text-xs">
                   <label htmlFor={`qr-price-${i}`}>
-                    {it.name} <span className="font-mono text-zinc-500">×{it.quantity}</span>
+                    {it.name} <span className="font-mono text-text-muted">×{it.quantity}</span>
                   </label>
                   <input
                     id={`qr-price-${i}`}
@@ -148,7 +148,7 @@ export function QuotationResponseDialog({
                 {errors.prices?.[i] && <p className={errorClasses}>{errors.prices[i]?.message}</p>}
               </div>
             ))}
-            <p className="text-right font-mono text-xs text-zinc-600 dark:text-zinc-300">
+            <p className="text-right font-mono text-xs text-text-muted">
               Total ofertado: {formatCLP(offerTotal)}
             </p>
           </fieldset>
@@ -165,7 +165,7 @@ export function QuotationResponseDialog({
             className={`${inputClasses} h-auto py-2`}
           />
         </div>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <Button type="button" variant="outline" onClick={onClose} disabled={pending}>
             Cancelar
           </Button>

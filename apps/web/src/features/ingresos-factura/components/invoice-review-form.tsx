@@ -22,6 +22,7 @@ import {
   type InvoiceReviewValues,
 } from '@/features/ingresos-factura/lib/invoice-review-schema';
 import { parseOverBudget, type OverBudgetInfo } from '@/features/ingresos-factura/lib/over-budget';
+import { useUnsavedChangesWarning } from '@/lib/use-unsaved-changes';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -29,8 +30,8 @@ import { toast } from '@/lib/toast';
 type ProductType = NonNullable<Producto['type']>;
 
 const inputClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
-const errorClasses = 'mt-0.5 text-[11px] text-rose-600 dark:text-rose-400';
+  'w-full h-8 rounded border border-border bg-background px-2 font-mono text-xs text-text focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-danger';
+const errorClasses = 'mt-0.5 text-xs text-danger';
 
 const toNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? Number.NaN : Number(v);
@@ -109,7 +110,7 @@ export function InvoiceReviewForm({
     handleSubmit,
     setValue,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<InvoiceReviewValues>({
     resolver: zodResolver(schema),
     // El catálogo llega cargado: se asocia por nombre al iniciar, sin reset posterior.
@@ -179,6 +180,8 @@ export function InvoiceReviewForm({
       toast.error(apiErrorToMessage(error));
     }
   };
+  useUnsavedChangesWarning(isDirty);
+
   const onSubmit = handleSubmit((values) => submitConfirm(values));
 
   const pending = confirmIntake.isPending;
@@ -187,13 +190,13 @@ export function InvoiceReviewForm({
     <>
       <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
         {!intake.raw_ocr_payload.ocr_available && (
-          <p className="flex items-center gap-2 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 p-2.5 text-xs text-amber-800 dark:text-amber-300">
+          <p className="flex items-center gap-2 rounded-md border border-warn/30 bg-warn-bg p-2.5 text-xs text-amber-800 dark:text-amber-300">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             El OCR no estuvo disponible: agrega los ítems de la factura a mano.
           </p>
         )}
         {intake.raw_ocr_payload.ocr_available && intake.raw_ocr_payload.items.length > 0 && (
-          <p className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="flex items-center gap-1.5 text-xs text-text-muted">
             <Sparkles className="h-3.5 w-3.5" />
             {intake.raw_ocr_payload.items.length} ítem(s) detectados · {autoMatched} asociados
             automáticamente por nombre.
@@ -205,13 +208,16 @@ export function InvoiceReviewForm({
         <div className="flex flex-col gap-1">
           <label
             htmlFor="ii-document"
-            className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+            className="text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
           >
             N° de factura
           </label>
           <input
             id="ii-document"
             {...register('document_number')}
+            translate="no"
+            spellCheck={false}
+            autoComplete="off"
             aria-invalid={Boolean(errors.document_number) || undefined}
             disabled={pending}
             className={cn(inputClasses, 'max-w-xs')}
@@ -224,7 +230,7 @@ export function InvoiceReviewForm({
         <div className="flex flex-col gap-1">
           <label
             htmlFor="ii-purchase"
-            className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+            className="text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
           >
             Orden de compra (opcional)
           </label>
@@ -243,7 +249,7 @@ export function InvoiceReviewForm({
             ))}
           </select>
           {purchaseError && <p className={errorClasses}>{purchaseError}</p>}
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-text-muted">
             Si la factura se asocia a una orden de compra, la orden quedará completa y se descontará
             del presupuesto el total de la factura.
           </p>
@@ -253,7 +259,7 @@ export function InvoiceReviewForm({
           <div className="flex flex-col gap-1">
             <label
               htmlFor="ii-budget"
-              className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+              className="text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
             >
               Presupuesto
             </label>
@@ -270,7 +276,7 @@ export function InvoiceReviewForm({
             />
             {budgetError && <p className={errorClasses}>{budgetError}</p>}
             {pickedBudget && (
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-text-muted">
                 Inicial <span className="font-mono">{formatCLP(pickedBudget.initial_amount)}</span>
                 {' · '}reservado{' '}
                 <span className="font-mono">{formatCLP(pickedBudget.reserved_amount)}</span>
@@ -279,17 +285,17 @@ export function InvoiceReviewForm({
                 {' · '}libre <BudgetFreeAmount amount={pickedBudget.free_amount} />
               </p>
             )}
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               La factura no tiene orden de compra asociada: elige la carrera y el año a los que se
               consume el monto.
             </p>
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <div className="overflow-x-auto rounded-md border border-border bg-surface">
           <table className="w-full border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
                 <th className="min-w-56 p-2 font-medium">Producto</th>
                 <th className="w-36 p-2 font-medium">Cajón</th>
                 <th className="w-20 p-2 font-medium">Cant.</th>
@@ -298,7 +304,7 @@ export function InvoiceReviewForm({
                 <th className="w-8 p-2" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody className="divide-y divide-border/60">
               {fields.map((field, index) => {
                 const item = items?.[index];
                 const type = item ? productTypes.get(item.product_id) : undefined;
@@ -310,7 +316,7 @@ export function InvoiceReviewForm({
                     <td className="p-2">
                       {item?.detected_name && (
                         <div
-                          className="mb-1 truncate text-[11px] text-zinc-400"
+                          className="mb-1 truncate text-xs text-text-muted"
                           title={item.detected_name}
                         >
                           OCR: {item.detected_name}
@@ -365,10 +371,10 @@ export function InvoiceReviewForm({
                         </Button>
                       </div>
                       {suggestFor?.index === index && (
-                        <div className="mt-1 space-y-1 rounded border border-zinc-200 dark:border-zinc-800 p-2 text-xs">
+                        <div className="mt-1 space-y-1 rounded border border-border p-2 text-xs">
                           {suggestions.length > 0 ? (
                             <>
-                              <p className="text-zinc-500">¿Es alguno de estos productos?</p>
+                              <p className="text-text-muted">¿Es alguno de estos productos?</p>
                               {suggestions.map((p) => (
                                 <Button
                                   key={p.id}
@@ -388,7 +394,7 @@ export function InvoiceReviewForm({
                               ))}
                             </>
                           ) : (
-                            <p className="text-zinc-500">
+                            <p className="text-text-muted">
                               No existe un producto parecido; se creará uno nuevo.
                             </p>
                           )}
@@ -445,7 +451,7 @@ export function InvoiceReviewForm({
                           )}
                         </>
                       ) : (
-                        <span className="text-[11px] text-zinc-400">
+                        <span className="text-xs text-text-muted">
                           {type === 'insumo' ? 'Suma al stock' : '—'}
                         </span>
                       )}
@@ -491,7 +497,7 @@ export function InvoiceReviewForm({
                         onClick={() => remove(index)}
                         disabled={pending}
                         aria-label={`Quitar ítem ${index + 1}`}
-                        className="rounded p-1 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
+                        className="rounded p-1 text-text-muted hover:bg-rose-50 hover:text-danger dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -501,7 +507,7 @@ export function InvoiceReviewForm({
               })}
               {fields.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-6 text-center text-zinc-400">
+                  <td colSpan={6} className="p-6 text-center text-text-muted">
                     Sin ítems. Agrega los productos de la factura.
                   </td>
                 </tr>
@@ -531,17 +537,17 @@ export function InvoiceReviewForm({
             Agregar ítem
           </Button>
           <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-            <span className="text-zinc-500 dark:text-zinc-400">
+            <span className="text-text-muted">
               Libre
               {purchaseReserved > 0 ? ' (+ reserva de la compra)' : ''}:{' '}
-              <span className="font-mono text-zinc-800 dark:text-zinc-200">
+              <span className="font-mono text-text">
                 {activeBudget ? formatCLP(available) : '—'}
               </span>
             </span>
             <span
               className={cn(
                 'font-mono font-semibold',
-                exceeds ? 'text-rose-600 dark:text-rose-400' : 'text-zinc-900 dark:text-zinc-100',
+                exceeds ? 'text-danger' : 'text-text',
               )}
             >
               Total {formatCLP(total)}
@@ -551,7 +557,7 @@ export function InvoiceReviewForm({
         {exceeds && (
           <p
             role="alert"
-            className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400"
+            className="flex items-center gap-1.5 text-xs text-danger"
           >
             <AlertTriangle className="h-3.5 w-3.5" />
             El total supera lo libre del presupuesto; el servidor lo rechazará, salvo que el director de carrera autorice el exceso.
@@ -561,7 +567,7 @@ export function InvoiceReviewForm({
         {overBudget?.stage === 'blocked' && (
           <p
             role="alert"
-            className="flex items-start gap-1.5 text-xs text-rose-600 dark:text-rose-400"
+            className="flex items-start gap-1.5 text-xs text-danger"
           >
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             La factura supera lo libre del presupuesto por {formatCLP(overBudget.info.overBy)}. Solo
@@ -569,7 +575,7 @@ export function InvoiceReviewForm({
           </p>
         )}
 
-        <div className="flex justify-end border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end border-t border-border pt-3">
           <Button type="submit" disabled={pending}>
             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
             Confirmar e ingresar stock

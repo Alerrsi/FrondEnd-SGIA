@@ -13,7 +13,7 @@ import { toast } from '@/lib/toast';
 const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPTED = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
 
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-danger';
 
 interface UploadInvoiceIntakeDialogProps {
   open: boolean;
@@ -109,8 +109,8 @@ export function UploadInvoiceIntakeDialog({
           className={cn(
             'flex flex-col items-center justify-center rounded-md border-2 border-dashed p-6 text-center transition-colors',
             dragging
-              ? 'border-zinc-400 bg-zinc-100 dark:bg-zinc-800'
-              : 'border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950/40',
+              ? 'border-zinc-400 bg-surface-raised'
+              : 'border-border bg-background',
             pending && 'pointer-events-none opacity-60',
           )}
         >
@@ -124,16 +124,16 @@ export function UploadInvoiceIntakeDialog({
           />
           {pending ? (
             <div className="flex flex-col items-center gap-2 py-2">
-              <Loader2 className="h-7 w-7 animate-spin text-zinc-500" />
-              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+              <Loader2 className="h-7 w-7 animate-spin text-text-muted" />
+              <span className="text-xs font-medium text-text">
                 Leyendo la factura con OCR…
               </span>
             </div>
           ) : file ? (
             <div className="flex items-center gap-2 text-xs">
-              <FileText className="h-5 w-5 text-zinc-400" />
-              <span className="font-mono text-zinc-800 dark:text-zinc-200">{file.name}</span>
-              <span className="text-zinc-400">{formatNumber(file.size / 1024 / 1024, 1)}&nbsp;MB</span>
+              <FileText className="h-5 w-5 text-text-muted" />
+              <span className="font-mono text-text">{file.name}</span>
+              <span className="text-text-muted">{formatNumber(file.size / 1024 / 1024, 1)}&nbsp;MB</span>
               <button
                 type="button"
                 aria-label="Quitar archivo"
@@ -141,18 +141,18 @@ export function UploadInvoiceIntakeDialog({
                   setFile(null);
                   if (fileRef.current) fileRef.current.value = '';
                 }}
-                className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
+                className="rounded p-1 text-text-muted hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
           ) : (
             <>
-              <UploadCloud className="mb-2 h-6 w-6 text-zinc-400" />
-              <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
+              <UploadCloud className="mb-2 h-6 w-6 text-text-muted" />
+              <p className="text-xs font-medium text-text">
                 Arrastra la factura aquí
               </p>
-              <p className="mt-0.5 font-mono text-[11px] text-zinc-500">
+              <p className="mt-0.5 font-mono text-xs text-text-muted">
                 PDF, PNG, JPG o WEBP · máx. 10 MB
               </p>
               <Button
@@ -170,7 +170,7 @@ export function UploadInvoiceIntakeDialog({
         </div>
         {errors.file && <p className={errorClasses}>{errors.file}</p>}
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}

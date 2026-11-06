@@ -60,7 +60,7 @@ export function CancelInvoiceIntakeDialog({
       title={confirmed ? `Anular factura ${label}` : `Anular borrador ${label}`}
       className="max-w-md"
     >
-      <div className="flex flex-col gap-3 text-xs text-zinc-700 dark:text-zinc-300">
+      <div className="flex flex-col gap-3 text-xs text-text">
         {confirmed ? (
           <>
             <p>La anulación revierte la factura completa, todo o nada:</p>
@@ -72,7 +72,7 @@ export function CancelInvoiceIntakeDialog({
                 presupuesto (movimiento de reposición).
               </li>
             </ul>
-            <p className="text-zinc-500">La compra ligada no cambia de estado.</p>
+            <p className="text-text-muted">La compra ligada no cambia de estado.</p>
           </>
         ) : (
           <p>El borrador quedará anulado. No se modifica stock ni presupuesto.</p>
@@ -81,14 +81,14 @@ export function CancelInvoiceIntakeDialog({
         {blockedReason && (
           <p
             role="alert"
-            className="flex items-start gap-2 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-2.5 text-rose-800 dark:text-rose-300"
+            className="flex items-start gap-2 rounded-md border border-danger/30 bg-danger-bg p-2.5 text-rose-800 dark:text-rose-300"
           >
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {blockedReason}
           </p>
         )}
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={cancelIntake.isPending}>Volver</DialogCloseButton>
           <Button variant="danger" onClick={handleCancel} disabled={cancelIntake.isPending}>
             {cancelIntake.isPending && <Loader2 className="h-4 w-4 animate-spin" />}

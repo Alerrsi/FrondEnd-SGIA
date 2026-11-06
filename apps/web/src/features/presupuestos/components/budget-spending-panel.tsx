@@ -42,20 +42,20 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
             {g.label}
           </Button>
         ))}
-        <span className="ml-auto font-mono text-xs text-zinc-600 dark:text-zinc-300">
+        <span className="ml-auto font-mono text-xs text-text-muted">
           Total {formatCLP(data?.total ?? 0)}
         </span>
       </div>
       {groupBy === 'supplier' && (
-        <p className="text-[11px] text-zinc-400">
+        <p className="text-xs text-text-muted">
           Solo incluye facturas ligadas a una orden de compra.
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+      <div className="overflow-x-auto rounded-md border border-border">
         <table className="w-full border-collapse text-left text-xs">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <tr className="border-b border-border bg-background font-mono text-xs uppercase tracking-wider text-text-muted">
               <th className="px-3 py-2 font-medium">
                 {GROUPS.find((g) => g.value === groupBy)?.label}
               </th>
@@ -66,24 +66,24 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+          <tbody className="divide-y divide-border/60">
             {isLoading && (
               <tr>
-                <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={4} className="px-3 py-6 text-center text-text-muted">
                   Cargando gasto…
                 </td>
               </tr>
             )}
             {!isLoading && rows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={4} className="px-3 py-6 text-center text-text-muted">
                   Aún no hay facturas confirmadas en este presupuesto.
                 </td>
               </tr>
             )}
             {rows.map((row) => (
               <tr key={`${row.id ?? row.label}`}>
-                <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
+                <td className="px-3 py-2 text-text">
                   {groupBy === 'product_type' ? (TYPE_LABELS[row.label] ?? row.label) : row.label}
                 </td>
                 <td className="px-3 py-2 text-right font-mono tabular-nums">{row.quantity}</td>
@@ -91,7 +91,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
                   {formatCLP(row.amount)}
                 </td>
                 <td className="px-3 py-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-raised">
                     <div
                       className="h-full rounded-full bg-zinc-700 dark:bg-zinc-300"
                       style={{ width: `${(row.amount / max) * 100}%` }}

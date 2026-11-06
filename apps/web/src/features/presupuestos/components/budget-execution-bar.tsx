@@ -45,7 +45,7 @@ export function BudgetExecutionBar({
         <div className={cn('h-full', tone)} style={{ width: `${consumedPct}%` }} />
         <div className={cn('h-full opacity-40', tone)} style={{ width: `${reservedPct}%` }} />
       </div>
-      <span className="font-mono text-xs tabular-nums text-zinc-700 dark:text-zinc-300">
+      <span className="font-mono text-xs tabular-nums text-text">
         {percent.toLocaleString('es-CL', { maximumFractionDigits: 1 })}%
       </span>
     </div>

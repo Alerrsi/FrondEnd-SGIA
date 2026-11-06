@@ -21,7 +21,7 @@ const STATUS_FILTERS: Array<{
 ];
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  'h-8 rounded-md border border-border bg-background px-2 font-mono text-xs text-text focus:outline-none focus:ring-1 focus:ring-zinc-400';
 
 const positiveParam = (value: string | null) => {
   const n = Number(value);
@@ -64,24 +64,24 @@ export default function IngresosFacturaPage() {
         <div className="flex items-center gap-2">
           <span
             data-sede-badge="true"
-            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-mono font-medium text-red-600 dark:text-red-400"
+            className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-2 py-0.5 text-xs font-mono font-medium text-brand-strong"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600 dark:bg-red-500 animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             SEDE TEMUCO · ADQUISICIONES
           </span>
-          <span className="text-zinc-400 text-xs font-mono">/</span>
-          <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <span className="text-text-muted text-xs font-mono">/</span>
+          <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
             Ingresos de factura
           </span>
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <ReceiptText className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
+              <ReceiptText className="h-5 w-5 text-text" />
               Ingresos de factura
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-text-muted">
               Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e
               ingresar stock (REQ-17).
             </p>
@@ -93,8 +93,8 @@ export default function IngresosFacturaPage() {
         </div>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
+      <div className="rounded-md border border-border bg-surface overflow-hidden shadow-xs">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border p-2.5">
           <div className="flex gap-1" role="group" aria-label="Filtrar por estado">
             {STATUS_FILTERS.map((f) => (
               <Button
@@ -143,11 +143,11 @@ export default function IngresosFacturaPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className="py-12 text-center font-mono text-xs text-text-muted">
             Cargando ingresos de factura…
           </div>
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
+          <div className="m-3 flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
             <AlertCircle className="h-5 w-5 shrink-0" />
             <span>No se pudieron cargar los ingresos de factura desde el servidor.</span>
           </div>
@@ -159,7 +159,7 @@ export default function IngresosFacturaPage() {
         )}
 
         {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 p-2 text-xs text-zinc-500">
+          <div className="flex items-center justify-end gap-2 border-t border-border p-2 text-xs text-text-muted">
             <span className="font-mono">
               {meta.currentPage} / {meta.lastPage} · {meta.total} ingresos
             </span>
