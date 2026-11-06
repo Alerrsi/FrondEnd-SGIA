@@ -22,7 +22,7 @@ import { toast } from '@/lib/toast';
 
 import { AgregarUnidadesDialog } from './agregar-unidades-dialog';
 import { UnidadBarcodeDialog } from './unidad-barcode-dialog';
-import { UNIT_STATUS_LABELS, UnidadStatusBadge } from './unidad-status-badge';
+import { UNIT_STATUS_LABELS, UnidadStatusBadge } from '@/components/ui/badge';
 
 const STATUS_FILTERS: Array<EquipmentUnitStatus | ''> = [
   '',

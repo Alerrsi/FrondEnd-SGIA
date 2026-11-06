@@ -1,5 +1,10 @@
 import type { HTMLAttributes, ReactNode } from 'react';
-import { PurchaseStatus, QuotationStatus } from '@sgia/types';
+import {
+  InvoiceIntakeStatus,
+  PurchaseStatus,
+  QuotationStatus,
+  type EquipmentUnitStatus,
+} from '@sgia/types';
 
 import { cn } from '@/lib/cn';
 
@@ -162,6 +167,41 @@ export function PurchaseStatusBadge({ status }: { status: PurchaseStatus }) {
   return (
     <Badge tone={tone} dot>
       {PURCHASE_STATUS_LABEL[status] ?? status}
+    </Badge>
+  );
+}
+
+const INVOICE_STATUS_META: Record<InvoiceIntakeStatus, { label: string; tone: Tone }> = {
+  [InvoiceIntakeStatus.BORRADOR]: { label: 'Borrador', tone: 'warning' },
+  [InvoiceIntakeStatus.CONFIRMADO]: { label: 'Confirmado', tone: 'success' },
+  [InvoiceIntakeStatus.ANULADO]: { label: 'Anulado', tone: 'retired' },
+};
+
+export function InvoiceIntakeStatusBadge({ status }: { status: InvoiceIntakeStatus }) {
+  const meta = INVOICE_STATUS_META[status] ?? { label: status, tone: 'neutral' as const };
+  return (
+    <Badge tone={meta.tone} dot>
+      {meta.label}
+    </Badge>
+  );
+}
+
+const UNIT_STATUS_META: Record<EquipmentUnitStatus, { label: string; tone: Tone }> = {
+  disponible: { label: 'Disponible', tone: 'available' },
+  prestado: { label: 'Prestado', tone: 'loaned' },
+  en_reparacion: { label: 'En reparación', tone: 'maintenance' },
+  dado_de_baja: { label: 'De baja', tone: 'retired' },
+};
+
+export const UNIT_STATUS_LABELS = Object.fromEntries(
+  Object.entries(UNIT_STATUS_META).map(([k, v]) => [k, v.label]),
+) as Record<EquipmentUnitStatus, string>;
+
+export function UnidadStatusBadge({ status }: { status: EquipmentUnitStatus }) {
+  const meta = UNIT_STATUS_META[status] ?? { label: status, tone: 'neutral' as Tone };
+  return (
+    <Badge tone={meta.tone} dot>
+      {meta.label}
     </Badge>
   );
 }

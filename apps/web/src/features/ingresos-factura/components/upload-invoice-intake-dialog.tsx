@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ApiRequestError, useUploadInvoiceIntake } from '@sgia/api-client';
+import { formatNumber } from '@/lib/format';
 import type { InvoiceIntake } from '@sgia/types';
 import { FileText, FileUp, Loader2, UploadCloud, X } from 'lucide-react';
 
@@ -132,7 +133,7 @@ export function UploadInvoiceIntakeDialog({
             <div className="flex items-center gap-2 text-xs">
               <FileText className="h-5 w-5 text-zinc-400" />
               <span className="font-mono text-zinc-800 dark:text-zinc-200">{file.name}</span>
-              <span className="text-zinc-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+              <span className="text-zinc-400">{formatNumber(file.size / 1024 / 1024, 1)}&nbsp;MB</span>
               <button
                 type="button"
                 aria-label="Quitar archivo"

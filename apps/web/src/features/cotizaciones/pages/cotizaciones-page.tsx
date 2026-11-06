@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '@/lib/format';
 import { useCotizaciones } from '@sgia/api-client';
 import type { Cotizacion } from '@sgia/types';
 import { AlertCircle, ClipboardList, FileText, Plus } from 'lucide-react';
@@ -97,7 +98,7 @@ export default function CotizacionesPage() {
               </span>
               {cotizacion.createdAt && (
                 <span className="text-[10px] font-mono text-zinc-400">
-                  {new Date(cotizacion.createdAt).toLocaleDateString('es-CL')}
+                  {formatDate(cotizacion.createdAt)}
                 </span>
               )}
             </div>

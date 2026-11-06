@@ -9,7 +9,7 @@ import { useBudgets } from '@sgia/api-client';
 import type { InvoiceIntake } from '@sgia/types';
 
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
-import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
+import { InvoiceIntakeStatusBadge } from '@/components/ui/badge';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { cn } from '@/lib/cn';
 

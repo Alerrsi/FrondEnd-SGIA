@@ -4,7 +4,7 @@ import { Loader2, MapPin } from 'lucide-react';
 
 import { apiErrorToMessage } from '@/lib/api-error';
 
-import { UnidadStatusBadge } from './unidad-status-badge';
+import { UnidadStatusBadge } from '@/components/ui/badge';
 
 const MAX_UNITS = 100;
 

@@ -14,7 +14,7 @@ import {
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { CancelInvoiceIntakeDialog } from '@/features/ingresos-factura/components/cancel-invoice-intake-dialog';
 import { InvoiceFilePreview } from '@/features/ingresos-factura/components/invoice-file-preview';
-import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
+import { InvoiceIntakeStatusBadge } from '@/components/ui/badge';
 import { InvoiceReviewForm } from '@/features/ingresos-factura/components/invoice-review-form';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 

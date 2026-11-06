@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { formatDate } from '@/lib/format';
 import type { Cotizacion, Supplier } from '@sgia/types';
 import { useUpdateQuotationStatus } from '@sgia/api-client';
 import { QuotationStatus } from '@sgia/types';
@@ -76,9 +77,7 @@ export function CotizacionDetailSheet({
             <QuotationStatusBadge estado={cotizacion.estado} />
             <span className="inline-flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 font-mono">
               <Calendar className="h-3 w-3" />
-              {cotizacion.createdAt
-                ? new Date(cotizacion.createdAt).toLocaleDateString('es-CL')
-                : '—'}
+              {formatDate(cotizacion.createdAt)}
             </span>
           </div>
 

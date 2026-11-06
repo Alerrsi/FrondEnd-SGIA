@@ -1,14 +1,13 @@
 import { useRevokeOtherTokens, useTokens } from '@sgia/api-client';
 import { Loader2, Monitor, Smartphone } from 'lucide-react';
+import { formatDateTime } from '@/lib/format';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
-function formatDate(iso?: string | null): string {
-  return iso ? new Date(iso).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-}
+const formatDate = formatDateTime;
 
 export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { data: tokens = [], isLoading, isError } = useTokens({ enabled: open });

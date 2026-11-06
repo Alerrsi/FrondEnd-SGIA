@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { useMemo, useState } from 'react';
 import {
   createColumnHelper,
@@ -20,14 +21,7 @@ const columnHelper = createColumnHelper<BudgetMovement>();
 const controlClasses =
   'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
 
-const dateTime = (value: string) =>
-  value
-    ? new Date(value).toLocaleString('es-CL', {
-        timeZone: 'America/Santiago',
-        dateStyle: 'short',
-        timeStyle: 'short',
-      })
-    : '—';
+const dateTime = formatDateTime;
 
 /** Ledger del presupuesto (más reciente primero), con filtros por tipo y rango de fechas. */
 export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {

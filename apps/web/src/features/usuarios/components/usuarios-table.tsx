@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/format';
 import { useMemo, useState } from 'react';
 import {
   createColumnHelper,
@@ -110,7 +111,7 @@ const accessorColumns = [
       const date = new Date(val);
       return (
         <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 tabular-nums">
-          {Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('es-CL')}
+          {Number.isNaN(date.getTime()) ? '—' : formatDate(date.toISOString())}
         </span>
       );
     },

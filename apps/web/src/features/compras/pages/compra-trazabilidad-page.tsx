@@ -1,11 +1,12 @@
 import { usePurchaseTrace } from '@sgia/api-client';
 import type { PurchaseTrace } from '@sgia/types';
+import { formatDateTime } from '@/lib/format';
 import { AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { Badge, PurchaseStatusBadge, QuotationStatusBadge } from '@/components/ui/badge';
-import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
+import { InvoiceIntakeStatusBadge } from '@/components/ui/badge';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { movementMeta } from '@/features/presupuestos/lib/movement-labels';
 
@@ -32,10 +33,7 @@ function Step({ title, empty, children }: { title: string; empty?: string; child
 const rowClasses =
   'flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2 text-xs';
 
-const dateTime = (value: string) =>
-  value
-    ? new Date(value).toLocaleString('es-CL', { timeZone: 'America/Santiago', dateStyle: 'short', timeStyle: 'short' })
-    : '—';
+const dateTime = formatDateTime;
 
 function Timeline({ trace }: { trace: PurchaseTrace }) {
   const { purchase } = trace;

@@ -95,7 +95,7 @@ export function Dialog({
         }}
       >
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/50 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-150" />
+          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-150" />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <DialogPrimitive.Content
               className={cn(
@@ -149,7 +149,7 @@ export function Dialog({
         }}
       >
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-ink/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-150" />
+          <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-150" />
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <DialogPrimitive.Content
               className="relative w-full max-w-sm rounded-md border border-border bg-surface p-5 shadow-lg animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-text"

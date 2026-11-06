@@ -22,10 +22,14 @@ import {
 } from '@sgia/api-client';
 import type { LocationEntity, CajonEntity } from '@sgia/types';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
 
 export default function UbicacionesPage() {
+  const [pendingDelete, setPendingDelete] = useState<
+    { kind: 'location'; item: LocationEntity } | { kind: 'cajon'; item: CajonEntity } | null
+  >(null);
   const [search, setSearch] = useState('');
   const [tipoFilter, setTipoFilter] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<LocationEntity | null>(null);
@@ -119,7 +123,6 @@ export default function UbicacionesPage() {
   };
 
   const handleDeleteLocation = async (loc: LocationEntity) => {
-    if (!confirm(`¿Eliminar la ubicación "${loc.nombre}" y sus cajones asociados?`)) return;
     try {
       await deleteLocationMutation.mutateAsync(loc.id);
       if (selectedLocation?.id === loc.id) {
@@ -160,7 +163,6 @@ export default function UbicacionesPage() {
   };
 
   const handleDeleteCajon = async (cajon: CajonEntity) => {
-    if (!confirm(`¿Eliminar el compartimiento "${cajon.codigo}"?`)) return;
     try {
       await deleteCajonMutation.mutateAsync(cajon.id);
       toast.success('Cajón eliminado');
@@ -321,7 +323,7 @@ export default function UbicacionesPage() {
                         size="icon"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteLocation(loc);
+                          setPendingDelete({ kind: 'location', item: loc });
                         }}
                         className="h-6 w-6 text-zinc-400 hover:text-rose-600"
                         title="Eliminar ubicación"
@@ -393,7 +395,7 @@ export default function UbicacionesPage() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDeleteCajon(cajon)}
+                        onClick={() => setPendingDelete({ kind: 'cajon', item: cajon })}
                         className="h-6 w-6 text-zinc-400 hover:text-rose-600 shrink-0"
                         title="Eliminar cajón"
                       >
@@ -515,6 +517,25 @@ export default function UbicacionesPage() {
           </div>
         </form>
       </Dialog>
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        variant="danger"
+        title={pendingDelete?.kind === 'location' ? 'Eliminar ubicación' : 'Eliminar compartimiento'}
+        description={
+          pendingDelete?.kind === 'location'
+            ? `¿Eliminar la ubicación “${pendingDelete.item.nombre}” y sus cajones asociados?`
+            : `¿Eliminar el compartimiento “${pendingDelete?.item.codigo}”?`
+        }
+        confirmLabel="Eliminar"
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={async () => {
+          const target = pendingDelete;
+          setPendingDelete(null);
+          if (target?.kind === 'location') await handleDeleteLocation(target.item);
+          else if (target) await handleDeleteCajon(target.item);
+        }}
+      />
     </div>
   );
 }
