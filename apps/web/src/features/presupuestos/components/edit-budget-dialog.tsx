@@ -105,7 +105,7 @@ export function EditBudgetDialog({
         <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" disabled={pending}>
-            {pending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {pending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Guardar
           </Button>
         </div>

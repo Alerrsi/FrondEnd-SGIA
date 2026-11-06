@@ -132,7 +132,7 @@ export function Dialog({
                   aria-label="Cerrar modal"
                   className="rounded p-1 text-text-muted hover:bg-surface-raised hover:text-text transition-colors focus-visible:ring-2 focus-visible:ring-info cursor-pointer"
                 >
-                  <X className="h-4 w-4" />
+                  <X aria-hidden="true" className="h-4 w-4" />
                 </button>
               </div>
               <div className="mt-4">{children}</div>
@@ -157,7 +157,7 @@ export function Dialog({
             >
               <div className="flex items-start gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-warn/30 bg-warn-bg text-warn">
-                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0">
                   <DialogPrimitive.Title className="text-sm font-semibold text-text tracking-tight">

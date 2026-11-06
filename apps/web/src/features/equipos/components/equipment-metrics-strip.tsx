@@ -31,7 +31,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
       {/* Total Activos Críticos */}
       <div className="flex items-center gap-3 p-3.5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-surface-raised text-text">
-          <Cpu className="h-4.5 w-4.5" />
+          <Cpu aria-hidden="true" className="h-4.5 w-4.5" />
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
@@ -46,7 +46,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
       {/* Operativos */}
       <div className="flex items-center gap-3 p-3.5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-ok/30 bg-ok-bg text-ok">
-          <CheckCircle2 className="h-4.5 w-4.5" />
+          <CheckCircle2 aria-hidden="true" className="h-4.5 w-4.5" />
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
@@ -61,7 +61,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
       {/* En Mantención / Calibración */}
       <div className="flex items-center gap-3 p-3.5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-warn/30 bg-warn-bg text-warn">
-          <Wrench className="h-4.5 w-4.5" />
+          <Wrench aria-hidden="true" className="h-4.5 w-4.5" />
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
@@ -76,7 +76,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
       {/* Próximos a Obsolescencia */}
       <div className="flex items-center gap-3 p-3.5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-danger/30 bg-danger-bg text-danger">
-          <AlertTriangle className="h-4.5 w-4.5" />
+          <AlertTriangle aria-hidden="true" className="h-4.5 w-4.5" />
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">

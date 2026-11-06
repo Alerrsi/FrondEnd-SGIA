@@ -104,7 +104,7 @@ export default function ProveedoresPage() {
   if (isError || !data) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
-        <AlertCircle className="h-5 w-5 shrink-0 text-danger" />
+        <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-danger" />
         <span>No se pudo cargar el catálogo de proveedores desde el servidor.</span>
       </div>
     );
@@ -128,7 +128,7 @@ export default function ProveedoresPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-text" />
+              <Building2 aria-hidden="true" className="h-5 w-5 text-text" />
               Catálogo de Proveedores
             </h1>
             <p className="text-xs text-text-muted">
@@ -136,7 +136,7 @@ export default function ProveedoresPage() {
             </p>
           </div>
           <Button variant="primary" onClick={handleOpenCreate} className="text-xs">
-            <Plus className="h-4 w-4" />
+            <Plus aria-hidden="true" className="h-4 w-4" />
             Nuevo proveedor
           </Button>
         </div>

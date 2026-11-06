@@ -41,7 +41,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 1. Activos Disponibles */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+          <CheckCircle2 aria-hidden="true" className="h-3 w-3 text-emerald-500" />
           <span>Disponibles</span>
         </div>
         <span className="mt-1 text-base font-bold text-text tabular-nums">
@@ -52,7 +52,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 2. En Préstamo */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <Boxes className="h-3 w-3 text-blue-500" />
+          <Boxes aria-hidden="true" className="h-3 w-3 text-blue-500" />
           <span>En Préstamo</span>
         </div>
         <span className="mt-1 text-base font-bold text-text tabular-nums">
@@ -63,7 +63,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 3. En Taller / Mantención */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <Wrench className="h-3 w-3 text-amber-500" />
+          <Wrench aria-hidden="true" className="h-3 w-3 text-amber-500" />
           <span>En Taller</span>
         </div>
         <span className="mt-1 text-base font-bold text-text tabular-nums">
@@ -74,7 +74,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 4. De Baja */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <AlertOctagon className="h-3 w-3 text-text-muted" />
+          <AlertOctagon aria-hidden="true" className="h-3 w-3 text-text-muted" />
           <span>De Baja</span>
         </div>
         <span className="mt-1 text-base font-bold text-text tabular-nums">
@@ -85,7 +85,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 5. Préstamos Hoy */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <CalendarClock className="h-3 w-3 text-indigo-500" />
+          <CalendarClock aria-hidden="true" className="h-3 w-3 text-indigo-500" />
           <span>Préstamos Hoy</span>
         </div>
         <span className="mt-1 text-base font-bold text-text tabular-nums">
@@ -96,7 +96,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 6. Tasa de Atrasos */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <Percent className="h-3 w-3 text-rose-500" />
+          <Percent aria-hidden="true" className="h-3 w-3 text-rose-500" />
           <span>Tasa Atrasos</span>
         </div>
         <span className="mt-1 text-base font-bold text-danger tabular-nums">
@@ -107,7 +107,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 7. Alertas Críticas */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <AlertOctagon className="h-3 w-3 text-red-600 animate-pulse" />
+          <AlertOctagon aria-hidden="true" className="h-3 w-3 text-red-600 animate-pulse" />
           <span>Alertas Stock</span>
         </div>
         <span className="mt-1 text-base font-bold text-danger tabular-nums">
@@ -118,7 +118,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 8. Tasa Rotación */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-text-muted uppercase tracking-wider">
-          <TrendingUp className="h-3 w-3 text-teal-500" />
+          <TrendingUp aria-hidden="true" className="h-3 w-3 text-teal-500" />
           <span>Rotación Mes</span>
         </div>
         <span className="mt-1 text-base font-bold text-text tabular-nums">

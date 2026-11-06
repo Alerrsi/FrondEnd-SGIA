@@ -205,14 +205,14 @@ export default function ProductosListPage() {
               onClick={() => setInvoiceUploadOpen(true)}
               className="flex items-center gap-1.5 text-xs h-8"
             >
-              <FileUp className="h-3.5 w-3.5 text-text-muted" />
+              <FileUp aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
               <span>Ingresar por factura</span>
             </Button>
           )}
 
           {/* CTA Principal: Monocromático de alto contraste técnico */}
           <Button onClick={handleOpenCreate} size="sm" className="flex items-center gap-1.5 text-xs h-8">
-            <Plus className="h-3.5 w-3.5" />
+            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Dar de alta producto</span>
           </Button>
         </div>
@@ -248,7 +248,7 @@ export default function ProductosListPage() {
       {/* Error state */}
       {isError && (
         <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-3 text-xs text-danger">
-          <AlertCircle className="h-4 w-4 shrink-0 text-danger" />
+          <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 text-danger" />
           <span>Error de conexión con el catálogo de pañol. Reintentando sincronización…</span>
         </div>
       )}

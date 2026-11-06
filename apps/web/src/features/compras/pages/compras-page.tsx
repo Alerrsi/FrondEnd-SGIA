@@ -67,7 +67,7 @@ export default function ComprasPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5 text-text" />
+              <ShoppingCart aria-hidden="true" className="h-5 w-5 text-text" />
               Órdenes de Compra
             </h1>
             <p className="text-xs text-text-muted">
@@ -76,7 +76,7 @@ export default function ComprasPage() {
           </div>
           {canCreate && (
             <Button onClick={() => setFormOpen(true)} className="text-xs">
-              <Plus className="h-4 w-4" />
+              <Plus aria-hidden="true" className="h-4 w-4" />
               Nueva orden
             </Button>
           )}
@@ -113,7 +113,7 @@ export default function ComprasPage() {
         </div>
       ) : isError || !data ? (
         <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
-          <AlertCircle className="h-5 w-5 shrink-0" />
+          <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
           <span>No se pudieron cargar las órdenes de compra desde el servidor.</span>
         </div>
       ) : (

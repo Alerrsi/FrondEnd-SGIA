@@ -314,7 +314,7 @@ export function LoanRequestForm() {
                           disabled={pending}
                           onClick={() => items.remove(index)}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                       </td>
                     </tr>
@@ -345,7 +345,7 @@ export function LoanRequestForm() {
 
         <div className="flex justify-end border-t border-border pt-3">
           <Button type="submit" disabled={pending}>
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {pending ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Send aria-hidden="true" className="h-4 w-4" />}
             Enviar solicitud
           </Button>
         </div>

@@ -20,6 +20,7 @@
   --font-mono: 'IBM Plex Mono', monospace;
   --color-ok-bg: var(--ok-bg);
   --color-warn-bg: var(--warn-bg);
+  --color-danger-strong: var(--danger-strong, var(--danger));
   --color-danger-bg: var(--danger-bg);
   --radius-sm: 4px;
   --radius-md: 6px;

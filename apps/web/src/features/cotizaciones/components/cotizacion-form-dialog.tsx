@@ -170,7 +170,7 @@ export function CotizacionFormDialog({
         {/* Fieldset: Productos a cotizar */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <Package className="h-3.5 w-3.5 text-text-muted" />
+            <Package aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Productos a Cotizar
           </legend>
 
@@ -238,7 +238,7 @@ export function CotizacionFormDialog({
                     className="inline-flex h-7 w-7 items-center justify-center rounded text-text-muted hover:text-danger hover:bg-danger-bg transition-colors"
                     title="Quitar producto"
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <X aria-hidden="true" className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
@@ -249,13 +249,13 @@ export function CotizacionFormDialog({
         {/* Fieldset: Proveedores */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <Building2 className="h-3.5 w-3.5 text-text-muted" />
+            <Building2 aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Proveedores Destinatarios (Mínimo {MIN_SUPPLIERS})
           </legend>
 
           {suppliersCount < MIN_SUPPLIERS && (
             <div className="flex items-start gap-2 rounded-md border border-warn/30 bg-warn-bg px-3 py-2">
-              <AlertCircle className="h-4 w-4 shrink-0 text-warn mt-0.5" />
+              <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 text-warn mt-0.5" />
               <p className="text-xs text-warn">
                 Debes seleccionar al menos <strong>{MIN_SUPPLIERS} proveedor</strong> para
                 emitir una solicitud de cotización. Seleccionados: <strong>{suppliersCount}</strong>.
@@ -312,7 +312,7 @@ export function CotizacionFormDialog({
         {/* Notas */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <FileText className="h-3.5 w-3.5 text-text-muted" />
+            <FileText aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Notas y Especificaciones
           </legend>
           <textarea
@@ -337,7 +337,7 @@ export function CotizacionFormDialog({
               disabled={isPending || !isFormValid}
               className="min-w-36 text-xs"
             >
-              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              {isPending && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />}
               Emitir cotización
             </Button>
           </div>

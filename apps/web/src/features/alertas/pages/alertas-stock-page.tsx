@@ -107,7 +107,7 @@ export default function AlertasStockPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <Bell className="h-5 w-5 text-text" />
+              <Bell aria-hidden="true" className="h-5 w-5 text-text" />
               Alertas de Stock Crítico y Preventivo
             </h1>
             <p className="text-xs text-text-muted">
@@ -123,7 +123,7 @@ export default function AlertasStockPage() {
               onClick={() => navigate('/inventario')}
               className="text-xs gap-1.5"
             >
-              <Layers className="h-3.5 w-3.5" />
+              <Layers aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Ver Inventario</span>
             </Button>
             <Button
@@ -133,7 +133,7 @@ export default function AlertasStockPage() {
               onClick={() => navigate('/cotizaciones')}
               className="text-xs gap-1.5"
             >
-              <ShoppingCart className="h-3.5 w-3.5" />
+              <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Ir a Cotizaciones</span>
             </Button>
           </div>
@@ -166,7 +166,7 @@ export default function AlertasStockPage() {
         </div>
 
         <div className="flex items-center gap-2 pl-4">
-          <CheckCircle className="h-3 w-3 text-emerald-500" />
+          <CheckCircle aria-hidden="true" className="h-3 w-3 text-emerald-500" />
           <span className="text-text-muted">Atendidas / Resueltas:</span>
           <strong className="text-text tabular-nums font-semibold">
             {totalResolved}

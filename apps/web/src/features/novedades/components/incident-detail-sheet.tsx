@@ -80,7 +80,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
         {isLoading || !report ? (
           <div className="flex items-center justify-center py-16 text-xs text-text-muted">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" />
             Cargando informe…
           </div>
         ) : (
@@ -196,7 +196,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
 
               {report.pdf_url && (
                 <Button variant="outline" onClick={() => void downloadPdf()} className="text-xs">
-                  <FileDown className="h-4 w-4" />
+                  <FileDown aria-hidden="true" className="h-4 w-4" />
                   Descargar PDF
                 </Button>
               )}

@@ -191,13 +191,13 @@ export function InvoiceReviewForm({
       <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
         {!intake.raw_ocr_payload.ocr_available && (
           <p className="flex items-center gap-2 rounded-md border border-warn/30 bg-warn-bg p-2.5 text-xs text-warn">
-            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <AlertTriangle aria-hidden="true" className="h-4 w-4 shrink-0" />
             El OCR no estuvo disponible: agrega los ítems de la factura a mano.
           </p>
         )}
         {intake.raw_ocr_payload.ocr_available && intake.raw_ocr_payload.items.length > 0 && (
           <p className="flex items-center gap-1.5 text-xs text-text-muted">
-            <Sparkles className="h-3.5 w-3.5" />
+            <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
             {intake.raw_ocr_payload.items.length} ítem(s) detectados · {autoMatched} asociados
             automáticamente por nombre.
             {intake.raw_ocr_payload.supplier_name &&
@@ -367,7 +367,7 @@ export function InvoiceReviewForm({
                           }
                           className="shrink-0 px-2"
                         >
-                          <Plus className="h-3.5 w-3.5" />
+                          <Plus aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                       {suggestFor?.index === index && (
@@ -499,7 +499,7 @@ export function InvoiceReviewForm({
                         aria-label={`Quitar ítem ${index + 1}`}
                         className="rounded p-1 text-text-muted hover:bg-rose-50 hover:text-danger"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                     </td>
                   </tr>
@@ -533,7 +533,7 @@ export function InvoiceReviewForm({
               })
             }
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             Agregar ítem
           </Button>
           <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
@@ -559,7 +559,7 @@ export function InvoiceReviewForm({
             role="alert"
             className="flex items-center gap-1.5 text-xs text-danger"
           >
-            <AlertTriangle className="h-3.5 w-3.5" />
+            <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5" />
             El total supera lo libre del presupuesto; el servidor lo rechazará, salvo que el director de carrera autorice el exceso.
           </p>
         )}
@@ -569,7 +569,7 @@ export function InvoiceReviewForm({
             role="alert"
             className="flex items-start gap-1.5 text-xs text-danger"
           >
-            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <AlertTriangle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             La factura supera lo libre del presupuesto por {formatCLP(overBudget.info.overBy)}. Solo
             el director de carrera puede autorizar el exceso; pídele que confirme esta factura.
           </p>
@@ -577,7 +577,7 @@ export function InvoiceReviewForm({
 
         <div className="flex justify-end border-t border-border pt-3">
           <Button type="submit" disabled={pending}>
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            {pending ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Check aria-hidden="true" className="h-4 w-4" />}
             Confirmar e ingresar stock
           </Button>
         </div>

@@ -63,7 +63,7 @@ export function CotizacionDetailSheet({
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-text">
-            <FileText className="h-4 w-4 text-text-muted" />
+            <FileText aria-hidden="true" className="h-4 w-4 text-text-muted" />
             <span className="font-mono">Cotización #{cotizacion.id}</span>
           </SheetTitle>
           <SheetDescription className="text-xs text-text-muted">
@@ -76,7 +76,7 @@ export function CotizacionDetailSheet({
           <div className="flex items-center justify-between">
             <QuotationStatusBadge estado={cotizacion.estado} />
             <span className="inline-flex items-center gap-1 text-xs text-text-muted font-mono">
-              <Calendar className="h-3 w-3" />
+              <Calendar aria-hidden="true" className="h-3 w-3" />
               {formatDate(cotizacion.createdAt)}
             </span>
           </div>
@@ -84,7 +84,7 @@ export function CotizacionDetailSheet({
           {/* Products */}
           <div className="rounded-md border border-border p-3 space-y-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5">
-              <Package className="h-3.5 w-3.5" />
+              <Package aria-hidden="true" className="h-3.5 w-3.5" />
               Productos solicitados ({items.length})
             </h3>
             {items.length === 0 ? (
@@ -111,7 +111,7 @@ export function CotizacionDetailSheet({
           {/* Suppliers */}
           <div className="rounded-md border border-border p-3 space-y-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5">
-              <Building2 className="h-3.5 w-3.5" />
+              <Building2 aria-hidden="true" className="h-3.5 w-3.5" />
               Proveedores contactados ({suppliers.length})
             </h3>
             {suppliers.length === 0 ? (
@@ -179,7 +179,7 @@ export function CotizacionDetailSheet({
               onClick={() => onGenerateOrder(cotizacion)}
               className="w-full text-xs"
             >
-              <ShoppingCart className="h-4 w-4" />
+              <ShoppingCart aria-hidden="true" className="h-4 w-4" />
               Aprobar y Generar Orden de Compra
             </Button>
           )}

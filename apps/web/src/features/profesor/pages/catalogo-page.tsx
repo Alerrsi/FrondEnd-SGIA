@@ -7,7 +7,7 @@ export default function CatalogoPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-text">
-          <PackageSearch className="h-5 w-5 text-text" />
+          <PackageSearch aria-hidden="true" className="h-5 w-5 text-text" />
           Catálogo y nueva solicitud
         </h1>
         <p className="text-xs text-text-muted">

@@ -34,7 +34,7 @@ export default function CotizacionesPage() {
   if (isError || !data) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
-        <AlertCircle className="h-5 w-5 shrink-0 text-danger" />
+        <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-danger" />
         <span>No se pudo cargar el historial de cotizaciones desde el servidor.</span>
       </div>
     );
@@ -58,7 +58,7 @@ export default function CotizacionesPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-text" />
+              <ClipboardList aria-hidden="true" className="h-5 w-5 text-text" />
               Cotizaciones a Proveedores
             </h1>
             <p className="text-xs text-text-muted">
@@ -66,7 +66,7 @@ export default function CotizacionesPage() {
             </p>
           </div>
           <Button variant="primary" onClick={() => setFormOpen(true)} className="text-xs">
-            <Plus className="h-4 w-4" />
+            <Plus aria-hidden="true" className="h-4 w-4" />
             Nueva cotización
           </Button>
         </div>
@@ -88,7 +88,7 @@ export default function CotizacionesPage() {
           >
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <FileText className="h-3.5 w-3.5 text-text-muted" />
+                <FileText aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                 <span className="font-mono text-xs font-bold text-text">
                   #{cotizacion.id}
                 </span>

@@ -351,7 +351,7 @@ export function ChartConfigModal({
               disabled={missingDateFrom || invalidRange || invalidLimit}
               className="gap-1.5 bg-ink text-background hover:opacity-90"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Añadir al panel</span>
             </Button>
           </div>

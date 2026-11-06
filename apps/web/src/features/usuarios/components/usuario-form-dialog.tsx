@@ -192,7 +192,7 @@ export function UsuarioFormDialog({
         {/* Fieldset: Identificación Personal */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <User className="h-3.5 w-3.5 text-text-muted" />
+            <User aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Identificación de Usuario
           </legend>
 
@@ -273,7 +273,7 @@ export function UsuarioFormDialog({
         {/* Fieldset: Rol y Dependencia */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <Shield className="h-3.5 w-3.5 text-text-muted" />
+            <Shield aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Rol y Dependencia Institucional
           </legend>
 
@@ -350,7 +350,7 @@ export function UsuarioFormDialog({
         {/* Fieldset: Credenciales */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <Lock className="h-3.5 w-3.5 text-text-muted" />
+            <Lock aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Credenciales de Acceso
           </legend>
 
@@ -399,7 +399,7 @@ export function UsuarioFormDialog({
             Cancelar
           </DialogCloseButton>
           <Button type="submit" variant="primary" disabled={isPending} className="min-w-28 text-xs">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Crear usuario'}
           </Button>
         </div>

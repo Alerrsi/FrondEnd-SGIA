@@ -274,7 +274,7 @@ export default function HistorialPrestamosPage() {
             title="Ver bitácora y detalle"
             aria-label={`Ver detalle del préstamo #${info.row.original.codigo ?? info.row.original.id}`}
           >
-            <Eye className="h-3.5 w-3.5" />
+            <Eye aria-hidden="true" className="h-3.5 w-3.5" />
           </Button>
         ),
       }),
@@ -323,7 +323,7 @@ export default function HistorialPrestamosPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <History className="h-5 w-5 text-text" />
+              <History aria-hidden="true" className="h-5 w-5 text-text" />
               Historial y Auditoría de Préstamos
             </h1>
             <p className="text-xs text-text-muted">
@@ -341,7 +341,7 @@ export default function HistorialPrestamosPage() {
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >
-              <FileSpreadsheet className="h-3.5 w-3.5 text-ok" />
+              <FileSpreadsheet aria-hidden="true" className="h-3.5 w-3.5 text-ok" />
               <span>Exportar Excel</span>
             </Button>
             <Button
@@ -352,7 +352,7 @@ export default function HistorialPrestamosPage() {
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >
-              <FileText className="h-3.5 w-3.5 text-danger" />
+              <FileText aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
               <span>Exportar PDF</span>
             </Button>
           </div>
@@ -362,7 +362,7 @@ export default function HistorialPrestamosPage() {
       {/* Cinta Métrica Compacta */}
       <div className="flex flex-wrap items-center divide-x divide-border rounded-md border border-border bg-surface px-4 py-2 text-xs font-mono shadow-xs">
         <div className="flex items-center gap-2 pr-4">
-          <History className="h-3 w-3 text-text-muted" />
+          <History aria-hidden="true" className="h-3 w-3 text-text-muted" />
           <span className="text-text-muted">Total Histórico:</span>
           <strong className="text-text tabular-nums font-semibold">
             {totalLoans}
@@ -370,7 +370,7 @@ export default function HistorialPrestamosPage() {
         </div>
 
         <div className="flex items-center gap-2 px-4">
-          <Clock className="h-3 w-3 text-blue-500" />
+          <Clock aria-hidden="true" className="h-3 w-3 text-blue-500" />
           <span className="text-text-muted">Activos en Sala:</span>
           <strong className="text-info tabular-nums font-semibold">
             {activeCount}
@@ -378,7 +378,7 @@ export default function HistorialPrestamosPage() {
         </div>
 
         <div className="flex items-center gap-2 px-4">
-          <AlertTriangle
+          <AlertTriangle aria-hidden="true"
             className={cn('h-3 w-3', overdueCount > 0 ? 'text-rose-500' : 'text-text-muted')}
           />
           <span className="text-text-muted">Atrasados Críticos:</span>
@@ -395,7 +395,7 @@ export default function HistorialPrestamosPage() {
         </div>
 
         <div className="flex items-center gap-2 pl-4">
-          <CheckCircle className="h-3 w-3 text-emerald-500" />
+          <CheckCircle aria-hidden="true" className="h-3 w-3 text-emerald-500" />
           <span className="text-text-muted">Devueltos Conformes:</span>
           <strong className="text-text tabular-nums font-semibold">
             {returnedCount}
@@ -409,7 +409,7 @@ export default function HistorialPrestamosPage() {
           <div className="flex flex-1 flex-wrap items-center gap-2">
             {/* Buscador con / shortcut */}
             <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-64 sm:flex-none">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+              <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <input
                 type="search"
                 value={search}
@@ -427,7 +427,7 @@ export default function HistorialPrestamosPage() {
                   onClick={() => setSearch('')}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X aria-hidden="true" className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
@@ -523,7 +523,7 @@ export default function HistorialPrestamosPage() {
               disabled={isFetching}
               className="text-xs gap-1.5"
             >
-              <RefreshCw className={cn('h-3.5 w-3.5', isFetching && 'animate-spin')} />
+              <RefreshCw aria-hidden="true" className={cn('h-3.5 w-3.5', isFetching && 'animate-spin')} />
               <span>Refrescar</span>
             </Button>
           </div>
@@ -550,7 +550,7 @@ export default function HistorialPrestamosPage() {
               {isLoading ? (
                 <tr>
                   <td colSpan={columns.length} className="px-4 py-12 text-center text-text-muted">
-                    <RefreshCw className="mx-auto mb-2 h-5 w-5 animate-spin" />
+                    <RefreshCw aria-hidden="true" className="mx-auto mb-2 h-5 w-5 animate-spin" />
                     Cargando bitácora histórica de préstamos…
                   </td>
                 </tr>
@@ -620,7 +620,7 @@ export default function HistorialPrestamosPage() {
                 disabled={currentPage <= 1}
                 className="h-7 w-7 p-0"
               >
-                <ChevronLeft className="h-3.5 w-3.5" />
+                <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
               </Button>
               <span className="px-2 text-text tabular-nums">
                 {totalPages === 0 ? 0 : currentPage} / {totalPages}
@@ -633,7 +633,7 @@ export default function HistorialPrestamosPage() {
                 disabled={currentPage >= totalPages}
                 className="h-7 w-7 p-0"
               >
-                <ChevronRight className="h-3.5 w-3.5" />
+                <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>

@@ -175,7 +175,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text underline"
                 >
-                  <ExternalLink className="h-3 w-3" /> Probar enlace
+                  <ExternalLink aria-hidden="true" className="h-3 w-3" /> Probar enlace
                 </a>
               )}
             </div>
@@ -206,7 +206,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
               onClick={handleAddRow}
               className="h-7 text-xs gap-1"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Agregar parámetro</span>
             </Button>
           </div>
@@ -242,7 +242,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     aria-label={`Eliminar parámetro ${row.key || idx + 1}`}
                     className="p-1.5 text-text-muted hover:text-rose-600 rounded transition-colors"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))
@@ -255,7 +255,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
           <DialogCloseButton
             disabled={updateSpecsMutation.isPending}
           >
-            <X className="h-4 w-4" />
+            <X aria-hidden="true" className="h-4 w-4" />
             <span>Cancelar</span>
           </DialogCloseButton>
           <Button
@@ -264,7 +264,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
             disabled={updateSpecsMutation.isPending}
             className="gap-1.5"
           >
-            <Save className="h-4 w-4" />
+            <Save aria-hidden="true" className="h-4 w-4" />
             <span>{updateSpecsMutation.isPending ? 'Guardando…' : 'Guardar Ficha Técnica'}</span>
           </Button>
         </div>

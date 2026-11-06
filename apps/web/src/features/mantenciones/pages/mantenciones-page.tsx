@@ -81,7 +81,7 @@ export default function MantencionesPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-          <Wrench className="h-5 w-5 text-text" />
+          <Wrench aria-hidden="true" className="h-5 w-5 text-text" />
           Mantenciones
         </h1>
         <p className="text-xs text-text-muted">
@@ -152,7 +152,7 @@ export default function MantencionesPage() {
           <div className="py-12 text-center font-mono text-xs text-text-muted">Cargando mantenciones…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar las mantenciones.
           </div>
         ) : (
@@ -188,10 +188,10 @@ export default function MantencionesPage() {
               {meta.currentPage} / {meta.lastPage} · {meta.total}
             </span>
             <Button size="icon" variant="outline" aria-label="Página anterior" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
             <Button size="icon" variant="outline" aria-label="Página siguiente" disabled={page >= meta.lastPage} onClick={() => setPage((p) => p + 1)}>
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
           </div>
         )}

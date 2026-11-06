@@ -41,7 +41,7 @@ export default function PanolesPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-            <Warehouse className="h-5 w-5 text-text" />
+            <Warehouse aria-hidden="true" className="h-5 w-5 text-text" />
             Pañoles
           </h1>
           <p className="text-xs text-text-muted">
@@ -55,7 +55,7 @@ export default function PanolesPage() {
             setFormOpen(true);
           }}
         >
-          <Plus className="h-4 w-4" />
+          <Plus aria-hidden="true" className="h-4 w-4" />
           Nuevo pañol
         </Button>
       </div>
@@ -75,7 +75,7 @@ export default function PanolesPage() {
           <div className="py-12 text-center font-mono text-xs text-text-muted">Cargando pañoles…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar los pañoles.
           </div>
         ) : (
@@ -112,7 +112,7 @@ export default function PanolesPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost" aria-label={`Acciones de ${st.code}`}>
-                          <MoreHorizontal className="h-3.5 w-3.5" />
+                          <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

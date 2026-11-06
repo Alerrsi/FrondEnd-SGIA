@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg border border-danger/30 bg-danger-bg p-6 text-center shadow-xs">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger-bg text-danger mb-3">
-            <AlertTriangle className="h-6 w-6" />
+            <AlertTriangle aria-hidden="true" className="h-6 w-6" />
           </div>
           <h2 className="text-base font-semibold text-text">
             Ocurrió un error inesperado al renderizar el módulo
@@ -60,7 +60,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               onClick={this.handleReset}
               className="text-xs"
             >
-              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+              <RotateCcw aria-hidden="true" className="mr-1.5 h-3.5 w-3.5" />
               Reintentar
             </Button>
             <Button

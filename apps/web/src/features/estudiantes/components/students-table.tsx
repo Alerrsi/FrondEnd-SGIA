@@ -65,7 +65,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
                   variant="ghost"
                   aria-label={`Más acciones de ${row.original.rut}`}
                 >
-                  <MoreHorizontal className="h-3.5 w-3.5" />
+                  <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

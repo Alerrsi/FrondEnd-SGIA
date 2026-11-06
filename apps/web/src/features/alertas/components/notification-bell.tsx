@@ -36,7 +36,7 @@ export function NotificationBell() {
           }
           className="relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface text-text-muted hover:bg-surface-raised hover:text-text transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-info"
         >
-          <Bell className="h-4 w-4" />
+          <Bell aria-hidden="true" className="h-4 w-4" />
           {totalUnresolved > 0 && (
             <span
               data-testid="notification-badge"
@@ -76,7 +76,7 @@ export function NotificationBell() {
             </div>
           ) : alerts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-6 px-4 text-center">
-              <CheckCircle className="h-8 w-8 text-emerald-500 mb-1.5 opacity-80" />
+              <CheckCircle aria-hidden="true" className="h-8 w-8 text-emerald-500 mb-1.5 opacity-80" />
               <p className="text-xs font-medium text-text">
                 Niveles de stock óptimos
               </p>
@@ -115,9 +115,9 @@ export function NotificationBell() {
                   </div>
                   <div className="flex items-center gap-2 text-xs font-mono text-text-muted">
                     {isCritical ? (
-                      <AlertTriangle className="h-3 w-3 text-rose-500 shrink-0" />
+                      <AlertTriangle aria-hidden="true" className="h-3 w-3 text-rose-500 shrink-0" />
                     ) : (
-                      <AlertCircle className="h-3 w-3 text-amber-500 shrink-0" />
+                      <AlertCircle aria-hidden="true" className="h-3 w-3 text-amber-500 shrink-0" />
                     )}
                     <span>
                       Stock: <strong className="text-text">{currentStock}</strong> (mín {minStock})
@@ -140,7 +140,7 @@ export function NotificationBell() {
             className="w-full justify-center text-xs gap-1.5 text-text-muted hover:text-text"
           >
             <span>Ver bandeja completa de alertas</span>
-            <ArrowRight className="h-3 w-3" />
+            <ArrowRight aria-hidden="true" className="h-3 w-3" />
           </Button>
         </div>
       </DropdownMenuContent>

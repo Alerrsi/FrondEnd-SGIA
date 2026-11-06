@@ -21,7 +21,7 @@ export default function MisNovedadesPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-text">
-            <FileWarning className="h-5 w-5 text-text" />
+            <FileWarning aria-hidden="true" className="h-5 w-5 text-text" />
             Novedades
           </h1>
           <p className="text-xs text-text-muted">
@@ -29,7 +29,7 @@ export default function MisNovedadesPage() {
           </p>
         </div>
         <Button className="text-xs" onClick={() => setFormOpen(true)}>
-          <Plus className="h-4 w-4" />
+          <Plus aria-hidden="true" className="h-4 w-4" />
           Nuevo informe
         </Button>
       </div>
@@ -39,7 +39,7 @@ export default function MisNovedadesPage() {
           <div className="py-12 text-center font-mono text-xs text-text-muted">Cargando informes…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar tus informes.
           </div>
         ) : (
@@ -101,7 +101,7 @@ export default function MisNovedadesPage() {
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -110,7 +110,7 @@ export default function MisNovedadesPage() {
               disabled={page >= meta.lastPage}
               onClick={() => setPage((p) => p + 1)}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight aria-hidden="true" className="h-4 w-4" />
             </Button>
           </div>
         )}

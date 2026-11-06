@@ -42,7 +42,7 @@ export default function PrestamosMenuPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <CalendarClock className="h-5 w-5 text-text" />
+              <CalendarClock aria-hidden="true" className="h-5 w-5 text-text" />
               Centro Operativo de Préstamos
             </h1>
             <p className="text-xs text-text-muted">
@@ -62,7 +62,7 @@ export default function PrestamosMenuPage() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-raised text-text group-hover:scale-105 transition-transform">
-                <ScanLine className="h-5 w-5" />
+                <ScanLine aria-hidden="true" className="h-5 w-5" />
               </div>
               <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-ok/30">
                 Lector Code128
@@ -79,14 +79,14 @@ export default function PrestamosMenuPage() {
             </div>
 
             <div className="mt-2 flex items-center gap-2 font-mono text-xs text-text-muted">
-              <RotateCcw className="h-3.5 w-3.5 text-text-muted" />
+              <RotateCcw aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
               <span>Préstamos en curso: <strong>{activeCount}</strong></span>
             </div>
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-border pt-3">
             <span className="text-xs font-semibold text-text">Ir al Mostrador</span>
-            <ArrowRight className="h-4 w-4 text-text-muted group-hover:translate-x-1 group-hover:text-text transition" />
+            <ArrowRight aria-hidden="true" className="h-4 w-4 text-text-muted group-hover:translate-x-1 group-hover:text-text transition" />
           </div>
         </Card>
 
@@ -98,7 +98,7 @@ export default function PrestamosMenuPage() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-raised text-text group-hover:scale-105 transition-transform">
-                <Clock className="h-5 w-5" />
+                <Clock aria-hidden="true" className="h-5 w-5" />
               </div>
               {pendingCount > 0 ? (
                 <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-warn/30">
@@ -119,14 +119,14 @@ export default function PrestamosMenuPage() {
             </div>
 
             <div className="mt-2 flex items-center gap-2 font-mono text-xs text-text-muted">
-              <ShieldCheck className="h-3.5 w-3.5 text-text-muted" />
+              <ShieldCheck aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
               <span>Despachos listos para entrega</span>
             </div>
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-border pt-3">
             <span className="text-xs font-semibold text-text">Ver Cola de Despacho</span>
-            <ArrowRight className="h-4 w-4 text-text-muted group-hover:translate-x-1 group-hover:text-text transition" />
+            <ArrowRight aria-hidden="true" className="h-4 w-4 text-text-muted group-hover:translate-x-1 group-hover:text-text transition" />
           </div>
         </Card>
 
@@ -138,11 +138,11 @@ export default function PrestamosMenuPage() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-raised text-text group-hover:scale-105 transition-transform">
-                <History className="h-5 w-5" />
+                <History aria-hidden="true" className="h-5 w-5" />
               </div>
               {overdueCount > 0 && (
                 <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-danger/30 flex items-center gap-1">
-                  <AlertTriangle className="h-3 w-3" />
+                  <AlertTriangle aria-hidden="true" className="h-3 w-3" />
                   {overdueCount} Atrasados
                 </span>
               )}
@@ -158,14 +158,14 @@ export default function PrestamosMenuPage() {
             </div>
 
             <div className="mt-2 flex items-center gap-2 font-mono text-xs text-text-muted">
-              <History className="h-3.5 w-3.5 text-text-muted" />
+              <History aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
               <span>Bitácora histórica del pañol</span>
             </div>
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-border pt-3">
             <span className="text-xs font-semibold text-text">Consultar Historial</span>
-            <ArrowRight className="h-4 w-4 text-text-muted group-hover:translate-x-1 group-hover:text-text transition" />
+            <ArrowRight aria-hidden="true" className="h-4 w-4 text-text-muted group-hover:translate-x-1 group-hover:text-text transition" />
           </div>
         </Card>
       </div>

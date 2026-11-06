@@ -307,7 +307,7 @@ export default function DashboardPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-text" />
+              <BarChart3 aria-hidden="true" className="h-5 w-5 text-text" />
               Dashboards Analíticos y Métricas
             </h1>
             <p className="text-xs text-text-muted">
@@ -325,7 +325,7 @@ export default function DashboardPage() {
               disabled={!panel.canAdd}
               className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 font-medium"
             >
-              <Palette className="h-3.5 w-3.5" />
+              <Palette aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Abrir Catálogo de Widgets ({panel.total}/5)</span>
             </Button>
 
@@ -343,12 +343,12 @@ export default function DashboardPage() {
             >
               {isEditMode ? (
                 <>
-                  <Check className="h-3.5 w-3.5" />
+                  <Check aria-hidden="true" className="h-3.5 w-3.5" />
                   <span>Guardar y Salir</span>
                 </>
               ) : (
                 <>
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                   <span>Modo Edición</span>
                 </>
               )}
@@ -364,7 +364,7 @@ export default function DashboardPage() {
           className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg border border-sky-200 dark:border-sky-900/50 bg-sky-50/50 dark:bg-sky-950/20 text-xs font-mono text-sky-700 dark:text-sky-400"
         >
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
+            <SlidersHorizontal aria-hidden="true" className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
             <span>
               <strong>Modo Edición Activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
               Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo 5 gráficos simultáneos.
@@ -378,7 +378,7 @@ export default function DashboardPage() {
             onClick={() => setPaletteOpen(true)}
             className="text-xs h-7 gap-1 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300"
           >
-            <Palette className="h-3 w-3" />
+            <Palette aria-hidden="true" className="h-3 w-3" />
             <span>Ver Catálogo</span>
           </Button>
         </div>
@@ -391,7 +391,7 @@ export default function DashboardPage() {
           className="flex items-center justify-between gap-3 p-3.5 rounded-lg bg-sky-950/40 border-2 border-sky-500/80 text-xs font-mono text-sky-300 shadow-md animate-pulse"
         >
           <div className="flex items-center gap-2">
-            <Target className="h-4 w-4 text-sky-400 animate-spin" />
+            <Target aria-hidden="true" className="h-4 w-4 text-sky-400 animate-spin" />
             <span>
               <strong>Zonas de Inserción Enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
@@ -408,7 +408,7 @@ export default function DashboardPage() {
       {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 5 por usuario) */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface p-2.5 shadow-2xs">
         <div className="flex items-center gap-2 text-xs font-mono text-text-muted">
-          <LayoutGrid className="h-4 w-4" />
+          <LayoutGrid aria-hidden="true" className="h-4 w-4" />
           <span>Plantillas de Análisis:</span>
         </div>
 
@@ -426,7 +426,7 @@ export default function DashboardPage() {
                 title={tmpl.description ?? `Añadir "${tmpl.name}" a tu panel`}
                 className="text-xs gap-1.5 text-text-muted"
               >
-                <Plus className="h-3 w-3" />
+                <Plus aria-hidden="true" className="h-3 w-3" />
                 <span>{tmpl.name}</span>
               </Button>
             ))}
@@ -463,7 +463,7 @@ export default function DashboardPage() {
 
             <div className="flex items-center gap-3 text-center sm:text-left">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-600/20 border border-sky-500/40 text-sky-400 shrink-0">
-                <Target className="h-6 w-6 animate-spin" />
+                <Target aria-hidden="true" className="h-6 w-6 animate-spin" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-zinc-100">
@@ -492,7 +492,7 @@ export default function DashboardPage() {
         </div>
       ) : charts.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-border text-center font-mono text-xs text-text-muted gap-3">
-          <BarChart3 className="h-8 w-8 text-text-muted" />
+          <BarChart3 aria-hidden="true" className="h-8 w-8 text-text-muted" />
           <p>Tu panel no tiene gráficos visibles. Añade una plantilla o abre el Catálogo de Widgets.</p>
           <div className="flex flex-col items-center gap-3 w-full max-w-md">
             <Button
@@ -502,7 +502,7 @@ export default function DashboardPage() {
               onClick={handleOpenWidgetCatalog}
               className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400"
             >
-              <Palette className="h-3.5 w-3.5" />
+              <Palette aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Abrir Catálogo de Widgets</span>
             </Button>
             {isEditMode && (
@@ -595,7 +595,7 @@ export default function DashboardPage() {
                     className="gap-1 text-xs"
                     onClick={() => void run(() => panel.show(hiddenChart.id), 'Gráfico visible de nuevo')}
                   >
-                    <Eye className="h-3 w-3" />
+                    <Eye aria-hidden="true" className="h-3 w-3" />
                     Mostrar
                   </Button>
                   <Button

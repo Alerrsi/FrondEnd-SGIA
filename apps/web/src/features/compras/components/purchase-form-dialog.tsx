@@ -350,7 +350,7 @@ export function PurchaseFormDialog({
               isPending || (origin === 'multiple' && (quotationIds?.length ?? 0) < MIN_QUOTATIONS)
             }
           >
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Generar orden
           </Button>
         </div>

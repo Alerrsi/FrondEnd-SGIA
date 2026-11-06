@@ -280,7 +280,7 @@ export default function AppLayout() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="gnav-item flex items-center justify-center text-text cursor-default">
-                      <Boxes size={20} strokeWidth={2.2} />
+                      <Boxes aria-hidden="true" size={20} strokeWidth={2.2} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -298,7 +298,7 @@ export default function AppLayout() {
                       aria-label="Expandir panel lateral"
                       className="gnav-item flex items-center justify-center text-text-muted hover:text-text cursor-pointer"
                     >
-                      <PanelLeftOpen size={18} strokeWidth={2} />
+                      <PanelLeftOpen aria-hidden="true" size={18} strokeWidth={2} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -353,7 +353,7 @@ export default function AppLayout() {
                       aria-label="Ajustes de usuario y apariencia"
                       className="gnav-item flex items-center justify-center text-text-muted hover:text-text cursor-pointer"
                     >
-                      <Settings size={18} strokeWidth={2} />
+                      <Settings aria-hidden="true" size={18} strokeWidth={2} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -372,13 +372,13 @@ export default function AppLayout() {
                       className="gnav-item flex items-center justify-center text-text-muted hover:text-text cursor-pointer"
                     >
                       {isLight ? (
-                        <Moon
+                        <Moon aria-hidden="true"
                           size={18}
                           strokeWidth={2}
                           className="text-text-muted"
                         />
                       ) : (
-                        <Sun size={18} strokeWidth={2} className="text-amber-400" />
+                        <Sun aria-hidden="true" size={18} strokeWidth={2} className="text-amber-400" />
                       )}
                     </button>
                   </TooltipTrigger>
@@ -399,7 +399,7 @@ export default function AppLayout() {
                       aria-label="Cerrar sesión"
                       className="gnav-item flex items-center justify-center text-text-muted hover:text-red-600 cursor-pointer"
                     >
-                      <LogOut size={18} strokeWidth={2} />
+                      <LogOut aria-hidden="true" size={18} strokeWidth={2} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -416,7 +416,7 @@ export default function AppLayout() {
                 <div className="flex items-center justify-between px-1.5">
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-background text-text">
-                      <Boxes className="h-4 w-4 text-text" />
+                      <Boxes aria-hidden="true" className="h-4 w-4 text-text" />
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-mono text-xs font-bold tracking-tight text-text">
@@ -435,7 +435,7 @@ export default function AppLayout() {
                     aria-label="Encoger panel lateral"
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-border text-text-muted transition-colors hover:bg-surface-raised hover:text-text cursor-pointer"
                   >
-                    <PanelLeftClose className="h-3.5 w-3.5" />
+                    <PanelLeftClose aria-hidden="true" className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
@@ -501,7 +501,7 @@ export default function AppLayout() {
                         aria-label="Ajustes de usuario y apariencia"
                         className="p-1 shrink-0 rounded text-text-muted hover:bg-surface-raised hover:text-text transition-colors cursor-pointer"
                       >
-                        <Settings className="h-3.5 w-3.5" />
+                        <Settings aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         type="button"
@@ -510,7 +510,7 @@ export default function AppLayout() {
                         aria-label="Cerrar sesión"
                         className="p-1 shrink-0 rounded text-text-muted hover:bg-surface-raised hover:text-text transition-colors cursor-pointer"
                       >
-                        <LogOut className="h-3.5 w-3.5" />
+                        <LogOut aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -521,7 +521,7 @@ export default function AppLayout() {
                       Tema {isLight ? 'Claro' : 'Oscuro'}
                     </span>
                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-border bg-surface/60 shadow-2xs shrink-0">
-                      <Moon
+                      <Moon aria-hidden="true"
                         className={cn(
                           'h-3 w-3 transition-colors',
                           !isLight
@@ -539,7 +539,7 @@ export default function AppLayout() {
                             : 'Modo Oscuro activo, cambiar a Claro'
                         }
                       />
-                      <Sun
+                      <Sun aria-hidden="true"
                         className={cn(
                           'h-3 w-3 transition-colors',
                           isLight ? 'text-amber-500 font-bold' : 'text-text-muted',

@@ -44,7 +44,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
         <SheetContent side="center" className="overflow-y-auto">
           {isLoading || !intake ? (
             <div className="flex items-center justify-center py-16 text-xs text-text-muted">
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" />
               Cargando ingreso…
             </div>
           ) : (
@@ -73,7 +73,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                 <div className="flex flex-col gap-3">
                   {isDraft && !catalogReady ? (
                     <div className="flex items-center justify-center py-10 text-xs text-text-muted">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" />
                       Cargando catálogo de productos…
                     </div>
                   ) : isDraft ? (
@@ -149,7 +149,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                       onClick={() => setCancelling(true)}
                       className="self-start text-xs text-danger hover:bg-danger-bg"
                     >
-                      <Ban className="h-4 w-4" />
+                      <Ban aria-hidden="true" className="h-4 w-4" />
                       {isDraft ? 'Anular borrador' : 'Anular factura confirmada'}
                     </Button>
                   )}

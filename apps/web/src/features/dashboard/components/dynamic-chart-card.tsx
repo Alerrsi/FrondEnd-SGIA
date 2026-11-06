@@ -130,7 +130,7 @@ export function DynamicChartCard({
       {isEditMode && isDragOverCard && (
         <div className="absolute inset-0 bg-sky-500/10 dark:bg-sky-500/20 rounded-lg flex items-center justify-center z-10 pointer-events-none backdrop-blur-2xs">
           <div className="flex items-center gap-2 bg-surface border border-sky-400 dark:border-sky-600 px-3 py-1.5 rounded-md shadow-md text-sky-700 dark:text-sky-400 font-mono text-xs font-semibold">
-            <ArrowLeftRight className="h-4 w-4 animate-pulse" />
+            <ArrowLeftRight aria-hidden="true" className="h-4 w-4 animate-pulse" />
             <span>Soltar para mover a posición #{index + 1}</span>
           </div>
         </div>
@@ -145,7 +145,7 @@ export function DynamicChartCard({
               aria-label="Arrastrar para mover o cambiar de lugar"
               data-testid={`drag-handle-${index}`}
             >
-              <GripVertical className="h-4 w-4" />
+              <GripVertical aria-hidden="true" className="h-4 w-4" />
             </div>
           )}
 
@@ -176,7 +176,7 @@ export function DynamicChartCard({
             title="Ocultar gráfico"
             aria-label="Ocultar gráfico"
           >
-            <EyeOff className="h-3.5 w-3.5" />
+            <EyeOff aria-hidden="true" className="h-3.5 w-3.5" />
           </Button>
         )}
         {onDelete && (
@@ -189,7 +189,7 @@ export function DynamicChartCard({
             title="Eliminar gráfico"
             aria-label="Eliminar gráfico"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
           </Button>
         )}
       </div>
@@ -204,7 +204,7 @@ export function DynamicChartCard({
             role="alert"
             className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-text-muted"
           >
-            <Lock className="h-5 w-5" />
+            <Lock aria-hidden="true" className="h-5 w-5" />
             <span>Tu rol no tiene permisos para ver las métricas.</span>
           </div>
         ) : error ? (
@@ -212,7 +212,7 @@ export function DynamicChartCard({
             role="alert"
             className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-danger"
           >
-            <AlertTriangle className="h-5 w-5" />
+            <AlertTriangle aria-hidden="true" className="h-5 w-5" />
             <span>{apiErrorToMessage(error)}</span>
           </div>
         ) : !data || data.points.length === 0 ? (
@@ -220,7 +220,7 @@ export function DynamicChartCard({
             data-testid={`chart-empty-${index}`}
             className="flex h-full flex-col items-center justify-center gap-2 font-mono text-xs text-text-muted"
           >
-            <BarChart3 className="h-5 w-5" />
+            <BarChart3 aria-hidden="true" className="h-5 w-5" />
             <span>Sin datos para el período</span>
           </div>
         ) : visualization === 'kpi' ? (

@@ -76,7 +76,7 @@ function UnitStatusControl({
         className="h-7 gap-1 text-xs"
         onClick={() => onOpenMaintenance(active.id)}
       >
-        <Wrench className="h-3 w-3" />
+        <Wrench aria-hidden="true" className="h-3 w-3" />
         En mantención
       </Button>
     );
@@ -223,7 +223,7 @@ export function ProductoUnidadesPanel({
             onClick={() => setAddOpen(true)}
             className="flex items-center gap-1 text-xs"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             Agregar unidades
           </Button>
         )}
@@ -231,7 +231,7 @@ export function ProductoUnidadesPanel({
 
       {isLoading ? (
         <div className="flex items-center justify-center gap-2 p-6 text-xs text-text-muted font-mono">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
           Cargando unidades…
         </div>
       ) : isError ? (
@@ -298,7 +298,7 @@ export function ProductoUnidadesPanel({
                             title="Enviar a mantención"
                             onClick={() => setMaintenanceUnit(unit)}
                           >
-                            <Wrench className="h-3.5 w-3.5" />
+                            <Wrench aria-hidden="true" className="h-3.5 w-3.5" />
                           </Button>
                         )}
                         <Button
@@ -309,7 +309,7 @@ export function ProductoUnidadesPanel({
                           title="Documentos de mantenimiento"
                           onClick={() => setDocsUnit(unit)}
                         >
-                          <FolderOpen className="h-3.5 w-3.5" />
+                          <FolderOpen aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                         <Button
                           type="button"
@@ -319,7 +319,7 @@ export function ProductoUnidadesPanel({
                           title="Código de barras"
                           onClick={() => setBarcodeUnit(unit)}
                         >
-                          <Barcode className="h-3.5 w-3.5" />
+                          <Barcode aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                         <Button
                           type="button"
@@ -331,9 +331,9 @@ export function ProductoUnidadesPanel({
                           onClick={() => handleSheet(unit)}
                         >
                           {sheetLoadingId === unit.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
                           ) : (
-                            <FileText className="h-3.5 w-3.5" />
+                            <FileText aria-hidden="true" className="h-3.5 w-3.5" />
                           )}
                         </Button>
                         {canPrintLabel && (
@@ -346,7 +346,7 @@ export function ProductoUnidadesPanel({
                             disabled={sheetLoadingId === unit.id}
                             onClick={() => handleLabel(unit)}
                           >
-                            <Printer className="h-3.5 w-3.5" />
+                            <Printer aria-hidden="true" className="h-3.5 w-3.5" />
                           </Button>
                         )}
                         {canDelete && (
@@ -358,7 +358,7 @@ export function ProductoUnidadesPanel({
                             title="Eliminar unidad"
                             onClick={() => setDeleteUnit(unit)}
                           >
-                            <Trash2 className="h-3.5 w-3.5 text-danger" />
+                            <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
                           </Button>
                         )}
                       </div>

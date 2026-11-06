@@ -86,7 +86,7 @@ export default function LoginPage() {
         {/* Header / Logo */}
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-surface shadow-xs">
-            <Boxes className="h-6 w-6 text-text" />
+            <Boxes aria-hidden="true" className="h-6 w-6 text-text" />
           </div>
           <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-mono font-medium text-danger mb-2">
             <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
@@ -117,7 +117,7 @@ export default function LoginPage() {
               role="alert"
               className="mb-4 flex items-start gap-2 rounded-md border border-danger/30 bg-danger-bg p-2.5 text-xs text-danger"
             >
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-danger" />
+              <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 mt-0.5 text-danger" />
               <span>{authError}</span>
             </div>
           )}
@@ -129,7 +129,7 @@ export default function LoginPage() {
                 htmlFor="email-input"
                 className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
               >
-                <Mail className="h-3 w-3 text-text-muted" />
+                <Mail aria-hidden="true" className="h-3 w-3 text-text-muted" />
                 <span>Correo institucional</span>
               </label>
               <input
@@ -164,7 +164,7 @@ export default function LoginPage() {
                 htmlFor="password-input"
                 className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted font-mono"
               >
-                <Lock className="h-3 w-3 text-text-muted" />
+                <Lock aria-hidden="true" className="h-3 w-3 text-text-muted" />
                 <span>Contraseña</span>
               </label>
               <div className="relative">
@@ -187,9 +187,9 @@ export default function LoginPage() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors focus:outline-none"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff aria-hidden="true" className="h-4 w-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye aria-hidden="true" className="h-4 w-4" />
                   )}
                 </button>
               </div>
@@ -209,7 +209,7 @@ export default function LoginPage() {
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
                   <span>Iniciando sesión…</span>
                 </>
               ) : (
@@ -221,7 +221,7 @@ export default function LoginPage() {
           {/* Quick fill test accounts */}
           <div className="mt-5 rounded-md border border-border bg-surface-raised p-2.5 text-xs text-text-muted">
             <div className="flex items-center gap-1.5 mb-2 font-medium text-text">
-              <KeyRound className="h-3.5 w-3.5 text-text-muted" />
+              <KeyRound aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
               <span>Accesos rápidos de prueba:</span>
             </div>
             <div className="flex flex-wrap gap-1.5 font-mono">

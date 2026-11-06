@@ -156,7 +156,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           }}
           className={controlClasses}
         />
-        {isFetching && <Loader2 className="h-3.5 w-3.5 animate-spin text-text-muted" />}
+        {isFetching && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin text-text-muted" />}
       </div>
 
       <div className="overflow-x-auto rounded-md border border-border">
@@ -225,7 +225,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
           >
-            <ChevronLeft className="h-3.5 w-3.5" />
+            <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
           </Button>
           <Button
             size="icon"
@@ -234,7 +234,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             disabled={page >= meta.lastPage}
             onClick={() => setPage((p) => p + 1)}
           >
-            <ChevronRight className="h-3.5 w-3.5" />
+            <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
           </Button>
         </div>
       )}

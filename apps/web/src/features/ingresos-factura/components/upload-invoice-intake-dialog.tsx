@@ -124,14 +124,14 @@ export function UploadInvoiceIntakeDialog({
           />
           {pending ? (
             <div className="flex flex-col items-center gap-2 py-2">
-              <Loader2 className="h-7 w-7 animate-spin text-text-muted" />
+              <Loader2 aria-hidden="true" className="h-7 w-7 animate-spin text-text-muted" />
               <span className="text-xs font-medium text-text">
                 Leyendo la factura con OCR…
               </span>
             </div>
           ) : file ? (
             <div className="flex items-center gap-2 text-xs">
-              <FileText className="h-5 w-5 text-text-muted" />
+              <FileText aria-hidden="true" className="h-5 w-5 text-text-muted" />
               <span className="font-mono text-text">{file.name}</span>
               <span className="text-text-muted">{formatNumber(file.size / 1024 / 1024, 1)}&nbsp;MB</span>
               <button
@@ -143,12 +143,12 @@ export function UploadInvoiceIntakeDialog({
                 }}
                 className="rounded p-1 text-text-muted hover:bg-surface-raised hover:text-text"
               >
-                <X className="h-3.5 w-3.5" />
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             </div>
           ) : (
             <>
-              <UploadCloud className="mb-2 h-6 w-6 text-text-muted" />
+              <UploadCloud aria-hidden="true" className="mb-2 h-6 w-6 text-text-muted" />
               <p className="text-xs font-medium text-text">
                 Arrastra la factura aquí
               </p>
@@ -162,7 +162,7 @@ export function UploadInvoiceIntakeDialog({
                 className="mt-3 text-xs"
                 onClick={() => fileRef.current?.click()}
               >
-                <FileUp className="h-3.5 w-3.5" />
+                <FileUp aria-hidden="true" className="h-3.5 w-3.5" />
                 Seleccionar archivo
               </Button>
             </>
@@ -173,7 +173,7 @@ export function UploadInvoiceIntakeDialog({
         <div className="flex justify-end gap-2 border-t border-border pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" disabled={pending}>
-            {pending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {pending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Subir y leer factura
           </Button>
         </div>

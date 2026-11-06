@@ -18,7 +18,7 @@ export function ForbiddenPage() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4 text-text">
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-danger shadow-xs">
-        <ShieldAlert className="h-7 w-7" />
+        <ShieldAlert aria-hidden="true" className="h-7 w-7" />
       </div>
 
       <div className="mb-2 flex items-center gap-2">
@@ -43,7 +43,7 @@ export function ForbiddenPage() {
         onClick={() => navigate(defaultPath, { replace: true })}
         className="flex items-center gap-2 text-xs"
       >
-        <ArrowLeft className="h-3.5 w-3.5" />
+        <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
         Volver a mi módulo principal
       </Button>
     </div>

@@ -35,7 +35,7 @@ export function CatalogPanel({ addedIds, onAdd }: CatalogPanelProps) {
     >
       <h2 className="text-sm font-semibold text-text">Catálogo</h2>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+        <Search aria-hidden="true" className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
         <input
           type="search"
           value={search}
@@ -76,7 +76,7 @@ export function CatalogPanel({ addedIds, onAdd }: CatalogPanelProps) {
                   aria-label={`Agregar ${name}`}
                   onClick={() => onAdd({ product_id: p.id, name, available })}
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus aria-hidden="true" className="h-3.5 w-3.5" />
                   {added ? 'Agregado' : 'Agregar'}
                 </Button>
               </li>

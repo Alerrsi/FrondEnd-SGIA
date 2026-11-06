@@ -83,9 +83,9 @@ export function DropZone({
     >
       <div className="flex items-center gap-2 pointer-events-none select-none">
         {isFocused ? (
-          <Target className="h-4 w-4 text-sky-500 animate-spin-slow" />
+          <Target aria-hidden="true" className="h-4 w-4 text-sky-500 animate-spin-slow" />
         ) : (
-          <PlusCircle className={`h-4 w-4 ${isOver ? 'text-sky-500 animate-pulse' : 'text-text-muted'}`} />
+          <PlusCircle aria-hidden="true" className={`h-4 w-4 ${isOver ? 'text-sky-500 animate-pulse' : 'text-text-muted'}`} />
         )}
 
         <span>

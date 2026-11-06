@@ -154,7 +154,7 @@ export function ProductoDetailDialog({
         <div className="flex flex-col items-center justify-center rounded-md border border-border bg-background p-4">
           <div className="mb-2.5 flex items-center justify-between w-full">
             <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted font-mono">
-              <Barcode className="h-4 w-4 text-text-muted" />
+              <Barcode aria-hidden="true" className="h-4 w-4 text-text-muted" />
               Rotulado Code128 de Pañol
             </span>
             <button
@@ -163,7 +163,7 @@ export function ProductoDetailDialog({
               className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text transition-colors"
               title="Copiar código al portapapeles"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-ok" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <Check aria-hidden="true" className="h-3.5 w-3.5 text-ok" /> : <Copy aria-hidden="true" className="h-3.5 w-3.5" />}
               <span>{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
           </div>
@@ -175,7 +175,7 @@ export function ProductoDetailDialog({
           >
             {isBarcodeLoading ? (
               <div className="flex items-center gap-2 text-xs text-text-muted font-mono">
-                <Loader2 className="h-4 w-4 animate-spin text-text-muted" />
+                <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-text-muted" />
                 <span>Generando código vectorial…</span>
               </div>
             ) : barcodeData?.svg ? (
@@ -186,7 +186,7 @@ export function ProductoDetailDialog({
               />
             ) : (
               <div className="flex flex-col items-center gap-1 text-text-muted">
-                <Barcode className="h-8 w-8 opacity-40" />
+                <Barcode aria-hidden="true" className="h-8 w-8 opacity-40" />
                 <span className="text-xs font-mono">SVG no disponible</span>
               </div>
             )}
@@ -224,7 +224,7 @@ export function ProductoDetailDialog({
             </div>
             {isCritical && (
               <div className="mt-2.5 flex items-center gap-1.5 rounded bg-danger-bg border border-danger/30 px-2 py-1 text-xs text-danger">
-                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-danger" />
+                <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-danger" />
                 <span>Nivel de stock bajo umbral crítico</span>
               </div>
             )}
@@ -234,7 +234,7 @@ export function ProductoDetailDialog({
           <div className="rounded-md border border-border bg-surface p-3.5 shadow-xs">
             <div className="flex items-center justify-between text-xs text-text-muted">
               <span className="font-mono">Ubicación en Pañol</span>
-              <MapPin className="h-3.5 w-3.5 text-text-muted" />
+              <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             </div>
             <div className="mt-2 flex items-center gap-2">
               <span className="font-mono text-sm font-semibold text-text">
@@ -263,7 +263,7 @@ export function ProductoDetailDialog({
         {/* Metadatos de Creación / Auditoría */}
         <div className="flex items-center justify-between text-xs text-text-muted font-mono border-t border-border pt-2.5">
           <div className="flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5 text-text-muted" />
+            <Calendar aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             <span>
               Ingresado:{' '}
               {producto.createdAt
@@ -287,7 +287,7 @@ export function ProductoDetailDialog({
             onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
             className="flex items-center gap-1.5 text-xs"
           >
-            <Printer className="h-3.5 w-3.5 text-text-muted" />
+            <Printer aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
           </Button>
 
@@ -303,7 +303,7 @@ export function ProductoDetailDialog({
                 }}
                 className="flex items-center gap-1.5 text-xs"
               >
-                <ArrowRightLeft className="h-3.5 w-3.5" />
+                <ArrowRightLeft aria-hidden="true" className="h-3.5 w-3.5" />
                 <span>Reubicar</span>
               </Button>
             )}
@@ -318,7 +318,7 @@ export function ProductoDetailDialog({
                 }}
                 className="flex items-center gap-1.5 text-xs"
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                 <span>Editar producto</span>
               </Button>
             )}

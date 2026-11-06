@@ -15,7 +15,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-surface-raised text-text hover:brightness-95 border border-border font-medium',
   ghost: 'bg-transparent text-text hover:bg-surface-raised font-medium',
   outline: 'bg-surface text-text hover:bg-surface-raised border border-border font-medium',
-  danger: 'bg-danger text-white hover:brightness-90 font-medium shadow-sm',
+  danger: 'bg-danger-strong text-white hover:brightness-90 font-medium shadow-sm',
 };
 
 const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {

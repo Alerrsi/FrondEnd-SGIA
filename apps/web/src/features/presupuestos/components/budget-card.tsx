@@ -65,19 +65,19 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                   aria-label={`Acciones de ${label} ${budget.year}`}
                   className="rounded p-1 text-text-muted hover:bg-surface-raised hover:text-text"
                 >
-                  <MoreHorizontal className="h-3.5 w-3.5" />
+                  <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onSelect={() => onEdit(budget)}>
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                   Editar monto inicial
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => onDelete(budget)}
                   className="text-danger"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                   Eliminar
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -134,7 +134,7 @@ export function SupplierFormDialog({
         {/* Fieldset: Datos de la Empresa */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <Building2 className="h-3.5 w-3.5 text-text-muted" />
+            <Building2 aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Datos de la Empresa
           </legend>
 
@@ -216,7 +216,7 @@ export function SupplierFormDialog({
         {/* Fieldset: Clasificación */}
         <fieldset className="rounded-md border border-border p-3 space-y-3 bg-surface-raised">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted inline-flex items-center gap-1.5 font-mono">
-            <Tag className="h-3.5 w-3.5 text-text-muted" />
+            <Tag aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             Clasificación
           </legend>
 
@@ -239,7 +239,7 @@ export function SupplierFormDialog({
             Cancelar
           </DialogCloseButton>
           <Button type="submit" variant="primary" disabled={isPending} className="min-w-28 text-xs">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Registrar proveedor'}
           </Button>
         </div>

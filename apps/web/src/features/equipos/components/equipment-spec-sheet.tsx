@@ -131,7 +131,7 @@ export function EquipmentSpecSheet({
           <SheetDescription className="text-xs text-text-muted flex flex-wrap items-center gap-3 mt-1">
             {(equipo.marca || equipo.modelo) && (
               <span className="flex items-center gap-1">
-                <HardDrive className="h-3.5 w-3.5 text-text-muted" />
+                <HardDrive aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                 <span>
                   {[equipo.marca, equipo.modelo].filter(Boolean).join(' · ')}
                 </span>
@@ -139,13 +139,13 @@ export function EquipmentSpecSheet({
             )}
             {equipo.categoria && (
               <span className="flex items-center gap-1">
-                <Layers className="h-3.5 w-3.5 text-text-muted" />
+                <Layers aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                 <span>{equipo.categoria}</span>
               </span>
             )}
             {equipo.ubicacion && (
               <span className="flex items-center gap-1 font-mono text-xs text-text-muted">
-                <MapPin className="h-3.5 w-3.5 text-text-muted" />
+                <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                 <span>{equipo.ubicacion}</span>
               </span>
             )}
@@ -164,9 +164,9 @@ export function EquipmentSpecSheet({
             aria-label="Descargar Ficha Técnica PDF"
           >
             {downloadingSheet ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <Download className="h-3.5 w-3.5" />
+              <Download aria-hidden="true" className="h-3.5 w-3.5" />
             )}
             <span>Ficha Técnica (PDF)</span>
           </Button>
@@ -181,9 +181,9 @@ export function EquipmentSpecSheet({
             aria-label="Descargar Hoja de Vida Mantenciones PDF"
           >
             {downloadingReports ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <FileCheck2 className="h-3.5 w-3.5" />
+              <FileCheck2 aria-hidden="true" className="h-3.5 w-3.5" />
             )}
             <span>Hoja de Vida (PDF)</span>
           </Button>
@@ -197,7 +197,7 @@ export function EquipmentSpecSheet({
               className="text-xs gap-1.5"
               aria-label="Editar Especificaciones"
             >
-              <Edit className="h-3.5 w-3.5" />
+              <Edit aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Editar</span>
             </Button>
           )}
@@ -207,7 +207,7 @@ export function EquipmentSpecSheet({
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
-              <Clock className="h-4 w-4 text-text-muted" />
+              <Clock aria-hidden="true" className="h-4 w-4 text-text-muted" />
               <span>Ciclo de Vida y Vida Útil Estimada</span>
             </h4>
             <Badge tone={lifeCycle.statusTone} dot>
@@ -275,14 +275,14 @@ export function EquipmentSpecSheet({
         {/* Sección: Manual Oficial de Usuario en AWS S3 */}
         <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
-            <FileText className="h-4 w-4 text-text-muted" />
+            <FileText aria-hidden="true" className="h-4 w-4 text-text-muted" />
             <span>Manual Oficial de Usuario (S3 / Cloud)</span>
           </h4>
 
           {manualUrl ? (
             <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-background p-2.5 mt-1">
               <div className="flex items-center gap-2 overflow-hidden">
-                <FileText className="h-4 w-4 text-red-600 shrink-0" />
+                <FileText aria-hidden="true" className="h-4 w-4 text-red-600 shrink-0" />
                 <span className="font-mono text-xs text-text truncate">
                   {manualUrl}
                 </span>
@@ -294,7 +294,7 @@ export function EquipmentSpecSheet({
                 className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-danger hover:underline"
               >
                 <span>Abrir PDF</span>
-                <ExternalLink className="h-3.5 w-3.5" />
+                <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
               </a>
             </div>
           ) : (
@@ -317,7 +317,7 @@ export function EquipmentSpecSheet({
         <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
-              <Cpu className="h-4 w-4 text-text-muted" />
+              <Cpu aria-hidden="true" className="h-4 w-4 text-text-muted" />
               <span>Especificaciones Técnicas</span>
             </h4>
             {canEdit && (
@@ -326,7 +326,7 @@ export function EquipmentSpecSheet({
                 onClick={() => onOpenEdit?.(equipo)}
                 className="text-xs text-text-muted hover:text-text flex items-center gap-1"
               >
-                <Edit className="h-3 w-3" />
+                <Edit aria-hidden="true" className="h-3 w-3" />
                 <span>Editar</span>
               </button>
             )}
@@ -358,7 +358,7 @@ export function EquipmentSpecSheet({
         {/* Sección: Historial de Mantenciones y Hoja de Vida */}
         <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-text">
-            <Wrench className="h-4 w-4 text-text-muted" />
+            <Wrench aria-hidden="true" className="h-4 w-4 text-text-muted" />
             <span>Historial de Mantenciones e Intervenciones</span>
           </h4>
 

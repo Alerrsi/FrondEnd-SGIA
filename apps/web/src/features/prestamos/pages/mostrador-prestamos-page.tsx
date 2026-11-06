@@ -312,7 +312,7 @@ export default function MostradorPrestamosPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <Layers className="h-5 w-5 text-text" />
+              <Layers aria-hidden="true" className="h-5 w-5 text-text" />
               Mostrador de Pañol: Préstamos Presenciales y Devoluciones
             </h1>
             <p className="text-xs text-text-muted">
@@ -328,7 +328,7 @@ export default function MostradorPrestamosPage() {
               onClick={() => navigate('/prestamos/cola')}
               className="text-xs gap-1.5"
             >
-              <Clock className="h-3.5 w-3.5" />
+              <Clock aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Cola Remota</span>
             </Button>
             <Button
@@ -338,7 +338,7 @@ export default function MostradorPrestamosPage() {
               onClick={() => navigate('/prestamos/historial')}
               className="text-xs gap-1.5"
             >
-              <History className="h-3.5 w-3.5" />
+              <History aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Historial Auditoría</span>
             </Button>
           </div>
@@ -354,7 +354,7 @@ export default function MostradorPrestamosPage() {
           onClick={() => setActiveTab('checkout')}
           className="text-xs gap-1.5"
         >
-          <ArrowUpRight className="h-3.5 w-3.5" />
+          <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
           <span>Préstamo Presencial Directo (Entrega)</span>
         </Button>
         <Button
@@ -364,7 +364,7 @@ export default function MostradorPrestamosPage() {
           onClick={() => setActiveTab('checkin')}
           className="text-xs gap-1.5"
         >
-          <ArrowDownLeft className="h-3.5 w-3.5" />
+          <ArrowDownLeft aria-hidden="true" className="h-3.5 w-3.5" />
           <span>Devolución y Recepción (Check-in)</span>
         </Button>
 
@@ -381,7 +381,7 @@ export default function MostradorPrestamosPage() {
                 : 'bg-surface-raised text-text-muted border-border',
             )}
           >
-            <Volume2 className="h-3.5 w-3.5" />
+            <Volume2 aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Audio {soundEnabled ? 'ON' : 'OFF'}</span>
           </button>
         </div>
@@ -424,7 +424,7 @@ export default function MostradorPrestamosPage() {
                     RUN / Credencial Docente <span className="text-red-500">*</span>
                   </label>
                   <div className="relative mt-1">
-                    <User className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+                    <User aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
                     <input
                       id="docente_run"
                       type="text"
@@ -522,7 +522,7 @@ export default function MostradorPrestamosPage() {
               </p>
 
               <div className="relative mt-1">
-                <Barcode className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                <Barcode aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                 <input
                   ref={barcodeInputRef}
                   type="text"
@@ -566,7 +566,7 @@ export default function MostradorPrestamosPage() {
 
               {scannedItems.length === 0 ? (
                 <div className="p-12 text-center text-xs font-mono text-text-muted flex flex-col items-center gap-2">
-                  <Barcode className="h-8 w-8 text-text-muted" />
+                  <Barcode aria-hidden="true" className="h-8 w-8 text-text-muted" />
                   <span>No hay ítems escaneados aún.</span>
                   <span className="text-xs text-text-muted">
                     Apunta la pistola lectora a las etiquetas de los productos o ingresa su SKU en el campo de escaneo.
@@ -608,7 +608,7 @@ export default function MostradorPrestamosPage() {
                                 onClick={() => handleUpdateQty(item.producto.id, -1)}
                                 className="h-5 w-5 rounded flex items-center justify-center hover:bg-surface-raised"
                               >
-                                <Minus className="h-3 w-3 text-text-muted" />
+                                <Minus aria-hidden="true" className="h-3 w-3 text-text-muted" />
                               </button>
                               <span className="w-6 text-center tabular-nums font-semibold">
                                 {item.cantidad}
@@ -618,7 +618,7 @@ export default function MostradorPrestamosPage() {
                                 onClick={() => handleUpdateQty(item.producto.id, 1)}
                                 className="h-5 w-5 rounded flex items-center justify-center hover:bg-surface-raised"
                               >
-                                <Plus className="h-3 w-3 text-text-muted" />
+                                <Plus aria-hidden="true" className="h-3 w-3 text-text-muted" />
                               </button>
                             </div>
                           </td>
@@ -629,7 +629,7 @@ export default function MostradorPrestamosPage() {
                               className="text-text-muted hover:text-rose-600 p-1"
                               title="Quitar ítem"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                             </button>
                           </td>
                         </tr>
@@ -661,7 +661,7 @@ export default function MostradorPrestamosPage() {
                   }
                   className="gap-2"
                 >
-                  <CheckCircle2 className="h-4 w-4" />
+                  <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
                   <span>Registrar Entrega de Préstamo</span>
                 </Button>
               </div>
@@ -678,7 +678,7 @@ export default function MostradorPrestamosPage() {
                 Buscar Préstamo Activo
               </span>
               <div className="relative mt-2">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
                 <input
                   type="search"
                   value={checkinSearch}
@@ -733,7 +733,7 @@ export default function MostradorPrestamosPage() {
           <div className="flex flex-col gap-3 lg:col-span-2">
             {!selectedLoan ? (
               <div className="rounded-md border border-dashed border-border bg-surface p-16 text-center text-xs font-mono text-text-muted flex flex-col items-center gap-2">
-                <ArrowDownLeft className="h-8 w-8 text-text-muted" />
+                <ArrowDownLeft aria-hidden="true" className="h-8 w-8 text-text-muted" />
                 <span>Selecciona un préstamo activo del panel izquierdo para recepcionar insumos.</span>
               </div>
             ) : (
@@ -887,7 +887,7 @@ export default function MostradorPrestamosPage() {
                     disabled={checkinMutation.isPending}
                     className="gap-1.5"
                   >
-                    <CheckCircle2 className="h-4 w-4" />
+                    <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
                     <span>Completar Devolución e Ingresar a Pañol</span>
                   </Button>
                 </div>

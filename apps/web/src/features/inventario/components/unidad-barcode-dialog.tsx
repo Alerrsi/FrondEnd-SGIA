@@ -30,7 +30,7 @@ export function UnidadBarcodeDialog({
           className="flex min-h-[96px] flex-col items-center justify-center rounded-md border border-border bg-surface p-3 text-black"
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin text-text-muted" />
+            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-text-muted" />
           ) : data?.svg ? (
             <div
               className="flex w-full justify-center [&>svg]:max-w-full [&>svg]:h-14"
@@ -38,7 +38,7 @@ export function UnidadBarcodeDialog({
             />
           ) : (
             <div className="flex flex-col items-center gap-1 text-text-muted">
-              <Barcode className="h-8 w-8 opacity-40" />
+              <Barcode aria-hidden="true" className="h-8 w-8 opacity-40" />
               <span className="text-xs font-mono">SVG no disponible</span>
             </div>
           )}

@@ -384,7 +384,7 @@ export function ProductoFormDialog({
                     }}
                     className="mb-1 flex items-center gap-1 text-xs font-medium text-text-muted hover:text-text"
                   >
-                    <Sparkles className="h-3 w-3 text-amber-500" />
+                    <Sparkles aria-hidden="true" className="h-3 w-3 text-amber-500" />
                     <span>{autoBarcode ? 'Manual' : 'Autogenerar'}</span>
                   </button>
                 )}
@@ -398,7 +398,7 @@ export function ProductoFormDialog({
                   className={cn(inputClasses, autoBarcode && 'opacity-60 text-text-muted')}
                   {...register('barcode')}
                 />
-                <Barcode className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                <Barcode aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               </div>
               <FieldError message={errors.barcode?.message} />
             </div>
@@ -459,7 +459,7 @@ export function ProductoFormDialog({
         {/* Fieldset: Ubicación en Pañol */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-border bg-background p-3.5">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-text-muted flex items-center gap-1">
-            <MapPin className="h-3 w-3 text-text-muted" />
+            <MapPin aria-hidden="true" className="h-3 w-3 text-text-muted" />
             <span>Ubicación en Pañol</span>
           </legend>
 
@@ -538,7 +538,7 @@ export function ProductoFormDialog({
             Cancelar
           </DialogCloseButton>
           <Button type="submit" disabled={isPending} size="sm" className="min-w-28">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />}
             <span>{esEdicion ? 'Guardar Cambios' : 'Dar de Alta'}</span>
           </Button>
         </div>

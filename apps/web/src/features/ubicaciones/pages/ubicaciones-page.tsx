@@ -188,7 +188,7 @@ export default function UbicacionesPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <Layers className="h-5 w-5 text-text" />
+              <Layers aria-hidden="true" className="h-5 w-5 text-text" />
               Gestión de Ubicaciones Físicas y Cajones
             </h1>
             <p className="text-xs text-text-muted">
@@ -204,7 +204,7 @@ export default function UbicacionesPage() {
               onClick={() => refetch()}
               className="text-xs gap-1.5"
             >
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Actualizar</span>
             </Button>
             <Button
@@ -214,7 +214,7 @@ export default function UbicacionesPage() {
               onClick={handleOpenCreateLocation}
               className="text-xs gap-1.5 bg-ink text-background hover:opacity-90"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Nueva Sala / Pañol</span>
             </Button>
           </div>
@@ -225,7 +225,7 @@ export default function UbicacionesPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface p-2.5 shadow-2xs">
         <div className="flex flex-1 items-center gap-2 min-w-[240px]">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
+            <Search aria-hidden="true" className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
             <input
               type="search"
               placeholder="Buscar por nombre o descripción…"
@@ -263,7 +263,7 @@ export default function UbicacionesPage() {
 
           {isLoading ? (
             <div className="flex items-center justify-center p-8 text-xs font-mono text-text-muted gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
               <span>Cargando ubicaciones…</span>
             </div>
           ) : locations.length === 0 ? (
@@ -285,7 +285,7 @@ export default function UbicacionesPage() {
                     }`}
                   >
                     <div className="flex items-start gap-2.5 min-w-0">
-                      <Building2
+                      <Building2 aria-hidden="true"
                         className={`h-4 w-4 mt-0.5 shrink-0 ${
                           isSelected ? 'text-text' : 'text-text-muted'
                         }`}
@@ -315,7 +315,7 @@ export default function UbicacionesPage() {
                         className="h-6 w-6 text-text-muted hover:text-text"
                         title="Editar ubicación"
                       >
-                        <Edit2 className="h-3 w-3" />
+                        <Edit2 aria-hidden="true" className="h-3 w-3" />
                       </Button>
                       <Button
                         type="button"
@@ -328,7 +328,7 @@ export default function UbicacionesPage() {
                         className="h-6 w-6 text-text-muted hover:text-rose-600"
                         title="Eliminar ubicación"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 aria-hidden="true" className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
@@ -344,7 +344,7 @@ export default function UbicacionesPage() {
             <>
               <div className="flex items-center justify-between border-b border-border pb-2.5">
                 <div className="flex items-center gap-2">
-                  <FolderTree className="h-4 w-4 text-text-muted" />
+                  <FolderTree aria-hidden="true" className="h-4 w-4 text-text-muted" />
                   <span className="font-mono text-xs font-semibold text-text">
                     Cajones y Gavetas en "{activeLocation.nombre}" ({cajones.length})
                   </span>
@@ -356,14 +356,14 @@ export default function UbicacionesPage() {
                   onClick={handleOpenCreateCajon}
                   className="text-xs gap-1.5 h-7"
                 >
-                  <Plus className="h-3 w-3" />
+                  <Plus aria-hidden="true" className="h-3 w-3" />
                   <span>Nuevo Cajón</span>
                 </Button>
               </div>
 
               {isLoadingCajones ? (
                 <div className="flex items-center justify-center p-8 text-xs font-mono text-text-muted gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
                   <span>Cargando compartimientos…</span>
                 </div>
               ) : cajones.length === 0 ? (
@@ -378,7 +378,7 @@ export default function UbicacionesPage() {
                       className="flex items-start justify-between gap-2 p-2.5 rounded border border-border bg-background font-mono text-xs"
                     >
                       <div className="flex items-start gap-2 min-w-0">
-                        <MapPin className="h-3.5 w-3.5 text-text-muted mt-0.5 shrink-0" />
+                        <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-text-muted mt-0.5 shrink-0" />
                         <div className="flex flex-col min-w-0">
                           <span className="font-bold text-text truncate">
                             {cajon.codigo}
@@ -399,7 +399,7 @@ export default function UbicacionesPage() {
                         className="h-6 w-6 text-text-muted hover:text-rose-600 shrink-0"
                         title="Eliminar cajón"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 aria-hidden="true" className="h-3 w-3" />
                       </Button>
                     </div>
                   ))}

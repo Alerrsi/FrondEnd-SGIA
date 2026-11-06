@@ -169,7 +169,7 @@ export function ReubicarProductoModal({
         {/* Ubicación actual */}
         <div className="flex items-center justify-between rounded-md border border-border bg-background p-3">
           <div className="flex items-center gap-2.5">
-            <MapPin className="h-4 w-4 text-text-muted" />
+            <MapPin aria-hidden="true" className="h-4 w-4 text-text-muted" />
             <div>
               <span className="block text-xs font-semibold text-text">
                 Ubicación actual registrada:
@@ -186,7 +186,7 @@ export function ReubicarProductoModal({
             onClick={() => setManualMode(!manualMode)}
             className="flex items-center gap-1 text-xs font-medium text-text-muted hover:text-text transition-colors"
           >
-            <Sparkles className="h-3.5 w-3.5 text-text-muted" />
+            <Sparkles aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
             <span>{manualMode ? 'Seleccionar de lista' : 'Entrada manual'}</span>
           </button>
         </div>
@@ -326,7 +326,7 @@ export function ReubicarProductoModal({
             Cancelar
           </DialogCloseButton>
           <Button type="submit" size="sm" disabled={isPending} className="min-w-32 text-xs">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />}
             Confirmar reubicación
           </Button>
         </div>

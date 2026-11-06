@@ -147,7 +147,7 @@ export default function ColaPrestamosPage() {
 
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5 text-xs">
-            <RefreshCw className="h-3.5 w-3.5" />
+            <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Actualizar cola</span>
           </Button>
 
@@ -157,7 +157,7 @@ export default function ColaPrestamosPage() {
             onClick={() => navigate('/prestamos/historial')}
             className="gap-1.5 text-xs"
           >
-            <History className="h-3.5 w-3.5" />
+            <History aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Ver historial / auditoría</span>
           </Button>
 
@@ -167,7 +167,7 @@ export default function ColaPrestamosPage() {
             onClick={() => navigate('/prestamos/registro-presencial')}
             className="gap-1.5 text-xs bg-brand hover:opacity-90 text-white"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Nuevo Préstamo Presencial</span>
           </Button>
         </div>
@@ -184,7 +184,7 @@ export default function ColaPrestamosPage() {
               {pendingLoans.length}
             </span>
           </div>
-          <Clock className="h-5 w-5 text-amber-500" />
+          <Clock aria-hidden="true" className="h-5 w-5 text-amber-500" />
         </Card>
 
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-blue-500">
@@ -196,7 +196,7 @@ export default function ColaPrestamosPage() {
               {rawLoans.length}
             </span>
           </div>
-          <Package className="h-5 w-5 text-blue-500" />
+          <Package aria-hidden="true" className="h-5 w-5 text-blue-500" />
         </Card>
 
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-rose-500">
@@ -208,7 +208,7 @@ export default function ColaPrestamosPage() {
               {rawLoans.filter((l) => (l.estado || '').toLowerCase() === 'vencido').length}
             </span>
           </div>
-          <AlertTriangle className="h-5 w-5 text-rose-500" />
+          <AlertTriangle aria-hidden="true" className="h-5 w-5 text-rose-500" />
         </Card>
       </div>
 
@@ -223,7 +223,7 @@ export default function ColaPrestamosPage() {
           />
         )}
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+          <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
           <input
             type="search"
             placeholder="Filtrar por código, docente, laboratorio o producto…"
@@ -237,12 +237,12 @@ export default function ColaPrestamosPage() {
       {/* Listado tipo Tarjetas Técnicas / Cola */}
       {isLoading ? (
         <div className="flex h-48 items-center justify-center rounded-md border border-border bg-surface p-8 text-text-muted text-xs">
-          <RefreshCw className="mr-2 h-4 w-4 animate-spin text-text-muted" />
+          <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4 animate-spin text-text-muted" />
           <span>Cargando cola de solicitudes desde la API…</span>
         </div>
       ) : filteredLoans.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border bg-surface p-12 text-center">
-          <Package className="h-8 w-8 text-text-muted mb-2" />
+          <Package aria-hidden="true" className="h-8 w-8 text-text-muted mb-2" />
           <h3 className="text-sm font-semibold text-text">
             {search
               ? 'Sin resultados para la búsqueda'
@@ -289,7 +289,7 @@ export default function ColaPrestamosPage() {
                         {loan.codigo || `#${loan.id}`}
                       </span>
                       <div className="flex items-center gap-1.5 text-xs text-text-muted mt-0.5">
-                        <Calendar className="h-3 w-3" />
+                        <Calendar aria-hidden="true" className="h-3 w-3" />
                         <span>{fechaStr}</span>
                       </div>
                     </div>
@@ -298,7 +298,7 @@ export default function ColaPrestamosPage() {
 
                   {/* Datos del Solicitante */}
                   <div className="mt-3 flex items-start gap-2.5 rounded-md bg-background p-2.5">
-                    <User className="h-4 w-4 text-text-muted mt-0.5 shrink-0" />
+                    <User aria-hidden="true" className="h-4 w-4 text-text-muted mt-0.5 shrink-0" />
                     <div className="min-w-0 flex-1">
                       <span className="block truncate text-xs font-semibold text-text">
                         {docenteName}
@@ -315,19 +315,19 @@ export default function ColaPrestamosPage() {
                   {/* Actividad: fecha y horario, laboratorio y pañol que la prepara */}
                   <dl className="mt-2 grid grid-cols-1 gap-1 text-xs text-text-muted">
                     <div className="flex items-center gap-1.5">
-                      <Clock className="h-3 w-3 shrink-0 text-text-muted" />
+                      <Clock aria-hidden="true" className="h-3 w-3 shrink-0 text-text-muted" />
                       <dt className="sr-only">Actividad</dt>
                       <dd className="font-mono tabular-nums">
                         {actividad || 'Horario no informado'}
                       </dd>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <FlaskConical className="h-3 w-3 shrink-0 text-text-muted" />
+                      <FlaskConical aria-hidden="true" className="h-3 w-3 shrink-0 text-text-muted" />
                       <dt className="sr-only">Laboratorio</dt>
                       <dd className="truncate">{loanLaboratory(loan)}</dd>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <Package className="h-3 w-3 shrink-0 text-text-muted" />
+                      <Package aria-hidden="true" className="h-3 w-3 shrink-0 text-text-muted" />
                       <dt className="sr-only">Pañol</dt>
                       <dd className="truncate">{loanStoreroom(loan)}</dd>
                     </div>
@@ -362,7 +362,7 @@ export default function ColaPrestamosPage() {
                               </span>
                               {ubicacionStr && (
                                 <span className="flex items-center gap-1 text-xs text-text-muted">
-                                  <MapPin className="h-2.5 w-2.5" />
+                                  <MapPin aria-hidden="true" className="h-2.5 w-2.5" />
                                   <span>{ubicacionStr}</span>
                                 </span>
                               )}
@@ -394,7 +394,7 @@ export default function ColaPrestamosPage() {
                     disabled={rechazarMutation.isPending}
                     className="text-xs text-rose-600 hover:bg-rose-50 hover:text-rose-700 h-8 px-2.5"
                   >
-                    <Ban className="h-3.5 w-3.5 mr-1" />
+                    <Ban aria-hidden="true" className="h-3.5 w-3.5 mr-1" />
                     <span>Rechazar</span>
                   </Button>
 
@@ -407,7 +407,7 @@ export default function ColaPrestamosPage() {
                     className="text-xs bg-ink text-background hover:opacity-90 h-8 gap-1"
                   >
                     <span>Aprobar / Preparar</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
+                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
                   </Button>
                 </div>
               </Card>

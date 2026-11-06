@@ -89,7 +89,7 @@ export default function PresupuestosPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-text" />
+              <Wallet aria-hidden="true" className="h-5 w-5 text-text" />
               Presupuestos anuales
             </h1>
             <p className="text-xs text-text-muted">
@@ -99,7 +99,7 @@ export default function PresupuestosPage() {
           </div>
           {canManage && (
             <Button onClick={() => setCreateOpen(true)} className="text-xs">
-              <Plus className="h-4 w-4" />
+              <Plus aria-hidden="true" className="h-4 w-4" />
               Nuevo presupuesto
             </Button>
           )}
@@ -167,7 +167,7 @@ export default function PresupuestosPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             <span>No se pudieron cargar los presupuestos desde el servidor.</span>
           </div>
         ) : (

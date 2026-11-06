@@ -119,7 +119,7 @@ export function LoanRequestDetailSheet({
                 className="self-start text-xs text-danger hover:bg-rose-50"
                 onClick={() => onCancelRequest(loan)}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 aria-hidden="true" className="h-4 w-4" />
                 Cancelar solicitud
               </Button>
             )}

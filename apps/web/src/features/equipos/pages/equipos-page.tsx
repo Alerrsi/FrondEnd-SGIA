@@ -195,7 +195,7 @@ export default function EquiposPage() {
               )}
               {item.ubicacion && (
                 <span className="flex items-center gap-1 font-mono text-xs text-text-muted">
-                  <MapPin className="h-2.5 w-2.5 shrink-0" />
+                  <MapPin aria-hidden="true" className="h-2.5 w-2.5 shrink-0" />
                   <span className="truncate max-w-[130px]">{item.ubicacion}</span>
                 </span>
               )}
@@ -287,9 +287,9 @@ export default function EquiposPage() {
               title="Abrir manual en AWS S3"
               className="inline-flex items-center gap-1 font-mono text-xs text-text-muted hover:text-red-600 hover:underline"
             >
-              <FileText className="h-3 w-3 text-red-600" />
+              <FileText aria-hidden="true" className="h-3 w-3 text-red-600" />
               <span>PDF S3</span>
-              <ExternalLink className="h-2.5 w-2.5" />
+              <ExternalLink aria-hidden="true" className="h-2.5 w-2.5" />
             </a>
           );
         },
@@ -321,23 +321,23 @@ export default function EquiposPage() {
                     className="h-7 w-7 text-text-muted hover:text-text"
                     aria-label={`Opciones para ${item.nombre}`}
                   >
-                    <MoreHorizontal className="h-4 w-4" />
+                    <MoreHorizontal aria-hidden="true" className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => handleOpenSheet(item)}>
-                    <Cpu className="h-3.5 w-3.5 text-text-muted" />
+                    <Cpu aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                     <span>Ver Ficha y Ciclo de Vida</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleQuickDownloadPdf(item)}>
-                    <Download className="h-3.5 w-3.5 text-text-muted" />
+                    <Download aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                     <span>Descargar Ficha Técnica (PDF)</span>
                   </DropdownMenuItem>
                   {canEdit && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleOpenEdit(item)}>
-                        <Edit className="h-3.5 w-3.5 text-text-muted" />
+                        <Edit aria-hidden="true" className="h-3.5 w-3.5 text-text-muted" />
                         <span>Editar Especificaciones</span>
                       </DropdownMenuItem>
                     </>
@@ -393,7 +393,7 @@ export default function EquiposPage() {
             className="h-8 gap-1.5 text-xs"
             aria-label="Actualizar catálogo de equipos"
           >
-            <RefreshCw className="h-3.5 w-3.5" />
+            <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Actualizar</span>
           </Button>
         </div>
@@ -408,7 +408,7 @@ export default function EquiposPage() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-border p-3 sm:px-4 bg-background">
           <div className="flex flex-1 items-center gap-2.5">
             <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-text-muted" />
+              <Search aria-hidden="true" className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-text-muted" />
               <input
                 type="text"
                 placeholder="Buscar por serial, modelo, marca o ubicación…"
@@ -487,7 +487,7 @@ export default function EquiposPage() {
                 <tr>
                   <td colSpan={columns.length} className="py-12 text-center text-text-muted">
                     <div className="flex flex-col items-center gap-2">
-                      <RefreshCw className="h-5 w-5 animate-spin text-text-muted" />
+                      <RefreshCw aria-hidden="true" className="h-5 w-5 animate-spin text-text-muted" />
                       <span>Cargando catálogo de equipamiento técnico…</span>
                     </div>
                   </td>

@@ -150,7 +150,7 @@ export default function UsuariosPage() {
   if (isError || !data) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
-        <AlertCircle className="h-5 w-5 shrink-0 text-danger" />
+        <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-danger" />
         <span>No se pudo cargar el listado de usuarios desde el servidor.</span>
       </div>
     );
@@ -174,7 +174,7 @@ export default function UsuariosPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <Users className="h-5 w-5 text-text" />
+              <Users aria-hidden="true" className="h-5 w-5 text-text" />
               Directorio de Usuarios
             </h1>
             <p className="text-xs text-text-muted">
@@ -182,7 +182,7 @@ export default function UsuariosPage() {
             </p>
           </div>
           <Button variant="primary" onClick={handleOpenCreate} className="text-xs">
-            <Plus className="h-4 w-4" />
+            <Plus aria-hidden="true" className="h-4 w-4" />
             Nuevo usuario
           </Button>
         </div>

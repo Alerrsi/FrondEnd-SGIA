@@ -67,7 +67,7 @@ export function ProveedoresTable({
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
+          <Search aria-hidden="true" className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
             placeholder="Buscar proveedor por nombre, contacto o correo…"
@@ -141,7 +141,7 @@ export function ProveedoresTable({
                   >
                     <td className={tdClasses}>
                       <div className="flex items-center gap-2">
-                        <Building2 className="h-3.5 w-3.5 text-text-muted shrink-0" />
+                        <Building2 aria-hidden="true" className="h-3.5 w-3.5 text-text-muted shrink-0" />
                         <span className="font-medium text-text">
                           {supplier.name}
                         </span>
@@ -154,19 +154,19 @@ export function ProveedoresTable({
                     </td>
                     <td className={tdClasses}>
                       <span className="inline-flex items-center gap-1 font-mono text-xs text-text-muted">
-                        <Mail className="h-3 w-3" />
+                        <Mail aria-hidden="true" className="h-3 w-3" />
                         {supplier.email}
                       </span>
                     </td>
                     <td className={tdClasses}>
                       <span className="inline-flex items-center gap-1 font-mono text-xs text-text-muted">
-                        <Phone className="h-3 w-3" />
+                        <Phone aria-hidden="true" className="h-3 w-3" />
                         {supplier.phone || '—'}
                       </span>
                     </td>
                     <td className={tdClasses}>
                       {supplier.category ? (
-                        <Badge tone="neutral" icon={<Tag className="h-3 w-3" />}>
+                        <Badge tone="neutral" icon={<Tag aria-hidden="true" className="h-3 w-3" />}>
                           {supplier.category}
                         </Badge>
                       ) : (
@@ -189,7 +189,7 @@ export function ProveedoresTable({
                           onClick={() => onEdit(supplier)}
                           className="inline-flex h-7 w-7 items-center justify-center rounded-md text-text-muted hover:text-text hover:bg-surface-raised transition-colors"
                         >
-                          <Edit className="h-3.5 w-3.5" />
+                          <Edit aria-hidden="true" className="h-3.5 w-3.5" />
                         </button>
 
                         <DropdownMenu>
@@ -199,19 +199,19 @@ export function ProveedoresTable({
                               title="Más acciones"
                               className="inline-flex h-7 w-7 items-center justify-center rounded-md text-text-muted hover:text-text hover:bg-surface-raised transition-colors"
                             >
-                              <MoreHorizontal className="h-3.5 w-3.5" />
+                              <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => onToggleStatus(supplier)}>
                               {supplier.is_active !== false ? (
                                 <>
-                                  <Pause className="h-3.5 w-3.5 mr-2" />
+                                  <Pause aria-hidden="true" className="h-3.5 w-3.5 mr-2" />
                                   Suspender proveedor
                                 </>
                               ) : (
                                 <>
-                                  <Check className="h-3.5 w-3.5 mr-2" />
+                                  <Check aria-hidden="true" className="h-3.5 w-3.5 mr-2" />
                                   Activar proveedor
                                 </>
                               )}
@@ -223,7 +223,7 @@ export function ProveedoresTable({
                                   onClick={() => onDelete(supplier)}
                                   className="text-danger"
                                 >
-                                  <Trash2 className="h-3.5 w-3.5 mr-2" />
+                                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5 mr-2" />
                                   Eliminar proveedor
                                 </DropdownMenuItem>
                               </>

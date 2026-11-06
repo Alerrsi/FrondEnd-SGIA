@@ -78,7 +78,7 @@ export default function IngresosFacturaPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text flex items-center gap-2">
-              <ReceiptText className="h-5 w-5 text-text" />
+              <ReceiptText aria-hidden="true" className="h-5 w-5 text-text" />
               Ingresos de factura
             </h1>
             <p className="text-xs text-text-muted">
@@ -87,7 +87,7 @@ export default function IngresosFacturaPage() {
             </p>
           </div>
           <Button onClick={() => setUploadOpen(true)} className="text-xs">
-            <Upload className="h-4 w-4" />
+            <Upload aria-hidden="true" className="h-4 w-4" />
             Subir factura
           </Button>
         </div>
@@ -148,7 +148,7 @@ export default function IngresosFacturaPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-danger/30 bg-danger-bg p-4 text-xs font-medium text-danger">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             <span>No se pudieron cargar los ingresos de factura desde el servidor.</span>
           </div>
         ) : (
@@ -170,7 +170,7 @@ export default function IngresosFacturaPage() {
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
             <Button
               size="icon"
@@ -179,7 +179,7 @@ export default function IngresosFacturaPage() {
               disabled={page >= meta.lastPage}
               onClick={() => setPage((p) => p + 1)}
             >
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
           </div>
         )}

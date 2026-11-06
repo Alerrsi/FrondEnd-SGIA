@@ -10,13 +10,13 @@ export function LoadingScreen() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="flex items-center gap-2 mb-4">
-        <Boxes className="h-6 w-6 text-accent animate-pulse" />
+        <Boxes aria-hidden="true" className="h-6 w-6 text-accent animate-pulse" />
         <span className="font-mono-tabular text-base font-semibold tracking-tight text-text">
           SGIA
         </span>
       </div>
       <div className="flex items-center gap-2 text-xs font-mono-tabular text-text-muted">
-        <Loader2 className="h-3.5 w-3.5 animate-spin text-accent" />
+        <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin text-accent" />
         <span>Verificando sesión…</span>
       </div>
     </div>

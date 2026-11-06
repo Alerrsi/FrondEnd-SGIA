@@ -106,7 +106,7 @@ export default function CompraTrazabilidadPage() {
         to="/compras"
         className="inline-flex w-fit items-center gap-1 rounded text-xs text-text-muted hover:text-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-info"
       >
-        <ArrowLeft className="h-3.5 w-3.5" />
+        <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
         Volver a compras
       </Link>
       <h1 className="text-xl font-bold tracking-tight text-text">
@@ -114,13 +114,13 @@ export default function CompraTrazabilidadPage() {
       </h1>
       {isLoading && (
         <div role="status" className="flex items-center gap-2 text-xs text-text-muted">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
           Cargando trazabilidad…
         </div>
       )}
       {(isError || (!isLoading && !data)) && (
         <p role="alert" className="flex items-center gap-1.5 text-xs text-danger">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle aria-hidden="true" className="h-4 w-4" />
           No se pudo cargar la trazabilidad de la orden.
         </p>
       )}
