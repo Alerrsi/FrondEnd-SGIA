@@ -162,7 +162,7 @@ export function AlertasTable({
               <div className="w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden shrink-0">
                 <div
                   className={cn(
-                    'h-full transition-all duration-300',
+                    'h-full transition-[width] duration-300',
                     isCritical ? 'bg-rose-500' : 'bg-amber-500',
                   )}
                   style={{ width: `${Math.max(ratio, 8)}%` }}

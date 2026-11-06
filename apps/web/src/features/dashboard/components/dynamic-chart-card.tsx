@@ -118,7 +118,7 @@ export function DynamicChartCard({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       data-testid={`chart-card-${index}`}
-      className={`flex flex-col p-4 shadow-xs transition-all relative ${
+      className={`flex flex-col p-4 shadow-xs transition relative ${
         isEditMode
           ? isDragOverCard
             ? 'cursor-grabbing border-2 border-sky-500 ring-2 ring-sky-500/30 bg-sky-50/30 dark:bg-sky-950/30 scale-[1.01]'

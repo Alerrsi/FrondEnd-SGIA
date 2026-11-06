@@ -17,7 +17,7 @@ export function LoadingScreen() {
       </div>
       <div className="flex items-center gap-2 text-xs font-mono-tabular text-text-muted">
         <Loader2 className="h-3.5 w-3.5 animate-spin text-accent" />
-        <span>Verificando sesión...</span>
+        <span>Verificando sesión…</span>
       </div>
     </div>
   );

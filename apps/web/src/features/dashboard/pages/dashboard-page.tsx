@@ -447,7 +447,7 @@ export default function DashboardPage() {
           onDragLeave={handleProminentDragLeave}
           onDrop={handleProminentDrop}
           className={cn(
-            'relative flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl border-2 border-dashed transition-all duration-200 select-none shadow-xl cursor-copy',
+            'relative flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl border-2 border-dashed transition duration-200 select-none shadow-xl cursor-copy',
             isProminentOver
               ? 'border-emerald-400 bg-emerald-950/60 text-emerald-100 shadow-emerald-500/30 scale-[1.01]'
               : 'border-sky-500 bg-gradient-to-r from-sky-950/50 via-zinc-900/90 to-sky-950/50 text-zinc-100 shadow-sky-500/25 animate-pulse',

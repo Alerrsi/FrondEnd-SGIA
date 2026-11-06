@@ -1477,3 +1477,31 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
     color: #FAFAFA;
   }
 }
+
+/* Fase 1: foco visible, movimiento reducido, scroll en modales */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--info);
+    outline-offset: 2px;
+  }
+  [role='dialog'],
+  [data-radix-popper-content-wrapper] {
+    overscroll-behavior: contain;
+  }
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

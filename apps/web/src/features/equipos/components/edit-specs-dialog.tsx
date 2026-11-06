@@ -265,7 +265,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
             className="gap-1.5"
           >
             <Save className="h-4 w-4" />
-            <span>{updateSpecsMutation.isPending ? 'Guardando...' : 'Guardar Ficha Técnica'}</span>
+            <span>{updateSpecsMutation.isPending ? 'Guardando…' : 'Guardar Ficha Técnica'}</span>
           </Button>
         </div>
       </form>

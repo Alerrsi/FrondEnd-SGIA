@@ -214,7 +214,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                     }
                   }}
                   className={cn(
-                    'group relative flex flex-col justify-between rounded-lg border p-3.5 text-left transition-all cursor-pointer select-none',
+                    'group relative flex flex-col justify-between rounded-lg border p-3.5 text-left transition cursor-pointer select-none',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100',
                     isSelected
                       ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50/80 dark:bg-zinc-900/90 shadow-xs ring-1 ring-zinc-900/10 dark:ring-zinc-100/20'
@@ -300,7 +300,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                   onClick={() => setTheme(item.id)}
                   aria-pressed={active}
                   className={cn(
-                    'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition-all cursor-pointer',
+                    'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition cursor-pointer',
                     active
                       ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold shadow-xs'
                       : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/80',

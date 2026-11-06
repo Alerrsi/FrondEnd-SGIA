@@ -152,7 +152,7 @@ export function WidgetPaletteDrawer({
                     onSelectWidget(shape.type);
                   }
                 }}
-                className={`flex flex-col gap-2 rounded-lg border p-3.5 transition-all select-none ${
+                className={`flex flex-col gap-2 rounded-lg border p-3.5 transition select-none ${
                   isMaxCapacity
                     ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 opacity-60 cursor-not-allowed'
                     : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:border-sky-500/60 hover:shadow-xs cursor-grab active:cursor-grabbing'

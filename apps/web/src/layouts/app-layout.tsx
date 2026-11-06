@@ -255,6 +255,12 @@ export default function AppLayout() {
   return (
     <TooltipProvider>
       <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 antialiased overflow-hidden">
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-zinc-900 focus:shadow-md dark:focus:bg-zinc-900 dark:focus:text-zinc-100"
+        >
+          Saltar al contenido
+        </a>
         {/* Barra Lateral / Sidebar */}
         <aside
           style={{ width: isCollapsed ? 64 : sidebarWidth }}
@@ -582,7 +588,7 @@ export default function AppLayout() {
           </header>
 
           {/* Main Content Area: comparte exactamente el mismo canvas bg-zinc-50 dark:bg-zinc-950 */}
-          <main className="flex-1 overflow-auto bg-zinc-50 dark:bg-zinc-950 p-6 transition-colors">
+          <main id="contenido" tabIndex={-1} className="flex-1 focus:outline-none overflow-auto bg-zinc-50 dark:bg-zinc-950 p-6 transition-colors">
             <div className="mx-auto max-w-7xl">
               <ErrorBoundary>
                 <Outlet />

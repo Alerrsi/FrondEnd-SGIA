@@ -252,7 +252,7 @@ export default function EquiposPage() {
               </div>
               <div className="h-1.5 w-full rounded-full bg-zinc-200/70 dark:bg-zinc-800 overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all ${
+                  className={`h-full rounded-full transition-[width] ${
                     statusTone === 'critical'
                       ? 'bg-rose-500'
                       : statusTone === 'warning'
@@ -411,7 +411,7 @@ export default function EquiposPage() {
               <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-400" />
               <input
                 type="text"
-                placeholder="Buscar por serial, modelo, marca o ubicación..."
+                placeholder="Buscar por serial, modelo, marca o ubicación…"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
@@ -488,7 +488,7 @@ export default function EquiposPage() {
                   <td colSpan={columns.length} className="py-12 text-center text-zinc-400">
                     <div className="flex flex-col items-center gap-2">
                       <RefreshCw className="h-5 w-5 animate-spin text-zinc-400" />
-                      <span>Cargando catálogo de equipamiento técnico...</span>
+                      <span>Cargando catálogo de equipamiento técnico…</span>
                     </div>
                   </td>
                 </tr>

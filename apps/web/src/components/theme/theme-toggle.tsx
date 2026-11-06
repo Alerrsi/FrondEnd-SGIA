@@ -37,7 +37,7 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
                   type="button"
                   onClick={() => setTheme(opt.value)}
                   className={cn(
-                    'flex h-6 w-6 items-center justify-center rounded transition-all cursor-pointer text-xs',
+                    'flex h-6 w-6 items-center justify-center rounded transition cursor-pointer text-xs',
                     isActive
                       ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200/80 dark:border-zinc-700 font-semibold'
                       : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50',

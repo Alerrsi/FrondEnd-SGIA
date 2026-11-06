@@ -177,7 +177,7 @@ export function DragGhostPreview({
       <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-zinc-800">
         <span className="flex items-center gap-1.5 text-sky-400 font-semibold" data-testid="drag-ghost-status">
           <span className="h-2 w-2 rounded-full bg-sky-500 animate-ping" />
-          Arrastrando gráfico...
+          Arrastrando gráfico…
         </span>
         <span className="text-zinc-500 text-[10px]">Suelta en una zona</span>
       </div>

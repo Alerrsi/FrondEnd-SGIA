@@ -225,7 +225,7 @@ export function EquipmentSpecSheet({
             </div>
             <div className="h-2 w-full rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
               <div
-                className={`h-full transition-all duration-300 rounded-full ${
+                className={`h-full transition-[width] duration-300 rounded-full ${
                   lifeCycle.percentUsed >= 90
                     ? 'bg-rose-500'
                     : lifeCycle.percentUsed >= 70

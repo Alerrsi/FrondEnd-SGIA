@@ -177,7 +177,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     const ghost = screen.getByTestId('drag-ghost-preview');
     expect(ghost).toBeDefined();
     expect(ghost.getAttribute('data-chart-type')).toBe('BAR');
-    expect(screen.getByTestId('drag-ghost-status').textContent).toContain('Arrastrando gráfico...');
+    expect(screen.getByTestId('drag-ghost-status').textContent).toContain('Arrastrando gráfico…');
 
     // Simular movimiento continuo del mouse por la zona de enfoque
     fireEvent.dragOver(window, {

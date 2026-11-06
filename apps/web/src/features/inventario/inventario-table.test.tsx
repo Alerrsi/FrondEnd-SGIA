@@ -246,7 +246,7 @@ describe('InventarioTable', () => {
       />,
     );
 
-    expect(screen.getByText('Buscando...')).toBeDefined();
+    expect(screen.getByText('Buscando…')).toBeDefined();
     expect(screen.getByText('Router Cisco ISR 4321')).toBeDefined();
     expect(screen.getByRole('progressbar', { name: /Cargando productos/i })).toBeDefined();
   });

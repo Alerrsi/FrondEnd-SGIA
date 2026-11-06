@@ -99,7 +99,7 @@ export function Dialog({
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <DialogPrimitive.Content
               className={cn(
-                'relative w-full max-w-lg rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-md transition-all animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
+                'relative w-full max-w-lg rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-md animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
                 className,
               )}
               onPointerDownOutside={(e) => {
@@ -152,7 +152,7 @@ export function Dialog({
           <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-zinc-950/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-150" />
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <DialogPrimitive.Content
-              className="relative w-full max-w-sm rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-lg transition-all animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100"
+              className="relative w-full max-w-sm rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-lg animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100"
               onPointerDownOutside={(e) => e.preventDefault()}
             >
               <div className="flex items-start gap-3">

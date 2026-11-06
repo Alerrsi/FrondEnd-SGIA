@@ -243,7 +243,7 @@ export function ReubicarProductoModal({
                   {!selectedLocationId
                     ? 'Primero selecciona una sala'
                     : isLoadingCajones
-                      ? 'Cargando cajones...'
+                      ? 'Cargando cajones…'
                       : cajones.length === 0
                         ? 'No hay cajones registrados en esta sala'
                         : '-- Seleccionar cajón o gaveta --'}
