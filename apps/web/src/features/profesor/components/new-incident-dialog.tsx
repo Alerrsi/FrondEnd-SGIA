@@ -32,13 +32,15 @@ interface NewIncidentDialogProps {
   open: boolean;
   onClose: () => void;
   onCreated: (code: string | null | undefined) => void;
+  subjectLabel?: string;
 }
 
-/** Informe de novedades del docente (réplica del formulario en papel). */
+/** Informe de novedades de docentes y pañoleros (réplica del formulario en papel). */
 export function NewIncidentDialog({
   open,
   onClose,
   onCreated,
+  subjectLabel = "Asignatura",
 }: NewIncidentDialogProps) {
   const create = useCreateIncidentReport();
   const locations = useLocations({ per_page: 100 }).data?.data ?? [];
@@ -70,7 +72,7 @@ export function NewIncidentDialog({
   const onSubmit = handleSubmit(async (values) => {
     try {
       const report = await create.mutateAsync(toIncidentPayload(values));
-      toast.success("Informe enviado al pañol.");
+      toast.success("Informe enviado.");
       onCreated(report.code);
       onClose();
     } catch (error) {
@@ -93,7 +95,7 @@ export function NewIncidentDialog({
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="inc-subject" className={labelClasses}>
-              Asignatura
+              {subjectLabel}
             </label>
             <input
               id="inc-subject"
@@ -254,7 +256,7 @@ export function NewIncidentDialog({
         </div>
 
         <div>
-          <span className={labelClasses}>Firma del docente</span>
+          <span className={labelClasses}>Firma</span>
           <div className="mt-1.5">
             <Controller
               name="signature"

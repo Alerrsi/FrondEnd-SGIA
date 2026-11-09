@@ -7,7 +7,7 @@ import type {
 } from '@sgia/types';
 import { get, getBlob, patch, post } from '../http';
 
-// Informe de novedades del docente (reemplaza a POST /equipment/{id}/reports).
+// Informe de novedades (reemplaza a POST /equipment/{id}/reports).
 
 interface RawPaginated<T> {
   data?: T[];
@@ -82,7 +82,7 @@ export async function fetchIncidentReport(id: number): Promise<IncidentReport> {
 }
 
 /**
- * Crea el informe (solo `PRO-01`). Sin foto va como JSON; con foto, como multipart con
+ * Crea el informe (`PRO-01` y `PAN-01`). Sin foto va como JSON; con foto, como multipart con
  * `problems[0][type]`, `problems[0][description]`, …
  */
 export async function createIncidentReport(

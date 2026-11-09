@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useIncidentReports } from '@sgia/api-client';
 import type { IncidentReport, IncidentStatus } from '@sgia/types';
-import { AlertCircle, ChevronLeft, ChevronRight, ClipboardCheck, Search } from 'lucide-react';
+import { AlertCircle, ChevronLeft, ChevronRight, ClipboardCheck, Plus, Search } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useOptionalAuth } from '@/features/auth/context/auth-context';
 import { formatDate } from '@/features/compras/lib/format';
 import { IncidentDetailSheet } from '@/features/novedades/components/incident-detail-sheet';
 import { IncidentStatusBadge } from '@/features/novedades/components/incident-status-badge';
 import { INCIDENT_STATUS_FILTERS } from '@/features/novedades/lib/incident-labels';
+import { NewIncidentDialog } from '@/features/profesor/components/new-incident-dialog';
 
 const controlClasses =
   'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
@@ -25,6 +27,9 @@ export default function NovedadesPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<number | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+  // En esta bandeja solo `PAN-01` puede crear informes; `AD-01` y `DIR-01` los atienden.
+  const canCreate = useOptionalAuth()?.user?.rol === 'PAN-01';
 
   const { data, isLoading, isError } = useIncidentReports({
     status: status || undefined,
@@ -36,15 +41,23 @@ export default function NovedadesPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-          <ClipboardCheck className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-          Informes de novedades
-        </h1>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Fallas y faltantes reportados por los docentes. Abre un informe para revisarlo y cambiar
-          su estado.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <ClipboardCheck className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+            Informes de novedades
+          </h1>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            Fallas y faltantes reportados por docentes y pañol. Abre un informe para revisarlo y
+            cambiar su estado.
+          </p>
+        </div>
+        {canCreate && (
+          <Button className="text-xs" onClick={() => setFormOpen(true)}>
+            <Plus className="h-4 w-4" />
+            Nuevo informe
+          </Button>
+        )}
       </div>
 
       <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
@@ -74,7 +87,7 @@ export default function NovedadesPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Código, docente, asignatura…"
+              placeholder="Código, responsable, asignatura…"
               aria-label="Buscar informes"
               className={`${controlClasses} w-64 pl-7`}
             />
@@ -95,7 +108,7 @@ export default function NovedadesPage() {
             <table className="w-full border-collapse text-left text-xs">
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
-                  {['Código', 'Docente', 'Asignatura', 'Laboratorio', 'Problemas', 'Fecha', 'Estado'].map(
+                  {['Código', 'Reportado por', 'Asignatura', 'Laboratorio', 'Problemas', 'Fecha', 'Estado'].map(
                     (h) => (
                       <th key={h} className="px-4 py-2.5 font-medium">
                         {h}
@@ -164,6 +177,14 @@ export default function NovedadesPage() {
       </div>
 
       <IncidentDetailSheet reportId={openId} onClose={() => setOpenId(null)} />
+      {canCreate && (
+        <NewIncidentDialog
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          onCreated={() => undefined}
+          subjectLabel="Asignatura o actividad"
+        />
+      )}
     </div>
   );
 }

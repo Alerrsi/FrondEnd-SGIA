@@ -45,13 +45,13 @@ describe("NewIncidentDialog", () => {
     await user.click(screen.getByRole("button", { name: /enviar informe/i }));
 
     expect(
-      await screen.findByText("Indica el nombre de la asignatura."),
+      await screen.findByText("Indica la asignatura o actividad."),
     ).toBeDefined();
     expect(screen.getByText("Selecciona el laboratorio.")).toBeDefined();
     expect(
       screen.getByText("Marca al menos un tipo de problema."),
     ).toBeDefined();
-    expect(screen.getByText("Falta la firma del docente.")).toBeDefined();
+    expect(screen.getByText("Falta la firma.")).toBeDefined();
     expect(mutateAsync).not.toHaveBeenCalled();
   });
 
