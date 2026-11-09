@@ -31,9 +31,9 @@ export const incidentFormSchema = z.object({
     .min(1, "Indica la fecha del informe.")
     .refine((v) => v <= todayIso(), "La fecha no puede ser futura."),
   location_id: z
-    .number({ error: "Selecciona el laboratorio." })
+    .number({ error: "Selecciona el laboratorio o pañol." })
     .int()
-    .positive("Selecciona el laboratorio."),
+    .positive("Selecciona el laboratorio o pañol."),
   problems: z
     .array(
       z.object({

@@ -61,7 +61,7 @@ export default function MisNovedadesPage() {
                   {[
                     "Código",
                     "Asignatura",
-                    "Laboratorio",
+                    "Lugar",
                     "Problemas",
                     "Fecha",
                     "Estado",

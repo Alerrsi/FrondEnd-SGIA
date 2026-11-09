@@ -35,7 +35,7 @@ export type {
 } from './producto';
 
 export { LoanStatus } from './prestamo';
-export { INCIDENT_PROBLEM_LABELS } from './equipo';
+export { INCIDENT_LOCATION_TYPES, INCIDENT_PROBLEM_LABELS } from './equipo';
 export type {
   LoanStatus as LoanStatusValue,
   LoanOrigin,

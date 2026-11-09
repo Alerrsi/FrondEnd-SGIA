@@ -93,6 +93,9 @@ export const INCIDENT_PROBLEM_LABELS: Record<IncidentProblemType, string> = {
   otros: 'Otros',
 };
 
+/** Tipos de ubicación donde se puede reportar: salas, talleres y pañoles (no bodegas). */
+export const INCIDENT_LOCATION_TYPES: readonly string[] = ['sala', 'taller', 'panol'];
+
 export interface IncidentProblem {
   type: IncidentProblemType;
   description: string;

@@ -10,7 +10,13 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createLoanRequest, fetchCareers, useProducts } from '@sgia/api-client';
+import {
+  createLoanRequest,
+  fetchCareers,
+  useLocations,
+  useProducts,
+  useStorerooms,
+} from '@sgia/api-client';
 import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
@@ -18,42 +24,66 @@ import { ThemedView } from '@/components/themed-view';
 import { DateField } from '@/components/ui/date-field';
 import { SelectField } from '@/components/ui/select-field';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useAuth } from '@/features/auth/auth-context';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useTheme } from '@/hooks/use-theme';
 import { todayIso } from '@/lib/dates';
 import { requestErrorMessage } from '@/lib/request-error';
 
 const TIME_BLOCKS = [
-  'Bloque 1-2: 08:30 - 10:00',
-  'Bloque 3-4: 10:15 - 11:45',
-  'Bloque 5-6: 12:00 - 13:30',
-  'Bloque 7-8: 14:30 - 16:00',
-  'Bloque 9-10: 16:15 - 17:45',
-  'Vespertino 1: 18:30 - 20:00',
-  'Vespertino 2: 20:15 - 21:45',
+  { label: 'Bloque 1-2: 08:30 - 10:00', start: '08:30', end: '10:00' },
+  { label: 'Bloque 3-4: 10:15 - 11:45', start: '10:15', end: '11:45' },
+  { label: 'Bloque 5-6: 12:00 - 13:30', start: '12:00', end: '13:30' },
+  { label: 'Bloque 7-8: 14:30 - 16:00', start: '14:30', end: '16:00' },
+  { label: 'Bloque 9-10: 16:15 - 17:45', start: '16:15', end: '17:45' },
+  { label: 'Vespertino 1: 18:30 - 20:00', start: '18:30', end: '20:00' },
+  { label: 'Vespertino 2: 20:15 - 21:45', start: '20:15', end: '21:45' },
 ];
 
-const TIME_BLOCK_OPTIONS = TIME_BLOCKS.map((block) => ({ value: block, label: block }));
+const TIME_BLOCK_OPTIONS = TIME_BLOCKS.map((block) => ({ value: block.label, label: block.label }));
 
 const CATALOG_PAGE_SIZE = 6;
 
 interface CartItem {
   producto: Producto;
   cantidad: number;
+  /** Existencias al agregarlo y el pañol al que corresponden. */
+  disponible: number;
+  storeroomId: number;
 }
 
 export default function NuevaSolicitudScreen() {
   const theme = useTheme();
+  const { user } = useAuth();
+
+  // Pañol a solicitar: define las existencias del catálogo y los laboratorios
+  const [storeroomId, setStoreroomId] = useState<number | null>(
+    user?.storeroom_id != null ? Number(user.storeroom_id) : null,
+  );
+  const storerooms = useStorerooms({ per_page: 100 });
+  const storeroomName = storerooms.data?.data.find((s) => Number(s.id) === storeroomId)?.name;
+  const locations = useLocations({ storeroom_id: storeroomId ?? undefined, per_page: 100 });
+  // Solo salas y talleres del pañol elegido; el filtro descarta también la lista del pañol anterior.
+  const laboratorios = (locations.data?.data ?? []).filter(
+    (l) =>
+      Number(l.storeroom_id) === storeroomId && (l.tipo === 'sala' || l.tipo === 'taller'),
+  );
 
   // Estados de catálogo y búsqueda
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search.trim());
   const catalog = useProducts({
     search: debouncedSearch || undefined,
+    is_active: true,
+    storeroom_id: storeroomId ?? undefined,
     per_page: CATALOG_PAGE_SIZE,
   });
   const productos = catalog.data?.data ?? [];
   const totalProductos = catalog.data?.meta.total ?? 0;
+  // Mientras se recarga, `data` aún trae las existencias del pañol o la búsqueda anterior.
+  const catalogoActualizado = storeroomId !== null && !catalog.isPlaceholderData;
+  const existenciasDe = (producto: Producto) =>
+    producto.available_in_storeroom ?? producto.stock ?? 0;
 
   // Carrito de solicitud
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -63,9 +93,9 @@ export default function NuevaSolicitudScreen() {
   const [loadingCareers, setLoadingCareers] = useState(true);
   const [careerId, setCareerId] = useState<number | null>(null);
   const [subject, setSubject] = useState('');
-  const [room, setRoom] = useState('');
+  const [locationId, setLocationId] = useState<number | null>(null);
   const [loanDate, setLoanDate] = useState(todayIso);
-  const [timeBlock, setTimeBlock] = useState(TIME_BLOCKS[0]!);
+  const [timeBlock, setTimeBlock] = useState(TIME_BLOCKS[0]!.label);
   const [submitting, setSubmitting] = useState(false);
 
   // Modal de éxito
@@ -91,15 +121,39 @@ export default function NuevaSolicitudScreen() {
     };
   }, []);
 
+  const handleStoreroomChange = (id: number) => {
+    setStoreroomId(id);
+    // El laboratorio elegido pertenece al pañol anterior.
+    setLocationId(null);
+  };
+
+  /** Existencias del ítem en el pañol elegido, o `null` si aún no se conocen para ese pañol. */
+  const existenciasEnCarrito = (item: CartItem): number | null => {
+    const enCatalogo = catalogoActualizado
+      ? productos.find((p) => p.id === item.producto.id)
+      : undefined;
+    if (enCatalogo) return existenciasDe(enCatalogo);
+    return item.storeroomId === storeroomId ? item.disponible : null;
+  };
+
   const addToCart = (prod: Producto) => {
+    if (storeroomId === null) return;
+    const disponible = existenciasDe(prod);
     setCart((prev) => {
       const existing = prev.find((it) => it.producto.id === prod.id);
       if (existing) {
         return prev.map((it) =>
-          it.producto.id === prod.id ? { ...it, cantidad: it.cantidad + 1 } : it,
+          it.producto.id === prod.id
+            ? {
+                ...it,
+                cantidad: Math.min(it.cantidad + 1, disponible),
+                disponible,
+                storeroomId,
+              }
+            : it,
         );
       }
-      return [...prev, { producto: prod, cantidad: 1 }];
+      return [...prev, { producto: prod, cantidad: 1, disponible, storeroomId }];
     });
   };
 
@@ -122,6 +176,21 @@ export default function NuevaSolicitudScreen() {
       Alert.alert('Faltan productos', 'Agrega al menos 1 producto o herramienta a la solicitud.');
       return;
     }
+    if (storeroomId === null) {
+      Alert.alert('Campo obligatorio', 'Por favor selecciona el Pañol a solicitar.');
+      return;
+    }
+    const sinExistencias = cart.filter((it) => {
+      const disponible = existenciasEnCarrito(it);
+      return disponible !== null && it.cantidad > disponible;
+    });
+    if (sinExistencias.length > 0) {
+      Alert.alert(
+        'Existencias insuficientes',
+        `Ajusta la cantidad de: ${sinExistencias.map((it) => it.producto.nombre).join(', ')}.`,
+      );
+      return;
+    }
     if (careerId === null) {
       Alert.alert('Campo obligatorio', 'Por favor selecciona la Carrera.');
       return;
@@ -130,19 +199,22 @@ export default function NuevaSolicitudScreen() {
       Alert.alert('Campo obligatorio', 'Por favor ingresa la Asignatura.');
       return;
     }
-    if (!room.trim()) {
-      Alert.alert('Campo obligatorio', 'Por favor especifica la Sala, Laboratorio o Taller.');
+    if (locationId === null) {
+      Alert.alert('Campo obligatorio', 'Por favor selecciona el Laboratorio.');
       return;
     }
+    const bloque = TIME_BLOCKS.find((block) => block.label === timeBlock) ?? TIME_BLOCKS[0]!;
 
     try {
       setSubmitting(true);
       const res = await createLoanRequest({
         career_id: careerId,
         subject: subject.trim(),
-        room: room.trim(),
+        storeroom_id: storeroomId,
+        location_id: locationId,
         loan_date: loanDate,
-        time_block: timeBlock,
+        start_time: bloque.start,
+        end_time: bloque.end,
         items: cart.map((it) => ({
           product_id: it.producto.id,
           quantity: it.cantidad,
@@ -156,7 +228,7 @@ export default function NuevaSolicitudScreen() {
       setCart([]);
       setCareerId(null);
       setSubject('');
-      setRoom('');
+      setLocationId(null);
     } catch (error) {
       Alert.alert('No se pudo enviar la solicitud', requestErrorMessage(error));
     } finally {
@@ -186,11 +258,48 @@ export default function NuevaSolicitudScreen() {
           </ThemedText>
         </ThemedView>
 
-        {/* Sección 1: Búsqueda y Selección de Catálogo */}
+        {/* Sección 1: Pañol que prepara la solicitud */}
         <ThemedView type="backgroundElement" style={styles.sectionCard}>
           <ThemedText type="smallBold" style={styles.sectionTitle}>
-            1. SELECCIONAR EQUIPOS O INSUMOS
+            1. PAÑOL A SOLICITAR
           </ThemedText>
+
+          <View style={styles.formGroup}>
+            <ThemedText type="small">Pañol *</ThemedText>
+            {storerooms.isLoading ? (
+              <ActivityIndicator style={{ paddingVertical: 8 }} color="#d9232a" />
+            ) : storerooms.isError ? (
+              <Pressable onPress={() => void storerooms.refetch()} accessibilityRole="button">
+                <ThemedText type="small" themeColor="textSecondary">
+                  No se pudieron cargar los pañoles. Toca para reintentar.
+                </ThemedText>
+              </Pressable>
+            ) : (
+              <SelectField
+                accessibilityLabel="Pañol a solicitar"
+                placeholder="Selecciona el pañol"
+                options={(storerooms.data?.data ?? []).map((storeroom) => ({
+                  value: Number(storeroom.id),
+                  label: storeroom.name,
+                }))}
+                value={storeroomId}
+                onChange={handleStoreroomChange}
+              />
+            )}
+          </View>
+        </ThemedView>
+
+        {/* Sección 2: Búsqueda y Selección de Catálogo */}
+        <ThemedView type="backgroundElement" style={styles.sectionCard}>
+          <ThemedText type="smallBold" style={styles.sectionTitle}>
+            2. SELECCIONAR EQUIPOS O INSUMOS
+          </ThemedText>
+
+          {storeroomId === null && (
+            <ThemedText type="small" themeColor="textSecondary">
+              Elige un pañol para ver sus existencias y agregar productos.
+            </ThemedText>
+          )}
 
           <TextInput
             value={search}
@@ -221,6 +330,10 @@ export default function NuevaSolicitudScreen() {
             <View style={styles.productList}>
               {productos.map((prod) => {
                 const inCart = cart.find((it) => it.producto.id === prod.id);
+                const disponible = existenciasDe(prod);
+                const sinStock = catalogoActualizado && disponible <= 0;
+                const alTope = catalogoActualizado && inCart && inCart.cantidad >= disponible;
+                const puedeAgregar = catalogoActualizado && !sinStock && !alTope;
                 return (
                   <View
                     key={prod.id}
@@ -231,20 +344,32 @@ export default function NuevaSolicitudScreen() {
                         {prod.nombre}
                       </ThemedText>
                       <ThemedText type="code" style={styles.productMeta}>
-                        SKU: {prod.codigoBarras || 'N/A'} · Stock: {prod.stock}
+                        SKU: {prod.codigoBarras || 'N/A'}
                       </ThemedText>
+                      {storeroomId !== null && (
+                        <ThemedText type="code" style={styles.productMeta}>
+                          {catalogoActualizado
+                            ? `Existencias en ${storeroomName ?? 'el pañol'}: ${disponible}`
+                            : 'Actualizando existencias…'}
+                        </ThemedText>
+                      )}
                     </View>
 
                     <Pressable
                       onPress={() => addToCart(prod)}
+                      disabled={!puedeAgregar}
+                      accessibilityRole="button"
+                      accessibilityState={{ disabled: !puedeAgregar }}
+                      accessibilityLabel={`Agregar ${prod.nombre}`}
                       style={({ pressed }) => [
                         styles.addButton,
                         pressed && { opacity: 0.8 },
                         inCart && styles.addButtonActive,
+                        !puedeAgregar && styles.addButtonDisabled,
                       ]}
                     >
                       <ThemedText style={styles.addButtonText}>
-                        {inCart ? `+ (${inCart.cantidad})` : '+ Agregar'}
+                        {sinStock ? 'Sin stock' : inCart ? `+ (${inCart.cantidad})` : '+ Agregar'}
                       </ThemedText>
                     </Pressable>
                   </View>
@@ -259,12 +384,12 @@ export default function NuevaSolicitudScreen() {
           )}
         </ThemedView>
 
-        {/* Sección 2: Carrito de ítems seleccionados */}
+        {/* Sección 3: Carrito de ítems seleccionados */}
         {cart.length > 0 && (
           <ThemedView type="backgroundElement" style={styles.sectionCard}>
             <View style={styles.cartHeader}>
               <ThemedText type="smallBold" style={styles.sectionTitle}>
-                2. ÍTEMS EN TU SOLICITUD ({cart.length})
+                3. ÍTEMS EN TU SOLICITUD ({cart.length})
               </ThemedText>
               <Pressable onPress={() => setCart([])}>
                 <ThemedText type="code" style={{ color: '#d9232a' }}>
@@ -273,41 +398,63 @@ export default function NuevaSolicitudScreen() {
               </Pressable>
             </View>
 
-            {cart.map(({ producto, cantidad }) => (
-              <View
-                key={producto.id}
-                style={[styles.cartRow, { borderColor: theme.backgroundElement }]}
-              >
-                <ThemedText style={{ flex: 1 }} type="default">
-                  {producto.nombre}
-                </ThemedText>
+            {cart.map((item) => {
+              const { producto, cantidad } = item;
+              const disponible = existenciasEnCarrito(item);
+              const excede = disponible !== null && cantidad > disponible;
+              const alTope = disponible !== null && cantidad >= disponible;
+              return (
+                <View
+                  key={producto.id}
+                  style={[styles.cartRow, { borderColor: theme.backgroundElement }]}
+                >
+                  <View style={{ flex: 1, paddingRight: 8 }}>
+                    <ThemedText type="default">{producto.nombre}</ThemedText>
+                    <ThemedText
+                      type="code"
+                      style={[styles.productMeta, excede && styles.shortageText]}
+                    >
+                      {disponible === null
+                        ? 'Existencias por confirmar con este pañol'
+                        : excede
+                          ? `Solo hay ${disponible} en este pañol`
+                          : `Existencias: ${disponible}`}
+                    </ThemedText>
+                  </View>
 
-                <View style={styles.qtyControls}>
-                  <Pressable
-                    onPress={() => updateCartQty(producto.id, -1)}
-                    style={styles.qtyBtn}
-                  >
-                    <ThemedText type="smallBold">-</ThemedText>
-                  </Pressable>
-                  <ThemedText type="code" style={styles.qtyText}>
-                    {cantidad}
-                  </ThemedText>
-                  <Pressable
-                    onPress={() => updateCartQty(producto.id, 1)}
-                    style={styles.qtyBtn}
-                  >
-                    <ThemedText type="smallBold">+</ThemedText>
-                  </Pressable>
+                  <View style={styles.qtyControls}>
+                    <Pressable
+                      onPress={() => updateCartQty(producto.id, -1)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Quitar una unidad de ${producto.nombre}`}
+                      style={styles.qtyBtn}
+                    >
+                      <ThemedText type="smallBold">-</ThemedText>
+                    </Pressable>
+                    <ThemedText type="code" style={styles.qtyText}>
+                      {cantidad}
+                    </ThemedText>
+                    <Pressable
+                      onPress={() => updateCartQty(producto.id, 1)}
+                      disabled={alTope}
+                      accessibilityRole="button"
+                      accessibilityState={{ disabled: alTope }}
+                      accessibilityLabel={`Agregar una unidad de ${producto.nombre}`}
+                      style={[styles.qtyBtn, alTope && styles.addButtonDisabled]}
+                    >
+                      <ThemedText type="smallBold">+</ThemedText>
+                    </Pressable>
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </ThemedView>
         )}
 
-        {/* Sección 3: Datos de Clase y Taller */}
+        {/* Sección 4: Datos de Clase y Taller */}
         <ThemedView type="backgroundElement" style={styles.sectionCard}>
           <ThemedText type="smallBold" style={styles.sectionTitle}>
-            3. DATOS DE AULA Y HORARIO
+            4. DATOS DE AULA Y HORARIO
           </ThemedText>
 
           <View style={styles.formGroup}>
@@ -348,21 +495,32 @@ export default function NuevaSolicitudScreen() {
           </View>
 
           <View style={styles.formGroup}>
-            <ThemedText type="small">Sala, Laboratorio o Taller *</ThemedText>
-            <TextInput
-              value={room}
-              onChangeText={setRoom}
-              placeholder="Ej. Laboratorio 302 / Taller Telecom"
-              placeholderTextColor="#888"
-              style={[
-                styles.input,
-                {
-                  color: theme.text,
-                  borderColor: theme.backgroundElement,
-                  backgroundColor: theme.background,
-                },
-              ]}
-            />
+            <ThemedText type="small">Laboratorio *</ThemedText>
+            {storeroomId === null ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                Elige primero el pañol.
+              </ThemedText>
+            ) : locations.isError ? (
+              <Pressable onPress={() => void locations.refetch()} accessibilityRole="button">
+                <ThemedText type="small" themeColor="textSecondary">
+                  No se pudieron cargar los laboratorios. Toca para reintentar.
+                </ThemedText>
+              </Pressable>
+            ) : locations.isLoading || locations.isPlaceholderData ? (
+              <ActivityIndicator style={{ paddingVertical: 8 }} color="#d9232a" />
+            ) : laboratorios.length === 0 ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                Este pañol no tiene laboratorios registrados.
+              </ThemedText>
+            ) : (
+              <SelectField
+                accessibilityLabel="Laboratorio"
+                placeholder="Selecciona el laboratorio"
+                options={laboratorios.map((lab) => ({ value: lab.id, label: lab.nombre }))}
+                value={locationId}
+                onChange={setLocationId}
+              />
+            )}
           </View>
 
           <View style={styles.formGroup}>
@@ -525,6 +683,12 @@ const styles = StyleSheet.create({
   },
   addButtonActive: {
     backgroundColor: '#fee2e2',
+  },
+  addButtonDisabled: {
+    opacity: 0.45,
+  },
+  shortageText: {
+    color: '#b91c1c',
   },
   addButtonText: {
     fontSize: 12,

@@ -6,7 +6,7 @@ import {
   useEquipmentUnitByCode,
   useLocations,
 } from "@sgia/api-client";
-import { INCIDENT_PROBLEM_LABELS } from "@sgia/types";
+import { INCIDENT_LOCATION_TYPES, INCIDENT_PROBLEM_LABELS } from "@sgia/types";
 import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,9 @@ export function NewIncidentDialog({
   subjectLabel = "Asignatura",
 }: NewIncidentDialogProps) {
   const create = useCreateIncidentReport();
-  const locations = useLocations({ per_page: 100 }).data?.data ?? [];
+  const locations = (useLocations({ per_page: 100 }).data?.data ?? []).filter((l) =>
+    INCIDENT_LOCATION_TYPES.includes(l.tipo),
+  );
   const {
     register,
     control,
@@ -130,7 +132,7 @@ export function NewIncidentDialog({
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="inc-location" className={labelClasses}>
-              Laboratorio
+              Laboratorio o pañol
             </label>
             <select
               id="inc-location"

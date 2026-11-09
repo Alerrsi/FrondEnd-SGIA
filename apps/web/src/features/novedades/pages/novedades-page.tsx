@@ -108,7 +108,7 @@ export default function NovedadesPage() {
             <table className="w-full border-collapse text-left text-xs">
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
-                  {['Código', 'Reportado por', 'Asignatura', 'Laboratorio', 'Problemas', 'Fecha', 'Estado'].map(
+                  {['Código', 'Reportado por', 'Asignatura', 'Lugar', 'Problemas', 'Fecha', 'Estado'].map(
                     (h) => (
                       <th key={h} className="px-4 py-2.5 font-medium">
                         {h}
