@@ -7,7 +7,7 @@ import type {
 } from '@sgia/types';
 import { get, getBlob, patch, post } from '../http';
 
-// Informe de novedades del docente (reemplaza a POST /equipment/{id}/reports).
+// Informe de novedades (reemplaza a POST /equipment/{id}/reports).
 
 interface RawPaginated<T> {
   data?: T[];
@@ -82,7 +82,7 @@ export async function fetchIncidentReport(id: number): Promise<IncidentReport> {
 }
 
 /**
- * Crea el informe (solo `PRO-01`). Sin foto va como JSON; con foto, como multipart con
+ * Crea el informe (`PRO-01` y `PAN-01`). Sin foto va como JSON; con foto, como multipart con
  * `problems[0][type]`, `problems[0][description]`, …
  */
 export async function createIncidentReport(
@@ -103,7 +103,7 @@ export async function createIncidentReport(
     if (rest.suggestion) form.append('suggestion', rest.suggestion);
     form.append('signature', rest.signature);
     if (rest.equipment_code) form.append('equipment_code', rest.equipment_code);
-    // En React Native el "archivo" es `{ uri, name, type }`; FormData lo acepta tal cual.
+    // En móvil es un `File` de `expo-file-system`: el `fetch` de Expo rechaza `{ uri, name, type }`.
     form.append('evidence_photo', photo as Blob);
     res = await post<FormData, { data?: IncidentReport }>('/incident-reports', form);
   } else {

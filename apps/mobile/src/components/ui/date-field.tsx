@@ -14,10 +14,18 @@ interface DateFieldProps {
   onChange: (value: string) => void;
   /** Fecha mínima en `AAAA-MM-DD`. */
   minimumDate?: string;
+  /** Fecha máxima en `AAAA-MM-DD`. */
+  maximumDate?: string;
 }
 
 /** Campo de fecha con el selector nativo: calendario en línea en iOS y diálogo en Android. */
-export function DateField({ accessibilityLabel, value, onChange, minimumDate }: DateFieldProps) {
+export function DateField({
+  accessibilityLabel,
+  value,
+  onChange,
+  minimumDate,
+  maximumDate,
+}: DateFieldProps) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -44,6 +52,7 @@ export function DateField({ accessibilityLabel, value, onChange, minimumDate }: 
           display={Platform.OS === 'ios' ? 'inline' : 'default'}
           value={parseIsoDate(value)}
           minimumDate={minimumDate ? parseIsoDate(minimumDate) : undefined}
+          maximumDate={maximumDate ? parseIsoDate(maximumDate) : undefined}
           onValueChange={(_event, date) => {
             setOpen(false);
             onChange(toIsoDate(date));

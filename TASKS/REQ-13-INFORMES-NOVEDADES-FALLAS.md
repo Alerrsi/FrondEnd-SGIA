@@ -2,7 +2,8 @@
 
 > **Código:** `REQ-13` | **Módulo:** `FU-05` (Fichas Técnicas e Informes de Novedades)  
 > **Plataformas:** Mobile (`apps/mobile`) y Web (`apps/web`)  
-> **Roles:** Docente (`PRO-01`), Pañolero (`PAN-01`) y Director de Carrera (`DIR-01`)
+> **Roles:** Docente (`PRO-01`), Pañolero (`PAN-01`) y Director de Carrera (`DIR-01`)  
+> **Crean informes:** `PRO-01` (móvil y web) y `PAN-01` (web). **Atienden:** `PAN-01`, `AD-01` y `DIR-01`.
 
 ---
 
@@ -18,7 +19,7 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 
 ## 📡 Endpoints del Backend (`ENDPOINTS.md`)
 
-> **Tabla histórica.** El contrato cambió: el informe es un formulario por laboratorio con casillas de problema y firma, y solo `PRO-01` lo crea. El vigente está en [`ENDPOINTS.md`](../ENDPOINTS.md) y en `docs/cambios-frontend-noviembre-2026.md` del backend.
+> **Tabla histórica.** El contrato cambió: el informe es un formulario por laboratorio con casillas de problema y firma, y lo crean `PRO-01` y `PAN-01`. El vigente está en [`ENDPOINTS.md`](../ENDPOINTS.md) y en `docs/cambios-frontend-noviembre-2026.md` del backend.
 
 | Método | Endpoint | Roles | Descripción | Estado API |
 |---|---|---|---|:---:|
@@ -31,19 +32,29 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. App Móvil Docente (`apps/mobile`)
-> **Controles del formulario:** los campos con opciones usan lista desplegable vertical (`SelectField`) y las fechas, campo de tipo fecha (`DateField`), como en REQ-09.
+> **Solo `PRO-01`.** El pañolero crea sus informes desde la web. **Verificado el 2026-11-09** con typecheck, lint y `expo export` para Android, iOS y web. Sin tests propios y sin probar en un dispositivo.
 
-- [ ] **Formulario de Reporte de Novedad / Falla:**
-  - [ ] Selector del producto o equipo afectado (con opción de escaneo de código de barras con la cámara o búsqueda manual).
-  - [ ] Selector de severidad del incidente: `leve` (detalle estético o cable suelto), `media` (falla parcial), `critica` (equipo inoperativo).
-  - [ ] Campo descriptivo del problema observado en la sesión de clase.
-  - [ ] Captura fotográfica con la cámara o selección de imagen desde la galería usando `expo-image-picker`.
-  - [ ] Envío multipart (`FormData`) hacia `POST /api/incident-reports`.
-- [ ] **Feedback al Docente:**
-  - [ ] Notificación de confirmación de recepción del reporte.
-  - [ ] Historial de reportes enviados por el docente con estado de resolución.
+> **Controles del formulario:** los campos con opciones usan lista desplegable vertical (`SelectField` y `MultiSelectField`) y las fechas, campo de tipo fecha (`DateField`), como en REQ-09.
+
+- [x] **Formulario de Informe de Novedades** (`features/novedades/components/new-incident-form.tsx`):
+  - [x] Asignatura, fecha (hoy o anterior) y laboratorio (`GET /api/locations`).
+  - [x] Problemas en lista desplegable de selección múltiple (`falla_equipo`, `falta_equipamiento`, `falta_insumo`, `otros`), cada uno con su descripción.
+  - [x] Sugerencia opcional.
+  - [x] Foto opcional con la cámara o desde la galería usando `expo-image-picker`.
+  - [x] Firma dibujada con el dedo, enviada como PNG en base64.
+  - [x] Código del equipo opcional, escrito a mano.
+  - [x] Envío en JSON, o multipart (`FormData`) si lleva foto, a `POST /api/incident-reports`.
+  - [ ] Escaneo del código del equipo con la cámara.
+- [x] **Seguimiento del Docente** (pestaña Novedades, `app/(app)/novedades.tsx`):
+  - [x] Confirmación con el código del informe al enviarlo.
+  - [x] Historial de informes propios con su estado, paginado (`GET /api/incident-reports/mine`).
+  - [x] Detalle de solo lectura de cada informe.
+  - [ ] Descarga del PDF y vista de la firma y la foto desde el móvil. _(Disponible en la web.)_
+
+> La severidad del formulario anterior ya no existe en el contrato vigente.
 
 ### 2. Panel Web Pañol y Dirección (`apps/web`)
+- [x] **Creación por el pañolero:** botón Nuevo informe en `/novedades`, solo para `PAN-01`, con el mismo formulario y firma. La etiqueta es "Asignatura o actividad" (`novedades-page.test.tsx`).
 - [ ] **Bandeja de Novedades y Fallas (`/novedades`):**
   - [x] Vista en lista o kanban organizada por estado: `en_revision`, `en_reparacion`, `reparado`, `dado_de_baja`. _(Lista con filtro por estado, en `features/novedades/`; sin kanban.)_
   - [ ] Badges distintivos por nivel de severidad (`critica` en rojo parpadeante o destacado). _(Hoy la severidad es texto en el detalle; no hay badge en la lista.)_

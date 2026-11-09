@@ -10,13 +10,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  ApiRequestError,
-  apiErrorToMessage,
-  createLoanRequest,
-  fetchCareers,
-  useProducts,
-} from '@sgia/api-client';
+import { createLoanRequest, fetchCareers, useProducts } from '@sgia/api-client';
 import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
@@ -27,6 +21,7 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useTheme } from '@/hooks/use-theme';
 import { todayIso } from '@/lib/dates';
+import { requestErrorMessage } from '@/lib/request-error';
 
 const TIME_BLOCKS = [
   'Bloque 1-2: 08:30 - 10:00',
@@ -41,16 +36,6 @@ const TIME_BLOCKS = [
 const TIME_BLOCK_OPTIONS = TIME_BLOCKS.map((block) => ({ value: block, label: block }));
 
 const CATALOG_PAGE_SIZE = 6;
-
-function sendErrorMessage(error: unknown): string {
-  if (!(error instanceof ApiRequestError)) {
-    return 'No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.';
-  }
-  if (error.status >= 500) {
-    return 'El servidor tuvo un problema. Inténtalo de nuevo en unos minutos.';
-  }
-  return apiErrorToMessage(error);
-}
 
 interface CartItem {
   producto: Producto;
@@ -173,7 +158,7 @@ export default function NuevaSolicitudScreen() {
       setSubject('');
       setRoom('');
     } catch (error) {
-      Alert.alert('No se pudo enviar la solicitud', sendErrorMessage(error));
+      Alert.alert('No se pudo enviar la solicitud', requestErrorMessage(error));
     } finally {
       setSubmitting(false);
     }

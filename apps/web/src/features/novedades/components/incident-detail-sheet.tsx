@@ -93,7 +93,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
               <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
                 {isLegacy
                   ? 'Informe anterior al nuevo formulario.'
-                  : `${report.teacher_name ?? 'Docente'} · ${report.subject ?? 'Sin asignatura'}`}
+                  : `${report.teacher_name ?? 'Sin responsable'} · ${report.subject ?? 'Sin asignatura'}`}
               </SheetDescription>
             </SheetHeader>
 
@@ -160,10 +160,10 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
 
                   {report.has_signature && (
                     <div className={sectionClasses}>
-                      <h3 className={headingClasses}>Firma del profesor</h3>
+                      <h3 className={headingClasses}>Firma</h3>
                       <AuthenticatedImage
                         load={loadSignature}
-                        alt="Firma del profesor"
+                        alt="Firma"
                         className="max-h-24 rounded border border-zinc-200 dark:border-zinc-800 bg-white"
                       />
                       {report.signed_at && (

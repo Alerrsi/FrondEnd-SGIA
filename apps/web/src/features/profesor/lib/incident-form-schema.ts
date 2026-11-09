@@ -24,7 +24,7 @@ export const incidentFormSchema = z.object({
   subject: z
     .string()
     .trim()
-    .min(1, "Indica el nombre de la asignatura.")
+    .min(1, "Indica la asignatura o actividad.")
     .max(100, "Máximo 100 caracteres."),
   report_date: z
     .string()
@@ -71,7 +71,7 @@ export const incidentFormSchema = z.object({
     }),
   suggestion: z.string().max(2000, "Máximo 2000 caracteres.").optional(),
   equipment_code: z.string().optional(),
-  signature: z.string().min(1, "Falta la firma del docente."),
+  signature: z.string().min(1, "Falta la firma."),
   evidence_photo: z
     .custom<File | null>()
     .nullable()

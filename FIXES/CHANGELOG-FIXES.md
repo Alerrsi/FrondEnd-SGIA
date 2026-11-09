@@ -504,3 +504,29 @@
   2. **`DateField`:** la fecha deja de ser texto libre y usa el selector nativo (`@react-native-community/datetimepicker`) o `<input type="date">` en web. Muestra `DD-MM-AAAA`, sigue enviando `AAAA-MM-DD` y no permite fechas pasadas.
   3. **Especificación:** REQ-09 y REQ-13 fijan estos controles para los formularios móviles.
 - **Verificación:** `pnpm typecheck`, lint de móvil, 392 tests web, `expo-doctor` (20/20) y `expo export` para Android y web. Móvil sin tests propios ni prueba en un dispositivo.
+
+---
+
+## FIX-028: Informe de novedades del pañolero y en la app móvil
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/web` (`/novedades`), `apps/mobile` (pestaña Novedades), `TASKS/REQ-13`, `ENDPOINTS.md`, `AGENTS.md`; el permiso de `PAN-01` está en el backend
+- **Cambios:**
+  1. **Pañolero:** la bandeja web muestra Nuevo informe solo a `PAN-01`, con el formulario del docente. Los textos dejan de asumir que reporta un docente.
+  2. **Móvil:** pestaña Novedades con historial, detalle y formulario para `PRO-01`, con problemas en lista desplegable múltiple, fecha nativa, foto y firma.
+  3. **Dependencias móviles:** `expo-image-picker`, `react-native-svg`, `react-native-view-shot`, `zod` y `@hookform/resolvers`.
+- **Pendiente:** escanear el código del equipo, y ver el PDF, la firma y la foto desde el móvil.
+- **Verificación:** `pnpm typecheck`, lint, 395 tests web, `expo-doctor` (20/20) y `expo export` para Android, iOS y web. Móvil sin tests propios ni prueba en un dispositivo.
+
+---
+
+## FIX-029: Enviar la foto del informe de novedades desde el móvil
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/mobile` (Novedades), `packages/types`, `packages/api-client`
+- **Causa:** el `fetch` de Expo no admite partes `{ uri, name, type }` en `FormData` y lanza `Unsupported FormDataPart implementation`. Como no era una respuesta de la API, la app mostraba "No se pudo conectar con el servidor".
+- **Cambios:**
+  1. **Envío:** la foto va como `File` de `expo-file-system`, y `CreateIncidentReportPayload` deja de aceptar `{ uri, name, type }`.
+  2. **Tamaño:** se reduce a un máximo de 1600 px en JPEG con `expo-image-manipulator`. Sin esto, una foto de cámara superaría el `upload_max_filesize` de 2 MB del PHP de desarrollo.
+  3. **Diagnóstico:** en desarrollo, `requestErrorMessage` registra el error real cuando no viene de la API.
+- **Verificación:** `pnpm typecheck`, lint, tests web y `expo export`. El envío real debe confirmarse en un dispositivo.
