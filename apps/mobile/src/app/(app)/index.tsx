@@ -17,6 +17,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { todayIso } from '@/lib/dates';
 
 const TIME_BLOCKS = [
   'Bloque 1-2: 08:30 - 10:00',
@@ -50,7 +51,7 @@ export default function NuevaSolicitudScreen() {
   const [careerId, setCareerId] = useState<number | null>(null);
   const [subject, setSubject] = useState('');
   const [room, setRoom] = useState('');
-  const [loanDate, setLoanDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [loanDate, setLoanDate] = useState(todayIso);
   const [timeBlock, setTimeBlock] = useState(TIME_BLOCKS[0]!);
   const [submitting, setSubmitting] = useState(false);
 
