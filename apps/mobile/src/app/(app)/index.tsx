@@ -10,8 +10,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createLoanRequest, fetchProducts } from '@sgia/api-client';
-import type { Producto } from '@sgia/types';
+import { createLoanRequest, fetchCareers, fetchProducts } from '@sgia/api-client';
+import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -45,6 +45,9 @@ export default function NuevaSolicitudScreen() {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   // Datos del formulario
+  const [careers, setCareers] = useState<Career[]>([]);
+  const [loadingCareers, setLoadingCareers] = useState(true);
+  const [careerId, setCareerId] = useState<number | null>(null);
   const [subject, setSubject] = useState('');
   const [room, setRoom] = useState('');
   const [loanDate, setLoanDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -67,6 +70,25 @@ export default function NuevaSolicitudScreen() {
       })
       .finally(() => {
         if (isMounted) setLoadingCatalog(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Cargar carreras: el backend exige `career_id` en toda solicitud
+  useEffect(() => {
+    let isMounted = true;
+    fetchCareers({ per_page: 100 })
+      .then((res) => {
+        if (isMounted) setCareers(res.data);
+      })
+      .catch(() => {
+        // Sin carreras se muestra el aviso en el formulario
+      })
+      .finally(() => {
+        if (isMounted) setLoadingCareers(false);
       });
 
     return () => {
@@ -115,8 +137,12 @@ export default function NuevaSolicitudScreen() {
       Alert.alert('Faltan productos', 'Agrega al menos 1 producto o herramienta a la solicitud.');
       return;
     }
+    if (careerId === null) {
+      Alert.alert('Campo obligatorio', 'Por favor selecciona la Carrera.');
+      return;
+    }
     if (!subject.trim()) {
-      Alert.alert('Campo obligatorio', 'Por favor ingresa la Asignatura o Carrera.');
+      Alert.alert('Campo obligatorio', 'Por favor ingresa la Asignatura.');
       return;
     }
     if (!room.trim()) {
@@ -127,6 +153,7 @@ export default function NuevaSolicitudScreen() {
     try {
       setSubmitting(true);
       const res = await createLoanRequest({
+        career_id: careerId,
         subject: subject.trim(),
         room: room.trim(),
         loan_date: loanDate,
@@ -142,6 +169,7 @@ export default function NuevaSolicitudScreen() {
 
       // Limpiar formulario
       setCart([]);
+      setCareerId(null);
       setSubject('');
       setRoom('');
     } catch {
@@ -285,7 +313,42 @@ export default function NuevaSolicitudScreen() {
           </ThemedText>
 
           <View style={styles.formGroup}>
-            <ThemedText type="small">Asignatura o Taller *</ThemedText>
+            <ThemedText type="small">Carrera *</ThemedText>
+            {loadingCareers ? (
+              <ActivityIndicator style={{ paddingVertical: 8 }} color="#d9232a" />
+            ) : careers.length === 0 ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                No se pudieron cargar las carreras. Vuelve a abrir la pantalla para reintentar.
+              </ThemedText>
+            ) : (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.blockScroll}>
+                {careers.map((career) => {
+                  const isSelected = careerId === career.id;
+                  return (
+                    <Pressable
+                      key={career.id}
+                      onPress={() => setCareerId(career.id)}
+                      style={[
+                        styles.blockChip,
+                        isSelected && styles.blockChipSelected,
+                        { borderColor: theme.backgroundElement },
+                      ]}
+                    >
+                      <ThemedText
+                        type="code"
+                        style={[styles.blockChipText, isSelected && styles.blockChipTextSelected]}
+                      >
+                        {career.name}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            )}
+          </View>
+
+          <View style={styles.formGroup}>
+            <ThemedText type="small">Asignatura *</ThemedText>
             <TextInput
               value={subject}
               onChangeText={setSubject}
