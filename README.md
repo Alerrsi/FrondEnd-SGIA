@@ -38,6 +38,10 @@ pnpm lint           # lint de todas las apps/paquetes
 pnpm typecheck      # typecheck de todas las apps/paquetes
 ```
 
+### Accesos rápidos del login (opcional)
+
+Para ver los accesos de prueba en desarrollo, copiar `apps/web/.env.example` a `apps/web/.env.local` y definir `VITE_DEV_QUICK_LOGIN_PASSWORD` con la contraseña sembrada por el backend. Sin esa variable no se muestran, y nunca aparecen en un build de producción.
+
 ## Para agentes de IA
 
 Leer [`CLAUDE.md`](CLAUDE.md) (reglas y comandos) y, para contexto de negocio y arquitectura, [`AGENTS.md`](AGENTS.md). La especificación de diseño está en el skill `.claude/skills/sgia-design/`.

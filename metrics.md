@@ -152,10 +152,10 @@ Un `groupBy` fuera de la tabla devuelve error. **No existe** `CAREERS.level`: qu
 
 ## 9. Checklist de implementación
 
-- [ ] Servicio `executiveKpis` y `customMetric` con los dos documentos de §3 y tipos TS que reflejen §2.
-- [ ] Si `response.errors?.length`, mostrar `errors[0].message`; sin datos de respaldo.
-- [ ] Selector `groupBy` por entidad según §4 (sin `level`).
-- [ ] Manejo de `points: []`, `secondaryValue: null` y `category: null`.
-- [ ] `CUSTOM` muestra dos fechas y bloquea "aplicar" sin `dateFrom`; `executiveKpis` no ofrece `CUSTOM`.
-- [ ] 401 → cerrar sesión; 403 → mensaje de permisos sin cerrar sesión.
-- [ ] Respetar 120 req/min: una consulta por gráfico, sin *polling* agresivo.
+- [x] Servicio `executiveKpis` y `customMetric` con los dos documentos de §3 y tipos TS que reflejen §2.
+- [x] Si `response.errors?.length`, mostrar `errors[0].message`; sin datos de respaldo.
+- [x] Selector `groupBy` por entidad según §4 (sin `level`).
+- [ ] Manejo de `points: []`, `secondaryValue: null` y `category: null`. _(`points: []` sí se maneja; los dos nulos no se verificaron el 2026-11-09.)_
+- [x] `CUSTOM` muestra dos fechas y bloquea "aplicar" sin `dateFrom`; `executiveKpis` no ofrece `CUSTOM`.
+- [x] 401 → cerrar sesión; 403 → mensaje de permisos sin cerrar sesión.
+- [x] Respetar 120 req/min: una consulta por gráfico, sin *polling* agresivo.

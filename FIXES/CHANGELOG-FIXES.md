@@ -415,3 +415,46 @@
   1. **Botón por producto:** «Cambiar elementos» reemplaza la acción «Cambiar» de cada fila. Es opcional: sin usarlo se aprueba la propuesta del sistema.
   2. **Escaneo:** `LoanReviewScanPanel` pide exactamente la cantidad solicitada, muestra el avance, avisa con sonido y mantiene el foco para el siguiente código. Los elementos se reemplazan al completar la cantidad.
   3. **Selección:** `scanUnit` reemplaza a `replaceUnitByCode`. Una unidad de la propuesta se puede escanear para conservarla.
+
+---
+
+## FIX-020: Carrera obligatoria en la solicitud móvil y lint de `apps/mobile` (REQ-09)
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/mobile` — [REQ-09](../TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
+- **Cambios:**
+  1. **Selector de carrera:** la solicitud carga `GET /api/careers` y envía `career_id`, que el backend exige. Antes no se enviaba, y eso rompía `pnpm typecheck`.
+  2. **Lint:** el error de `expo-secure-store` venía de una caché vieja en `.expo/cache/eslint`. No requirió cambios de código.
+- **Verificación:** `pnpm typecheck` y `pnpm lint` pasan. Sin probar en un dispositivo.
+
+---
+
+## FIX-021: Cerrar sesión con cuenta desactivada (REQ-01)
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `packages/api-client` (`http.ts`), compartido por web y móvil
+- **Cambios:**
+  1. **`403` con `code: "account_inactive"`:** si había un token en uso, cierra la sesión, también en descargas (`getBlob`).
+  2. **Sin cambios:** un `403` sin ese código sigue siendo falta de permisos, y en el login, sin token, se muestra el mensaje del servidor.
+- **Verificación:** `account-inactive.test.ts` (4 tests; 2 fallaban antes del arreglo).
+
+---
+
+## FIX-022: Accesos rápidos del login solo en desarrollo (REQ-21)
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/web` (`features/auth`) — [REQ-21](../TASKS/REQ-21-PROFESOR-WEB.md)
+- **Cambios:**
+  1. **Contraseña:** sale del código a `VITE_DEV_QUICK_LOGIN_PASSWORD` (`apps/web/.env.example`).
+  2. **Visibilidad:** el bloque solo se muestra en `vite dev` y con la variable definida.
+- **Verificación:** 3 tests nuevos en `login.test.tsx`. Un build de producción con `.env.local` presente no contiene ni la contraseña ni el bloque.
+- **Pendiente:** la contraseña sigue en el historial de git. No debe usarse en producción (ahí la define `SEED_ADMIN_PASSWORD`).
+
+---
+
+## FIX-023: `pnpm lint` de `apps/web`
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/web` (`features/profesor/components/catalog-panel.tsx`)
+- **Cambios:** se quitó un `eslint-disable` de `react-hooks/exhaustive-deps`, regla que la web no tiene configurada y que ESLint trataba como error.
+- **Verificación:** `pnpm lint` pasa en todo el monorepo.

@@ -122,6 +122,6 @@ Criterios de aceptación
 
 ## Cambios de contrato que el frontend debe reflejar al terminar
 
-- [ ] `packages/types/src/prestamo.ts`: `start_time`, `end_time`, `storeroom_id`, `location_id` y los objetos relacionados (`career`, `storeroom`, `location`, `teacher`) en `CreatePrestamoPayload` y `Prestamo`.
-- [ ] `packages/api-client`: filtros `storeroom_id`, `career_id` y `loan_date` en `LoanRequestQueryParams`; filtro `storeroom_id` en `LocationQueryParams`.
-- [ ] `ENDPOINTS.md` del frontend: sincronizar con el del backend.
+- [x] `packages/types/src/prestamo.ts`: `start_time`, `end_time`, `storeroom_id`, `location_id` y los objetos relacionados (`career`, `storeroom`, `location`, `teacher`) en `CreatePrestamoPayload` y `Prestamo`.
+- [x] `packages/api-client`: filtros `storeroom_id`, `career_id` y `loan_date` en `LoanRequestQueryParams`; filtro `storeroom_id` en `LocationQueryParams`.
+- [x] `ENDPOINTS.md` del frontend: sincronizar con el del backend.

@@ -114,7 +114,7 @@ Estos puntos dependen de lo que muestre la Fase 0. Se completan después.
 - [x] **Revisar antes de aprobar:** la cola abre una revisión con las unidades propuestas y su ubicación, y el pañol puede cambiarlas escaneando la cantidad solicitada (`REQ-10`, `FIX-017`, `FIX-019`).
 - [x] **Corregir `normalizePrestamo`:** conserva `id` y `units` de cada ítem, `cajon` como texto, y las operaciones leen la clave `loan` de la respuesta.
 - [x] **Préstamos por pañol:** el historial ya no ofrece el filtro de pañol a `PAN-01`, porque el backend le limita los préstamos a su pañol.
-- [ ] **Corregir fallos previos de `apps/mobile`:** `pnpm typecheck` falla porque `(app)/index.tsx` no envía `career_id`, y `pnpm lint` porque no resuelve `expo-secure-store`. No vienen de este cambio.
+- [x] **Corregir fallos previos de `apps/mobile`:** `(app)/index.tsx` ya envía `career_id` (`FIX-020`). El error de `expo-secure-store` venía de una caché vieja de `expo lint` en `.expo/cache/eslint`, no del código: si reaparece, borrar esa carpeta.
 
 ---
 

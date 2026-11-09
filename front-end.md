@@ -30,10 +30,10 @@ Máximo **10 por minuto por usuario** en: `PUT /api/password`, `POST /api/invoic
 ### A4. CORS sin valores por defecto — Informativo
 El backend ya no permite ningún origen si no se configura `CORS_ALLOWED_ORIGINS`. Para producción hay que entregar al equipo de infraestructura el dominio exacto del panel web. La app móvil nativa no usa CORS; sí Expo en modo web (`http://localhost:8081`, `:19006`).
 
-### A4b. Cuenta desactivada: nuevo campo `code` — Pronto
+### A4b. Cuenta desactivada: nuevo campo `code` — Hecho (`FIX-021`)
 La respuesta 403 de una cuenta desactivada (en el login y con un token ya emitido) ahora incluye `"code": "account_inactive"`. Hoy el cliente solo cierra sesión con 401 y muestra el 403 como "Error 403". Cambio sugerido en `http.ts` (compartido por web y móvil): si el 403 trae `code === "account_inactive"`, borrar el token y volver al login. Un 403 sin ese código sigue siendo "sin permisos".
 
-### A5. Contraseña del administrador sembrado — Informativo
+### A5. Contraseña del administrador sembrado — Hecho en el cliente (`FIX-022`)
 En desarrollo sigue siendo `admin@sgia.cl` / `Admin1234!`. En producción la define `SEED_ADMIN_PASSWORD`. Quitar cualquier credencial fija que haya en el cliente o en sus pruebas e2e.
 
 ---
@@ -161,7 +161,7 @@ Estas recomendaciones son del lado cliente y evitan sobrecargar la API o dejar a
 
 ## F. Pendiente en el frontend (resumen)
 
-- `http.ts`: cerrar sesión con `403` + `code: "account_inactive"` (A4b).
+- ~~`http.ts`: cerrar sesión con `403` + `code: "account_inactive"` (A4b).~~ Hecho (`FIX-021`).
 - Eliminar `revokeAllTokens` o apuntarlo a `/logout-all` (B1).
 - Ocultar checkin, cancelación y exportación de préstamos mientras el backend no los tenga (C2).
 - Tratar el filtro "De Baja" como no soportado por el backend (C3).

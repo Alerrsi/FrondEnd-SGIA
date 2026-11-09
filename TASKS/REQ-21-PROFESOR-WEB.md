@@ -101,7 +101,7 @@ Decisiones tomadas:
 Se sigue el patrón existente de «Accesos rápidos de prueba» (usuarios `@sgia.cl` del seeder del backend con la contraseña de desarrollo compartida); el usuario `docente@sgia.cl` (PRO-01) ya existe en `DatabaseSeeder` del backend.
 - [x] Botón «PRO-01 (Profesor)» en los accesos rápidos, con `docente@sgia.cl`.
 - [x] Lista «Roles autorizados en web» incluye `PRO-01`; se quitó el aviso «Docentes usan la app móvil».
-- [ ] Revisar `handleQuickFill`: la contraseña de desarrollo está escrita en el código; decidir si se saca a una variable de entorno o se oculta fuera de desarrollo (aplica a todos los accesos rápidos).
+- [x] Revisar `handleQuickFill`: la contraseña sale de `VITE_DEV_QUICK_LOGIN_PASSWORD` y los accesos rápidos solo se muestran en `vite dev` (`FIX-022`).
 
 ### 6. Documentación
 - [x] Actualizar `AGENTS.md` (tabla de roles y la línea «Mobile exclusivo para PRO-01»).
@@ -132,7 +132,7 @@ Con `docente@sgia.cl` en `localhost:8000` y Chromium: login con el acceso rápid
 
 - [x] Rutas `/profesor/catalogo`, `/profesor/solicitudes` y `/profesor/novedades` (confirmadas).
 - [x] Usuario `PRO-01` de desarrollo: `docente@sgia.cl`, ya sembrado en el backend (`DatabaseSeeder`).
-- [ ] Si se puede quitar la contraseña escrita en `handleQuickFill` (afecta a todos los accesos rápidos).
+- [x] Si se puede quitar la contraseña escrita en `handleQuickFill`: sí, se quitó (`FIX-022`).
 - [x] Backend: implementar el prompt de [REQ-21-PROMPT-BACKEND.md](./REQ-21-PROMPT-BACKEND.md) antes de la pantalla de solicitud (bloquea el envío real).
 - [x] Laboratorio: selector alimentado por la API.
 - [x] Profesor: solo el usuario autenticado (`PRO-01`).

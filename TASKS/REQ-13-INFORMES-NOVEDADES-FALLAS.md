@@ -18,6 +18,8 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 
 ## 📡 Endpoints del Backend (`ENDPOINTS.md`)
 
+> **Tabla histórica.** El contrato cambió: el informe es un formulario por laboratorio con casillas de problema y firma, y solo `PRO-01` lo crea. El vigente está en [`ENDPOINTS.md`](../ENDPOINTS.md) y en `docs/cambios-frontend-noviembre-2026.md` del backend.
+
 | Método | Endpoint | Roles | Descripción | Estado API |
 |---|---|---|---|:---:|
 | `POST` | `/api/incident-reports` | `PRO-01`, `PAN-01` | Crea reporte (`product_id`, `description`, `severity: 'leve'\|'media'\|'critica'`, `photo`). Cambia ítem a `en_revision`/`en_reparacion`. | 🟡 Planificado |
@@ -41,11 +43,11 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 
 ### 2. Panel Web Pañol y Dirección (`apps/web`)
 - [ ] **Bandeja de Novedades y Fallas (`/novedades`):**
-  - [ ] Vista en lista o kanban organizada por estado: `en_revision`, `en_reparacion`, `reparado`, `dado_de_baja`.
-  - [ ] Badges distintivos por nivel de severidad (`critica` en rojo parpadeante o destacado).
-  - [ ] Vista modal con la fotografía adjunta ampliada y datos del docente que reportó.
+  - [x] Vista en lista o kanban organizada por estado: `en_revision`, `en_reparacion`, `reparado`, `dado_de_baja`. _(Lista con filtro por estado, en `features/novedades/`; sin kanban.)_
+  - [ ] Badges distintivos por nivel de severidad (`critica` en rojo parpadeante o destacado). _(Hoy la severidad es texto en el detalle; no hay badge en la lista.)_
+  - [x] Vista modal con la fotografía adjunta ampliada y datos del docente que reportó. _(`incident-detail-sheet.tsx`.)_
 - [ ] **Gestión y Transición de Estados:**
-  - [ ] Acciones para pañolero y director:
+  - [ ] Acciones para pañolero y director: _(Los botones salen de `allowed_transitions`; la baja no pide justificación.)_
     - Enviar a taller de reparación (`status: 'en_reparacion'`).
     - Declarar reparado y reintegrar a stock disponible (`status: 'reparado'`).
     - Dar de baja definitiva con justificación para posterior cotización de reemplazo (`status: 'dado_de_baja'`).
@@ -54,5 +56,5 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 
 ## 🧪 Pruebas Requeridas
 
-- [ ] Unit test: hook `useCreateNovedad` con envío de `FormData`.
-- [ ] Integration test: actualización de estado de incidencia `PATCH /api/incident-reports/:id/status`.
+- [x] Unit test: hook `useCreateNovedad` con envío de `FormData`. _(Cubierto a nivel de servicio en `incident-reports-api.test.ts`.)_
+- [x] Integration test: actualización de estado de incidencia `PATCH /api/incident-reports/:id/status`. _(`incident-reports-api.test.ts`.)_
