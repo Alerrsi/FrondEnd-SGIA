@@ -38,7 +38,14 @@
       "expo-secure-store",
       "expo-status-bar",
       "expo-web-browser",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SGIA usa tus fotos para adjuntar evidencia a los informes de novedades.",
+          "cameraPermission": "SGIA usa la cámara para adjuntar evidencia a los informes de novedades."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

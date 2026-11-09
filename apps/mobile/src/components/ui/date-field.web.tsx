@@ -8,10 +8,18 @@ interface DateFieldProps {
   onChange: (value: string) => void;
   /** Fecha mínima en `AAAA-MM-DD`. */
   minimumDate?: string;
+  /** Fecha máxima en `AAAA-MM-DD`. */
+  maximumDate?: string;
 }
 
 /** En web el selector nativo de la librería no existe: se usa `<input type="date">`. */
-export function DateField({ accessibilityLabel, value, onChange, minimumDate }: DateFieldProps) {
+export function DateField({
+  accessibilityLabel,
+  value,
+  onChange,
+  minimumDate,
+  maximumDate,
+}: DateFieldProps) {
   const theme = useTheme();
 
   return (
@@ -20,6 +28,7 @@ export function DateField({ accessibilityLabel, value, onChange, minimumDate }: 
       aria-label={accessibilityLabel}
       value={value}
       min={minimumDate}
+      max={maximumDate}
       onChange={(event) => {
         // Al borrar el campo el navegador entrega '': se conserva la última fecha válida.
         if (event.target.value) onChange(event.target.value);
