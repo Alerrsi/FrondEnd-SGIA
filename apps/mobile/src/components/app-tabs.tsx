@@ -27,6 +27,11 @@ export default function AppTabs() {
           renderingMode="template"
         />
       </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="novedades">
+        <NativeTabs.Trigger.Label>Novedades</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="exclamationmark.triangle" md="report_problem" />
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }
