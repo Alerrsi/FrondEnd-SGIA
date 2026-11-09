@@ -32,14 +32,16 @@ Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con
 > **Móvil verificado el 2026-11-09 contra el código** (`apps/mobile/src/app/(app)/index.tsx` y `explore.tsx`), con typecheck y lint. Sin tests propios y sin probar en un dispositivo.
 
 - [x] **Pantalla de Nueva Solicitud de Préstamo:**
+  - [x] Pañol a solicitar (`storeroom_id`, lista desplegable con `GET /api/storerooms`). Se elige primero porque define las existencias y los laboratorios.
   - [x] Buscador de productos del catálogo disponibles para préstamo. _(Busca en el servidor con `search`; muestra 6 resultados e indica el total.)_
+  - [x] Existencias del pañol elegido en cada producto y en el carrito (`available_in_storeroom` de `GET /api/products?storeroom_id={id}`). Sin existencias no se puede agregar, y la cantidad no supera lo disponible.
   - [x] Selector interactivo de cantidad por ítem agregado al carrito de solicitud.
   - [x] Campos requeridos:
     - Carrera (`career_id`, lista desplegable vertical con `GET /api/careers`).
     - Asignatura.
-    - Sala, Taller o Laboratorio de destino.
+    - Laboratorio (`location_id`, lista desplegable con las salas y talleres del pañol, `GET /api/locations?storeroom_id={id}`). Al cambiar de pañol se vuelve a elegir.
     - Fecha requerida (campo de tipo fecha con selector nativo; hoy o futura, se envía como `AAAA-MM-DD`).
-    - Bloque horario de clase (lista desplegable vertical, ej. "Bloque 1-2: 08:30 - 10:00").
+    - Bloque horario de clase (lista desplegable vertical, ej. "Bloque 1-2: 08:30 - 10:00"); se envía como `start_time` y `end_time`.
   - [x] Validación antes de enviar: al menos 1 ítem y datos de aula completos.
 - [x] **Confirmación Visual:**
   - [x] Pantalla o modal de éxito "Solicitud enviada a Pañol" con número de solicitud generado.
