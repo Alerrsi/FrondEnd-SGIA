@@ -1,9 +1,11 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import type { EvidencePhoto } from '@/features/novedades/lib/evidence-photo';
+import { prepareEvidencePhoto } from '@/features/novedades/lib/evidence-photo-io';
 import { useTheme } from '@/hooks/use-theme';
 
 interface PhotoFieldProps {
@@ -11,25 +13,30 @@ interface PhotoFieldProps {
   onChange: (photo: EvidencePhoto | null) => void;
 }
 
+// La compresión final la hace `prepareEvidencePhoto`: aquí se evita comprimir dos veces.
 const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
   mediaTypes: ['images'],
-  quality: 0.7,
+  quality: 1,
 };
-
-function toPhoto(asset: ImagePicker.ImagePickerAsset): EvidencePhoto {
-  const type = asset.mimeType ?? 'image/jpeg';
-  return {
-    uri: asset.uri,
-    name: asset.fileName ?? `evidencia.${type.split('/')[1] ?? 'jpg'}`,
-    type,
-    size: asset.fileSize,
-    file: asset.file,
-  };
-}
 
 /** Foto de evidencia opcional, tomada con la cámara o elegida de la galería. */
 export function PhotoField({ value, onChange }: PhotoFieldProps) {
   const theme = useTheme();
+  const [preparing, setPreparing] = useState(false);
+
+  const handleResult = async (result: ImagePicker.ImagePickerResult) => {
+    const asset = result.canceled ? undefined : result.assets[0];
+    if (!asset) return;
+
+    setPreparing(true);
+    try {
+      onChange(await prepareEvidencePhoto(asset));
+    } catch {
+      Alert.alert('No se pudo usar la foto', 'Inténtalo de nuevo o elige otra imagen.');
+    } finally {
+      setPreparing(false);
+    }
+  };
 
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -37,13 +44,11 @@ export function PhotoField({ value, onChange }: PhotoFieldProps) {
       Alert.alert('Sin acceso a la cámara', 'Permite el acceso en los ajustes o elige una foto.');
       return;
     }
-    const result = await ImagePicker.launchCameraAsync(PICKER_OPTIONS);
-    if (!result.canceled && result.assets[0]) onChange(toPhoto(result.assets[0]));
+    await handleResult(await ImagePicker.launchCameraAsync(PICKER_OPTIONS));
   };
 
   const pickPhoto = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
-    if (!result.canceled && result.assets[0]) onChange(toPhoto(result.assets[0]));
+    await handleResult(await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS));
   };
 
   const buttonStyle = [styles.button, { borderColor: theme.backgroundSelected }];
@@ -51,15 +56,27 @@ export function PhotoField({ value, onChange }: PhotoFieldProps) {
   return (
     <View style={styles.container}>
       <View style={styles.actions}>
-        <Pressable onPress={() => void takePhoto()} accessibilityRole="button" style={buttonStyle}>
+        <Pressable
+          onPress={() => void takePhoto()}
+          disabled={preparing}
+          accessibilityRole="button"
+          style={buttonStyle}
+        >
           <ThemedText type="small">Tomar foto</ThemedText>
         </Pressable>
-        <Pressable onPress={() => void pickPhoto()} accessibilityRole="button" style={buttonStyle}>
+        <Pressable
+          onPress={() => void pickPhoto()}
+          disabled={preparing}
+          accessibilityRole="button"
+          style={buttonStyle}
+        >
           <ThemedText type="small">Elegir de la galería</ThemedText>
         </Pressable>
       </View>
 
-      {value && (
+      {preparing && <ActivityIndicator accessibilityLabel="Preparando la foto" />}
+
+      {value && !preparing && (
         <View style={styles.preview}>
           <Image
             source={{ uri: value.uri }}

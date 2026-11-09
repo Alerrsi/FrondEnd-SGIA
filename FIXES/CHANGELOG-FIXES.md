@@ -517,3 +517,16 @@
   3. **Dependencias móviles:** `expo-image-picker`, `react-native-svg`, `react-native-view-shot`, `zod` y `@hookform/resolvers`.
 - **Pendiente:** escanear el código del equipo, y ver el PDF, la firma y la foto desde el móvil.
 - **Verificación:** `pnpm typecheck`, lint, 395 tests web, `expo-doctor` (20/20) y `expo export` para Android, iOS y web. Móvil sin tests propios ni prueba en un dispositivo.
+
+---
+
+## FIX-029: Enviar la foto del informe de novedades desde el móvil
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/mobile` (Novedades), `packages/types`, `packages/api-client`
+- **Causa:** el `fetch` de Expo no admite partes `{ uri, name, type }` en `FormData` y lanza `Unsupported FormDataPart implementation`. Como no era una respuesta de la API, la app mostraba "No se pudo conectar con el servidor".
+- **Cambios:**
+  1. **Envío:** la foto va como `File` de `expo-file-system`, y `CreateIncidentReportPayload` deja de aceptar `{ uri, name, type }`.
+  2. **Tamaño:** se reduce a un máximo de 1600 px en JPEG con `expo-image-manipulator`. Sin esto, una foto de cámara superaría el `upload_max_filesize` de 2 MB del PHP de desarrollo.
+  3. **Diagnóstico:** en desarrollo, `requestErrorMessage` registra el error real cuando no viene de la API.
+- **Verificación:** `pnpm typecheck`, lint, tests web y `expo export`. El envío real debe confirmarse en un dispositivo.

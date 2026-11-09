@@ -152,8 +152,8 @@ export interface CreateIncidentReportPayload {
   suggestion?: string;
   /** PNG en base64, con o sin prefijo `data:image/png;base64,`. Menos de 512 KB. */
   signature: string;
-  /** Archivo jpg/png/webp (máx. 10 MB). En móvil: `{ uri, name, type }`. */
-  evidence_photo?: File | Blob | { uri: string; name: string; type: string } | null;
+  /** Archivo jpg/png/webp (máx. 10 MB). En móvil, un `File` de `expo-file-system`. */
+  evidence_photo?: File | Blob | null;
   /** Código de unidad (equipos/maquetas) o código de barras de un insumo. */
   equipment_code?: string;
 }

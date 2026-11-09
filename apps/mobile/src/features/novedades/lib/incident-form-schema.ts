@@ -10,6 +10,7 @@ import {
   PHOTO_MIME_TYPES,
   type EvidencePhoto,
 } from '@/features/novedades/lib/evidence-photo';
+import { toUploadFile } from '@/features/novedades/lib/evidence-photo-io';
 import { todayIso } from '@/lib/dates';
 
 export const PROBLEM_TYPES = Object.keys(INCIDENT_PROBLEM_LABELS) as IncidentProblemType[];
@@ -93,7 +94,7 @@ export function toIncidentPayload(values: IncidentFormValues): CreateIncidentRep
       .map((problem) => ({ type: problem.type, description: problem.description.trim() })),
     suggestion: values.suggestion.trim() || undefined,
     signature: values.signature,
-    evidence_photo: photo ? (photo.file ?? { uri: photo.uri, name: photo.name, type: photo.type }) : undefined,
+    evidence_photo: photo ? toUploadFile(photo) : undefined,
     equipment_code: values.equipment_code.trim() || undefined,
   };
 }

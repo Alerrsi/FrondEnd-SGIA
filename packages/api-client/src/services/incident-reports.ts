@@ -103,7 +103,7 @@ export async function createIncidentReport(
     if (rest.suggestion) form.append('suggestion', rest.suggestion);
     form.append('signature', rest.signature);
     if (rest.equipment_code) form.append('equipment_code', rest.equipment_code);
-    // En React Native el "archivo" es `{ uri, name, type }`; FormData lo acepta tal cual.
+    // En móvil es un `File` de `expo-file-system`: el `fetch` de Expo rechaza `{ uri, name, type }`.
     form.append('evidence_photo', photo as Blob);
     res = await post<FormData, { data?: IncidentReport }>('/incident-reports', form);
   } else {

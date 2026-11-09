@@ -1,4 +1,4 @@
-/** Foto elegida en el formulario. En web, `file` es lo que se envía en el `FormData`. */
+/** Foto elegida en el formulario. `file` solo existe en web. */
 export interface EvidencePhoto {
   uri: string;
   name: string;
