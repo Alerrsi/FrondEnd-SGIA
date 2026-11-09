@@ -479,3 +479,16 @@
 - **Fecha:** 2026-11-09
 - **Módulo:** documentación (`ENDPOINTS.md`, `front-end.md`); el cambio está en el backend
 - **Cambios:** la API opera en `America/Santiago`, y las fecha-hora pueden llegar con `-03:00`/`-04:00` o con `Z`. El cliente no requiere cambios: las interpreta con `new Date()` o usa solo la parte de la fecha.
+
+---
+
+## FIX-026: Actualización de `apps/mobile` a Expo SDK 58
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/mobile`, `apps/web/package.json`, `package.json`
+- **Motivo:** Expo Go ya no permite abrir el proyecto con SDK 57.
+- **Cambios:**
+  1. **Dependencias:** Expo 58, React Native 0.88 y React 19.3, alineadas con `expo install --fix`. `@expo/dom-webview` y `@react-native/metro-config` se declaran explícitamente porque quedaban en versiones anteriores.
+  2. **Una sola versión de React:** `pnpm.overrides` en la raíz y la web en 19.3. `packages/api-client` usa la copia de React de cada app, y dos versiones distintas rompen los hooks al ejecutar.
+  3. **Tipos de React Native 0.88:** `useColorScheme` ya no devuelve `unspecified` y puede devolver `null`; los manejadores de `Pressable` y `TextInput` no aceptan directamente el `handleSubmit` de React Hook Form.
+- **Verificación:** `expo-doctor` (20/20), `pnpm typecheck`, `pnpm lint`, 392 tests web, build de la web y `expo export` para Android, iOS y web. Pendiente de probar en Expo Go en un dispositivo.

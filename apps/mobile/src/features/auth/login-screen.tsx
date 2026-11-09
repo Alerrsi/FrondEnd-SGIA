@@ -112,7 +112,7 @@ export function LoginScreen() {
                   autoCapitalize="none"
                   autoComplete="current-password"
                   textContentType="password"
-                  onSubmitEditing={onSubmit}
+                  onSubmitEditing={() => void onSubmit()}
                   placeholderTextColor="#888"
                 />
               )}
@@ -137,7 +137,7 @@ export function LoginScreen() {
           )}
 
           <Pressable
-            onPress={onSubmit}
+            onPress={() => void onSubmit()}
             disabled={isSubmitting}
             accessibilityRole="button"
             style={[styles.button, { backgroundColor: theme.text }, isSubmitting && { opacity: 0.6 }]}>
