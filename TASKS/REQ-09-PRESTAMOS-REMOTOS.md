@@ -35,11 +35,11 @@ Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con
   - [x] Buscador de productos del catálogo disponibles para préstamo. _(Busca en el servidor con `search`; muestra 6 resultados e indica el total.)_
   - [x] Selector interactivo de cantidad por ítem agregado al carrito de solicitud.
   - [x] Campos requeridos:
-    - Carrera (`career_id`, selector con `GET /api/careers`).
+    - Carrera (`career_id`, lista desplegable vertical con `GET /api/careers`).
     - Asignatura.
     - Sala, Taller o Laboratorio de destino.
-    - Fecha requerida (Selector de fecha y campo nativo).
-    - Bloque horario de clase (ej. "Bloque 1-2: 08:30 - 10:00").
+    - Fecha requerida (campo de tipo fecha con selector nativo; hoy o futura, se envía como `AAAA-MM-DD`).
+    - Bloque horario de clase (lista desplegable vertical, ej. "Bloque 1-2: 08:30 - 10:00").
   - [x] Validación antes de enviar: al menos 1 ítem y datos de aula completos.
 - [x] **Confirmación Visual:**
   - [x] Pantalla o modal de éxito "Solicitud enviada a Pañol" con número de solicitud generado.

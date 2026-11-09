@@ -21,6 +21,8 @@ import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { DateField } from '@/components/ui/date-field';
+import { SelectField } from '@/components/ui/select-field';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useTheme } from '@/hooks/use-theme';
@@ -35,6 +37,8 @@ const TIME_BLOCKS = [
   'Vespertino 1: 18:30 - 20:00',
   'Vespertino 2: 20:15 - 21:45',
 ];
+
+const TIME_BLOCK_OPTIONS = TIME_BLOCKS.map((block) => ({ value: block, label: block }));
 
 const CATALOG_PAGE_SIZE = 6;
 
@@ -330,29 +334,13 @@ export default function NuevaSolicitudScreen() {
                 No se pudieron cargar las carreras. Vuelve a abrir la pantalla para reintentar.
               </ThemedText>
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.blockScroll}>
-                {careers.map((career) => {
-                  const isSelected = careerId === career.id;
-                  return (
-                    <Pressable
-                      key={career.id}
-                      onPress={() => setCareerId(career.id)}
-                      style={[
-                        styles.blockChip,
-                        isSelected && styles.blockChipSelected,
-                        { borderColor: theme.backgroundElement },
-                      ]}
-                    >
-                      <ThemedText
-                        type="code"
-                        style={[styles.blockChipText, isSelected && styles.blockChipTextSelected]}
-                      >
-                        {career.name}
-                      </ThemedText>
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
+              <SelectField
+                accessibilityLabel="Carrera"
+                placeholder="Selecciona la carrera"
+                options={careers.map((career) => ({ value: career.id, label: career.name }))}
+                value={careerId}
+                onChange={setCareerId}
+              />
             )}
           </View>
 
@@ -393,48 +381,23 @@ export default function NuevaSolicitudScreen() {
           </View>
 
           <View style={styles.formGroup}>
-            <ThemedText type="small">Fecha Requerida (AAAA-MM-DD) *</ThemedText>
-            <TextInput
+            <ThemedText type="small">Fecha Requerida *</ThemedText>
+            <DateField
+              accessibilityLabel="Fecha requerida"
               value={loanDate}
-              onChangeText={setLoanDate}
-              placeholder="AAAA-MM-DD"
-              placeholderTextColor="#888"
-              style={[
-                styles.input,
-                {
-                  color: theme.text,
-                  borderColor: theme.backgroundElement,
-                  backgroundColor: theme.background,
-                },
-              ]}
+              onChange={setLoanDate}
+              minimumDate={todayIso()}
             />
           </View>
 
           <View style={styles.formGroup}>
             <ThemedText type="small">Bloque Horario *</ThemedText>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.blockScroll}>
-              {TIME_BLOCKS.map((block) => {
-                const isSelected = timeBlock === block;
-                return (
-                  <Pressable
-                    key={block}
-                    onPress={() => setTimeBlock(block)}
-                    style={[
-                      styles.blockChip,
-                      isSelected && styles.blockChipSelected,
-                      { borderColor: theme.backgroundElement },
-                    ]}
-                  >
-                    <ThemedText
-                      type="code"
-                      style={[styles.blockChipText, isSelected && styles.blockChipTextSelected]}
-                    >
-                      {block}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <SelectField
+              accessibilityLabel="Bloque horario"
+              options={TIME_BLOCK_OPTIONS}
+              value={timeBlock}
+              onChange={setTimeBlock}
+            />
           </View>
         </ThemedView>
 
@@ -615,29 +578,6 @@ const styles = StyleSheet.create({
   },
   formGroup: {
     gap: 4,
-  },
-  blockScroll: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 4,
-  },
-  blockChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    borderWidth: 1,
-    marginRight: 8,
-  },
-  blockChipSelected: {
-    backgroundColor: '#d9232a',
-    borderColor: '#d9232a',
-  },
-  blockChipText: {
-    fontSize: 11,
-  },
-  blockChipTextSelected: {
-    color: '#ffffff',
-    fontWeight: '700',
   },
   submitButton: {
     backgroundColor: '#d9232a',
