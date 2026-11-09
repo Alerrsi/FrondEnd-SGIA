@@ -471,3 +471,11 @@
   3. **Errores:** se muestra el mensaje de validación del backend. Los fallos `5xx` y de conexión tienen su propio mensaje.
   4. **`apiErrorToMessage`:** pasa a `api-client`; la web la reexporta desde `lib/api-error.ts`.
 - **Verificación:** `pnpm typecheck`, `pnpm lint`, 392 tests web, `expo export --platform web` y `LoanRemoteRequestTest` en el backend. Móvil sin tests propios ni prueba en un dispositivo.
+
+---
+
+## FIX-025: El backend pasa a la hora de Chile
+
+- **Fecha:** 2026-11-09
+- **Módulo:** documentación (`ENDPOINTS.md`, `front-end.md`); el cambio está en el backend
+- **Cambios:** la API opera en `America/Santiago`, y las fecha-hora pueden llegar con `-03:00`/`-04:00` o con `Z`. El cliente no requiere cambios: las interpreta con `new Date()` o usa solo la parte de la fecha.
