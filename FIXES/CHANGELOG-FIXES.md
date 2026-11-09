@@ -458,3 +458,16 @@
 - **Módulo:** `apps/web` (`features/profesor/components/catalog-panel.tsx`)
 - **Cambios:** se quitó un `eslint-disable` de `react-hooks/exhaustive-deps`, regla que la web no tiene configurada y que ESLint trataba como error.
 - **Verificación:** `pnpm lint` pasa en todo el monorepo.
+
+---
+
+## FIX-024: Solicitud móvil: fecha, catálogo y mensajes de error (REQ-09)
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/mobile`, `packages/api-client`, `apps/web/src/lib/api-error.ts` — [REQ-09](../TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
+- **Cambios:**
+  1. **Fecha:** se propone el día local en vez del día UTC. Requiere el cambio del backend `809511b`, que valida `loan_date` con el día de Chile; sin él, la fecha de hoy recibe `422` por la noche. Eso también corrige la web del profesor.
+  2. **Catálogo:** la búsqueda usa `search` en el servidor, con espera de 300 ms entre teclas. Ya no se limita a los primeros 50 productos, y también avisa si no hay resultados o falla la carga.
+  3. **Errores:** se muestra el mensaje de validación del backend. Los fallos `5xx` y de conexión tienen su propio mensaje.
+  4. **`apiErrorToMessage`:** pasa a `api-client`; la web la reexporta desde `lib/api-error.ts`.
+- **Verificación:** `pnpm typecheck`, `pnpm lint`, 392 tests web, `expo export --platform web` y `LoanRemoteRequestTest` en el backend. Móvil sin tests propios ni prueba en un dispositivo.

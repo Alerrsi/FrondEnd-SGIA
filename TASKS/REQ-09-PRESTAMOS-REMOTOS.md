@@ -32,7 +32,7 @@ Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con
 > **Móvil verificado el 2026-11-09 contra el código** (`apps/mobile/src/app/(app)/index.tsx` y `explore.tsx`), con typecheck y lint. Sin tests propios y sin probar en un dispositivo.
 
 - [x] **Pantalla de Nueva Solicitud de Préstamo:**
-  - [x] Buscador de productos del catálogo disponibles para préstamo. _(Limitación: filtra en el cliente sobre los primeros 50 productos.)_
+  - [x] Buscador de productos del catálogo disponibles para préstamo. _(Busca en el servidor con `search`; muestra 6 resultados e indica el total.)_
   - [x] Selector interactivo de cantidad por ítem agregado al carrito de solicitud.
   - [x] Campos requeridos:
     - Carrera (`career_id`, selector con `GET /api/careers`).
