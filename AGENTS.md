@@ -47,7 +47,7 @@ FrondEnd-SGIA/
 |-----|-----|------------------------|
 | **AD-01** (Administrador) | web | Gestión integral de usuarios (alta, edición, activar/desactivar), auditoría. |
 | **DIR-01** (Director/Coordinador) | web | Alta vía escaneo de facturas (OCR), cotizaciones a proveedores, fichas técnicas y dashboards analíticos. |
-| **PAN-01** (Pañolero) | web | Control de inventario, stock crítico, ubicaciones físicas, cola de préstamos remotos, registro presencial e historial. |
+| **PAN-01** (Pañolero) | web | Control de inventario, stock crítico, ubicaciones físicas, cola de préstamos remotos, registro presencial, historial y creación y atención de informes de novedades. |
 | **PRO-01** (Profesor) | web y mobile | Solicitudes de préstamo remoto, seguimiento de estados e informe de novedades/fallas. |
 
 ## 4. Requisitos y especificaciones funcionales

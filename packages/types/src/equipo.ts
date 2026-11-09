@@ -83,7 +83,7 @@ export type IncidentStatus =
   | 'reparado'
   | 'dado_de_baja';
 
-/** Casillas del formulario de novedades del docente. */
+/** Casillas del formulario de novedades. */
 export type IncidentProblemType = 'falla_equipo' | 'falta_equipamiento' | 'falta_insumo' | 'otros';
 
 export const INCIDENT_PROBLEM_LABELS: Record<IncidentProblemType, string> = {
