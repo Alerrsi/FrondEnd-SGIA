@@ -109,6 +109,15 @@ Estos puntos dependen de lo que muestre la Fase 0. Se completan después.
 
 ---
 
+## Fase 7 — Revisión de solicitudes remotas en el pañol (noviembre 2026)
+
+- [x] **Revisar antes de aprobar:** la cola abre una revisión con las unidades propuestas y su ubicación, y el pañol puede cambiarlas escaneando la cantidad solicitada (`REQ-10`, `FIX-017`, `FIX-019`).
+- [x] **Corregir `normalizePrestamo`:** conserva `id` y `units` de cada ítem, `cajon` como texto, y las operaciones leen la clave `loan` de la respuesta.
+- [x] **Préstamos por pañol:** el historial ya no ofrece el filtro de pañol a `PAN-01`, porque el backend le limita los préstamos a su pañol.
+- [ ] **Corregir fallos previos de `apps/mobile`:** `pnpm typecheck` falla porque `(app)/index.tsx` no envía `career_id`, y `pnpm lint` porque no resuelve `expo-secure-store`. No vienen de este cambio.
+
+---
+
 ## Notas para quien ejecute este documento
 
 - Trabajar en ramas separadas por fase (`rework/fase-1-claude-config`, etc.).

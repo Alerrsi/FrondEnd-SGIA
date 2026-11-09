@@ -17,7 +17,8 @@ Optimizar el flujo de mesón del pañol. Permitir el despacho de solicitudes rem
 | Método | Endpoint | Roles | Descripción | Estado API |
 |---|---|---|---|:---:|
 | `GET` | `/api/loans/pending` | `PAN-01`, `AD-01` | Solicitudes remotas pendientes por despachar con stock disponible y ubicación física. | 🟢 Implementado en cliente |
-| `POST` | `/api/loans/{id}/approve` | `PAN-01` | Aprueba solicitud remota, reserva stock y notifica al docente. | 🟢 Implementado en cliente |
+| `GET` | `/api/loans/{id}/review` | `PAN-01`, `AD-01` | Revisión de una solicitud pendiente: unidades propuestas y disponibles, con su ubicación. No reserva nada. | 🟢 Implementado en cliente |
+| `POST` | `/api/loans/{id}/approve` | `PAN-01` | Aprueba solicitud remota, reserva stock y notifica al docente. Acepta `items: [{ item_id, unit_ids }]` con las unidades elegidas. | 🟢 Implementado en cliente |
 | `POST` | `/api/loans/{id}/reject` | `PAN-01` | Rechaza solicitud indicando motivo obligatorio (`rejection_reason`). | 🟢 Implementado en cliente |
 | `POST` | `/api/loans/checkout` | `PAN-01` | Préstamo presencial directo (credencial docente + códigos de barra de ítems). | 🟢 Implementado en cliente |
 | `POST` | `/api/loans/checkin` | `PAN-01` | Devolución de préstamo mediante escaneo de ítems. Reintegra stock o marca en reparación. | 🟢 Implementado en cliente |
@@ -32,8 +33,17 @@ Optimizar el flujo de mesón del pañol. Permitir el despacho de solicitudes rem
   - [x] Desglose de cada ítem solicitado mostrando:
     - Cantidad requerida vs stock actual en pañol.
     - Ubicación física exacta (Sala, Estante, Cajón) para preparación ágil.
+- [x] **Revisión de la Solicitud** (contrato en `docs/revision-solicitud-prestamo.md` del backend):
+  - [x] Botón "Revisar" en la tarjeta, que despliega los detalles del préstamo (`GET /api/loans/{id}/review`).
+  - [x] Unidades propuestas automáticamente por el sistema entre las disponibles del pañol.
+  - [x] Cada unidad muestra código, número de serie, sala y cajón, ordenada por sala y cajón; los insumos muestran la ubicación del producto.
+  - [x] Botón opcional "Cambiar elementos" por producto: se escanea (pistola o teclado) exactamente la cantidad solicitada, con avance, y los elementos se reemplazan al completarla; error en línea si el código no está disponible o se repite; "Cancelar" conserva la selección.
+  - [x] Marca de unidades cambiadas y "Restablecer propuesta".
+  - [x] Con faltante de stock se indica qué falta y solo se puede rechazar.
 - [x] **Aprobación de Solicitud:**
-  - [x] Botón "Preparar / Aprobar" que llama a `POST /api/loans/{id}/approve`.
+  - [x] Botón "Aprobar" en la revisión, que envía a `POST /api/loans/{id}/approve` todas las unidades visibles.
+  - [x] Ante un `422` se muestra el mensaje, se vuelve a pedir la revisión y se avisa que la propuesta pudo cambiar.
+- [x] **Acceso por pañol:** `PAN-01` solo revisa y opera solicitudes de su pañol, y solo registra préstamos presenciales ahí; el backend responde `403` si son de otro (`LoanStoreroomAccessTest` en el backend).
   - [x] Descuento atómico del stock disponible.
 - [x] **Rechazo con Motivo Obligatorio:**
   - [x] Diálogo modal accesible exigiendo texto en `rejection_reason` (ej. "Sin stock de multímetros", "Docente con préstamo atrasado").
@@ -58,5 +68,7 @@ Optimizar el flujo de mesón del pañol. Permitir el despacho de solicitudes rem
 
 ## 🧪 Pruebas Requeridas
 
+- [x] Unit test: selección de unidades (`loan-review-selection.test.ts`) y cliente API de la revisión (`loan-review-api.test.ts`).
+- [x] Component test: revisión en la cola, cambio por código, restablecer, faltante y reintento tras `422` (`cola-prestamos-page.test.tsx`).
 - [x] Unit test: hooks `useAprobarPrestamo`, `useRechazarPrestamo` y validación de `rejection_reason`.
 - [x] Component test: captura secuencial de código de barras desde input de teclado con pistola, checkout y devolución.

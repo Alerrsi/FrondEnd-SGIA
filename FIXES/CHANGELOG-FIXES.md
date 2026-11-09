@@ -380,3 +380,38 @@
   3. **Formulario del profesor:** vencimiento opcional (`due_date`, no anterior a la fecha de la actividad; vacío = mismo día) y los `422` del backend se muestran junto a cada campo (`items.{i}.quantity` con el stock del pañol, `location_id`, etc.).
   4. Selectores compartidos `StoreroomSelect` y `LaboratorySelect`; los formateadores de préstamo (`loanSchedule`, `loanLaboratory`, `loanStoreroom`, `loanTeacher`, `loanCareer`) pasan a `features/prestamos/lib/loan-display.ts`.
 - **Verificación:** `pnpm typecheck` (5/5) y `pnpm --filter @sgia/web test` (337 tests) sin errores; lint limpio en los archivos tocados. No probado aún contra la API real.
+
+---
+
+## FIX-017: Revisión de solicitudes remotas y elección de unidades en el pañol (REQ-10)
+
+- **Fecha:** 2026-11-08
+- **Módulo:** `packages/types`, `packages/api-client`, `apps/web` (`features/prestamos`) — [REQ-10](TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
+- **Cambios:**
+  1. **Revisión (`GET /loans/{id}/review`):** la tarjeta de la cola cambia «Aprobar / Preparar» por «Revisar». El diálogo muestra los detalles de la solicitud y las unidades propuestas por el sistema, con código, número de serie, sala y cajón, ordenadas por sala y cajón. `LoanReviewDialog`, `LoanReviewUnitRow`, `useLoanReview` y `fetchLoanReview`.
+  2. **Elección por código:** «Cambiar» acepta un código escrito o escaneado, que se busca en `available_units`. Un código no disponible o ya elegido muestra un error en línea y no cambia la selección. Las unidades cambiadas se marcan y se puede restablecer la propuesta. La lógica está en `lib/loan-review-selection.ts`.
+  3. **Aprobación (`POST /loans/{id}/approve` con `items`):** se envían todas las unidades visibles. Con faltante, «Aprobar» queda deshabilitado. Ante un `422` se vuelve a pedir la revisión y se avisa que la propuesta pudo cambiar.
+  4. **Corrección de `normalizePrestamo`:** antes se descartaban `id` y `units` de cada ítem, y `cajon` podía llegar como objeto y mostrarse como `[object Object]`. `approve`, `reject`, `checkout`, `deliver` y `checkin` leen ahora `loan` o `data`; antes normalizaban el envoltorio de la respuesta.
+  5. **Tarjeta de la cola:** ya no inventa `Pañol` o `G-0` cuando falta la sala o el cajón.
+- **Verificación:** `pnpm --filter @sgia/web test` (374 tests), typecheck de `apps/web`, `api-client` y `types`, y ESLint de `apps/web` sin errores. `pnpm typecheck` y `pnpm lint` fallan solo por errores previos de `apps/mobile`, que no se tocó.
+
+---
+
+## FIX-018: Préstamos limitados al pañol de `PAN-01` (REQ-10, REQ-11)
+
+- **Fecha:** 2026-11-08
+- **Módulo:** `apps/web` (`features/prestamos`) — [REQ-11](TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md)
+- **Cambios:**
+  1. **Backend:** `PAN-01` solo ve y opera los préstamos de su pañol, y solo registra presenciales ahí; `403` si son de otro. `active_loan` de una unidad viene `null` si el préstamo es de otro pañol. `DIR-01` y `AD-01` no se limitan.
+  2. **Historial:** `PAN-01` ya no ve el filtro de pañol, y el filtro de laboratorio usa su pañol.
+
+---
+
+## FIX-019: Botón «Cambiar elementos» con escaneo en la revisión (REQ-10)
+
+- **Fecha:** 2026-11-08
+- **Módulo:** `apps/web` (`features/prestamos`) — [REQ-10](TASKS/REQ-10-OPERACION-PRESTAMOS-PANOL.md)
+- **Cambios:**
+  1. **Botón por producto:** «Cambiar elementos» reemplaza la acción «Cambiar» de cada fila. Es opcional: sin usarlo se aprueba la propuesta del sistema.
+  2. **Escaneo:** `LoanReviewScanPanel` pide exactamente la cantidad solicitada, muestra el avance, avisa con sonido y mantiene el foco para el siguiente código. Los elementos se reemplazan al completar la cantidad.
+  3. **Selección:** `scanUnit` reemplaza a `replaceUnitByCode`. Una unidad de la propuesta se puede escanear para conservarla.

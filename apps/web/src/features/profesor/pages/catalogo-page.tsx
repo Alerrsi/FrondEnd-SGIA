@@ -1,6 +1,6 @@
-import { PackageSearch } from 'lucide-react';
+import { PackageSearch } from "lucide-react";
 
-import { LoanRequestForm } from '@/features/profesor/components/loan-request-form';
+import { LoanRequestForm } from "@/features/profesor/components/loan-request-form";
 
 export default function CatalogoPage() {
   return (
@@ -11,7 +11,8 @@ export default function CatalogoPage() {
           Catálogo y nueva solicitud
         </h1>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Pide insumos y equipos al pañol para una actividad. El pañol los prepara antes del inicio.
+          Pide insumos y equipos al pañol para una actividad. El pañol los
+          prepara antes del inicio.
         </p>
       </div>
       <LoanRequestForm />

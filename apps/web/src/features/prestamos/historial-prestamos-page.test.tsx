@@ -189,6 +189,12 @@ vi.mock('@sgia/api-client', () => ({
   }),
 }));
 
+const mockAuth = vi.hoisted(() => ({ rol: 'AD-01' }));
+
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useAuth: () => ({ user: { id: 1, nombre: 'Usuario', rol: mockAuth.rol, storeroom_id: 1 } }),
+}));
+
 vi.mock('@/lib/toast', () => ({
   toast: {
     success: vi.fn(),
@@ -200,6 +206,20 @@ vi.mock('@/lib/toast', () => ({
 describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialPrestamosPage)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockAuth.rol = 'AD-01';
+  });
+
+  it('el pañolero no elige pañol: el backend limita el historial al suyo', () => {
+    mockAuth.rol = 'PAN-01';
+
+    render(
+      <MemoryRouter>
+        <HistorialPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByLabelText('Filtro de pañol')).toBeNull();
+    expect(screen.getByLabelText('Filtro de laboratorio')).toBeDefined();
   });
 
   it('renderiza tabla histórica con métricas y distinción visual de atrasados', () => {

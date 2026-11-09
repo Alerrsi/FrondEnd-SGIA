@@ -45,6 +45,62 @@ export interface LoanItemUnit {
   status: string;
   returned_at?: string | null;
   return_condition?: 'bueno' | 'regular' | 'danado' | 'extraviado' | null;
+  /** Cajón donde está guardada la unidad. */
+  cajon?: LoanPlaceCajon | null;
+  /** Sala o taller del cajón. */
+  location?: LoanPlaceLocation | null;
+}
+
+export interface LoanPlaceCajon {
+  id: number;
+  codigo: string;
+  descripcion?: string | null;
+}
+
+export interface LoanPlaceLocation {
+  id: number;
+  nombre: string;
+  tipo?: string | null;
+  storeroom_id?: number | null;
+}
+
+/** Unidad propuesta o disponible en la revisión de una solicitud remota. */
+export interface LoanReviewUnit {
+  id: number;
+  code: string;
+  serial_number?: string | null;
+  status: string;
+  cajon?: LoanPlaceCajon | null;
+  location?: LoanPlaceLocation | null;
+}
+
+export interface LoanReviewItem {
+  item_id: number;
+  product_id: number | null;
+  name: string;
+  quantity: number;
+  /** `true` en equipos y maquetas; los insumos no eligen unidades. */
+  has_units: boolean;
+  available_quantity: number;
+  /** Lo que falta para cubrir la cantidad: `max(0, quantity - available_quantity)`. */
+  shortage: number;
+  /** Ubicación del producto: solo insumos. */
+  location?: LoanPlaceLocation | null;
+  cajon?: LoanPlaceCajon | null;
+  /** Las unidades que tomaría la asignación automática. */
+  suggested_units: LoanReviewUnit[];
+  /** Todas las unidades disponibles del pañol, incluidas las propuestas. */
+  available_units: LoanReviewUnit[];
+}
+
+/** Respuesta de `GET /api/loans/{id}/review`. */
+export interface LoanReview {
+  loan_id: number;
+  code: string;
+  status: string;
+  storeroom?: { id: number; name: string } | null;
+  can_approve: boolean;
+  items: LoanReviewItem[];
 }
 
 export interface PrestamoEvento {
@@ -183,6 +239,8 @@ export interface AprobarPrestamoPayload {
   fechaDevolucion?: string;
   notes?: string;
   observaciones?: string;
+  /** Unidades elegidas por ítem; los ítems no incluidos se asignan automáticamente. */
+  items?: Array<{ item_id: number; unit_ids: number[] }>;
 }
 
 export interface RechazarPrestamoPayload {

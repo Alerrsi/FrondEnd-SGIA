@@ -28,6 +28,7 @@ import { CareerSelect } from '@/components/shared/career-select';
 import { LaboratorySelect } from '@/components/shared/laboratory-select';
 import { StoreroomSelect } from '@/components/shared/storeroom-select';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/features/auth/context/auth-context';
 import {
   Sheet,
   SheetContent,
@@ -57,6 +58,9 @@ export default function HistorialPrestamosPage() {
   const [estadoFilter, setEstadoFilter] = useState<string>('todos');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const { user } = useAuth();
+  // PAN-01 solo ve los préstamos de su pañol (lo aplica el backend): no elige pañol.
+  const isWarehouse = user?.rol === 'PAN-01';
   const [careerFilter, setCareerFilter] = useState<number | undefined>(undefined);
   const [storeroomFilter, setStoreroomFilter] = useState<number | undefined>(undefined);
   const [locationFilter, setLocationFilter] = useState<number | undefined>(undefined);
@@ -459,19 +463,21 @@ export default function HistorialPrestamosPage() {
             />
 
             {/* Filtros de pañol y laboratorio (el laboratorio depende del pañol elegido) */}
-            <StoreroomSelect
-              value={storeroomFilter}
-              onChange={(id) => {
-                setStoreroomFilter(id);
-                setLocationFilter(undefined);
-                setPage(1);
-              }}
-              aria-label="Filtro de pañol"
-              className={cn(controlClasses, 'px-2.5')}
-            />
+            {!isWarehouse && (
+              <StoreroomSelect
+                value={storeroomFilter}
+                onChange={(id) => {
+                  setStoreroomFilter(id);
+                  setLocationFilter(undefined);
+                  setPage(1);
+                }}
+                aria-label="Filtro de pañol"
+                className={cn(controlClasses, 'px-2.5')}
+              />
+            )}
             <LaboratorySelect
               value={locationFilter}
-              storeroomId={storeroomFilter}
+              storeroomId={isWarehouse ? Number(user?.storeroom_id) || undefined : storeroomFilter}
               onChange={(id) => {
                 setLocationFilter(id);
                 setPage(1);

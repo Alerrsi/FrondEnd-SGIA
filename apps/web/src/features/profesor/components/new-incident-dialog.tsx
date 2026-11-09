@@ -1,28 +1,32 @@
-import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useCreateIncidentReport, useEquipmentUnitByCode, useLocations } from '@sgia/api-client';
-import { INCIDENT_PROBLEM_LABELS } from '@sgia/types';
-import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useCreateIncidentReport,
+  useEquipmentUnitByCode,
+  useLocations,
+} from "@sgia/api-client";
+import { INCIDENT_PROBLEM_LABELS } from "@sgia/types";
+import { Loader2 } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
-import { SignaturePad } from '@/features/profesor/components/signature-pad';
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogCloseButton } from "@/components/ui/dialog";
+import { SignaturePad } from "@/features/profesor/components/signature-pad";
 import {
   incidentFormSchema,
   initialIncidentValues,
   toIncidentPayload,
   todayIso,
   type IncidentFormValues,
-} from '@/features/profesor/lib/incident-form-schema';
-import { apiErrorToMessage } from '@/lib/api-error';
-import { toast } from '@/lib/toast';
+} from "@/features/profesor/lib/incident-form-schema";
+import { apiErrorToMessage } from "@/lib/api-error";
+import { toast } from "@/lib/toast";
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  "w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700";
 const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+  "text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono";
+const errorClasses = "mt-1 text-[11px] text-rose-600 dark:text-rose-400";
 
 interface NewIncidentDialogProps {
   open: boolean;
@@ -31,7 +35,11 @@ interface NewIncidentDialogProps {
 }
 
 /** Informe de novedades del docente (réplica del formulario en papel). */
-export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialogProps) {
+export function NewIncidentDialog({
+  open,
+  onClose,
+  onCreated,
+}: NewIncidentDialogProps) {
   const create = useCreateIncidentReport();
   const locations = useLocations({ per_page: 100 }).data?.data ?? [];
   const {
@@ -54,7 +62,7 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
     }
   }, [open, reset]);
 
-  const problems = watch('problems');
+  const problems = watch("problems");
   // Vista previa del equipo al salir del campo; si es un insumo (404) se envía igual.
   const [lookupCode, setLookupCode] = useState<string | undefined>();
   const unit = useEquipmentUnitByCode(lookupCode);
@@ -62,7 +70,7 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
   const onSubmit = handleSubmit(async (values) => {
     try {
       const report = await create.mutateAsync(toIncidentPayload(values));
-      toast.success('Informe enviado al pañol.');
+      toast.success("Informe enviado al pañol.");
       onCreated(report.code);
       onClose();
     } catch (error) {
@@ -89,12 +97,14 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             </label>
             <input
               id="inc-subject"
-              {...register('subject')}
+              {...register("subject")}
               aria-invalid={Boolean(errors.subject) || undefined}
               disabled={pending}
               className={`${inputClasses} mt-1.5`}
             />
-            {errors.subject && <p className={errorClasses}>{errors.subject.message}</p>}
+            {errors.subject && (
+              <p className={errorClasses}>{errors.subject.message}</p>
+            )}
           </div>
           <div>
             <label htmlFor="inc-date" className={labelClasses}>
@@ -104,12 +114,14 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
               id="inc-date"
               type="date"
               max={todayIso()}
-              {...register('report_date')}
+              {...register("report_date")}
               aria-invalid={Boolean(errors.report_date) || undefined}
               disabled={pending}
               className={`${inputClasses} mt-1.5`}
             />
-            {errors.report_date && <p className={errorClasses}>{errors.report_date.message}</p>}
+            {errors.report_date && (
+              <p className={errorClasses}>{errors.report_date.message}</p>
+            )}
           </div>
         </div>
 
@@ -120,8 +132,9 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             </label>
             <select
               id="inc-location"
-              {...register('location_id', {
-                setValueAs: (v) => (v === '' || v == null ? Number.NaN : Number(v)),
+              {...register("location_id", {
+                setValueAs: (v) =>
+                  v === "" || v == null ? Number.NaN : Number(v),
               })}
               aria-invalid={Boolean(errors.location_id) || undefined}
               disabled={pending}
@@ -134,7 +147,9 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
                 </option>
               ))}
             </select>
-            {errors.location_id && <p className={errorClasses}>{errors.location_id.message}</p>}
+            {errors.location_id && (
+              <p className={errorClasses}>{errors.location_id.message}</p>
+            )}
           </div>
           <div>
             <label htmlFor="inc-code" className={labelClasses}>
@@ -142,8 +157,9 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             </label>
             <input
               id="inc-code"
-              {...register('equipment_code', {
-                onBlur: (e) => setLookupCode(e.target.value.trim() || undefined),
+              {...register("equipment_code", {
+                onBlur: (e) =>
+                  setLookupCode(e.target.value.trim() || undefined),
               })}
               disabled={pending}
               placeholder="PRO-ISD-000001"
@@ -151,7 +167,8 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             />
             {lookupCode && unit.data && (
               <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
-                {unit.data.product?.name ?? 'Equipo'} · <span className="font-mono">{unit.data.code}</span>
+                {unit.data.product?.name ?? "Equipo"} ·{" "}
+                <span className="font-mono">{unit.data.code}</span>
               </p>
             )}
             {lookupCode && unit.isError && (
@@ -186,13 +203,15 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
                       rows={2}
                       className={`${inputClasses} h-auto py-1.5 font-sans`}
                     />
-                    {rowError && <p className={errorClasses}>{rowError.message}</p>}
+                    {rowError && (
+                      <p className={errorClasses}>{rowError.message}</p>
+                    )}
                   </>
                 )}
               </div>
             );
           })}
-          {typeof errors.problems?.message === 'string' && (
+          {typeof errors.problems?.message === "string" && (
             <p className={errorClasses}>{errors.problems.message}</p>
           )}
           {errors.problems?.root?.message && (
@@ -206,7 +225,7 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
           </label>
           <textarea
             id="inc-suggestion"
-            {...register('suggestion')}
+            {...register("suggestion")}
             disabled={pending}
             rows={2}
             className={`${inputClasses} mt-1.5 h-auto py-1.5 font-sans`}
@@ -223,7 +242,9 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
             accept="image/jpeg,image/png,image/webp"
             disabled={pending}
             onChange={(e) =>
-              setValue('evidence_photo', e.target.files?.[0] ?? null, { shouldValidate: true })
+              setValue("evidence_photo", e.target.files?.[0] ?? null, {
+                shouldValidate: true,
+              })
             }
             className="mt-1.5 block w-full text-xs text-zinc-600 dark:text-zinc-300"
           />
@@ -246,7 +267,9 @@ export function NewIncidentDialog({ open, onClose, onCreated }: NewIncidentDialo
               )}
             />
           </div>
-          {errors.signature && <p className={errorClasses}>{errors.signature.message}</p>}
+          {errors.signature && (
+            <p className={errorClasses}>{errors.signature.message}</p>
+          )}
         </div>
 
         <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">

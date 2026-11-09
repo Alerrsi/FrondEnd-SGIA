@@ -149,3 +149,14 @@ Con `docente@sgia.cl` en `localhost:8000` y Chromium: login con el acceso rápid
 5. Novedades, con firma y foto.
 6. Atajo de login de desarrollo.
 7. Documentación y verificación.
+
+---
+
+## ✅ Disponibilidad por pañol en la solicitud (contrato: `BackEnd-SGIA/docs/disponibilidad-por-panol.md`)
+
+- [x] El catálogo pide `GET /api/products?storeroom_id=` con el pañol elegido y muestra `available_in_storeroom` como existencias y máximo de la cantidad.
+- [x] Producto con `0` en el pañol: botón deshabilitado y aviso "Sin existencias en este pañol".
+- [x] Sin pañol elegido no se ofrecen cantidades ("Elige un pañol para ver sus existencias").
+- [x] Al cambiar de pañol se actualizan las existencias de lo ya agregado y se avisa qué ya no alcanza (la validación de cantidad marca el error).
+- [x] Se mantiene el manejo del `422` de la solicitud (el dato no reserva unidades).
+- [ ] Limitación: solo se revalidan los productos presentes en la página del catálogo cargada (30); los demás quedan al `422` del backend.

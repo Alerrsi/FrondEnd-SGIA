@@ -37,6 +37,7 @@ Proveer una vista histórica completa y auditable de todos los préstamos cursad
   - [x] Filtro por Asignatura o Carrera.
   - [x] Selector por Sala o Taller de uso.
   - [x] Selector de rango de fechas y filtro rápido unificado.
+  - [x] `PAN-01` no ve el filtro de pañol: el backend le limita el historial y la exportación a su pañol (`historial-prestamos-page.test.tsx`).
 
 ### 2. Detalle y Bitácora de Préstamo
 - [x] **Drawer / Sheet de Detalle (`/prestamos/historial`):**

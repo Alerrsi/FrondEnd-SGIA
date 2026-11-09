@@ -22,6 +22,7 @@ import {
   deliverLoan,
   exportLoans,
   fetchLoan,
+  fetchLoanReview,
   fetchLoans,
   fetchMyLoanRequests,
   fetchPendingLoans,
@@ -34,6 +35,7 @@ export const loanKeys = {
   pending: (params?: PendingLoanParams) => ['loans', 'pending', params] as const,
   myRequests: (params?: LoanRequestQueryParams) => ['loans', 'my-requests', params] as const,
   detail: (id: number) => ['loans', 'detail', id] as const,
+  review: (id: number) => ['loans', 'review', id] as const,
 };
 
 export function useLoans(params?: PrestamoParams) {
@@ -65,6 +67,23 @@ export function useLoan(id: number | undefined) {
   });
 }
 
+/**
+ * Revisión de una solicitud pendiente. Siempre se pide de nuevo al abrirla, porque otra operación
+ * pudo tomar las unidades, y no se refresca sola para no cambiarle la propuesta al pañol.
+ */
+export function useLoanReview(id: number | undefined) {
+  return useQuery({
+    queryKey: loanKeys.review(id!),
+    queryFn: () => fetchLoanReview(id!),
+    enabled: id !== undefined,
+    staleTime: 0,
+    gcTime: 0,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
+
 export function useCreatePrestamo() {
   const queryClient = useQueryClient();
   return useMutation<Prestamo, Error, CreatePrestamoPayload | RemoteLoanRequestPayload>({
@@ -92,7 +111,11 @@ export function useAprobarPrestamo() {
   return useMutation<Prestamo, Error, { id: number; payload?: AprobarPrestamoPayload }>({
     mutationFn: ({ id, payload }) => approveLoan(id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: loanKeys.all });
+      // La revisión solo existe para préstamos pendientes: pedirla de nuevo respondería 422.
+      queryClient.invalidateQueries({
+        queryKey: loanKeys.all,
+        predicate: (query) => query.queryKey[1] !== 'review',
+      });
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
   });

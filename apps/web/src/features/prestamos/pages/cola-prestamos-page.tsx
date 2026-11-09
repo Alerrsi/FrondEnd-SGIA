@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAprobarPrestamo, usePendingLoans, useRechazarPrestamo } from '@sgia/api-client';
+import { usePendingLoans, useRechazarPrestamo } from '@sgia/api-client';
 import type { Prestamo } from '@sgia/types';
 import {
   AlertTriangle,
-  ArrowRight,
   Ban,
+  ClipboardCheck,
   Calendar,
   Clock,
   FlaskConical,
@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { useAuth } from '@/features/auth/context/auth-context';
+import { LoanReviewDialog } from '@/features/prestamos/components/loan-review-dialog';
 import { formatDateOnly } from '@/features/compras/lib/format';
 import {
   loanCareer,
@@ -47,6 +48,7 @@ export default function ColaPrestamosPage() {
   const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(null);
   const [rejectionReason, setRejectionReason] = useState('');
   const [reasonError, setReasonError] = useState<string | null>(null);
+  const [reviewLoan, setReviewLoan] = useState<Prestamo | null>(null);
 
   // TanStack Query hooks
   const {
@@ -55,7 +57,6 @@ export default function ColaPrestamosPage() {
     refetch,
   } = usePendingLoans(isAdmin && storeroomFilter ? { storeroom_id: storeroomFilter } : undefined);
 
-  const aprobarMutation = useAprobarPrestamo();
   const rechazarMutation = useRechazarPrestamo();
 
   const rawLoans: Prestamo[] = pendingLoansResponse?.data ?? [];
@@ -348,8 +349,7 @@ export default function ColaPrestamosPage() {
                           it.nombre || it.productoNombre || `Insumo #${it.productoId}`;
                         const sala = it.sala;
                         const cajon = it.cajon;
-                        const ubicacionStr =
-                          sala || cajon ? `${sala || 'Pañol'} · ${cajon || 'G-0'}` : null;
+                        const ubicacionStr = [sala, cajon].filter(Boolean).join(' · ') || null;
 
                         return (
                           <div
@@ -402,12 +402,12 @@ export default function ColaPrestamosPage() {
                     type="button"
                     variant="primary"
                     size="sm"
-                    onClick={() => aprobarMutation.mutateAsync({ id: loan.id })}
-                    disabled={aprobarMutation.isPending}
+                    onClick={() => setReviewLoan(loan)}
+                    aria-label={`Revisar solicitud ${loan.codigo ?? loan.id}`}
                     className="text-xs bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 h-8 gap-1"
                   >
-                    <span>Aprobar / Preparar</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
+                    <ClipboardCheck className="h-3.5 w-3.5" />
+                    <span>Revisar</span>
                   </Button>
                 </div>
               </Card>
@@ -415,6 +415,16 @@ export default function ColaPrestamosPage() {
           })}
         </div>
       )}
+
+      <LoanReviewDialog
+        key={reviewLoan?.id ?? 'sin-revision'}
+        loan={reviewLoan}
+        onClose={() => setReviewLoan(null)}
+        onReject={(loan) => {
+          setReviewLoan(null);
+          openRejectModal(loan);
+        }}
+      />
 
       {/* Modal Accesible de Rechazo con Motivo Obligatorio */}
       <Dialog

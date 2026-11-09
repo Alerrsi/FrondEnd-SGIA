@@ -1,7 +1,7 @@
-import { useCallback, useRef, type PointerEvent } from 'react';
-import { Eraser } from 'lucide-react';
+import { useCallback, useRef, type PointerEvent } from "react";
+import { Eraser } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 interface SignaturePadProps {
   /** PNG en base64 (`data:image/png;base64,…`) o `''` cuando el lienzo está vacío. */
@@ -19,11 +19,11 @@ export function SignaturePad({ onChange, invalid }: SignaturePadProps) {
   const dirty = useRef(false);
 
   const context = useCallback(() => {
-    const ctx = canvasRef.current?.getContext('2d') ?? null;
+    const ctx = canvasRef.current?.getContext("2d") ?? null;
     if (ctx) {
       ctx.lineWidth = 2;
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = '#18181b';
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#18181b";
     }
     return ctx;
   }, []);
@@ -60,15 +60,15 @@ export function SignaturePad({ onChange, invalid }: SignaturePadProps) {
     if (!drawing.current) return;
     drawing.current = false;
     if (dirty.current && canvasRef.current) {
-      onChange(canvasRef.current.toDataURL('image/png'));
+      onChange(canvasRef.current.toDataURL("image/png"));
     }
   };
 
   const clear = () => {
     const canvas = canvasRef.current;
-    canvas?.getContext('2d')?.clearRect(0, 0, WIDTH, HEIGHT);
+    canvas?.getContext("2d")?.clearRect(0, 0, WIDTH, HEIGHT);
     dirty.current = false;
-    onChange('');
+    onChange("");
   };
 
   return (
@@ -85,7 +85,12 @@ export function SignaturePad({ onChange, invalid }: SignaturePadProps) {
         onPointerLeave={end}
         className="h-32 w-full touch-none rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 bg-white aria-invalid:border-rose-400"
       />
-      <Button type="button" variant="ghost" className="self-start text-xs" onClick={clear}>
+      <Button
+        type="button"
+        variant="ghost"
+        className="self-start text-xs"
+        onClick={clear}
+      >
         <Eraser className="h-3.5 w-3.5" />
         Borrar firma
       </Button>

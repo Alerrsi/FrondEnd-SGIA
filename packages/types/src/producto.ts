@@ -5,7 +5,7 @@ export interface Ubicacion {
   descripcion?: string | null;
 }
 
-export type LocationTipo = 'sala' | 'panol' | 'taller' | 'bodega';
+export type LocationTipo = "sala" | "panol" | "taller" | "bodega";
 
 export interface LocationEntity {
   id: number;
@@ -104,6 +104,8 @@ export interface Producto {
   modelo?: string | null;
   stock: number;
   quantity?: number;
+  /** Disponible en el pañol pedido con `storeroom_id`; ausente si no se pidió. */
+  available_in_storeroom?: number;
   stockCritico: number;
   stock_minimo?: number;
   ubicacion: Ubicacion;
@@ -115,10 +117,10 @@ export interface Producto {
   supplier?: { id?: number; name?: string } | null;
   area?: string | null;
   photo_url?: string | null;
-  type?: 'equipo' | 'insumo' | 'maqueta';
+  type?: "equipo" | "insumo" | "maqueta";
   category_id?: number | null;
   career_id?: number | null;
-  maintenance_priority?: 'A' | 'B' | 'C' | null;
+  maintenance_priority?: "A" | "B" | "C" | null;
   requires_calibration?: boolean;
   maintenance_frequency_months?: number | null;
   reference_price?: number | null;
@@ -133,10 +135,10 @@ export interface Producto {
 }
 
 export interface CreateProductoPayload {
-  type?: 'equipo' | 'insumo' | 'maqueta';
+  type?: "equipo" | "insumo" | "maqueta";
   category_id?: number;
   career_id?: number;
-  maintenance_priority?: 'A' | 'B' | 'C';
+  maintenance_priority?: "A" | "B" | "C";
   requires_calibration?: boolean;
   maintenance_frequency_months?: number;
   reference_price?: number;
@@ -173,10 +175,10 @@ export interface CreateProductoPayload {
 }
 
 export interface UpdateProductoPayload {
-  type?: 'equipo' | 'insumo' | 'maqueta';
+  type?: "equipo" | "insumo" | "maqueta";
   category_id?: number;
   career_id?: number;
-  maintenance_priority?: 'A' | 'B' | 'C';
+  maintenance_priority?: "A" | "B" | "C";
   requires_calibration?: boolean;
   maintenance_frequency_months?: number;
   reference_price?: number;
@@ -247,6 +249,8 @@ export interface ProductoParams {
   carrera?: string;
   categoria_id?: number;
   panol_id?: number;
+  /** Suma `available_in_storeroom` a cada producto (existencias del pañol elegido). */
+  storeroom_id?: number;
   area?: string;
   is_active?: boolean;
   supplier_id?: number;
@@ -256,7 +260,7 @@ export interface ProductoParams {
   ubicacionId?: number;
   sala?: string;
   cajon?: string;
-  type?: 'equipo' | 'insumo' | 'maqueta';
+  type?: "equipo" | "insumo" | "maqueta";
   critical_only?: boolean;
   soloStockCritico?: boolean;
   page?: number;
@@ -274,9 +278,9 @@ export interface ProductLocationPayload {
 }
 
 export interface ProductConditionPayload {
-  action: 'send_to_repair' | 'repaired' | 'write_off';
+  action: "send_to_repair" | "repaired" | "write_off";
   quantity: number;
-  source?: 'stock' | 'repair';
+  source?: "stock" | "repair";
 }
 
 export interface ProductBarcodeResponse {
@@ -294,7 +298,7 @@ export interface CriticalStockAlert {
   product_name?: string;
   stock?: number;
   stock_minimo?: number;
-  alert_type: 'warning' | 'critical';
+  alert_type: "warning" | "critical";
   is_resolved: boolean;
   resolved_at?: string | null;
   resolved_by?: number | null;
@@ -303,7 +307,7 @@ export interface CriticalStockAlert {
 }
 
 export interface CriticalStockAlertQueryParams {
-  alert_type?: 'warning' | 'critical';
+  alert_type?: "warning" | "critical";
   is_resolved?: boolean;
   per_page?: number;
   page?: number;

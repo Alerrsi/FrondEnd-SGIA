@@ -97,6 +97,7 @@ export {
 export {
   fetchLoans,
   fetchLoan,
+  fetchLoanReview,
   fetchPendingLoans,
   createLoanRequest,
   createPrestamo,
@@ -118,6 +119,7 @@ export {
   usePendingLoans,
   useMyLoanRequests,
   useLoan,
+  useLoanReview,
   useCreatePrestamo,
   useCreateLoanRequest,
   useCancelLoanRequest,

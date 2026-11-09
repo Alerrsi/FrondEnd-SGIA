@@ -12,36 +12,36 @@ import type {
   ProductoParams,
   Ubicacion,
   UpdateProductoPayload,
-} from '@sgia/types';
-import { del, get, patch, post } from '../http';
+} from "@sgia/types";
+import { del, get, patch, post } from "../http";
 
 export function normalizeUbicacion(rawLoc: any, rawCajon?: any): Ubicacion {
   if (!rawLoc && !rawCajon) {
-    return { id: 0, sala: '', cajon: '', descripcion: null };
+    return { id: 0, sala: "", cajon: "", descripcion: null };
   }
   const loc = rawLoc?.location ?? rawLoc;
   const cajonObj = rawCajon ?? rawLoc?.cajon;
 
-  const sala = typeof loc === 'string' ? loc : (loc?.sala ?? loc?.nombre ?? '');
+  const sala = typeof loc === "string" ? loc : (loc?.sala ?? loc?.nombre ?? "");
 
   const cajon =
-    typeof cajonObj === 'string'
+    typeof cajonObj === "string"
       ? cajonObj
-      : (cajonObj?.codigo ?? cajonObj?.nombre ?? rawLoc?.cajon_nombre ?? '');
+      : (cajonObj?.codigo ?? cajonObj?.nombre ?? rawLoc?.cajon_nombre ?? "");
 
   const descripcion =
-    typeof loc?.descripcion === 'string'
+    typeof loc?.descripcion === "string"
       ? loc.descripcion
-      : typeof loc?.description === 'string'
+      : typeof loc?.description === "string"
         ? loc.description
-        : typeof cajonObj?.descripcion === 'string'
+        : typeof cajonObj?.descripcion === "string"
           ? cajonObj.descripcion
           : null;
 
   return {
-    id: loc?.id ?? (typeof rawLoc?.id === 'number' ? rawLoc.id : 0),
-    sala: typeof sala === 'string' ? sala : '',
-    cajon: typeof cajon === 'string' ? cajon : '',
+    id: loc?.id ?? (typeof rawLoc?.id === "number" ? rawLoc.id : 0),
+    sala: typeof sala === "string" ? sala : "",
+    cajon: typeof cajon === "string" ? cajon : "",
     descripcion,
   };
 }
@@ -50,9 +50,15 @@ export function normalizeProducto(raw: any): Producto {
   if (raw === null) return null as unknown as Producto;
   if (raw === undefined) return undefined as unknown as Producto;
 
-  const stock = Number(raw.stock ?? raw.quantity ?? raw.stock_actual ?? raw.cantidad ?? 0);
+  const stock = Number(
+    raw.stock ?? raw.quantity ?? raw.stock_actual ?? raw.cantidad ?? 0,
+  );
   const stockCritico = Number(
-    raw.stockCritico ?? raw.stock_minimo ?? raw.stockMinimo ?? raw.min_stock ?? 0,
+    raw.stockCritico ??
+      raw.stock_minimo ??
+      raw.stockMinimo ??
+      raw.min_stock ??
+      0,
   );
   const ubicacion = normalizeUbicacion(
     raw.ubicacion ?? raw.location,
@@ -61,56 +67,60 @@ export function normalizeProducto(raw: any): Producto {
 
   const rawCat = raw.categoria ?? raw.category;
   const categoria =
-    typeof rawCat === 'string'
+    typeof rawCat === "string"
       ? rawCat
-      : typeof rawCat?.nombre === 'string'
+      : typeof rawCat?.nombre === "string"
         ? rawCat.nombre
-        : typeof rawCat?.name === 'string'
+        : typeof rawCat?.name === "string"
           ? rawCat.name
-          : 'General';
+          : "General";
 
   const rawArea = raw.area ?? raw.carrera;
   const area =
-    typeof rawArea === 'string'
+    typeof rawArea === "string"
       ? rawArea
-      : typeof rawArea?.nombre === 'string'
+      : typeof rawArea?.nombre === "string"
         ? rawArea.nombre
-        : typeof rawArea?.codigo === 'string'
+        : typeof rawArea?.codigo === "string"
           ? rawArea.codigo
           : null;
 
   const rawMarca = raw.marca ?? raw.brand;
   const marca =
-    typeof rawMarca === 'string'
+    typeof rawMarca === "string"
       ? rawMarca
-      : typeof rawMarca?.nombre === 'string'
+      : typeof rawMarca?.nombre === "string"
         ? rawMarca.nombre
         : null;
 
   const rawModelo = raw.modelo ?? raw.model;
   const modelo =
-    typeof rawModelo === 'string'
+    typeof rawModelo === "string"
       ? rawModelo
-      : typeof rawModelo?.nombre === 'string'
+      : typeof rawModelo?.nombre === "string"
         ? rawModelo.nombre
         : null;
 
   const nombre =
-    typeof raw.nombre === 'string' ? raw.nombre : typeof raw.name === 'string' ? raw.name : '';
+    typeof raw.nombre === "string"
+      ? raw.nombre
+      : typeof raw.name === "string"
+        ? raw.name
+        : "";
 
   const codigoBarras =
-    typeof raw.codigoBarras === 'string'
+    typeof raw.codigoBarras === "string"
       ? raw.codigoBarras
-      : typeof raw.barcode === 'string'
+      : typeof raw.barcode === "string"
         ? raw.barcode
-        : typeof raw.sku === 'string'
+        : typeof raw.sku === "string"
           ? raw.sku
-          : '';
+          : "";
 
   const description =
-    typeof raw.description === 'string'
+    typeof raw.description === "string"
       ? raw.description
-      : typeof raw.descripcion === 'string'
+      : typeof raw.descripcion === "string"
         ? raw.descripcion
         : null;
 
@@ -126,6 +136,10 @@ export function normalizeProducto(raw: any): Producto {
     modelo,
     stock: Number.isFinite(stock) ? stock : 0,
     quantity: Number.isFinite(stock) ? stock : 0,
+    ...(raw.available_in_storeroom != null &&
+    Number.isFinite(Number(raw.available_in_storeroom))
+      ? { available_in_storeroom: Number(raw.available_in_storeroom) }
+      : {}),
     stockCritico: Number.isFinite(stockCritico) ? stockCritico : 5,
     stock_minimo: Number.isFinite(stockCritico) ? stockCritico : 5,
     ubicacion,
@@ -155,26 +169,31 @@ export function normalizeProducto(raw: any): Producto {
   };
 }
 
-export async function fetchProducts(params?: ProductoParams): Promise<PaginatedResponse<Producto>> {
+export async function fetchProducts(
+  params?: ProductoParams,
+): Promise<PaginatedResponse<Producto>> {
   const query = new URLSearchParams();
-  if (params?.search) query.set('search', params.search);
-  if (params?.query) query.set('search', params.query);
-  if (params?.area) query.set('area', params.area);
-  if (params?.type) query.set('type', params.type);
-  if (params?.is_active !== undefined) query.set('is_active', String(params.is_active));
-  if (params?.supplier_id) query.set('supplier_id', String(params.supplier_id));
-  if (params?.location_id) query.set('location_id', String(params.location_id));
-  if (params?.ubicacionId) query.set('location_id', String(params.ubicacionId));
-  if (params?.sala) query.set('sala', params.sala);
-  if (params?.cajon) query.set('cajon', params.cajon);
-  if (params?.critical_only) query.set('critical_only', '1');
-  if (params?.soloStockCritico) query.set('critical_only', '1');
-  if (params?.page) query.set('page', String(params.page));
-  if (params?.per_page) query.set('per_page', String(params.per_page));
-  if (params?.perPage) query.set('per_page', String(params.perPage));
+  if (params?.search) query.set("search", params.search);
+  if (params?.query) query.set("search", params.query);
+  if (params?.area) query.set("area", params.area);
+  if (params?.storeroom_id)
+    query.set("storeroom_id", String(params.storeroom_id));
+  if (params?.type) query.set("type", params.type);
+  if (params?.is_active !== undefined)
+    query.set("is_active", String(params.is_active));
+  if (params?.supplier_id) query.set("supplier_id", String(params.supplier_id));
+  if (params?.location_id) query.set("location_id", String(params.location_id));
+  if (params?.ubicacionId) query.set("location_id", String(params.ubicacionId));
+  if (params?.sala) query.set("sala", params.sala);
+  if (params?.cajon) query.set("cajon", params.cajon);
+  if (params?.critical_only) query.set("critical_only", "1");
+  if (params?.soloStockCritico) query.set("critical_only", "1");
+  if (params?.page) query.set("page", String(params.page));
+  if (params?.per_page) query.set("per_page", String(params.per_page));
+  if (params?.perPage) query.set("per_page", String(params.perPage));
 
   const qs = query.toString();
-  const res = await get<any>(`/products${qs ? `?${qs}` : ''}`);
+  const res = await get<any>(`/products${qs ? `?${qs}` : ""}`);
 
   const rawList = Array.isArray(res)
     ? res
@@ -186,12 +205,17 @@ export async function fetchProducts(params?: ProductoParams): Promise<PaginatedR
 
   const data = rawList
     .map(normalizeProducto)
-    .filter((p: any): p is Producto => Boolean(p && typeof p === 'object'));
+    .filter((p: any): p is Producto => Boolean(p && typeof p === "object"));
 
   const meta = res?.meta ?? {
-    currentPage: res?.current_page ?? res?.meta?.current_page ?? params?.page ?? 1,
+    currentPage:
+      res?.current_page ?? res?.meta?.current_page ?? params?.page ?? 1,
     lastPage: res?.last_page ?? res?.meta?.last_page ?? 1,
-    perPage: res?.per_page ?? res?.meta?.per_page ?? params?.perPage ?? (data.length || 10),
+    perPage:
+      res?.per_page ??
+      res?.meta?.per_page ??
+      params?.perPage ??
+      (data.length || 10),
     total: res?.total ?? res?.meta?.total ?? data.length,
   };
 
@@ -203,8 +227,10 @@ export async function fetchProduct(id: number): Promise<Producto> {
   return normalizeProducto(res?.data ?? res);
 }
 
-export async function createProducto(payload: CreateProductoPayload): Promise<Producto> {
-  const res = await post<CreateProductoPayload, any>('/products', payload);
+export async function createProducto(
+  payload: CreateProductoPayload,
+): Promise<Producto> {
+  const res = await post<CreateProductoPayload, any>("/products", payload);
   return normalizeProducto(res?.data ?? res);
 }
 
@@ -212,7 +238,10 @@ export async function updateProducto(
   id: number,
   payload: UpdateProductoPayload,
 ): Promise<Producto> {
-  const res = await patch<UpdateProductoPayload, any>(`/products/${id}`, payload);
+  const res = await patch<UpdateProductoPayload, any>(
+    `/products/${id}`,
+    payload,
+  );
   return normalizeProducto(res?.data ?? res);
 }
 
@@ -220,8 +249,14 @@ export async function deleteProducto(id: number): Promise<void> {
   return del<void>(`/products/${id}`);
 }
 
-export async function setProductoActivo(id: number, is_active: boolean): Promise<Producto> {
-  const res = await patch<{ is_active: boolean }, any>(`/products/${id}/status`, { is_active });
+export async function setProductoActivo(
+  id: number,
+  is_active: boolean,
+): Promise<Producto> {
+  const res = await patch<{ is_active: boolean }, any>(
+    `/products/${id}/status`,
+    { is_active },
+  );
   return normalizeProducto(res?.data ?? res);
 }
 
@@ -229,7 +264,10 @@ export async function updateProductCondition(
   id: number,
   payload: ProductConditionPayload,
 ): Promise<Producto> {
-  const res = await patch<ProductConditionPayload, any>(`/products/${id}/condition`, payload);
+  const res = await patch<ProductConditionPayload, any>(
+    `/products/${id}/condition`,
+    payload,
+  );
   return normalizeProducto(res?.data ?? res);
 }
 
@@ -243,50 +281,61 @@ export async function updateProductLocation(
   id: number,
   payload: ProductLocationPayload,
 ): Promise<Ubicacion> {
-  const res = await patch<ProductLocationPayload, any>(`/products/${id}/location`, payload);
+  const res = await patch<ProductLocationPayload, any>(
+    `/products/${id}/location`,
+    payload,
+  );
   const data = res?.data ?? res;
   return normalizeUbicacion(data?.location ?? data, data?.cajon);
 }
 
-export async function fetchProductBarcode(id: number): Promise<ProductBarcodeResponse> {
+export async function fetchProductBarcode(
+  id: number,
+): Promise<ProductBarcodeResponse> {
   const res = await get<any>(`/products/${id}/barcode`);
   const data = res?.data ?? res;
   return {
-    barcode: data?.barcode ?? '',
-    svg: data?.barcode_svg ?? data?.svg ?? '',
+    barcode: data?.barcode ?? "",
+    svg: data?.barcode_svg ?? data?.svg ?? "",
     data_uri: data?.barcode_image_uri ?? data?.data_uri,
     html: data?.barcode_html ?? data?.html,
   };
 }
 
-export async function extractFactura(fileOrPayload: File | any): Promise<InvoiceScanResponse> {
+export async function extractFactura(
+  fileOrPayload: File | any,
+): Promise<InvoiceScanResponse> {
   const formData = new FormData();
   if (fileOrPayload instanceof File) {
-    formData.append('invoice_file', fileOrPayload);
-    formData.append('factura', fileOrPayload);
+    formData.append("invoice_file", fileOrPayload);
+    formData.append("factura", fileOrPayload);
   } else if (fileOrPayload?.archivo instanceof File) {
-    formData.append('invoice_file', fileOrPayload.archivo);
-    formData.append('factura', fileOrPayload.archivo);
+    formData.append("invoice_file", fileOrPayload.archivo);
+    formData.append("factura", fileOrPayload.archivo);
   } else if (fileOrPayload?.factura instanceof File) {
-    formData.append('invoice_file', fileOrPayload.factura);
-    formData.append('factura', fileOrPayload.factura);
+    formData.append("invoice_file", fileOrPayload.factura);
+    formData.append("factura", fileOrPayload.factura);
   }
 
-  const res = await post<FormData, any>('/invoices/scan', formData);
+  const res = await post<FormData, any>("/invoices/scan", formData);
   const data = res?.data ?? res;
 
   const rawProducts =
-    data?.products ?? data?.draft_products ?? data?.productos ?? data?.items ?? [];
+    data?.products ??
+    data?.draft_products ??
+    data?.productos ??
+    data?.items ??
+    [];
 
   const items: BorradorProducto[] = rawProducts.map((p: any) => ({
-    nombre: p.nombre ?? p.name ?? '',
-    name: p.nombre ?? p.name ?? '',
-    codigoBarras: p.codigoBarras ?? p.barcode ?? '',
-    barcode: p.codigoBarras ?? p.barcode ?? '',
+    nombre: p.nombre ?? p.name ?? "",
+    name: p.nombre ?? p.name ?? "",
+    codigoBarras: p.codigoBarras ?? p.barcode ?? "",
+    barcode: p.codigoBarras ?? p.barcode ?? "",
     categoria:
-      typeof p.categoria === 'string'
+      typeof p.categoria === "string"
         ? p.categoria
-        : (p.categoria?.nombre ?? p.category ?? 'General'),
+        : (p.categoria?.nombre ?? p.category ?? "General"),
     marca: p.marca ?? p.brand ?? null,
     modelo: p.modelo ?? p.model ?? null,
     stock: Number(p.stock ?? p.quantity ?? p.cantidad ?? 1),
@@ -317,15 +366,20 @@ export async function fetchCriticalStockAlerts(
   params?: CriticalStockAlertQueryParams,
 ): Promise<PaginatedResponse<CriticalStockAlert>> {
   const query = new URLSearchParams();
-  if (params?.alert_type) query.set('alert_type', params.alert_type);
-  if (params?.is_resolved !== undefined) query.set('is_resolved', String(params.is_resolved));
-  if (params?.per_page) query.set('per_page', String(params.per_page));
-  if (params?.page) query.set('page', String(params.page));
+  if (params?.alert_type) query.set("alert_type", params.alert_type);
+  if (params?.is_resolved !== undefined)
+    query.set("is_resolved", String(params.is_resolved));
+  if (params?.per_page) query.set("per_page", String(params.per_page));
+  if (params?.page) query.set("page", String(params.page));
 
   const qs = query.toString();
-  return get<PaginatedResponse<CriticalStockAlert>>(`/alerts/critical-stock${qs ? `?${qs}` : ''}`);
+  return get<PaginatedResponse<CriticalStockAlert>>(
+    `/alerts/critical-stock${qs ? `?${qs}` : ""}`,
+  );
 }
 
-export async function resolveStockAlert(id: number): Promise<CriticalStockAlert> {
+export async function resolveStockAlert(
+  id: number,
+): Promise<CriticalStockAlert> {
   return patch<void, CriticalStockAlert>(`/alerts/${id}/resolve`);
 }

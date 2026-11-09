@@ -6,6 +6,7 @@ import type {
   LoanCheckoutPayload,
   LoanExportParams,
   LoanRequestQueryParams,
+  LoanReview,
   PendingLoanParams,
   PaginatedResponse,
   Prestamo,
@@ -18,6 +19,8 @@ import { del, get, post } from '../http';
 export function normalizePrestamo(raw: any): Prestamo {
   if (!raw) return raw;
   const items = (raw.items ?? []).map((it: any) => ({
+    id: it.id,
+    prestamoId: it.prestamoId ?? it.loan_id,
     productoId: it.productoId ?? it.product_id ?? it.product?.id ?? 0,
     product_id: it.product_id ?? it.productoId ?? it.product?.id ?? 0,
     cantidad: it.cantidad ?? it.quantity ?? 1,
@@ -25,9 +28,17 @@ export function normalizePrestamo(raw: any): Prestamo {
     nombre: it.nombre ?? it.product?.nombre ?? it.name ?? it.product?.name ?? 'Producto',
     codigoBarras:
       it.codigoBarras ?? it.barcode ?? it.product?.codigoBarras ?? it.product?.barcode ?? '',
-    stockActual: it.stockActual ?? it.current_stock ?? it.product?.stock ?? 0,
-    sala: it.sala ?? it.location?.sala ?? it.product?.ubicacion?.sala ?? '',
-    cajon: it.cajon ?? it.location?.cajon ?? it.product?.ubicacion?.cajon ?? '',
+    stockActual: it.stockActual ?? it.current_stock ?? it.available_stock ?? it.product?.stock ?? 0,
+    sala: it.sala ?? it.location?.sala ?? it.location?.nombre ?? it.product?.ubicacion?.sala ?? '',
+    // La API entrega `cajon` como objeto `{ id, codigo, descripcion }`.
+    cajon:
+      (typeof it.cajon === 'string' ? it.cajon : it.cajon?.codigo) ??
+      it.location?.cajon ??
+      it.product?.ubicacion?.cajon ??
+      '',
+    delivered_quantity: it.delivered_quantity,
+    returned_quantity: it.returned_quantity,
+    units: it.units,
   }));
 
   const eventos = (raw.eventos ?? raw.history ?? raw.events ?? []).map((ev: any, idx: number) => ({
@@ -116,6 +127,11 @@ export function normalizePrestamo(raw: any): Prestamo {
   };
 }
 
+/** Las operaciones responden `{ message, loan }`, `{ message, data }` o ambas claves. */
+function loanFromResponse(response: any): Prestamo {
+  return normalizePrestamo(response?.loan ?? response?.data ?? response);
+}
+
 function normalizePaginatedLoans(res: any): PaginatedResponse<Prestamo> {
   const rawList = Array.isArray(res) ? res : (res?.data ?? []);
   const data = rawList.map(normalizePrestamo);
@@ -189,6 +205,12 @@ export async function fetchPendingLoans(
   return normalizePaginatedLoans(response);
 }
 
+/** Propuesta de unidades y disponibilidad para revisar una solicitud pendiente. */
+export async function fetchLoanReview(id: number): Promise<LoanReview> {
+  const response = await get<{ data: LoanReview }>(`/loans/${id}/review`);
+  return response.data;
+}
+
 /**
  * Cliente nuevo (con `location_id`/`storeroom_id`/horas): el backend deriva `room` y `time_block`.
  * Cliente antiguo (móvil): texto libre `room` y `time_block`.
@@ -257,9 +279,10 @@ export async function approveLoan(id: number, payload?: AprobarPrestamoPayload):
   const body = {
     return_date: payload?.return_date ?? payload?.fechaDevolucion,
     notes: payload?.notes,
+    ...(payload?.items && payload.items.length > 0 ? { items: payload.items } : {}),
   };
   const response = await post<any, any>(`/loans/${id}/approve`, body);
-  return normalizePrestamo(response?.data ?? response);
+  return loanFromResponse(response);
 }
 
 export const approbarPrestamo = approveLoan;
@@ -271,7 +294,7 @@ export async function rejectLoan(id: number, payload: RechazarPrestamoPayload): 
     motivo: reason,
   };
   const response = await post<any, any>(`/loans/${id}/reject`, body);
-  return normalizePrestamo(response?.data ?? response);
+  return loanFromResponse(response);
 }
 
 export const rechazarPrestamo = rejectLoan;
@@ -324,17 +347,17 @@ export async function checkoutLoan(payload: LoanCheckoutPayload): Promise<Presta
     ...(payload.storeroom_id ? { storeroom_id: payload.storeroom_id } : {}),
   };
   const response = await post<typeof body, any>('/loans/checkout', body);
-  return normalizePrestamo(response?.data ?? response);
+  return loanFromResponse(response);
 }
 
 export async function deliverLoan(id: number, payload?: DeliverLoanPayload): Promise<Prestamo> {
   const response = await post<DeliverLoanPayload, any>(`/loans/${id}/deliver`, payload);
-  return normalizePrestamo(response?.data ?? response);
+  return loanFromResponse(response);
 }
 
 export async function checkinLoan(payload: LoanCheckinPayload): Promise<Prestamo> {
   const response = await post<LoanCheckinPayload, any>('/loans/checkin', payload);
-  return normalizePrestamo(response?.data ?? response);
+  return loanFromResponse(response);
 }
 
 export async function exportLoans(

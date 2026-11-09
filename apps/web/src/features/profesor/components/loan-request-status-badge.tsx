@@ -1,12 +1,12 @@
-import { Badge, LoanStatusBadge, type Tone } from '@/components/ui/badge';
+import { Badge, LoanStatusBadge, type Tone } from "@/components/ui/badge";
 
 const REQUEST_STATUS: Record<string, { label: string; tone: Tone }> = {
-  pendiente: { label: 'Pendiente', tone: 'warning' },
-  en_proceso: { label: 'En proceso', tone: 'loaned' },
-  procesado: { label: 'Procesada', tone: 'success' },
-  procesada: { label: 'Procesada', tone: 'success' },
-  rechazado: { label: 'Rechazada', tone: 'danger' },
-  rechazada: { label: 'Rechazada', tone: 'danger' },
+  pendiente: { label: "Pendiente", tone: "warning" },
+  en_proceso: { label: "En proceso", tone: "loaned" },
+  procesado: { label: "Procesada", tone: "success" },
+  procesada: { label: "Procesada", tone: "success" },
+  rechazado: { label: "Rechazada", tone: "danger" },
+  rechazada: { label: "Rechazada", tone: "danger" },
 };
 
 /** Estado de una solicitud remota; los estados de préstamo (preparado, entregado…) usan el badge común. */
