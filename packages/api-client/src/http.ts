@@ -52,6 +52,15 @@ export class ApiRequestError extends Error {
   }
 }
 
+/**
+ * Un 401 siempre termina la sesión. Un 403 solo si la cuenta fue desactivada y había un
+ * token en uso: sin token es el intento de login, donde el formulario muestra el mensaje.
+ */
+function endsSession(status: number, body: ApiError | null, token: string | null): boolean {
+  if (status === 401) return true;
+  return status === 403 && body?.code === 'account_inactive' && Boolean(token);
+}
+
 export async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -80,8 +89,8 @@ export async function request<T>(
       body = null;
     }
 
-    if (response.status === 401 && clientOptions.onUnauthorized) {
-      clientOptions.onUnauthorized();
+    if (endsSession(response.status, body, token)) {
+      clientOptions.onUnauthorized?.();
     }
 
     throw new ApiRequestError(response.status, body);
@@ -118,8 +127,8 @@ export async function getBlob(
       body = null;
     }
 
-    if (response.status === 401 && clientOptions.onUnauthorized) {
-      clientOptions.onUnauthorized();
+    if (endsSession(response.status, body, token)) {
+      clientOptions.onUnauthorized?.();
     }
 
     throw new ApiRequestError(response.status, body);
