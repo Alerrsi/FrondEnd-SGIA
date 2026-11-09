@@ -31,6 +31,8 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. App Móvil Docente (`apps/mobile`)
+> **Controles del formulario:** los campos con opciones usan lista desplegable vertical (`SelectField`) y las fechas, campo de tipo fecha (`DateField`), como en REQ-09.
+
 - [ ] **Formulario de Reporte de Novedad / Falla:**
   - [ ] Selector del producto o equipo afectado (con opción de escaneo de código de barras con la cámara o búsqueda manual).
   - [ ] Selector de severidad del incidente: `leve` (detalle estético o cable suelto), `media` (falla parcial), `critica` (equipo inoperativo).
