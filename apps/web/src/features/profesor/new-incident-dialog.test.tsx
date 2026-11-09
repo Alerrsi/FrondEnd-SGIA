@@ -16,7 +16,14 @@ vi.mock("@sgia/api-client", async (importOriginal) => ({
   useEquipmentUnitByCode: (code?: string) =>
     code ? unitResult : { data: undefined, isError: false },
   useLocations: () => ({
-    data: { data: [{ id: 3, nombre: "Laboratorio 3" }] },
+    data: {
+      data: [
+        { id: 3, nombre: "Laboratorio 3", tipo: "sala" },
+        { id: 4, nombre: "Taller 1", tipo: "taller" },
+        { id: 5, nombre: "Pañol Central", tipo: "panol" },
+        { id: 6, nombre: "Bodega Norte", tipo: "bodega" },
+      ],
+    },
   }),
 }));
 
@@ -47,12 +54,25 @@ describe("NewIncidentDialog", () => {
     expect(
       await screen.findByText("Indica la asignatura o actividad."),
     ).toBeDefined();
-    expect(screen.getByText("Selecciona el laboratorio.")).toBeDefined();
+    expect(screen.getByText("Selecciona el laboratorio o pañol.")).toBeDefined();
     expect(
       screen.getByText("Marca al menos un tipo de problema."),
     ).toBeDefined();
     expect(screen.getByText("Falta la firma.")).toBeDefined();
     expect(mutateAsync).not.toHaveBeenCalled();
+  });
+
+  it("ofrece salas, talleres y pañoles, pero no bodegas", () => {
+    render(<NewIncidentDialog open onClose={vi.fn()} onCreated={vi.fn()} />);
+
+    const options = screen
+      .getAllByRole("option")
+      .map((option) => option.textContent);
+
+    expect(options).toEqual(
+      expect.arrayContaining(["Laboratorio 3", "Taller 1", "Pañol Central"]),
+    );
+    expect(options).not.toContain("Bodega Norte");
   });
 
   it("exige describir el problema marcado", async () => {
@@ -74,7 +94,7 @@ describe("NewIncidentDialog", () => {
     render(<NewIncidentDialog open onClose={onClose} onCreated={onCreated} />);
 
     await user.type(screen.getByLabelText("Asignatura"), "Redes");
-    await user.selectOptions(screen.getByLabelText("Laboratorio"), "3");
+    await user.selectOptions(screen.getByLabelText("Laboratorio o pañol"), "3");
     await user.click(screen.getByLabelText(/falla de equipos/i));
     await user.type(
       screen.getByLabelText(/Descripción: Falla de equipos/i),

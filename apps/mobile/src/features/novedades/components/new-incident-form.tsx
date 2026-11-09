@@ -1,6 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateIncidentReport, useLocations } from '@sgia/api-client';
-import { INCIDENT_PROBLEM_LABELS, type IncidentProblemType } from '@sgia/types';
+import {
+  INCIDENT_LOCATION_TYPES,
+  INCIDENT_PROBLEM_LABELS,
+  type IncidentProblemType,
+} from '@sgia/types';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
@@ -152,13 +156,13 @@ export function NewIncidentForm({ onClose }: NewIncidentFormProps) {
           </View>
 
           <View style={styles.group}>
-            <ThemedText type="small">Laboratorio *</ThemedText>
+            <ThemedText type="small">Laboratorio o pañol *</ThemedText>
             {locations.isLoading ? (
               <ActivityIndicator style={styles.loader} />
             ) : locations.isError ? (
               <Pressable onPress={() => void locations.refetch()} accessibilityRole="button">
                 <ThemedText type="small" themeColor="textSecondary">
-                  No se pudieron cargar los laboratorios. Toca para reintentar.
+                  No se pudieron cargar las ubicaciones. Toca para reintentar.
                 </ThemedText>
               </Pressable>
             ) : (
@@ -167,12 +171,11 @@ export function NewIncidentForm({ onClose }: NewIncidentFormProps) {
                 name="location_id"
                 render={({ field }) => (
                   <SelectField
-                    accessibilityLabel="Laboratorio"
-                    placeholder="Selecciona el laboratorio"
-                    options={(locations.data?.data ?? []).map((location) => ({
-                      value: location.id,
-                      label: location.nombre,
-                    }))}
+                    accessibilityLabel="Laboratorio o pañol"
+                    placeholder="Selecciona el laboratorio o pañol"
+                    options={(locations.data?.data ?? [])
+                      .filter((location) => INCIDENT_LOCATION_TYPES.includes(location.tipo))
+                      .map((location) => ({ value: location.id, label: location.nombre }))}
                     value={Number.isNaN(field.value) ? null : field.value}
                     onChange={field.onChange}
                   />

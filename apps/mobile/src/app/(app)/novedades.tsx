@@ -53,7 +53,7 @@ export default function NovedadesScreen() {
           </View>
           <ThemedText style={styles.subject}>{item.subject ?? item.title ?? '—'}</ThemedText>
           <ThemedText style={styles.meta} themeColor="textSecondary">
-            {formatIsoDate(date.slice(0, 10))} · {item.location?.nombre ?? 'Sin laboratorio'} ·{' '}
+            {formatIsoDate(date.slice(0, 10))} · {item.location?.nombre ?? 'Sin ubicación'} ·{' '}
             {count === 1 ? '1 problema' : `${count} problemas`}
           </ThemedText>
         </ThemedView>

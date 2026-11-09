@@ -29,7 +29,7 @@ Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. App Móvil Docente (`apps/mobile`)
-> **Móvil verificado el 2026-11-09 contra el código** (`apps/mobile/src/app/(app)/index.tsx` y `explore.tsx`), con typecheck y lint. Sin tests propios y sin probar en un dispositivo.
+> **Móvil verificado el 2026-11-09 contra el código** (`apps/mobile/src/app/(app)/index.tsx` y `explore.tsx`), con typecheck y lint. Sin tests propios; probado manualmente en un dispositivo el 2026-11-09.
 
 - [x] **Pantalla de Nueva Solicitud de Préstamo:**
   - [x] Pañol a solicitar (`storeroom_id`, lista desplegable con `GET /api/storerooms`). Se elige primero porque define las existencias y los laboratorios.

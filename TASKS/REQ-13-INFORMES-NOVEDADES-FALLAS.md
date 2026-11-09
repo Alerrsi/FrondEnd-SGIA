@@ -32,12 +32,12 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 ## 📋 Lista de Tareas Desglosada
 
 ### 1. App Móvil Docente (`apps/mobile`)
-> **Solo `PRO-01`.** El pañolero crea sus informes desde la web. **Verificado el 2026-11-09** con typecheck, lint y `expo export` para Android, iOS y web. Sin tests propios y sin probar en un dispositivo.
+> **Solo `PRO-01`.** El pañolero crea sus informes desde la web. **Verificado el 2026-11-09** con typecheck, lint y `expo export` para Android, iOS y web. Sin tests propios; probado manualmente en un dispositivo el 2026-11-09.
 
 > **Controles del formulario:** los campos con opciones usan lista desplegable vertical (`SelectField` y `MultiSelectField`) y las fechas, campo de tipo fecha (`DateField`), como en REQ-09.
 
 - [x] **Formulario de Informe de Novedades** (`features/novedades/components/new-incident-form.tsx`):
-  - [x] Asignatura, fecha (hoy o anterior) y laboratorio (`GET /api/locations`).
+  - [x] Asignatura, fecha (hoy o anterior) y laboratorio o pañol (`GET /api/locations`, solo salas, talleres y pañoles; web y móvil).
   - [x] Problemas en lista desplegable de selección múltiple (`falla_equipo`, `falta_equipamiento`, `falta_insumo`, `otros`), cada uno con su descripción.
   - [x] Sugerencia opcional.
   - [x] Foto opcional con la cámara o desde la galería usando `expo-image-picker`.

@@ -119,7 +119,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     <h3 className={headingClasses}>Datos</h3>
                     <dl className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <dt className="text-[10px] text-zinc-400">Laboratorio</dt>
+                        <dt className="text-[10px] text-zinc-400">Laboratorio o pañol</dt>
                         <dd className="text-zinc-800 dark:text-zinc-200">
                           {report.location?.nombre ?? '—'}
                         </dd>

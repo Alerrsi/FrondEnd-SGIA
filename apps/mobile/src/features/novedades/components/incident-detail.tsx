@@ -61,7 +61,7 @@ export function IncidentDetail({ reportId, onClose }: IncidentDetailProps) {
           <ThemedView type="backgroundElement" style={styles.card}>
             <Row label="ASIGNATURA" value={report.subject ?? report.title ?? '—'} />
             <Row label="FECHA" value={date ? formatIsoDate(date.slice(0, 10)) : '—'} />
-            <Row label="LABORATORIO" value={report.location?.nombre ?? '—'} />
+            <Row label="LABORATORIO O PAÑOL" value={report.location?.nombre ?? '—'} />
             {report.equipment_unit && (
               <Row label="EQUIPO" value={report.equipment_unit.code} />
             )}

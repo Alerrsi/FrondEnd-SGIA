@@ -544,3 +544,12 @@
   4. **Horario:** el bloque se envía como `start_time` y `end_time`, el formato de la API para clientes actuales.
 - **Limitación:** al cambiar de pañol, un producto del carrito que no aparece en la búsqueda actual queda con "Existencias por confirmar"; si no alcanza, responde la API al enviar.
 - **Verificación:** `pnpm typecheck`, lint y `expo export`. Móvil sin tests propios; confirmar en un dispositivo.
+
+---
+
+## FIX-031: Ubicación del informe de novedades
+
+- **Fecha:** 2026-11-09
+- **Módulo:** `apps/web`, `apps/mobile`, `packages/types`, `TASKS/REQ-13`, `ENDPOINTS.md`; la validación está en el backend
+- **Cambios:** el selector ofrece salas, talleres y pañoles, sin bodegas (`INCIDENT_LOCATION_TYPES`), y pasa a llamarse "Laboratorio o pañol". El backend responde `422` si llega una bodega.
+- **Verificación:** `pnpm typecheck`, lint, tests web y `expo export`. Los cambios de FIX-029 y FIX-030 ya se probaron manualmente en un dispositivo; este selector aún no.
