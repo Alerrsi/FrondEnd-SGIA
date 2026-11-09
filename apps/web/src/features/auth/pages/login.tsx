@@ -71,9 +71,14 @@ export default function LoginPage() {
     }
   });
 
+  // Solo en desarrollo: fuera de él, Vite elimina esta lectura y la contraseña no llega al bundle.
+  const quickLoginPassword = import.meta.env.DEV
+    ? import.meta.env.VITE_DEV_QUICK_LOGIN_PASSWORD
+    : undefined;
+
   const handleQuickFill = (email: string) => {
     setValue('email', email, { shouldValidate: true });
-    setValue('password', 'Admin1234!', { shouldValidate: true });
+    setValue('password', quickLoginPassword ?? '', { shouldValidate: true });
   };
 
   return (
@@ -219,42 +224,44 @@ export default function LoginPage() {
           </form>
 
           {/* Quick fill test accounts */}
-          <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-[11px] text-zinc-500 dark:text-zinc-400">
-            <div className="flex items-center gap-1.5 mb-2 font-medium text-zinc-700 dark:text-zinc-300">
-              <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
-              <span>Accesos rápidos de prueba:</span>
+          {quickLoginPassword && (
+            <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-[11px] text-zinc-500 dark:text-zinc-400">
+              <div className="flex items-center gap-1.5 mb-2 font-medium text-zinc-700 dark:text-zinc-300">
+                <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
+                <span>Accesos rápidos de prueba:</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 font-mono">
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('admin@sgia.cl')}
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                >
+                  AD-01 (Admin)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('director@sgia.cl')}
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                >
+                  DIR-01 (Director)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('panol@sgia.cl')}
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                >
+                  PAN-01 (Pañol)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('docente@sgia.cl')}
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                >
+                  PRO-01 (Profesor)
+                </button>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1.5 font-mono">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('admin@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-              >
-                AD-01 (Admin)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('director@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-              >
-                DIR-01 (Director)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('panol@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-              >
-                PAN-01 (Pañol)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('docente@sgia.cl')}
-                className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-              >
-                PRO-01 (Profesor)
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Role access guidance */}
           <div className="mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-3">

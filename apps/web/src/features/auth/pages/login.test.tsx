@@ -37,6 +37,53 @@ describe('LoginPage', () => {
     expect(screen.getByRole('button', { name: /acceder/i })).toBeDefined();
   });
 
+  describe('accesos rápidos de prueba', () => {
+    function renderLogin() {
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+      render(
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <AuthProvider>
+              <TooltipProvider>
+                <MemoryRouter initialEntries={['/login']}>
+                  <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                  </Routes>
+                </MemoryRouter>
+              </TooltipProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryClientProvider>,
+      );
+    }
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('no se muestran sin la variable de entorno', () => {
+      vi.stubEnv('VITE_DEV_QUICK_LOGIN_PASSWORD', '');
+      renderLogin();
+      expect(screen.queryByText(/accesos rápidos de prueba/i)).toBeNull();
+    });
+
+    it('no se muestran fuera de desarrollo aunque la variable exista', () => {
+      vi.stubEnv('DEV', false);
+      vi.stubEnv('VITE_DEV_QUICK_LOGIN_PASSWORD', 'clave-de-prueba');
+      renderLogin();
+      expect(screen.queryByText(/accesos rápidos de prueba/i)).toBeNull();
+    });
+
+    it('en desarrollo completan correo y contraseña desde la variable', async () => {
+      vi.stubEnv('DEV', true);
+      vi.stubEnv('VITE_DEV_QUICK_LOGIN_PASSWORD', 'clave-de-prueba');
+      renderLogin();
+      await userEvent.click(screen.getByRole('button', { name: /AD-01/ }));
+      expect((screen.getByLabelText(/correo institucional/i) as HTMLInputElement).value).toBe('admin@sgia.cl');
+      expect((screen.getByPlaceholderText('••••••••') as HTMLInputElement).value).toBe('clave-de-prueba');
+    });
+  });
+
   describe('flujo de login (fetch simulado)', () => {
     const user = (role: string) => ({ id: 1, name: 'Ana', email: 'a@sgia.cl', role, is_active: true });
 
