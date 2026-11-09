@@ -15,13 +15,14 @@ import {
   apiErrorToMessage,
   createLoanRequest,
   fetchCareers,
-  fetchProducts,
+  useProducts,
 } from '@sgia/api-client';
 import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useTheme } from '@/hooks/use-theme';
 import { todayIso } from '@/lib/dates';
 
@@ -34,6 +35,8 @@ const TIME_BLOCKS = [
   'Vespertino 1: 18:30 - 20:00',
   'Vespertino 2: 20:15 - 21:45',
 ];
+
+const CATALOG_PAGE_SIZE = 6;
 
 function sendErrorMessage(error: unknown): string {
   if (!(error instanceof ApiRequestError)) {
@@ -55,8 +58,13 @@ export default function NuevaSolicitudScreen() {
 
   // Estados de catálogo y búsqueda
   const [search, setSearch] = useState('');
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [loadingCatalog, setLoadingCatalog] = useState(true);
+  const debouncedSearch = useDebouncedValue(search.trim());
+  const catalog = useProducts({
+    search: debouncedSearch || undefined,
+    per_page: CATALOG_PAGE_SIZE,
+  });
+  const productos = catalog.data?.data ?? [];
+  const totalProductos = catalog.data?.meta.total ?? 0;
 
   // Carrito de solicitud
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -74,25 +82,6 @@ export default function NuevaSolicitudScreen() {
   // Modal de éxito
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [createdLoanCode, setCreatedLoanCode] = useState('');
-
-  // Cargar catálogo de productos
-  useEffect(() => {
-    let isMounted = true;
-    fetchProducts({ per_page: 50 })
-      .then((res) => {
-        if (isMounted) setProductos(res.data);
-      })
-      .catch(() => {
-        // En caso de error de red
-      })
-      .finally(() => {
-        if (isMounted) setLoadingCatalog(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   // Cargar carreras: el backend exige `career_id` en toda solicitud
   useEffect(() => {
@@ -112,16 +101,6 @@ export default function NuevaSolicitudScreen() {
       isMounted = false;
     };
   }, []);
-
-  const filteredProducts = productos.filter((p) => {
-    if (!search.trim()) return true;
-    const term = search.toLowerCase();
-    return (
-      p.nombre.toLowerCase().includes(term) ||
-      (p.codigoBarras && p.codigoBarras.toLowerCase().includes(term)) ||
-      (p.categoria && p.categoria.toLowerCase().includes(term))
-    );
-  });
 
   const addToCart = (prod: Producto) => {
     setCart((prev) => {
@@ -239,11 +218,19 @@ export default function NuevaSolicitudScreen() {
             ]}
           />
 
-          {loadingCatalog ? (
+          {catalog.isLoading ? (
             <ActivityIndicator style={{ paddingVertical: 16 }} color="#d9232a" />
+          ) : catalog.isError ? (
+            <ThemedText type="small" themeColor="textSecondary">
+              No se pudo cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.
+            </ThemedText>
+          ) : productos.length === 0 ? (
+            <ThemedText type="small" themeColor="textSecondary">
+              No hay productos que coincidan con tu búsqueda.
+            </ThemedText>
           ) : (
             <View style={styles.productList}>
-              {filteredProducts.slice(0, 6).map((prod) => {
+              {productos.map((prod) => {
                 const inCart = cart.find((it) => it.producto.id === prod.id);
                 return (
                   <View
@@ -274,6 +261,11 @@ export default function NuevaSolicitudScreen() {
                   </View>
                 );
               })}
+              {totalProductos > productos.length && (
+                <ThemedText type="small" themeColor="textSecondary">
+                  Mostrando {productos.length} de {totalProductos}. Escribe para buscar el resto.
+                </ThemedText>
+              )}
             </View>
           )}
         </ThemedView>
