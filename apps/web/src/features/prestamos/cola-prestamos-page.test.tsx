@@ -187,6 +187,7 @@ const apiErrors = vi.hoisted(() => {
 
 vi.mock('@sgia/api-client', () => ({
   ApiRequestError: apiErrors.ApiRequestError,
+  apiErrorToMessage: (error: Error) => error.message,
   useLoanReview: (id: number | undefined) => {
     mockUseLoanReview(id);
     return {

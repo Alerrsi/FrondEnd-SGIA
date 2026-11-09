@@ -2,6 +2,7 @@ export {
   configureApiClient,
   getApiClientOptions,
   ApiRequestError,
+  apiErrorToMessage,
   del,
   get,
   getBlob,

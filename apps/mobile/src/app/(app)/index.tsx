@@ -10,7 +10,13 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createLoanRequest, fetchCareers, fetchProducts } from '@sgia/api-client';
+import {
+  ApiRequestError,
+  apiErrorToMessage,
+  createLoanRequest,
+  fetchCareers,
+  fetchProducts,
+} from '@sgia/api-client';
 import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
@@ -28,6 +34,16 @@ const TIME_BLOCKS = [
   'Vespertino 1: 18:30 - 20:00',
   'Vespertino 2: 20:15 - 21:45',
 ];
+
+function sendErrorMessage(error: unknown): string {
+  if (!(error instanceof ApiRequestError)) {
+    return 'No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.';
+  }
+  if (error.status >= 500) {
+    return 'El servidor tuvo un problema. Inténtalo de nuevo en unos minutos.';
+  }
+  return apiErrorToMessage(error);
+}
 
 interface CartItem {
   producto: Producto;
@@ -173,8 +189,8 @@ export default function NuevaSolicitudScreen() {
       setCareerId(null);
       setSubject('');
       setRoom('');
-    } catch {
-      Alert.alert('Error', 'No se pudo enviar la solicitud. Verifica la conexión con pañol.');
+    } catch (error) {
+      Alert.alert('No se pudo enviar la solicitud', sendErrorMessage(error));
     } finally {
       setSubmitting(false);
     }
