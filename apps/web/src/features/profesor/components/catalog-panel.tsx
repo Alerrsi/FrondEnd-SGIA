@@ -48,7 +48,6 @@ export function CatalogPanel({
     // Durante la recarga por cambio de pañol `data` aún es el del pañol anterior.
     if (!hasStoreroom || isPlaceholderData || !data) return;
     onAvailability?.(new Map(data.data.map((p) => [p.id, availableOf(p)])));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isPlaceholderData, hasStoreroom, onAvailability]);
 
   return (
