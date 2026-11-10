@@ -41,7 +41,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
   return (
     <>
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent side="center" className="overflow-y-auto">
+        <SheetContent side="center" className="inset-y-auto top-1/2 h-[85dvh] -translate-y-1/2 overflow-y-auto rounded-lg border-y">
           {isLoading || !intake ? (
             <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

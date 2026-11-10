@@ -219,7 +219,7 @@ export function PurchaseFormDialog({
             </div>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="po-justification" className={labelClasses}>
-                Justificación
+                Justificación (opcional)
               </label>
               <textarea
                 id="po-justification"
@@ -232,9 +232,6 @@ export function PurchaseFormDialog({
               {errors.quotation_justification && (
                 <p className={errorClasses}>{errors.quotation_justification.message}</p>
               )}
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Obligatoria si respondieron menos de 3 proveedores.
-              </p>
             </div>
           </>
         ) : (

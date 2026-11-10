@@ -64,7 +64,7 @@ export function InvoiceReviewForm({
     stage: 'alert' | 'final' | 'blocked';
     values: InvoiceReviewValues;
   } | null>(null);
-  const [purchaseId, setPurchaseId] = useState('');
+  const [purchaseId, setPurchaseId] = useState(intake.purchase_id ? String(intake.purchase_id) : '');
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
   // Factura sin OC: el backend pide el presupuesto (needs_budget o 422 en annual_budget_id).
   const [budgetId, setBudgetId] = useState<number | undefined>(undefined);
