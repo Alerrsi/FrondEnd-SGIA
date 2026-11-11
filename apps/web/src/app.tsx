@@ -5,6 +5,8 @@ import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import ComprasPage from '@/features/compras/pages/compras-page';
 import CompraTrazabilidadPage from '@/features/compras/pages/compra-trazabilidad-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
+import SolicitudesCompraPage from '@/features/solicitudes-compra/pages/solicitudes-compra-page';
+import SolicitudCompraDetailPage from '@/features/solicitudes-compra/pages/solicitud-compra-detail-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import AuditoriaPage from '@/features/administracion/pages/auditoria-page';
 import PanolesPage from '@/features/administracion/pages/panoles-page';
@@ -185,6 +187,24 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={rolesForRoute('/proveedores') ?? []}>
                   <ProveedoresPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/solicitudes-compra"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/solicitudes-compra') ?? []}>
+                  <SolicitudesCompraPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/solicitudes-compra/:id"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/solicitudes-compra') ?? []}>
+                  <SolicitudCompraDetailPage />
                 </RequireRole>
               }
             />

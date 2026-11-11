@@ -1,26 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCotizaciones } from '@sgia/api-client';
 import type { Cotizacion } from '@sgia/types';
-import { AlertCircle, ClipboardList, FileText, Plus } from 'lucide-react';
+import { AlertCircle, Archive, FileText } from 'lucide-react';
 
 import { QuotationStatusBadge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { CotizacionFormDialog } from '@/features/cotizaciones/components/cotizacion-form-dialog';
 import { CotizacionDetailSheet } from '@/features/cotizaciones/components/cotizacion-detail-sheet';
+import { LegacyQuotationsNotice } from '@/features/cotizaciones/components/legacy-quotations-notice';
 
+/** Historial del flujo antiguo de cotizaciones: solo lectura (lista y detalle). */
 export default function CotizacionesPage() {
-  const navigate = useNavigate();
   const { data, isLoading, isError } = useCotizaciones({ page: 1, perPage: 20 });
-
-  const [formOpen, setFormOpen] = useState(false);
   const [selectedCotizacion, setSelectedCotizacion] = useState<Cotizacion | null>(null);
-
-  const handleGenerateOrder = (cotizacion: Cotizacion) => {
-    setSelectedCotizacion(null);
-    navigate(`/compras?cotizacion=${cotizacion.id}`);
-  };
 
   if (isLoading) {
     return (
@@ -47,26 +38,23 @@ export default function CotizacionesPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Cotizaciones a Proveedores
+              <Archive className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
+              Historial de cotizaciones
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Gestión y seguimiento de cotizaciones y adquisiciones de insumos.
+              Cotizaciones emitidas con el flujo anterior, solo para consulta.
             </p>
           </div>
-          <Button variant="primary" onClick={() => setFormOpen(true)} className="text-xs">
-            <Plus className="h-4 w-4" />
-            Nueva cotización
-          </Button>
         </div>
       </div>
+
+      <LegacyQuotationsNotice />
 
       {/* Cotizaciones list */}
       <div className="flex flex-col gap-3">
         {data.data.length === 0 && (
           <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-xs text-zinc-400 dark:text-zinc-500">
-            No hay cotizaciones registradas actualmente. Emite una nueva cotización seleccionando
-            productos y al menos 1 proveedor.
+            No hay cotizaciones en el historial.
           </div>
         )}
         {data.data.map((cotizacion) => (
@@ -96,15 +84,11 @@ export default function CotizacionesPage() {
         ))}
       </div>
 
-      {/* New Cotización Dialog */}
-      <CotizacionFormDialog open={formOpen} onClose={() => setFormOpen(false)} />
-
       {/* Cotización Detail Sheet */}
       <CotizacionDetailSheet
         open={selectedCotizacion !== null}
         onClose={() => setSelectedCotizacion(null)}
         cotizacion={selectedCotizacion}
-        onGenerateOrder={handleGenerateOrder}
       />
     </div>
   );

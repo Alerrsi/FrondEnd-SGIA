@@ -3,7 +3,7 @@ import {
   useSetSupplierStatus,
   useSuppliers,
 } from '@sgia/api-client';
-import type { Supplier } from '@sgia/types';
+import type { Supplier, SupplierArea } from '@sgia/types';
 import { AlertCircle, Building2, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ export default function ProveedoresPage() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [areaFilter, setAreaFilter] = useState<SupplierArea | ''>('');
 
   // Debounce search input
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function ProveedoresPage() {
     page,
     per_page: 20,
     category: categoryFilter || undefined,
+    area: areaFilter || undefined,
   };
 
   const { data, isLoading, isError, isFetching } = useSuppliers(queryParams);
@@ -72,6 +74,11 @@ export default function ProveedoresPage() {
 
   const handleCategoryFilterChange = (category: string) => {
     setCategoryFilter(category);
+    setPage(1);
+  };
+
+  const handleAreaFilterChange = (area: SupplierArea | '') => {
+    setAreaFilter(area);
     setPage(1);
   };
 
@@ -138,6 +145,8 @@ export default function ProveedoresPage() {
         onSearchChange={setSearch}
         categoryFilter={categoryFilter}
         onCategoryFilterChange={handleCategoryFilterChange}
+        areaFilter={areaFilter}
+        onAreaFilterChange={handleAreaFilterChange}
         isFetching={isFetching}
         onEdit={handleOpenEdit}
         onToggleStatus={setToggleTarget}

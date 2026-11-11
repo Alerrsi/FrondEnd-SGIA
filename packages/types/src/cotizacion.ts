@@ -1,5 +1,6 @@
 import type { InvoiceIntake } from './ingreso-factura';
 import type { BudgetMovement } from './presupuesto';
+import type { SupplierArea } from './solicitud-compra';
 
 export const QuotationStatus = {
   BORRADOR: 'borrador',
@@ -24,6 +25,8 @@ export interface Supplier {
   email: string;
   phone?: string | null;
   category?: string | null;
+  /** Áreas del proveedor (≥1). Proveedores antiguos pueden llegar sin áreas. */
+  areas: SupplierArea[];
   rut?: string | null;
   address?: string | null;
   is_active?: boolean;
@@ -37,6 +40,8 @@ export interface CreateSupplierPayload {
   email?: string | null;
   phone?: string | null;
   category?: string | null;
+  /** Obligatoria con al menos 1 área (`areas` con `min:1`). */
+  areas: SupplierArea[];
   rut?: string | null;
   address?: string | null;
   is_active?: boolean;
@@ -45,6 +50,7 @@ export interface CreateSupplierPayload {
 export interface SupplierQueryParams {
   search?: string;
   category?: string;
+  area?: SupplierArea;
   is_active?: boolean;
   per_page?: number;
   page?: number;
@@ -81,17 +87,6 @@ export interface Cotizacion {
   updated_at?: string;
 }
 
-export interface CreateCotizacionPayload {
-  proveedor?: string;
-  items?: CotizacionItem[];
-  products?: Array<{ id: number; quantity: number; name?: string; unit_price?: number }>;
-  supplier_ids?: number[];
-  fechaRequerida?: string;
-  expires_at?: string;
-  notas?: string;
-  notes?: string;
-}
-
 export interface CotizacionParams {
   estado?: QuotationStatus | string;
   status?: QuotationStatus | string;
@@ -100,15 +95,6 @@ export interface CotizacionParams {
   page?: number;
   perPage?: number;
   per_page?: number;
-}
-
-export interface QuotationResponsePayload {
-  supplier_id: number;
-  status: 'aceptada' | 'rechazada';
-  offer_total?: number;
-  quotation_number?: string;
-  notes?: string;
-  items?: Array<{ product_id: number; offered_unit_price: number }>;
 }
 
 export const PurchaseStatus = {
@@ -132,6 +118,13 @@ export interface PurchaseItem {
 export interface PurchaseOrder {
   id: number;
   code?: string | null;
+  /** Solicitud de compra de origen; `null` en compras históricas. */
+  purchase_request_id?: number | null;
+  /** `{id, code, status}` de la solicitud cuando el backend la carga. */
+  purchase_request?: { id: number; code: string; status: string } | null;
+  /** N° de la OC emitida fuera del sistema (`purchases.order_number`). */
+  order_number?: string | null;
+  has_order_file?: boolean;
   quotation_id?: number | null;
   quotation_reference?: string | null;
   supplier_id: number;
@@ -159,28 +152,10 @@ export interface PurchaseTrace {
   purchase: PurchaseOrder;
   quotations: Cotizacion[];
   invoices: InvoiceIntake[];
+  /** Solicitud de origen (`{id, code, status, …}`); `null` en compras históricas. */
+  purchase_request?: { id: number; code: string; status: string } | null;
   budget_movements: BudgetMovement[];
   stock_entries: { product_id: number; name: string; quantity: number }[];
-}
-
-export interface CreatePurchasePayload {
-  /** Obligatorio: el total se reserva en este presupuesto. */
-  annual_budget_id: number;
-  quotation_id?: number | null;
-  /** Obligatoria con `quotation_id` si respondieron menos de 3 proveedores. */
-  quotation_justification?: string;
-  /** Mín. 3 cotizaciones `aceptada` distintas; `supplier_id` debe estar contactado en todas. */
-  quotation_ids?: number[];
-  supplier_id?: number;
-  quotation_reference?: string | null;
-  expected_at?: string | null;
-  notes?: string | null;
-  items?: Array<{
-    name?: string;
-    product_id?: number;
-    quantity: number;
-    unit_price: number;
-  }>;
 }
 
 export interface PurchaseQueryParams {

@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { usePurchases } from '@sgia/api-client';
 import { PurchaseStatus, type PurchaseOrder } from '@sgia/types';
-import { AlertCircle, Plus, ShoppingCart } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { AlertCircle, ArrowRight, ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import { PurchaseStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { PurchaseDetailSheet } from '@/features/compras/components/purchase-detail-sheet';
-import { PurchaseFormDialog } from '@/features/compras/components/purchase-form-dialog';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 
 const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
@@ -22,14 +21,12 @@ const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
 
 export default function ComprasPage() {
   const { user } = useAuth();
-  const canCreate = canDo(user?.rol, 'createPurchase');
-  const [searchParams, setSearchParams] = useSearchParams();
-  const quotationParam = Number(searchParams.get('cotizacion')) || null;
+  // Las OC nuevas nacen de una solicitud de compra (Fase 7: ya no se crean aquí).
+  const canRequest = canDo(user?.rol, 'managePurchaseRequests');
 
   const [status, setStatus] = useState<PurchaseStatus | ''>('');
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [formOpen, setFormOpen] = useState(quotationParam !== null && canCreate);
 
   const { data, isLoading, isError } = usePurchases({
     status: status || undefined,
@@ -39,11 +36,6 @@ export default function ComprasPage() {
 
   // El detalle se deriva del listado vivo para reflejar cambios tras invalidar caché.
   const selected: PurchaseOrder | null = data?.data.find((p) => p.id === selectedId) ?? null;
-
-  const closeForm = () => {
-    setFormOpen(false);
-    if (quotationParam !== null) setSearchParams({}, { replace: true });
-  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -59,11 +51,14 @@ export default function ComprasPage() {
               Seguimiento de adquisiciones y recepción de mercancía.
             </p>
           </div>
-          {canCreate && (
-            <Button onClick={() => setFormOpen(true)} className="text-xs">
-              <Plus className="h-4 w-4" />
-              Nueva orden
-            </Button>
+          {canRequest && (
+            <Link
+              to="/solicitudes-compra"
+              className="inline-flex h-8.5 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              Nueva compra desde una solicitud
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           )}
         </div>
       </div>
@@ -147,13 +142,6 @@ export default function ComprasPage() {
         </div>
       )}
 
-      {canCreate && (
-        <PurchaseFormDialog
-          open={formOpen}
-          onClose={closeForm}
-          initialQuotationId={quotationParam}
-        />
-      )}
       <PurchaseDetailSheet
         open={selected !== null}
         onClose={() => setSelectedId(null)}

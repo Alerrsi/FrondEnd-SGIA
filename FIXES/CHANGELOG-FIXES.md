@@ -553,3 +553,34 @@
 - **Módulo:** `apps/web`, `apps/mobile`, `packages/types`, `TASKS/REQ-13`, `ENDPOINTS.md`; la validación está en el backend
 - **Cambios:** el selector ofrece salas, talleres y pañoles, sin bodegas (`INCIDENT_LOCATION_TYPES`), y pasa a llamarse "Laboratorio o pañol". El backend responde `422` si llega una bodega.
 - **Verificación:** `pnpm typecheck`, lint, tests web y `expo export`. Los cambios de FIX-029 y FIX-030 ya se probaron manualmente en un dispositivo; este selector aún no.
+
+---
+
+## FIX-032: Nuevo flujo de compras — solicitud de compra (Fases 1 a 6, frontend)
+
+- **Fecha:** 2026-11-10
+- **Módulo:** `apps/web` (`features/solicitudes-compra`, `features/proveedores`, `features/ingresos-factura`), `packages/types`, `packages/api-client`; plan en `NUEVO-FLUJO-COMPRAS.md`
+- **Cambios:**
+  1. **Áreas de proveedor (Fase 1):** `Supplier.areas` (`informatica`, `diseno`, `telecomunicaciones`, `ciberseguridad`). El formulario pasa a RHF + Zod con multiselección de áreas obligatoria (≥1) y deja de editar `category` (en retiro). El listado suma la columna Áreas (aviso "Sin área" en proveedores viejos) y el filtro `area`.
+  2. **Solicitudes (Fase 2):** rutas `/solicitudes-compra` (TanStack Table, filtros de estado, código y fechas) y `/solicitudes-compra/:id`, entrada "Solicitudes de compra" en el menú (`DIR-01` escribe; `AD-01` y `PAN-01` leen). Formulario de borrador con productos, cantidades y presupuesto; Aprobar, Editar y Cancelar con confirmación.
+  3. **Envío por áreas (Fase 3):** diálogo con áreas, conteo de proveedores activos y vista previa de destinatarios sin duplicados; panel de proveedores contactados con estado del correo y "Reenviar fallidos".
+  4. **Cotizaciones (Fase 4):** subida `multipart` (proveedor contactado, archivo PDF/imagen/Word/Excel, total y precio unitario por ítem), descarga autenticada, eliminación, comparador de totales y "Elegir" libre con mínimo 3.
+  5. **OC (Fase 5):** subida del archivo y número de la OC (reserva el total elegido) y descarga.
+  6. **Factura (Fase 6):** al subir una factura se puede indicar el código `SC-AAAA-NNNN` (`purchase_request_code`), con búsqueda de la solicitud; desde el detalle, "Registrar factura" abre `/ingresos-factura?solicitud=…`. Confirmar o anular una factura invalida las solicitudes.
+- **Contrato:** alineado con `PurchaseRequestResource` del backend (`can_*`, `min_quotations`, `order` = `PurchaseResource` con `invoices`, `file_url`, envoltura `purchase_request` en `send`/`resend`/`quotations`). Las pantallas de `/cotizaciones` no se tocaron (se retiran en la Fase 7).
+- **Realineación con el backend final:** `status_label`, `approver`, `email_status`, `order_number` y proveedor de la OC; `received_at` opcional y un precio por cada ítem al subir la cotización; aviso `facturada → con_oc`; el detalle de compra oculta "Cancelar" en OC de solicitud (el backend responde `422`) y "Registrar factura" usa `?solicitud=`; la subida de factura desde una OC vuelve a enviar `purchase_id`/`annual_budget_id`. Se corrigió la nota falsa "Facturas sin presupuesto ni compra" de `front-end.md`.
+- **Prueba contra el backend real:** flujo solicitud → PATCH con `annual_budget_id` → aprobar → enviar → 3 cotizaciones → elegir → OC → detalle/listado, por el kernel HTTP real con token Sanctum, dentro de una transacción revertida (sin datos residuales). Las respuestas reales se pasaron por `normalizePurchaseRequest` y coinciden con los tipos; se confirmaron los `422` de cotización con precios incompletos y de `POST /api/purchases/{id}/cancel` sobre OC de solicitud.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde. Tests nuevos: `purchase-request-hooks.test.tsx`, `purchase-request-schemas.test.ts`, `quotations-panel.test.tsx`, `supplier-form-schema.test.ts` y casos de áreas en `proveedores-table.test.tsx`. Sin prueba manual contra el backend real todavía.
+
+---
+
+## FIX-033: Fase 7 del nuevo flujo de compras — cotizaciones en solo lectura
+
+- **Fecha:** 2026-11-10
+- **Módulo:** `apps/web` (`features/cotizaciones`, `features/compras`, `layouts/app-layout.tsx`, `features/auth/types/roles.ts`), `packages/api-client`, `packages/types`
+- **Cambios:**
+  1. `/cotizaciones` pasa a **Historial de cotizaciones** en solo lectura: lista y detalle sin acciones, con aviso y enlace a Solicitudes de compra. El menú la mueve al final del bloque de compras como "Historial cotizaciones" (icono `Archive`).
+  2. Eliminados: `CotizacionFormDialog` (crear), `QuotationResponseDialog` (registrar respuesta), aceptar/rechazar del detalle, "Aprobar y generar orden de compra", `PurchaseFormDialog` + `purchase-form-schema` (crear compra desde cotización) y el parámetro `?cotizacion=` de `/compras`. `/compras` enlaza a "Nueva compra desde una solicitud" (solo `DIR-01`).
+  3. api-client: fuera `createCotizacion`, `updateQuotationStatus`, `updateQuotationResponse`, `createPurchase` y sus hooks; tipos `CreateCotizacionPayload`, `QuotationResponsePayload` y `CreatePurchasePayload`; acciones `changeQuotationStatus`, `respondQuotation` y `createPurchase` de `ACTION_ROLES`. Tests eliminados con ellos: `cotizacion-hooks.test.tsx`, `cotizacion-form.test.tsx` y `purchase-form-schema.test.ts`.
+  4. El frontend solo llama `GET /api/quotations` y `GET /api/quotations/{id}` del flujo antiguo. `NUEVO-FLUJO-COMPRAS.md` se copió del backend conservando los checkboxes Front.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde.

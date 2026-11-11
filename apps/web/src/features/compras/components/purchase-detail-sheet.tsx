@@ -68,7 +68,9 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
   const canShip = purchase.allowed_transitions?.includes(PurchaseStatus.EN_CAMINO) ?? false;
   const canReceive = purchase.allowed_transitions?.includes(PurchaseStatus.COMPLETA) ?? false;
   const canScan = isOpen;
-  const canCancel = isManager && isOpen;
+  // Una OC de solicitud se cancela desde la solicitud: el backend responde 422 en `status`.
+  const fromRequest = Boolean(purchase.purchase_request_id);
+  const canCancel = isManager && isOpen && !fromRequest;
   // La factura se liga a una compra con reserva vigente (no cancelada); el backend valida el resto.
   const canRegisterInvoice =
     isManager &&
@@ -130,7 +132,13 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
   };
 
   const goToInvoice = () => {
-    navigate(`/ingresos-factura?compra=${purchase.id}&presupuesto=${purchase.annual_budget_id}`);
+    // OC de solicitud: se liga por su código (el backend valida que esté `con_oc`).
+    const requestCode = purchase.purchase_request?.code;
+    navigate(
+      requestCode
+        ? `/ingresos-factura?solicitud=${encodeURIComponent(requestCode)}`
+        : `/ingresos-factura?compra=${purchase.id}&presupuesto=${purchase.annual_budget_id}`,
+    );
   };
 
   const handleDownload = async () => {
@@ -341,6 +349,16 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 <ReceiptText className="h-4 w-4" />
                 Registrar factura e ingresar stock
               </Button>
+            )}
+
+            {fromRequest && isManager && isOpen && (
+              <Link
+                to={`/solicitudes-compra/${purchase.purchase_request_id}`}
+                className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+              >
+                Para cancelar esta OC, cancela la solicitud{' '}
+                {purchase.purchase_request?.code ?? `#${purchase.purchase_request_id}`}
+              </Link>
             )}
 
             {canCancel && (

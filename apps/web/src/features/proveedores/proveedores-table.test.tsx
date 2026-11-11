@@ -13,6 +13,7 @@ const mockSuppliers: Supplier[] = [
     email: 'ventas@techpro.cl',
     phone: '+56 9 1234 5678',
     category: 'Redes',
+    areas: ['informatica', 'telecomunicaciones'],
     is_active: true,
     created_at: '2026-01-15T00:00:00Z',
     updated_at: '2026-01-15T00:00:00Z',
@@ -24,6 +25,7 @@ const mockSuppliers: Supplier[] = [
     email: 'contacto@insumosdigitales.cl',
     phone: '+56 2 9876 5432',
     category: 'Electrónica',
+    areas: ['diseno'],
     is_active: true,
     created_at: '2026-02-20T00:00:00Z',
     updated_at: '2026-02-20T00:00:00Z',
@@ -35,6 +37,7 @@ const mockSuppliers: Supplier[] = [
     email: 'info@globalsupplies.cl',
     phone: null,
     category: null,
+    areas: [],
     is_active: false,
     created_at: '2026-03-10T00:00:00Z',
     updated_at: '2026-06-01T00:00:00Z',
@@ -73,6 +76,34 @@ describe('ProveedoresTable (REQ-07)', () => {
     // Category badges (might also exist in select filter)
     expect(screen.getAllByText('Redes').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Electrónica').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('muestra las áreas del proveedor y avisa cuando no tiene', () => {
+    render(
+      <ProveedoresTable suppliers={mockSuppliers} onEdit={vi.fn()} onToggleStatus={vi.fn()} />,
+    );
+
+    expect(screen.getByText('Informática')).toBeDefined();
+    expect(screen.getByText('Telecomunicaciones')).toBeDefined();
+    expect(screen.getByText('Diseño')).toBeDefined();
+    expect(screen.getByText('Sin área')).toBeDefined();
+  });
+
+  it('filtra por área', async () => {
+    const user = userEvent.setup();
+    const handleArea = vi.fn();
+    render(
+      <ProveedoresTable
+        suppliers={mockSuppliers}
+        areaFilter=""
+        onAreaFilterChange={handleArea}
+        onEdit={vi.fn()}
+        onToggleStatus={vi.fn()}
+      />,
+    );
+
+    await user.selectOptions(screen.getByLabelText('Filtrar por área'), 'ciberseguridad');
+    expect(handleArea).toHaveBeenCalledWith('ciberseguridad');
   });
 
   it('triggers onEdit callback when clicking edit button', async () => {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Supplier } from '@sgia/types';
+import { SUPPLIER_AREAS, SUPPLIER_AREA_LABELS, type Supplier, type SupplierArea } from '@sgia/types';
 import {
   Building2,
   Check,
@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { SupplierAreaBadges } from '@/features/proveedores/components/supplier-area-badges';
 
 export interface ProveedoresTableProps {
   suppliers: Supplier[];
@@ -28,6 +29,8 @@ export interface ProveedoresTableProps {
   onSearchChange?: (value: string) => void;
   categoryFilter?: string;
   onCategoryFilterChange?: (value: string) => void;
+  areaFilter?: SupplierArea | '';
+  onAreaFilterChange?: (value: SupplierArea | '') => void;
   isFetching?: boolean;
   isLoading?: boolean;
   onEdit: (supplier: Supplier) => void;
@@ -47,6 +50,8 @@ export function ProveedoresTable({
   onSearchChange,
   categoryFilter = '',
   onCategoryFilterChange,
+  areaFilter = '',
+  onAreaFilterChange,
   isFetching,
   isLoading,
   onEdit,
@@ -76,6 +81,22 @@ export function ProveedoresTable({
             className="w-full h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pl-8 pr-3 text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
           />
         </div>
+
+        {onAreaFilterChange && (
+          <select
+            aria-label="Filtrar por área"
+            value={areaFilter}
+            onChange={(e) => onAreaFilterChange(e.target.value as SupplierArea | '')}
+            className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+          >
+            <option value="">Todas las áreas</option>
+            {SUPPLIER_AREAS.map((area) => (
+              <option key={area} value={area}>
+                {SUPPLIER_AREA_LABELS[area]}
+              </option>
+            ))}
+          </select>
+        )}
 
         {categories.length > 0 && (
           <select
@@ -118,6 +139,7 @@ export function ProveedoresTable({
                 <th className={thClasses}>Contacto</th>
                 <th className={thClasses}>Correo</th>
                 <th className={thClasses}>Teléfono</th>
+                <th className={thClasses}>Áreas</th>
                 <th className={thClasses}>Categoría</th>
                 <th className={thClasses}>Estado</th>
                 <th className={`${thClasses} text-right`}>Acciones</th>
@@ -127,7 +149,7 @@ export function ProveedoresTable({
               {suppliers.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="py-12 text-center text-xs text-zinc-400 dark:text-zinc-500"
                   >
                     No se encontraron proveedores registrados.
@@ -163,6 +185,9 @@ export function ProveedoresTable({
                         <Phone className="h-3 w-3" />
                         {supplier.phone || '—'}
                       </span>
+                    </td>
+                    <td className={tdClasses}>
+                      <SupplierAreaBadges areas={supplier.areas ?? []} />
                     </td>
                     <td className={tdClasses}>
                       {supplier.category ? (
