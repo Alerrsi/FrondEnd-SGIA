@@ -15,6 +15,8 @@ import { EditBudgetDialog } from '@/features/presupuestos/components/edit-budget
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR + 1, CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2];
@@ -71,15 +73,9 @@ export default function PresupuestosPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Presupuestos anuales
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Ejecución por carrera: las compras reservan y las facturas confirmadas consumen.
-            </p>
-          </div>
+          <PageHeading icon={Wallet} title="Presupuestos anuales">
+            Ejecución por carrera: las compras reservan y las facturas confirmadas consumen.
+          </PageHeading>
           {canManage && (
             <Button onClick={() => setCreateOpen(true)} className="text-xs">
               <Plus className="h-4 w-4" />
@@ -89,7 +85,7 @@ export default function PresupuestosPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2.5 text-xs">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2.5 text-xs shadow-xs">
         <div className="flex items-center gap-2">
           <span className="text-zinc-500 dark:text-zinc-400">Carreras:</span>
           <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
@@ -145,7 +141,7 @@ export default function PresupuestosPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
             Cargando presupuestos…
           </div>
         ) : isError ? (

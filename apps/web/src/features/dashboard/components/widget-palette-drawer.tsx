@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { BarChart3, PieChart, TrendingUp, Compass, AlertCircle, Plus } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import type { ChartType } from '../types/metrics';
+import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 interface WidgetShapeItem {
   type: ChartType;
@@ -117,10 +118,10 @@ export function WidgetPaletteDrawer({
           <div className="flex items-center gap-2 text-xs font-mono text-sky-600 dark:text-sky-500 font-semibold uppercase tracking-wider">
             <span>Catálogo</span>
             <span className="text-zinc-400">/</span>
-            <span>Paleta de Formas</span>
+            <span>Paleta de formas</span>
           </div>
-          <SheetTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-            Formas Gráficas Genéricas
+          <SheetTitle>
+            Formas gráficas genéricas
           </SheetTitle>
           <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
             Arrastra una forma hacia el lienzo o pulsa «Añadir», y elige qué datos mostrar.
@@ -172,7 +173,7 @@ export function WidgetPaletteDrawer({
                       </div>
                     </div>
                   </div>
-                  <Badge tone="neutral" className="text-[10px] font-mono">
+                  <Badge tone="neutral" className="text-[11px] font-mono">
                     {shape.type}
                   </Badge>
                 </div>
@@ -185,7 +186,7 @@ export function WidgetPaletteDrawer({
                   {shape.badges.map((b) => (
                     <span
                       key={b}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/60"
+                      className={CODE_CHIP_CLASS}
                     >
                       {b}
                     </span>
@@ -193,7 +194,7 @@ export function WidgetPaletteDrawer({
                 </div>
 
                 <div className="flex items-center justify-between gap-2 mt-1 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
-                  <span className="text-[10px] text-zinc-400 font-mono">
+                  <span className="text-[11px] text-zinc-400 font-mono">
                     Arrastra o pulsa Añadir
                   </span>
                   <Button

@@ -59,6 +59,33 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
 ### C. Tipografía Específica
 - `font-mono`: Obligatorio para identificadores técnicos: SKUs, seriales de fábrica, rotulado Code128, direcciones IP/MAC (equipos Cisco), gavetas (`Cajon-A2`, `Sala-L3`) y RUT de usuarios.
 - `font-sans`: Tipografía de interfaz (Inter o Geist) para títulos, formularios, textos descriptivos y navegación.
+- **Escala única de títulos (obligatoria).** No escribir clases de tamaño o peso a mano en `h1`–`h4` ni en `<thead>`; usar los componentes de `apps/web/src/components/ui/` (clases en `typography.ts`):
+
+  | Nivel | Componente | Estilo |
+  |---|---|---|
+  | Título y subtítulo de página | `PageHeading` (`icon`, `title`, `aside`, subtítulo como `children`) | `text-xl font-bold tracking-tight`, icono 20px; subtítulo `text-xs text-zinc-500` |
+  | Título de sección, tarjeta o panel | `SectionTitle` (`icon`, `as`) | `text-sm font-semibold`, icono 16px |
+  | Rótulo de bloque en un detalle (sheet, ficha, modal) | `SectionLabel` (`icon`, `as`) | `text-xs font-semibold uppercase tracking-wider text-zinc-500`, icono 14px |
+  | Cabecera de tabla | `TABLE_HEAD_CLASS` en `<thead>` | `text-[11px] font-mono uppercase tracking-wider text-zinc-500` |
+  | Título de modal / panel lateral | `Dialog` / `SheetTitle` | `text-base font-semibold` |
+
+  La cabecera de página es `flex flex-wrap items-center justify-between gap-3` con `PageHeading` a la izquierda y las acciones a la derecha, sin borde inferior. Excepciones: la marca del login y las pantallas de error.
+  Todo texto de interfaz (títulos, botones, menú, etiquetas, estados) va con mayúscula inicial tipo oración ("Órdenes de compra", "Guardar y salir"); solo conservan mayúscula los nombres propios y siglas (INACAP, PDF, Code128). Toda página lleva subtítulo.
+- **Estilos compartidos (obligatorios).** No reescribir estas clases a mano:
+
+  | Elemento | Fuente | Estilo |
+  |---|---|---|
+  | Campo de formulario | `FORM_CONTROL_CLASS` (`form-control.ts`; `FORM_CONTROL_BASE_CLASS` para `<textarea>`) | ancho completo, `h-8.5`, `px-3`, fondo blanco |
+  | Filtro de barra de tabla | `FILTER_CONTROL_CLASS` | `h-8`, `px-2`, fondo `zinc-50` |
+  | Etiqueta de campo | `FIELD_LABEL_CLASS` | `text-xs font-semibold uppercase tracking-wider text-zinc-500` |
+  | Chip de código (SKU, ID) | `CODE_CHIP_CLASS` | `font-mono text-xs`, fondo `zinc-100`, borde |
+  | Mensaje de carga / sin datos | `STATE_TEXT_CLASS` | `text-xs` centrado `zinc-500`; `Loader2` siempre `h-4 w-4` |
+  | Celdas de tabla | — | listado: `px-4 py-2.5`; tabla dentro de panel: `px-3 py-2`; `<th>` en `font-medium` |
+  | Tarjeta / contenedor | `Card` o las mismas clases | `rounded-md` + `shadow-xs` |
+  | Botón | `Button` con `variant` y `size` | sin colores ni alturas por `className` |
+  | Pastilla de estado | `Badge` con `tone` | nunca un `<span>` coloreado a mano |
+
+  Raíz de página: `flex flex-col gap-4`. Texto micro: `text-[11px]` (no `[10px]` ni `[9px]`). Título de panel lateral: `SheetTitle` sin clases de tamaño.
 
 ---
 

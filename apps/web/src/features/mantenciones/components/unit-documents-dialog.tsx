@@ -20,12 +20,14 @@ import {
 } from '@/features/mantenciones/lib/maintenance-labels';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 const MAX_BYTES = 10 * 1024 * 1024;
 const EXPIRING_DAYS = 30;
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  FILTER_CONTROL_CLASS;
 
 /** Documentos PDF de la unidad: vencimientos, subida (multipart) y descarga autenticada. */
 export function UnitDocumentsDialog({
@@ -148,7 +150,7 @@ export function UnitDocumentsDialog({
             {apiErrorToMessage(error)}
           </p>
         ) : docs.length === 0 ? (
-          <p className="py-4 text-center text-xs text-zinc-500">Sin documentos para este filtro.</p>
+          <p className={`py-4 ${STATE_TEXT_CLASS}`}>Sin documentos para este filtro.</p>
         ) : (
           <ul className="divide-y divide-zinc-100 dark:divide-zinc-800/60 rounded-md border border-zinc-200 dark:border-zinc-800">
             {docs.map((doc) => (
@@ -236,7 +238,7 @@ export function UnitDocumentsDialog({
                 {file ? file.name : 'Seleccionar PDF (máx. 10 MB)'}
               </Button>
               <Button type="submit" size="sm" disabled={upload.isPending} className="ml-auto">
-                {upload.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                {upload.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                 Subir documento
               </Button>
             </div>

@@ -7,6 +7,8 @@ import { QuotationStatusBadge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CotizacionDetailSheet } from '@/features/cotizaciones/components/cotizacion-detail-sheet';
 import { LegacyQuotationsNotice } from '@/features/cotizaciones/components/legacy-quotations-notice';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 /** Historial del flujo antiguo de cotizaciones: solo lectura (lista y detalle). */
 export default function CotizacionesPage() {
@@ -15,7 +17,7 @@ export default function CotizacionesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 py-12 justify-center">
+      <div className={`flex items-center gap-2 py-12 justify-center ${STATE_TEXT_CLASS}`}>
         <span>Cargando historial de cotizaciones…</span>
       </div>
     );
@@ -36,15 +38,9 @@ export default function CotizacionesPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Archive className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Historial de cotizaciones
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Cotizaciones emitidas con el flujo anterior, solo para consulta.
-            </p>
-          </div>
+          <PageHeading icon={Archive} title="Historial de cotizaciones">
+            Cotizaciones emitidas con el flujo anterior, solo para consulta.
+          </PageHeading>
         </div>
       </div>
 
@@ -53,7 +49,7 @@ export default function CotizacionesPage() {
       {/* Cotizaciones list */}
       <div className="flex flex-col gap-3">
         {data.data.length === 0 && (
-          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-xs text-zinc-400 dark:text-zinc-500">
+          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-xs text-zinc-400 dark:text-zinc-500 shadow-xs">
             No hay cotizaciones en el historial.
           </div>
         )}
@@ -74,7 +70,7 @@ export default function CotizacionesPage() {
                 {cotizacion.proveedor ?? 'Múltiples proveedores'} · {cotizacion.items.length} ítems
               </span>
               {cotizacion.createdAt && (
-                <span className="text-[10px] font-mono text-zinc-400">
+                <span className="text-[11px] font-mono text-zinc-400">
                   {new Date(cotizacion.createdAt).toLocaleDateString('es-CL')}
                 </span>
               )}

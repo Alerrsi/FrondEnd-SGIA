@@ -119,7 +119,7 @@ export function LoanStatusBadge({ estado }: { estado: string }) {
     case 'entregado':
     case 'activo':
       tone = 'loaned';
-      label = 'En Préstamo';
+      label = 'En préstamo';
       break;
     case 'devuelto':
     case 'procesada':

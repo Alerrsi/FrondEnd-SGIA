@@ -12,6 +12,8 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { ProveedoresTable } from '@/features/proveedores/components/proveedores-table';
 import { SupplierFormDialog } from '@/features/proveedores/components/supplier-form-dialog';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 export default function ProveedoresPage() {
   const setSupplierStatus = useSetSupplierStatus();
@@ -102,7 +104,7 @@ export default function ProveedoresPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 py-12 justify-center">
+      <div className={`flex items-center gap-2 py-12 justify-center ${STATE_TEXT_CLASS}`}>
         <span>Cargando catálogo de proveedores…</span>
       </div>
     );
@@ -123,16 +125,10 @@ export default function ProveedoresPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Catálogo de Proveedores
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Gestión de empresas proveedoras para cotizaciones y adquisiciones de insumos.
-            </p>
-          </div>
-          <Button variant="primary" onClick={handleOpenCreate} className="text-xs">
+          <PageHeading icon={Building2} title="Catálogo de proveedores">
+            Gestión de empresas proveedoras para cotizaciones y adquisiciones de insumos.
+          </PageHeading>
+          <Button variant="primary" onClick={handleOpenCreate}>
             <Plus className="h-4 w-4" />
             Nuevo proveedor
           </Button>

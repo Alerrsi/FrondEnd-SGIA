@@ -5,6 +5,7 @@ import { Loader2, MapPin } from 'lucide-react';
 import { apiErrorToMessage } from '@/lib/api-error';
 
 import { UnidadStatusBadge } from './unidad-status-badge';
+import { CODE_CHIP_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const MAX_UNITS = 100;
 
@@ -19,7 +20,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
   if (isLoading) {
     return (
       <div className="flex items-center gap-2 px-4 py-3 font-mono text-xs text-zinc-500">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" />
         Cargando instancias…
       </div>
     );
@@ -44,8 +45,8 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
   return (
     <div className="px-4 py-2">
       <table className="w-full text-left text-xs" aria-label={`Instancias de ${producto.nombre}`}>
-        <thead>
-          <tr className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <thead className={TABLE_HEAD_CLASS}>
+          <tr>
             <th className="py-1 pr-3 font-medium">Código</th>
             <th className="py-1 pr-3 font-medium">Serie</th>
             <th className="py-1 pr-3 font-medium">Ubicación</th>
@@ -59,7 +60,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
             return (
               <tr key={unit.id}>
                 <td className="py-1.5 pr-3">
-                  <span className="font-mono px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60">
+                  <span className={CODE_CHIP_CLASS}>
                     {unit.code}
                   </span>
                 </td>

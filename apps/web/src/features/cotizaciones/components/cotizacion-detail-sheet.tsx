@@ -9,6 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { SectionLabel } from '@/components/ui/section-label';
 
 interface CotizacionDetailSheetProps {
   open: boolean;
@@ -30,7 +31,7 @@ export function CotizacionDetailSheet({
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+          <SheetTitle>
             <FileText className="h-4 w-4 text-zinc-500" />
             <span className="font-mono">Cotización #{cotizacion.id}</span>
           </SheetTitle>
@@ -53,10 +54,7 @@ export function CotizacionDetailSheet({
 
           {/* Products */}
           <div className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
-              <Package className="h-3.5 w-3.5" />
-              Productos solicitados ({items.length})
-            </h3>
+            <SectionLabel icon={Package}>Productos solicitados ({items.length})</SectionLabel>
             {items.length === 0 ? (
               <p className="text-xs text-zinc-400 py-2">Sin productos registrados.</p>
             ) : (
@@ -80,10 +78,7 @@ export function CotizacionDetailSheet({
 
           {/* Suppliers */}
           <div className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
-              <Building2 className="h-3.5 w-3.5" />
-              Proveedores contactados ({suppliers.length})
-            </h3>
+            <SectionLabel icon={Building2}>Proveedores contactados ({suppliers.length})</SectionLabel>
             {suppliers.length === 0 ? (
               <p className="text-xs text-zinc-400 py-2">
                 {cotizacion.proveedor ?? 'Sin proveedores registrados.'}
@@ -98,7 +93,7 @@ export function CotizacionDetailSheet({
                     <span className="text-zinc-700 dark:text-zinc-300 font-medium">
                       {supplier.name}
                     </span>
-                    <span className="font-mono text-zinc-400 text-[10px]">{supplier.email}</span>
+                    <span className="font-mono text-zinc-400 text-[11px]">{supplier.email}</span>
                   </div>
                 ))}
               </div>
@@ -108,9 +103,7 @@ export function CotizacionDetailSheet({
           {/* Notes */}
           {(cotizacion.notas ?? cotizacion.notes) && (
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">
-                Notas
-              </h3>
+              <SectionLabel className="mb-1">Notas</SectionLabel>
               <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
                 {cotizacion.notas ?? cotizacion.notes}
               </p>

@@ -4,6 +4,7 @@ import type { BudgetSpendingGroupBy } from '@sgia/types';
 
 import { Button } from '@/components/ui/button';
 import { formatCLP } from '@/features/compras/lib/format';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const GROUPS: Array<{ value: BudgetSpendingGroupBy; label: string }> = [
   { value: 'product', label: 'Producto' },
@@ -54,8 +55,8 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
 
       <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
         <table className="w-full border-collapse text-left text-xs">
-          <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <thead className={TABLE_HEAD_CLASS}>
+            <tr>
               <th className="px-3 py-2 font-medium">
                 {GROUPS.find((g) => g.value === groupBy)?.label}
               </th>
@@ -69,14 +70,14 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
             {isLoading && (
               <tr>
-                <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                   Cargando gasto…
                 </td>
               </tr>
             )}
             {!isLoading && rows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                   Aún no hay facturas confirmadas en este presupuesto.
                 </td>
               </tr>

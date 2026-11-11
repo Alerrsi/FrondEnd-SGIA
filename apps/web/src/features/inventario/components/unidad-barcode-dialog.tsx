@@ -45,7 +45,7 @@ export function UnidadBarcodeDialog({
           <span className="mt-1 font-mono text-xs font-semibold tracking-widest">{unit.code}</span>
         </div>
         <div className="flex justify-end">
-          <Button type="button" variant="outline" size="sm" onClick={onClose} className="text-xs">
+          <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cerrar
           </Button>
         </div>

@@ -87,8 +87,7 @@ export function SignaturePad({ onChange, invalid }: SignaturePadProps) {
       />
       <Button
         type="button"
-        variant="ghost"
-        className="self-start text-xs"
+        variant="ghost" className="self-start"
         onClick={clear}
       >
         <Eraser className="h-3.5 w-3.5" />

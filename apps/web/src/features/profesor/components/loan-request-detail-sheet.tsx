@@ -17,6 +17,8 @@ import {
   loanLaboratory,
   loanSchedule,
 } from "@/features/profesor/lib/loan-request-format";
+import { SECTION_LABEL_CLASS } from "@/components/ui/typography";
+import { TABLE_HEAD_CLASS } from "@/components/ui/typography";
 
 interface LoanRequestDetailSheetProps {
   loan: Prestamo | null;
@@ -24,8 +26,7 @@ interface LoanRequestDetailSheetProps {
   onCancelRequest: (loan: Prestamo) => void;
 }
 
-const labelClasses =
-  "text-[11px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400";
+const labelClasses = SECTION_LABEL_CLASS;
 
 /** Detalle de una solicitud propia: actividad, horario, laboratorio, insumos y motivo de rechazo. */
 export function LoanRequestDetailSheet({
@@ -53,7 +54,7 @@ export function LoanRequestDetailSheet({
         {loan && (
           <>
             <SheetHeader>
-              <SheetTitle className="flex items-center gap-2">
+              <SheetTitle>
                 <span className="font-mono">{loan.codigo ?? loan.code}</span>
                 <LoanRequestStatusBadge estado={String(loan.estado)} />
               </SheetTitle>
@@ -87,8 +88,8 @@ export function LoanRequestDetailSheet({
             <div>
               <h3 className={labelClasses}>Insumos solicitados</h3>
               <table className="mt-1 w-full border-collapse text-left text-xs">
-                <thead>
-                  <tr className="border-b border-zinc-200 dark:border-zinc-800 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+                <thead className={TABLE_HEAD_CLASS}>
+                  <tr>
                     <th className="py-1.5 font-medium">Producto</th>
                     <th className="py-1.5 text-right font-medium">Cantidad</th>
                   </tr>
@@ -124,8 +125,7 @@ export function LoanRequestDetailSheet({
 
             {canCancelLoanRequest(loan) && (
               <Button
-                variant="ghost"
-                className="self-start text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                variant="ghost" className="self-start text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
                 onClick={() => onCancelRequest(loan)}
               >
                 <Trash2 className="h-4 w-4" />

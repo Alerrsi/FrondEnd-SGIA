@@ -148,7 +148,7 @@ Un `groupBy` fuera de la tabla devuelve error. **No existe** `CAREERS.level`: qu
 - El catálogo no distingue equipo de insumo: `EQUIPMENT` (inventario) y `SUPPLIES` (consumo) usan los mismos productos. Separarlos requeriría un campo `tipo` en productos.
 - No hay datos de nivel de carrera (`CAREERS.level`).
 - `title` se ignora; el título del gráfico lo pone el frontend.
-- Los endpoints REST `GET /api/dashboard/*` siguen vivos pero son legado; los gráficos nuevos deben usar GraphQL.
+- Los endpoints REST `GET /api/dashboard/*` se eliminaron: los dashboards usan solo GraphQL (`POST /api/metrics`).
 
 ## 9. Checklist de implementación
 

@@ -28,6 +28,7 @@ import { UploadInvoiceIntakeDialog } from '@/features/ingresos-factura/component
 import { ProductoDetailDialog } from '../components/producto-detail-dialog';
 import { ProductoFormDialog } from '../components/producto-form-dialog';
 import { ReubicarProductoModal } from '../components/reubicar-producto-modal';
+import { PageHeading } from '@/components/ui/page-heading';
 
 export default function ProductosListPage() {
   const { user } = useAuth();
@@ -182,15 +183,12 @@ export default function ProductosListPage() {
   };
 
   return (
-    <div className="flex flex-col gap-3.5">
+    <div className="flex flex-col gap-4">
       {/* 1. Encabezado Técnico Compacto y Acciones */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between pb-1">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <Boxes className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-            Control de Inventario y Activos
-          </h1>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <PageHeading icon={Boxes} title="Control de inventario y activos">
+          Productos, insumos y equipos del pañol con su stock, ubicación y estado.
+        </PageHeading>
 
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {canScanInvoice && (
@@ -206,7 +204,7 @@ export default function ProductosListPage() {
           )}
 
           {/* CTA Principal: Monocromático de alto contraste técnico */}
-          <Button onClick={handleOpenCreate} size="sm" className="flex items-center gap-1.5 text-xs h-8">
+          <Button onClick={handleOpenCreate} size="sm" className="flex items-center gap-1.5">
             <Plus className="h-3.5 w-3.5" />
             <span>Dar de alta producto</span>
           </Button>
@@ -216,14 +214,14 @@ export default function ProductosListPage() {
       {/* 2. Barra métrica horizontal compacta (Sustituye tarjetas gigantes de 150px) */}
       <div className="flex flex-wrap items-center gap-4 sm:gap-6 px-4 py-2.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs shadow-xs">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Total Referencias:</span>
+          <span className="text-zinc-500 dark:text-zinc-400">Total referencias:</span>
           <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
             {totalItems}
           </span>
         </div>
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Stock Crítico:</span>
+          <span className="text-zinc-500 dark:text-zinc-400">Stock crítico:</span>
           <span
             className={cn(
               'font-mono font-medium',
@@ -236,7 +234,7 @@ export default function ProductosListPage() {
         <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
         <div className="flex items-center gap-2">
           <span className="text-zinc-500 dark:text-zinc-400">Lector Code128:</span>
-          <span className="font-mono text-zinc-600 dark:text-zinc-400">Listo (Presiona /)</span>
+          <span className="font-mono text-zinc-600 dark:text-zinc-400">Listo (presiona /)</span>
         </div>
       </div>
 

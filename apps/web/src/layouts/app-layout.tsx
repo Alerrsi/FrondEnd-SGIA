@@ -82,7 +82,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/equipos',
-    label: 'Fichas Técnicas',
+    label: 'Fichas técnicas',
     icon: Cpu,
     roles: ROUTE_PERMISSIONS['/equipos'] ?? [],
   },
@@ -149,7 +149,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/alertas',
-    label: 'Stock Crítico',
+    label: 'Stock crítico',
     icon: Bell,
     roles: ROUTE_PERMISSIONS['/alertas'] ?? [],
   },
@@ -296,7 +296,7 @@ export default function AppLayout() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">SGIA · Pañol</p>
-                    <p className="text-[10px] sede-text text-zinc-400">INACAP Sede Temuco</p>
+                    <p className="text-[11px] sede-text text-zinc-400">INACAP Sede Temuco</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -353,7 +353,7 @@ export default function AppLayout() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">{user?.nombre ?? 'Usuario'}</p>
-                    <p className="text-[10px] text-zinc-400 font-mono">{roleLabel}</p>
+                    <p className="text-[11px] text-zinc-400 font-mono">{roleLabel}</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -436,7 +436,7 @@ export default function AppLayout() {
                       <span className="font-mono text-xs font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
                         SGIA · Pañol
                       </span>
-                      <span className="truncate text-[10px] sede-text text-zinc-400 dark:text-zinc-500">
+                      <span className="truncate text-[11px] sede-text text-zinc-400 dark:text-zinc-500">
                         INACAP Sede Temuco
                       </span>
                     </div>
@@ -501,14 +501,14 @@ export default function AppLayout() {
                   {/* Fila Superior: Perfil del Usuario + Botón de Ajustes + Botón Logout */}
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-mono text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 shadow-xs">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-mono text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 shadow-xs">
                         {userInitials}
                       </div>
                       <div className="flex flex-col min-w-0 flex-1 pr-1">
                         <span className="truncate text-xs font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
                           {user?.nombre ?? 'Usuario'}
                         </span>
-                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 truncate">
+                        <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500 truncate">
                           {roleLabel}
                         </span>
                       </div>
@@ -595,7 +595,7 @@ export default function AppLayout() {
           <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-6 transition-colors">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs uppercase tracking-wider sede-text text-zinc-400 dark:text-zinc-500">
-                Módulo Activo
+                Módulo activo
               </span>
               <span className="text-zinc-300 dark:text-zinc-700">/</span>
               <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
@@ -618,7 +618,7 @@ export default function AppLayout() {
           </main>
         </div>
 
-        {/* Modal de Ajustes del Sistema y Paleta de Colores (REQ-CONFIG) */}
+        {/* Modal de Ajustes del sistema y Paleta de Colores (REQ-CONFIG) */}
         <SettingsModal
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}

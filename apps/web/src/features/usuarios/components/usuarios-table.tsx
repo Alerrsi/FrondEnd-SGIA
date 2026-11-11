@@ -34,6 +34,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { formatRun } from '../lib/run';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const columnHelper = createColumnHelper<UsuarioSinPassword>();
 
@@ -43,7 +45,7 @@ const accessorColumns = [
     cell: (info) => {
       const val = info.getValue();
       return (
-        <span className="font-mono text-xs text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 tabular-nums">
+        <span className={CODE_CHIP_CLASS}>
           {val ? formatRun(val) : '—'}
         </span>
       );
@@ -68,7 +70,7 @@ const accessorColumns = [
   columnHelper.accessor('rol', {
     header: 'Rol',
     cell: (info) => (
-      <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300 bg-zinc-100/70 dark:bg-zinc-800/80 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">
+      <span className={CODE_CHIP_CLASS}>
         {ROLE_LABELS[info.getValue()] ?? info.getValue()}
       </span>
     ),
@@ -118,7 +120,7 @@ const accessorColumns = [
 ];
 
 const controlClasses =
-  'h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2.5 font-mono text-xs text-zinc-800 dark:text-zinc-200 transition-colors placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600';
+  FILTER_CONTROL_CLASS;
 
 export const estadoOptions = [
   { value: 'todos', label: 'Todos los estados' },
@@ -310,7 +312,7 @@ export function UsuariosTable({
                 <X className="h-3.5 w-3.5" />
               </button>
             ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[10px] text-zinc-400">
+              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
                 /
               </kbd>
             )}
@@ -384,7 +386,7 @@ export function UsuariosTable({
 
         {isFetching && (
           <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-400" />
+            <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
             <span>Actualizando…</span>
           </div>
         )}
@@ -393,14 +395,14 @@ export function UsuariosTable({
       {/* TanStack Table */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-sm">
-          <thead className="bg-zinc-50/90 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-semibold font-mono">
+          <thead className={TABLE_HEAD_CLASS}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
                   return (
-                    <th key={header.id} className="px-3.5 py-2.5">
+                    <th key={header.id} className="px-4 py-2.5 font-medium">
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
@@ -432,7 +434,7 @@ export function UsuariosTable({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="px-4 py-12 text-center text-xs text-zinc-500 dark:text-zinc-400 font-mono"
+                  className={`px-4 py-12 ${STATE_TEXT_CLASS}`}
                 >
                   No se encontraron usuarios con los filtros aplicados.
                 </td>
@@ -444,7 +446,7 @@ export function UsuariosTable({
                   className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-3.5 py-2">
+                    <td key={cell.id} className="px-4 py-2.5">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const controlClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  FORM_CONTROL_CLASS;
 
 export function AgregarUnidadesDialog({
   open,
@@ -122,7 +123,7 @@ export function AgregarUnidadesDialog({
             disabled={invalid || createUnits.isPending}
             onClick={handleSubmit}
           >
-            {createUnits.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {createUnits.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Agregar
           </Button>
         </div>

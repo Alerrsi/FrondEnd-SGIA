@@ -1,3 +1,4 @@
+import type { ChartTemplate } from '@sgia/types';
 import {
   AGGREGATIONS_BY_ENTITY,
   GROUP_BY_OPTIONS_BY_ENTITY,
@@ -33,7 +34,10 @@ export function sanitizeCharts(charts: MetricQueryInput[]): MetricQueryInput[] {
   return charts.map(sanitizeChart);
 }
 
-/** Dos gráficos son duplicados si piden exactamente la misma consulta. */
+/**
+ * Dos gráficos son el mismo si piden la misma consulta con el mismo tipo de gráfico (misma regla
+ * que el backend). El título y `limit` no cuentan: el servidor no guarda `limit`.
+ */
 export function isSameChart(a: MetricQueryInput, b: MetricQueryInput): boolean {
   return (
     a.entity === b.entity &&
@@ -42,7 +46,19 @@ export function isSameChart(a: MetricQueryInput, b: MetricQueryInput): boolean {
     a.timeRange === b.timeRange &&
     (a.groupBy ?? '') === (b.groupBy ?? '') &&
     (a.dateFrom ?? '') === (b.dateFrom ?? '') &&
-    (a.dateTo ?? '') === (b.dateTo ?? '') &&
-    (a.limit ?? 0) === (b.limit ?? 0)
+    (a.dateTo ?? '') === (b.dateTo ?? '')
   );
+}
+
+/** Consulta por defecto de una plantilla del servidor; `null` en las genéricas (sin consulta). */
+export function templateToInput(template: ChartTemplate): MetricQueryInput | null {
+  if (!template.entity || !template.metric || !template.period || !template.chart_type) return null;
+  return {
+    title: template.name,
+    entity: template.entity,
+    metric: template.metric,
+    timeRange: template.period,
+    chartType: template.chart_type,
+    ...(template.group_by ? { groupBy: template.group_by } : {}),
+  };
 }

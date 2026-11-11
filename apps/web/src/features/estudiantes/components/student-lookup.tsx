@@ -6,9 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import type { StudentBorrower } from '@/features/estudiantes/lib/student-borrower';
 import { validateRun, normalizeStoredRun } from '@/features/usuarios/lib/run';
 import { apiErrorToMessage } from '@/lib/api-error';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  'h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none';
+  FORM_CONTROL_CLASS;
 
 /**
  * Escanear o digitar el RUT (+ Enter): 200 → muestra el estudiante; 404 → pide el nombre (opcional)
@@ -53,7 +55,7 @@ export function StudentLookup({
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <label htmlFor="student_rut" className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="student_rut" className={FIELD_LABEL_CLASS}>
           RUT del estudiante <span className="text-red-500">*</span>
         </label>
         <input
@@ -110,7 +112,7 @@ export function StudentLookup({
           <Badge tone="warning" icon={<UserPlus className="h-3 w-3" />}>
             No registrado: se creará al confirmar
           </Badge>
-          <label htmlFor="student_name" className="font-mono text-[11px] text-zinc-600">
+          <label htmlFor="student_name" className={FIELD_LABEL_CLASS}>
             Nombre (opcional)
           </label>
           <input

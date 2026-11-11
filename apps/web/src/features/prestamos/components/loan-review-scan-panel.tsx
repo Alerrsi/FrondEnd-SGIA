@@ -5,6 +5,7 @@ import { MapPin, ScanLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scanUnit, type ReviewSelection } from '@/features/prestamos/lib/loan-review-selection';
 import { playScannerBeep } from '@/lib/audio';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 interface LoanReviewScanPanelProps {
   item: LoanReviewItem;
@@ -76,7 +77,7 @@ export function LoanReviewScanPanel({
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-1">
-        <label htmlFor={fieldId} className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor={fieldId} className={FIELD_LABEL_CLASS}>
           Código de la unidad
         </label>
         <div className="flex flex-col gap-1.5 sm:flex-row">
@@ -96,7 +97,7 @@ export function LoanReviewScanPanel({
             }}
             className="h-8 min-w-0 flex-1 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
           />
-          <Button type="button" variant="ghost" size="sm" onClick={onCancel} className="h-8 text-xs">
+          <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
             Cancelar
           </Button>
         </div>

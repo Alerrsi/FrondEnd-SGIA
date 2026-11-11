@@ -14,6 +14,8 @@ import {
 import { StoreroomFormDialog } from '@/features/administracion/components/storeroom-form-dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 export default function PanolesPage() {
   const [search, setSearch] = useState('');
@@ -39,17 +41,10 @@ export default function PanolesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <Warehouse className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-            Pañoles
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Pañoles de la sede, con sus salas y usuarios asignados.
-          </p>
-        </div>
+        <PageHeading icon={Warehouse} title="Pañoles">
+          Pañoles de la sede, con sus salas y usuarios asignados.
+        </PageHeading>
         <Button
-          className="text-xs"
           onClick={() => {
             setEditing(null);
             setFormOpen(true);
@@ -72,7 +67,7 @@ export default function PanolesPage() {
           />
         </div>
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando pañoles…</div>
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando pañoles…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle className="h-5 w-5 shrink-0" />
@@ -80,8 +75,8 @@ export default function PanolesPage() {
           </div>
         ) : (
           <table className="w-full border-collapse text-left text-xs">
-            <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
                 {['Código', 'Nombre', 'Ubicación', 'Salas', 'Usuarios', ''].map((h) => (
                   <th key={h || 'actions'} className="px-4 py-2.5 font-medium">
                     {h || <span className="sr-only">Acciones</span>}
@@ -92,7 +87,7 @@ export default function PanolesPage() {
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
               {(data?.data ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-zinc-400">
+                  <td colSpan={6} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
                     No hay pañoles registrados.
                   </td>
                 </tr>
@@ -100,7 +95,7 @@ export default function PanolesPage() {
               {data?.data.map((st) => (
                 <tr key={String(st.id)} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
                   <td className="px-4 py-2.5">
-                    <span className="font-mono px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/60">
+                    <span className={CODE_CHIP_CLASS}>
                       {st.code}
                     </span>
                   </td>

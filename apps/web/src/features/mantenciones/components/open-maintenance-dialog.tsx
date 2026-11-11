@@ -11,10 +11,12 @@ import {
 } from '@/features/mantenciones/lib/maintenance-labels';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const controlClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
-const labelClasses = 'text-xs font-semibold uppercase tracking-wider text-zinc-500 font-mono';
+  FORM_CONTROL_CLASS;
+const labelClasses = FIELD_LABEL_CLASS;
 const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
 
 /** "Enviar a mantención": abre una mantención `en_curso` (la unidad pasa a `en_reparacion`). */

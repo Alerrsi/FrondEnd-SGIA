@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
-  DashboardAnalyticsParams,
   EquipmentQueryParams,
   EquipmentReportQueryParams,
   EquipmentSpecs,
@@ -8,18 +7,11 @@ import type {
 } from '@sgia/types';
 import {
   downloadEquipmentReports,
-  fetchCareersDistribution,
-  fetchDashboardStats,
   fetchEquipo,
   fetchEquipmentReports,
   fetchEquipmentSpecs,
   fetchEquipmentTechnicalSheet,
   fetchEquipos,
-  fetchLeastDemanded,
-  fetchLoansByTeacher,
-  fetchTopProducts,
-  fetchTopSupplies,
-  fetchTopTeachers,
   updateEquipmentSpecs,
 } from '../services/equipments';
 
@@ -29,16 +21,6 @@ export const equipmentKeys = {
   specs: (id: number) => ['equipment', 'specs', id] as const,
   detail: (id: number) => ['equipment', 'detail', id] as const,
   reports: (id: number, params?: EquipmentReportQueryParams) => ['equipment', 'reports', id, params] as const,
-};
-
-export const dashboardKeys = {
-  stats: ['dashboard', 'stats'] as const,
-  topProducts: (params?: DashboardAnalyticsParams) => ['dashboard', 'top-products', params] as const,
-  topSupplies: (params?: DashboardAnalyticsParams) => ['dashboard', 'top-supplies', params] as const,
-  careersDistribution: (params?: { since?: string }) => ['dashboard', 'careers-distribution', params] as const,
-  leastDemanded: (params?: DashboardAnalyticsParams) => ['dashboard', 'least-demanded', params] as const,
-  topTeachers: (params?: DashboardAnalyticsParams) => ['dashboard', 'top-teachers', params] as const,
-  loansByTeacher: ['dashboard', 'loans-by-teacher'] as const,
 };
 
 export function useEquipos(params?: EquipmentQueryParams) {
@@ -109,54 +91,5 @@ export function useDownloadEquipmentReports() {
       }
       return downloadEquipmentReports(arg.id, arg.params);
     },
-  });
-}
-
-export function useDashboardStats() {
-  return useQuery({
-    queryKey: dashboardKeys.stats,
-    queryFn: fetchDashboardStats,
-  });
-}
-
-export function useTopProducts(params?: DashboardAnalyticsParams) {
-  return useQuery({
-    queryKey: dashboardKeys.topProducts(params),
-    queryFn: () => fetchTopProducts(params),
-  });
-}
-
-export function useTopSupplies(params?: DashboardAnalyticsParams) {
-  return useQuery({
-    queryKey: dashboardKeys.topSupplies(params),
-    queryFn: () => fetchTopSupplies(params),
-  });
-}
-
-export function useCareersDistribution(params?: { since?: string }) {
-  return useQuery({
-    queryKey: dashboardKeys.careersDistribution(params),
-    queryFn: () => fetchCareersDistribution(params),
-  });
-}
-
-export function useLeastDemanded(params?: DashboardAnalyticsParams) {
-  return useQuery({
-    queryKey: dashboardKeys.leastDemanded(params),
-    queryFn: () => fetchLeastDemanded(params),
-  });
-}
-
-export function useTopTeachers(params?: DashboardAnalyticsParams) {
-  return useQuery({
-    queryKey: dashboardKeys.topTeachers(params),
-    queryFn: () => fetchTopTeachers(params),
-  });
-}
-
-export function useLoansByTeacher() {
-  return useQuery({
-    queryKey: dashboardKeys.loansByTeacher,
-    queryFn: fetchLoansByTeacher,
   });
 }

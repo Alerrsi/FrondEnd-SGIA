@@ -3,6 +3,7 @@ import type { BudgetSummaryRow } from '@sgia/types';
 
 import { BudgetCard } from '@/features/presupuestos/components/budget-card';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 interface BudgetSummaryGridProps {
   rows: BudgetSummaryRow[];
@@ -21,7 +22,7 @@ export function BudgetSummaryGrid({ rows, ...handlers }: BudgetSummaryGridProps)
 
   if (sorted.length === 0) {
     return (
-      <div className="py-10 text-center text-xs text-zinc-400">
+      <div className={`py-10 ${STATE_TEXT_CLASS}`}>
         No hay presupuestos para el año seleccionado.
       </div>
     );

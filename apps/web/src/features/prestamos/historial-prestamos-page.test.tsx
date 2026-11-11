@@ -229,7 +229,7 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('Historial y Auditoría de Préstamos')).toBeDefined();
+    expect(screen.getByText('Historial y auditoría de préstamos')).toBeDefined();
 
     // Check records rendered
     expect(screen.getByText('PREST-2026-101')).toBeDefined();
@@ -271,7 +271,7 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
     const detailButtons = screen.getAllByTitle('Ver bitácora y detalle');
     await user.click(detailButtons[0]!);
 
-    expect(screen.getByText('Bitácora y Trazabilidad')).toBeDefined();
+    expect(screen.getByText('Bitácora y trazabilidad')).toBeDefined();
     expect(screen.getByText('Solicitud Remota Creada')).toBeDefined();
     expect(screen.getByText(/Pañolero Juan Pérez/i)).toBeDefined();
   });

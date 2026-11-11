@@ -36,6 +36,9 @@ import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { SectionLabel } from '@/components/ui/section-label';
+import { TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 interface PurchaseDetailSheetProps {
   open: boolean;
@@ -44,7 +47,7 @@ interface PurchaseDetailSheetProps {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  FORM_CONTROL_CLASS;
 
 export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailSheetProps) {
   const { user } = useAuth();
@@ -159,7 +162,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
       <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
         <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
           <SheetHeader>
-            <SheetTitle className="font-mono text-zinc-900 dark:text-zinc-100">
+            <SheetTitle className="font-mono">
               Orden {code}
             </SheetTitle>
             <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -218,12 +221,12 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
 
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800 overflow-hidden">
               <table className="w-full text-xs">
-                <thead className="bg-zinc-50 dark:bg-zinc-900 text-zinc-500">
+                <thead className={TABLE_HEAD_CLASS}>
                   <tr>
-                    <th className="px-3 py-2 text-left font-semibold">Ítem</th>
-                    <th className="px-3 py-2 text-right font-semibold">Cant.</th>
-                    <th className="px-3 py-2 text-right font-semibold">P. unit.</th>
-                    <th className="px-3 py-2 text-right font-semibold">Subtotal</th>
+                    <th className="px-3 py-2 text-left font-medium">Ítem</th>
+                    <th className="px-3 py-2 text-right font-medium">Cant.</th>
+                    <th className="px-3 py-2 text-right font-medium">P. unit.</th>
+                    <th className="px-3 py-2 text-right font-medium">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -232,14 +235,14 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                       key={item.id ?? i}
                       className="border-t border-zinc-100 dark:border-zinc-800"
                     >
-                      <td className="px-3 py-1.5 text-zinc-800 dark:text-zinc-200">
+                      <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
                         {item.name ?? `Producto #${item.product_id}`}
                       </td>
-                      <td className="px-3 py-1.5 text-right font-mono">{item.quantity}</td>
-                      <td className="px-3 py-1.5 text-right font-mono">
+                      <td className="px-3 py-2 text-right font-mono">{item.quantity}</td>
+                      <td className="px-3 py-2 text-right font-mono">
                         {formatCLP(item.unit_price)}
                       </td>
-                      <td className="px-3 py-1.5 text-right font-mono">
+                      <td className="px-3 py-2 text-right font-mono">
                         {formatCLP(item.subtotal ?? (item.unit_price ?? 0) * item.quantity)}
                       </td>
                     </tr>
@@ -265,7 +268,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             )}
 
             {purchase.arrival_document_url && (
-              <Button variant="outline" onClick={handleDownload} className="text-xs">
+              <Button variant="outline" onClick={handleDownload}>
                 <FileDown className="h-4 w-4" />
                 Ver documento de llegada
               </Button>
@@ -291,7 +294,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 {canReceive && (
                   <Button onClick={() => setConfirmReceive(true)} className="text-xs">
                     <PackageCheck className="h-4 w-4" />
-                    Confirmar llegada / Marcar completa
+                    Confirmar llegada / marcar completa
                   </Button>
                 )}
               </div>
@@ -302,10 +305,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 onSubmit={handleScan}
                 className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3"
               >
-                <h3 className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                  <ScanLine className="h-3.5 w-3.5" />
-                  Registrar guía / factura de llegada
-                </h3>
+                <SectionLabel icon={ScanLine}>Registrar guía / factura de llegada</SectionLabel>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   Al registrarla la orden pasa a completa y se lee la factura por OCR.
                 </p>
@@ -336,7 +336,6 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 <Button
                   type="submit"
                   disabled={!hasScanInput || scanArrival.isPending}
-                  className="text-xs"
                 >
                   {scanArrival.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                   Registrar y completar
@@ -345,7 +344,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             )}
 
             {canRegisterInvoice && (
-              <Button variant="outline" onClick={goToInvoice} className="text-xs">
+              <Button variant="outline" onClick={goToInvoice}>
                 <ReceiptText className="h-4 w-4" />
                 Registrar factura e ingresar stock
               </Button>

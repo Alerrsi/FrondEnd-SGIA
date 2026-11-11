@@ -5,9 +5,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiRequestError, buildMetricInput, fetchCustomMetric, fetchExecutiveKpis } from '@sgia/api-client';
 import { DynamicChartCard } from './components/dynamic-chart-card';
 import { ChartConfigModal } from './components/chart-config-modal';
-import { sanitizeChart } from './lib/chart-config';
+import { isSameChart, sanitizeChart } from './lib/chart-config';
 import { buildChartData, formatValue, truncateLabel } from './lib/chart-format';
 import { mockMetricsApi, type MetricsRequest } from './metrics-api-mock';
+import type { ChartTemplate } from '@sgia/types';
 import type { MetricQueryInput, MetricResult } from './types/metrics';
 
 vi.mock('react-chartjs-2', () => ({
@@ -172,6 +173,51 @@ describe('REQ-14: menú de configuración de gráficos', () => {
       expect.objectContaining({ timeRange: 'CUSTOM', dateFrom: '2026-10-01' }),
       undefined,
     );
+  });
+
+  it('sugiere las plantillas del servidor de su tipo que aún no están en el panel', () => {
+    const template = (id: number, name: string, query: Partial<ChartTemplate>): ChartTemplate => ({
+      id,
+      code: `t${id}`,
+      name,
+      visualization_type: 'bar',
+      chart_type: 'BAR',
+      entity: 'TEACHERS',
+      metric: 'COUNT',
+      group_by: null,
+      period: 'SEMESTER_CURRENT',
+      ...query,
+    });
+    renderWithClient(
+      <ChartConfigModal
+        open
+        onClose={vi.fn()}
+        onConfirm={vi.fn()}
+        chartType="BAR"
+        currentCharts={[
+          { entity: 'ALERTS', metric: 'COUNT', timeRange: 'LAST_30_DAYS', chartType: 'BAR', groupBy: 'criticality' },
+        ]}
+        templates={[
+          template(1, 'Genérica', { entity: null, metric: null, period: null }),
+          template(2, 'Ranking de docentes', {}),
+          template(3, 'Préstamos por estado', { chart_type: 'DOUGHNUT', entity: 'LOANS', group_by: 'status' }),
+          template(4, 'Alertas por criticidad', { entity: 'ALERTS', group_by: 'criticality', period: 'LAST_30_DAYS' }),
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Ranking de docentes' })).toBeDefined();
+    // Genérica (sin consulta), de otro tipo y ya presente en el panel: no se ofrecen
+    expect(screen.queryByRole('button', { name: 'Genérica' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Préstamos por estado' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Alertas por criticidad' })).toBeNull();
+  });
+
+  it('considera repetido un gráfico aunque cambie el título o el máximo de elementos', () => {
+    const base: MetricQueryInput = { entity: 'LOANS', metric: 'COUNT', timeRange: 'LAST_30_DAYS', chartType: 'DOUGHNUT', groupBy: 'status' };
+    expect(isSameChart(base, { ...base, title: 'Otro', limit: 8 })).toBe(true);
+    expect(isSameChart(base, { ...base, chartType: 'BAR' })).toBe(false);
+    expect(isSameChart(base, { ...base, timeRange: 'LAST_7_DAYS' })).toBe(false);
   });
 
   it('rechaza un gráfico idéntico a uno existente', async () => {

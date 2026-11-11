@@ -12,6 +12,9 @@ import {
 import { Card } from '@/components/ui/card';
 import { useLoans } from '@sgia/api-client';
 import { LoanStatus } from '@sgia/types';
+import { PageHeading } from '@/components/ui/page-heading';
+import { SectionTitle } from '@/components/ui/section-title';
+import { Badge } from '@/components/ui/badge';
 
 export default function PrestamosMenuPage() {
   const navigate = useNavigate();
@@ -26,20 +29,14 @@ export default function PrestamosMenuPage() {
   const overdueCount = overdueLoans?.meta?.total ?? 0;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {/* Encabezado */}
-      <div className="flex flex-col gap-1 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <CalendarClock className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Centro Operativo de Préstamos
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Selecciona el módulo de atención para despachos remotos, mesón presencial o auditoría histórica.
-            </p>
-          </div>
+          <PageHeading icon={CalendarClock} title="Centro operativo de préstamos">
+            Selecciona el módulo de atención para despachos remotos, mesón presencial o auditoría histórica.
+          </PageHeading>
         </div>
       </div>
 
@@ -55,15 +52,11 @@ export default function PrestamosMenuPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 group-hover:scale-105 transition-transform">
                 <ScanLine className="h-5 w-5" />
               </div>
-              <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
-                Lector Code128
-              </span>
+              <Badge tone="success" mono>Lector Code128</Badge>
             </div>
 
             <div>
-              <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
-                Mostrador y Devoluciones
-              </h2>
+              <SectionTitle className="group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">Mostrador y devoluciones</SectionTitle>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Entrega presencial directa con escáner de credencial y códigos de barra, más recepción de materiales.
               </p>
@@ -76,12 +69,12 @@ export default function PrestamosMenuPage() {
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
-            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Ir al Mostrador</span>
+            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Ir al mostrador</span>
             <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-all" />
           </div>
         </Card>
 
-        {/* 2. Cola Remota */}
+        {/* 2. Cola remota */}
         <Card
           className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer group"
           onClick={() => navigate('/prestamos/cola')}
@@ -92,18 +85,14 @@ export default function PrestamosMenuPage() {
                 <Clock className="h-5 w-5" />
               </div>
               {pendingCount > 0 ? (
-                <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60">
-                  {pendingCount} Pendientes
-                </span>
+                <Badge tone="warning" mono>{pendingCount} Pendientes</Badge>
               ) : (
                 <span className="font-mono text-[11px] text-zinc-400">Al día</span>
               )}
             </div>
 
             <div>
-              <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
-                Cola de Solicitudes Remotas
-              </h2>
+              <SectionTitle className="group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">Cola de solicitudes remotas</SectionTitle>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Bandeja de pedidos enviados por docentes desde la app móvil. Preparación anticipada y aprobación.
               </p>
@@ -116,7 +105,7 @@ export default function PrestamosMenuPage() {
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
-            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Ver Cola de Despacho</span>
+            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Ver cola de despacho</span>
             <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-all" />
           </div>
         </Card>
@@ -132,17 +121,12 @@ export default function PrestamosMenuPage() {
                 <History className="h-5 w-5" />
               </div>
               {overdueCount > 0 && (
-                <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60 flex items-center gap-1">
-                  <AlertTriangle className="h-3 w-3" />
-                  {overdueCount} Atrasados
-                </span>
+                <Badge tone="danger" mono icon={<AlertTriangle className="h-3 w-3" />}>{overdueCount} Atrasados</Badge>
               )}
             </div>
 
             <div>
-              <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
-                Historial y Auditoría
-              </h2>
+              <SectionTitle className="group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">Historial y auditoría</SectionTitle>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Trazabilidad completa, bitácora de eventos, reportes en PDF y Excel para fin de semestre.
               </p>
@@ -155,7 +139,7 @@ export default function PrestamosMenuPage() {
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
-            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Consultar Historial</span>
+            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Consultar historial</span>
             <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-all" />
           </div>
         </Card>

@@ -159,12 +159,12 @@ export function DragGhostPreview({
             <div className="text-xs font-bold text-zinc-100 leading-tight">
               {config.title}
             </div>
-            <div className="text-[10px] text-zinc-400 font-mono leading-none">
+            <div className="text-[11px] text-zinc-400 font-mono leading-none">
               {config.subtitle}
             </div>
           </div>
         </div>
-        <Badge tone="danger" className="text-[10px] font-mono px-1.5 py-0.5">
+        <Badge tone="danger" className="text-[11px] font-mono px-1.5 py-0.5">
           {config.badge}
         </Badge>
       </div>
@@ -179,7 +179,7 @@ export function DragGhostPreview({
           <span className="h-2 w-2 rounded-full bg-sky-500 animate-ping" />
           Arrastrando gráfico...
         </span>
-        <span className="text-zinc-500 text-[10px]">Suelta en una zona</span>
+        <span className="text-zinc-500 text-[11px]">Suelta en una zona</span>
       </div>
     </div>
   );

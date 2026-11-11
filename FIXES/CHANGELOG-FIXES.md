@@ -622,3 +622,42 @@
   2. Clase `.sidebar-scroll` (expandido) con scrollbar fina. En el modo encogido el `bar-well` recorta y la `.gnav` interna hace scroll sin scrollbar, con los bordes redondeados intactos.
   3. Hook `useScrollFade`: marca `data-fade-top` / `data-fade-bottom` para difuminar el borde por donde queda contenido oculto (indica que hay más opciones) y desplaza el módulo activo hasta dejarlo visible.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` (74 archivos, 408 tests) en verde. Revisión visual con Chromium headless como AD-01 a 560, 620, 768, 900 y 1080px de alto, expandido y encogido, con la ruta activa al inicio y al final de la lista (`/auditoria`).
+
+---
+
+## FIX-036: Tipografía de títulos y cabeceras distinta entre vistas
+
+- **Fecha:** 2026-11-11
+- **Módulo:** Todas las vistas de `apps/web`
+- **Archivos Modificados:**
+  - Nuevos: `apps/web/src/components/ui/typography.ts`, `page-heading.tsx`, `section-title.tsx`, `section-label.tsx`
+  - Las 26 páginas de `features/*/pages` y los paneles, sheets y tablas con títulos propios
+  - `.claude/skills/sgia-design/SKILL.md` (escala tipográfica)
+- **Causa:** cada vista escribía a mano las clases de sus títulos. Desvíos encontrados: `h1` en `text-lg` (cola de préstamos), en `font-mono` o sin icono; subtítulo `text-xs sm:text-sm` (equipos); cabecera de página con borde inferior solo en 4 vistas; títulos de sección en `font-bold` o `font-semibold`; rótulos en mayúsculas con 5 combinaciones de color, `font-mono` y tamaño de icono; 12 variantes de cabecera de tabla (`text-[10px]`/`[11px]`, con y sin mono).
+- **Solución:** escala única (`PageHeading`, `SectionTitle`, `SectionLabel`, `TABLE_HEAD_CLASS`) aplicada a todas las vistas. Cabecera de página sin borde inferior y con el mismo layout. La cola de préstamos pierde la miga de pan (ninguna otra vista la tenía) y gana icono.
+- **Texto de los títulos:** todos en mayúscula inicial tipo oración ("Órdenes de compra", no "Órdenes de Compra"); 12 títulos de página y 4 de sección ajustados. Inventario gana subtítulo (era la única vista sin él).
+- **No incluido:** etiquetas de formulario y el peso de cada `<th>`.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` (74 archivos, 412 tests) en verde. Sin revisión visual en navegador.
+
+---
+
+## FIX-037: Discrepancias de diseño entre vistas (campos, tablas, tarjetas, botones, textos)
+
+- **Fecha:** 2026-11-11
+- **Módulo:** Todas las vistas de `apps/web` (137 archivos; solo clases y textos, sin lógica)
+- **Archivos nuevos:** `apps/web/src/components/ui/form-control.ts`; constantes nuevas en `typography.ts` (`FIELD_LABEL_CLASS`, `CODE_CHIP_CLASS`, `STATE_TEXT_CLASS`).
+- **Solución, por discrepancia:**
+  1. Títulos de panel lateral: `SheetTitle` sin overrides (había `text-lg`, bold, semibold).
+  2. Tablas: dos densidades (`px-4 py-2.5` en listados, `px-3 py-2` en tablas internas) aplicadas a 186 celdas de 28 tablas; `<th>` en `font-medium`.
+  3. Etiquetas de campo: una sola clase (antes 9 copias y 5 estilos sueltos), sin `font-mono`.
+  4. Campos: 36 definiciones reducidas a `FORM_CONTROL_CLASS` y `FILTER_CONTROL_CLASS`.
+  5. Botones: fuera `text-xs` y alturas por `className`; el dashboard pierde sus botones celeste y verde (CTA monocromo, como pide el skill).
+  6. Tarjetas: `rounded-md` + `shadow-xs` (incluido `Card`).
+  7. Raíz de página: `gap-4` en todas.
+  8. Pastillas a mano → `Badge`; chips de código → `CODE_CHIP_CLASS`.
+  9. Texto micro: `text-[10px]` y `[9px]` → `text-[11px]` (67 usos).
+  10. `Loader2` a `h-4 w-4`; 68 mensajes de carga y vacío con `STATE_TEXT_CLASS` (sin mono).
+  11. Textos de interfaz en mayúscula tipo oración (138 textos: botones, menú, modales, estados). Se conservan nombres propios, siglas, nombres de paletas y la marca del login.
+- **No incluido:** botones `<button>` con estilo dinámico (pestañas, chips de filtro, cabeceras ordenables), campos compactos `h-7` dentro de tablas y la app móvil.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` (74 archivos, 412 tests) en verde. Sin revisión visual en navegador.
+

@@ -14,11 +14,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCLP } from '@/features/compras/lib/format';
 import { MOVEMENT_TYPES, movementMeta } from '@/features/presupuestos/lib/movement-labels';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const columnHelper = createColumnHelper<BudgetMovement>();
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  FILTER_CONTROL_CLASS;
 
 const dateTime = (value: string) =>
   value
@@ -162,7 +164,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           }}
           className={controlClasses}
         />
-        {isFetching && <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-400" />}
+        {isFetching && <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />}
       </div>
 
       <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
@@ -171,7 +173,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             {table.getHeaderGroups().map((hg) => (
               <tr
                 key={hg.id}
-                className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+                className={TABLE_HEAD_CLASS}
               >
                 {hg.headers.map((h) => (
                   <th
@@ -191,14 +193,14 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
             {isLoading && (
               <tr>
-                <td colSpan={columns.length} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={columns.length} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                   Cargando movimientos…
                 </td>
               </tr>
             )}
             {!isLoading && table.getRowModel().rows.length === 0 && (
               <tr>
-                <td colSpan={columns.length} className="px-3 py-6 text-center text-zinc-400">
+                <td colSpan={columns.length} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                   Sin movimientos para el filtro.
                 </td>
               </tr>

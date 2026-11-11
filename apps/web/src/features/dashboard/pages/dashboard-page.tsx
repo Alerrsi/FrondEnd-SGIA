@@ -20,7 +20,7 @@ import { WidgetPaletteDrawer } from '../components/widget-palette-drawer';
 import { ChartConfigModal } from '../components/chart-config-modal';
 import { DropZone } from '../components/drop-zone';
 import { DragGhostPreview } from '../components/drag-ghost-preview';
-import { useMyPanel, pickGenericTemplate } from '../hooks/use-my-panel';
+import { PanelBusyError, useMyPanel, pickTemplateFor } from '../hooks/use-my-panel';
 import {
   MAX_CHARTS,
   type ChartType,
@@ -30,6 +30,9 @@ import {
 import type { ChartTemplate } from '@sgia/types';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { SectionLabel } from '@/components/ui/section-label';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 export default function DashboardPage() {
   const {
@@ -41,9 +44,8 @@ export default function DashboardPage() {
   // Panel personal (REQ-15): los gráficos viven en el servidor (`/api/me/charts`), máximo 5.
   const panel = useMyPanel();
   const panelCharts = panel.visible;
-  const charts = panelCharts.map((c) => c.input);
 
-  // Modo Edición / Visualización
+  // Modo edición / Visualización
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // Paleta lateral de widgets genéricos
@@ -71,6 +73,7 @@ export default function DashboardPage() {
       await action();
       if (successMessage) toast.success(successMessage);
     } catch (error) {
+      if (error instanceof PanelBusyError) return;
       toast.error(apiErrorToMessage(error));
     }
   };
@@ -128,10 +131,14 @@ export default function DashboardPage() {
       toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por usuario`);
       return;
     }
+    if (panel.hasTemplate(template)) {
+      toast.error(`"${template.name}" ya está en tu panel`);
+      return;
+    }
     void run(() => panel.addChart(template), `Gráfico "${template.name}" añadido a tu panel`);
   };
 
-  // Toggle de Modo Edición con persistencia explícita en "Guardar y Salir"
+  // Toggle de Modo edición con persistencia explícita en "Guardar y salir"
   const handleToggleEditMode = () => {
     if (isEditMode) {
       setIsEditMode(false);
@@ -181,13 +188,14 @@ export default function DashboardPage() {
     }, 80);
   };
 
-  // Añade un gráfico al panel: se crea en el servidor desde la plantilla genérica de su forma
+  // Añade un gráfico al panel: queda asociado a la plantilla del servidor con esa misma consulta
+  // o, si es una consulta propia, a la plantilla genérica de su forma
   const addChartToPanel = async (newChart: MetricQueryInput, targetIndex?: number) => {
     if (!panel.canAdd) {
       toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por usuario`);
       return;
     }
-    const template = pickGenericTemplate(panel.templates, newChart.chartType);
+    const template = pickTemplateFor(panel.templates, newChart);
     if (!template) {
       toast.error('No hay plantillas de gráfico disponibles en el servidor.');
       return;
@@ -284,7 +292,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {/* Visualización flotante del gráfico en movimiento que sigue el cursor del mouse */}
       <DragGhostPreview
         chartType={draggedWidgetType}
@@ -293,54 +301,43 @@ export default function DashboardPage() {
       />
 
       {/* Encabezado Superior */}
-      <div className="flex flex-col gap-1 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Dashboards Analíticos y Métricas
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Métricas del pañol. Arrastra un gráfico desde el catálogo o pulsa Añadir, y elige qué datos mostrar.
-            </p>
-          </div>
+          <PageHeading icon={BarChart3} title="Dashboards analíticos y métricas">
+            Métricas del pañol. Arrastra un gráfico desde el catálogo o pulsa Añadir, y elige qué datos mostrar.
+          </PageHeading>
 
           <div className="flex flex-wrap items-center gap-2">
-            {/* Botón único para añadir gráficos: Abrir Catálogo de Widgets */}
+            {/* Botón único para añadir gráficos: Abrir catálogo de widgets */}
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleOpenWidgetCatalog}
-              disabled={!panel.canAdd}
-              className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 font-medium"
+              disabled={!panel.canAdd} className="gap-1.5"
             >
               <Palette className="h-3.5 w-3.5" />
-              <span>Abrir Catálogo de Widgets ({panel.total}/5)</span>
+              <span>Abrir catálogo de widgets ({panel.total}/5)</span>
             </Button>
 
-            {/* Toggle Modo Edición / Guardar y Salir */}
+            {/* Toggle Modo edición / Guardar y salir */}
             <Button
               type="button"
               variant={isEditMode ? 'primary' : 'outline'}
               size="sm"
               onClick={handleToggleEditMode}
-              className={`text-xs gap-1.5 ${
-                isEditMode
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 shadow-xs'
-                  : ''
-              }`}
+              className="gap-1.5"
             >
               {isEditMode ? (
                 <>
                   <Check className="h-3.5 w-3.5" />
-                  <span>Guardar y Salir</span>
+                  <span>Guardar y salir</span>
                 </>
               ) : (
                 <>
                   <Pencil className="h-3.5 w-3.5" />
-                  <span>Modo Edición</span>
+                  <span>Modo edición</span>
                 </>
               )}
             </Button>
@@ -348,7 +345,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Banner Informativo en Modo Edición */}
+      {/* Banner Informativo en Modo edición */}
       {isEditMode && !isDraggingWidget && (
         <div
           data-testid="edit-mode-banner"
@@ -357,7 +354,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
             <span>
-              <strong>Modo Edición Activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
+              <strong>Modo edición activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
               Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo 5 gráficos simultáneos.
             </span>
           </div>
@@ -370,7 +367,7 @@ export default function DashboardPage() {
             className="text-xs h-7 gap-1 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300"
           >
             <Palette className="h-3 w-3" />
-            <span>Ver Catálogo</span>
+            <span>Ver catálogo</span>
           </Button>
         </div>
       )}
@@ -384,7 +381,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2">
             <Target className="h-4 w-4 text-sky-400 animate-spin" />
             <span>
-              <strong>Zonas de Inserción Enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
+              <strong>Zonas de inserción enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
           </div>
           <span className="text-[11px] text-sky-400">
@@ -397,30 +394,37 @@ export default function DashboardPage() {
       <MetricStrip kpis={kpis} isLoading={isLoadingKpis} error={kpisError} />
 
       {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 5 por usuario) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-2xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
           <LayoutGrid className="h-4 w-4" />
-          <span>Plantillas de Análisis:</span>
+          <span>Plantillas de análisis:</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {panel.templates
             .filter((t) => t.entity !== null)
-            .map((tmpl) => (
-              <Button
-                key={tmpl.id}
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={!panel.canAdd || panel.isMutating}
-                onClick={() => handleAddFromTemplate(tmpl)}
-                title={tmpl.description ?? `Añadir "${tmpl.name}" a tu panel`}
-                className="text-xs gap-1.5 text-zinc-600 dark:text-zinc-400"
-              >
-                <Plus className="h-3 w-3" />
-                <span>{tmpl.name}</span>
-              </Button>
-            ))}
+            .map((tmpl) => {
+              const added = panel.hasTemplate(tmpl);
+              return (
+                <Button
+                  key={tmpl.id}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={added || !panel.canAdd || panel.isMutating}
+                  onClick={() => handleAddFromTemplate(tmpl)}
+                  title={
+                    added
+                      ? `"${tmpl.name}" ya está en tu panel`
+                      : (tmpl.description ?? `Añadir "${tmpl.name}" a tu panel`)
+                  }
+                  className="text-xs gap-1.5 text-zinc-600 dark:text-zinc-400"
+                >
+                  {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                  <span>{tmpl.name}</span>
+                </Button>
+              );
+            })}
           {panel.templates.every((t) => t.entity === null) && (
             <span className="font-mono text-[11px] text-zinc-400">
               {panel.isLoading ? 'Cargando plantillas…' : 'Sin plantillas con consulta predefinida.'}
@@ -457,7 +461,7 @@ export default function DashboardPage() {
                 <Target className="h-6 w-6 animate-spin" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-100">
+                <h3 className="text-sm font-semibold text-zinc-100">
                   {isProminentOver
                     ? '¡Suelta aquí para configurar el gráfico!'
                     : 'Suelta tu gráfico aquí para configurarlo'}
@@ -473,7 +477,7 @@ export default function DashboardPage() {
 
       {/* Grid de Gráficos y Zonas de Soltado (Drag & Drop Canvas) */}
       {panel.isLoading ? (
-        <div className="p-12 text-center font-mono text-xs text-zinc-400">Cargando tu panel…</div>
+        <div className={`p-12 ${STATE_TEXT_CLASS}`}>Cargando tu panel…</div>
       ) : panel.error ? (
         <div
           role="alert"
@@ -481,7 +485,7 @@ export default function DashboardPage() {
         >
           {apiErrorToMessage(panel.error)}
         </div>
-      ) : charts.length === 0 ? (
+      ) : panelCharts.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-center font-mono text-xs text-zinc-400 gap-3">
           <BarChart3 className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
           <p>Tu panel no tiene gráficos visibles. Añade una plantilla o abre el Catálogo de Widgets.</p>
@@ -490,11 +494,10 @@ export default function DashboardPage() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={handleOpenWidgetCatalog}
-              className="text-xs gap-1.5 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400"
+              onClick={handleOpenWidgetCatalog} className="gap-1.5"
             >
               <Palette className="h-3.5 w-3.5" />
-              <span>Abrir Catálogo de Widgets</span>
+              <span>Abrir catálogo de widgets</span>
             </Button>
             {isEditMode && (
               <DropZone
@@ -567,11 +570,9 @@ export default function DashboardPage() {
       {panel.hidden.length > 0 && (
         <section
           aria-label="Gráficos ocultos"
-          className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"
+          className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs"
         >
-          <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
-            Ocultos ({panel.hidden.length})
-          </h2>
+          <SectionLabel as="h2" className="mb-2">Ocultos ({panel.hidden.length})</SectionLabel>
           <ul className="flex flex-col gap-1.5">
             {panel.hidden.map((hiddenChart) => (
               <li key={hiddenChart.id} className="flex items-center justify-between gap-2 text-xs">
@@ -582,8 +583,7 @@ export default function DashboardPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="outline"
-                    className="gap-1 text-xs"
+                    variant="outline" className="gap-1"
                     onClick={() => void run(() => panel.show(hiddenChart.id), 'Gráfico visible de nuevo')}
                   >
                     <Eye className="h-3 w-3" />
@@ -592,8 +592,7 @@ export default function DashboardPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="ghost"
-                    className="text-xs text-rose-600"
+                    variant="ghost" className="text-rose-600"
                     onClick={() => void run(() => panel.remove(hiddenChart.id), 'Gráfico eliminado')}
                   >
                     Eliminar
@@ -624,7 +623,9 @@ export default function DashboardPage() {
           onConfirm={handleConfirmPostDrop}
           chartType={pendingDrop.chartType}
           targetIndex={pendingDrop.targetIndex}
-          currentCharts={charts}
+          currentCharts={panel.inputs}
+          usedSlots={panel.total}
+          templates={panel.templates}
         />
       )}
 
@@ -635,7 +636,7 @@ export default function DashboardPage() {
         onConfirm={handleConfirmDelete}
         title="¿Retirar gráfico del panel?"
         description="Esta visualización será retirada de tu plantilla activa. Puedes volver a agregarla desde el Catálogo de Widgets cuando desees."
-        confirmLabel="Retirar Gráfico"
+        confirmLabel="Retirar gráfico"
         cancelLabel="Conservar"
         variant="danger"
       />

@@ -15,9 +15,12 @@ import {
   MAINTENANCE_TYPE_LABELS,
   PRIORITY_TONE,
 } from '@/features/mantenciones/lib/maintenance-labels';
+import { PageHeading } from '@/components/ui/page-heading';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  FILTER_CONTROL_CLASS;
 
 const STATUS_FILTERS: Array<{ value: MaintenanceStatus | ''; label: string }> = [
   { value: 'en_curso', label: 'En curso' },
@@ -58,7 +61,7 @@ export default function MantencionesPage() {
           {priority ? <Badge tone={PRIORITY_TONE[priority]} mono>{priority}</Badge> : '—'}
         </td>
         <td className="px-4 py-2.5">
-          <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/60">
+          <span className={CODE_CHIP_CLASS}>
             {r.equipment_unit?.code ?? `#${r.equipment_unit_id}`}
           </span>
           <p className="text-[11px] text-zinc-500">{r.equipment_unit?.product?.name}</p>
@@ -79,15 +82,9 @@ export default function MantencionesPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-          <Wrench className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-          Mantenciones
-        </h1>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla.
-        </p>
-      </div>
+      <PageHeading icon={Wrench} title="Mantenciones">
+        Bandeja por prioridad (A primero). Abre una fila para ver el checklist y cerrarla.
+      </PageHeading>
 
       <MaintenanceCareerSummary />
 
@@ -149,7 +146,7 @@ export default function MantencionesPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando mantenciones…</div>
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando mantenciones…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle className="h-5 w-5 shrink-0" />
@@ -158,8 +155,8 @@ export default function MantencionesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
-              <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+              <thead className={TABLE_HEAD_CLASS}>
+                <tr>
                   {['Prior.', 'Unidad', 'Tipo', 'Ejecución', 'Responsable', 'Inicio', 'Estado'].map((h) => (
                     <th key={h} className="px-4 py-2.5 font-medium">
                       {h}
@@ -170,7 +167,7 @@ export default function MantencionesPage() {
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
                 {(data?.data ?? []).length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-zinc-400">
+                    <td colSpan={7} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
                       No hay mantenciones para el filtro seleccionado.
                     </td>
                   </tr>

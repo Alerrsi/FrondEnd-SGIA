@@ -50,6 +50,7 @@ const TEMPLATES = [
   { id: 3, code: 'pie', name: 'Torta', visualization_type: 'pie', chart_type: null, entity: null, metric: null, group_by: null, period: null },
   { id: 4, code: 'kpi', name: 'Indicador', visualization_type: 'kpi', chart_type: null, entity: null, metric: null, group_by: null, period: null },
   { id: 10, code: 'loans-by-status', name: 'Préstamos por estado', visualization_type: 'pie', chart_type: 'DOUGHNUT', entity: 'LOANS', metric: 'COUNT', group_by: 'status', period: 'LAST_30_DAYS' },
+  { id: 11, code: 'top-teachers', name: 'Ranking de docentes', visualization_type: 'bar', chart_type: 'BAR', entity: 'TEACHERS', metric: 'COUNT', group_by: null, period: 'SEMESTER_CURRENT' },
 ];
 
 function fakeChart(id: number, position: number, title: string, q: Record<string, string>): FakeChart {
@@ -113,15 +114,30 @@ export function mockMetricsApi(options: MetricsApiMockOptions = {}) {
       if (method === 'POST') {
         if (charts.length >= 5) return json({ message: 'Ya tienes 5 gráficos.', errors: { position: ['Ya tienes 5 gráficos.'] } }, 422);
         const payload = JSON.parse(String(init?.body)) as Record<string, string>;
+        // Como el backend: lo no enviado se hereda de la plantilla y no se admiten repetidos.
+        const template = TEMPLATES.find((t) => t.id === Number(payload.chart_template_id)) ?? TEMPLATES[0]!;
+        const groupBy = payload.group_by ?? template.group_by;
+        const query = {
+          entity: payload.entity ?? template.entity ?? 'LOANS',
+          metric: payload.metric ?? template.metric ?? 'COUNT',
+          timeRange: payload.period ?? template.period ?? 'LAST_30_DAYS',
+          chartType: payload.type ?? template.chart_type ?? 'BAR',
+          ...(groupBy ? { groupBy } : {}),
+        };
+        const same = (c: FakeChart) =>
+          c.entity === query.entity &&
+          c.metric === query.metric &&
+          c.period === query.timeRange &&
+          c.type === query.chartType &&
+          (c.group_by ?? null) === (groupBy ?? null);
+        if (charts.some(same)) {
+          const message = 'Ya tienes este gráfico en tu panel.';
+          return json({ message, errors: { chart: [message] } }, 422);
+        }
         const used = new Set(charts.map((c) => c.position));
         const position = [1, 2, 3, 4, 5].find((n) => !used.has(n)) as number;
-        const created = fakeChart(nextId++, position, payload.custom_title ?? 'Gráfico', {
-          entity: payload.entity ?? 'LOANS',
-          metric: payload.metric ?? 'COUNT',
-          timeRange: payload.period ?? 'LAST_30_DAYS',
-          chartType: payload.type ?? 'BAR',
-          ...(payload.group_by ? { groupBy: payload.group_by } : {}),
-        });
+        const created = fakeChart(nextId++, position, payload.custom_title ?? template.name, query);
+        created.template = template;
         created.chart_template_id = Number(payload.chart_template_id);
         charts = [...charts, created];
         return json({ data: created }, 201);

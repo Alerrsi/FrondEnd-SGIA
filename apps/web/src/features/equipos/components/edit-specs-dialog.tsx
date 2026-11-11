@@ -6,6 +6,8 @@ import { useUpdateEquipmentSpecs } from '@sgia/api-client';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
+import { SectionLabel } from '@/components/ui/section-label';
+import { FIELD_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 interface EditSpecsDialogProps {
   open: boolean;
@@ -113,7 +115,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
       open={open}
       onClose={onClose}
       hasUnsavedChanges={isDirty}
-      title="Editar Ficha Técnica y Especificaciones"
+      title="Editar ficha técnica y especificaciones"
       description={`Modificando parámetros técnicos y ciclo de vida para ${equipo.nombre} (${equipo.codigo ?? `ID: ${equipo.id}`})`}
       className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
     >
@@ -123,9 +125,9 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="edit-purchase-date"
-              className="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+              className={FIELD_LABEL_CLASS}
             >
-              Fecha de Adquisición
+              Fecha de adquisición
             </label>
             <input
               id="edit-purchase-date"
@@ -135,16 +137,16 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setPurchaseDate(e.target.value);
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="edit-lifespan"
-              className="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+              className={FIELD_LABEL_CLASS}
             >
-              Vida Útil Proyectada (Años)
+              Vida útil proyectada (años)
             </label>
             <input
               id="edit-lifespan"
@@ -156,7 +158,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setLifespanYears(Number(e.target.value));
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
             />
           </div>
 
@@ -164,9 +166,9 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
             <div className="flex items-center justify-between">
               <label
                 htmlFor="edit-manual-url"
-                className="text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className={FIELD_LABEL_CLASS}
               >
-                URL del Manual de Usuario (PDF en AWS S3 / Cloud Storage)
+                URL del manual de usuario (PDF en AWS S3 / Cloud Storage)
               </label>
               {manualUrl && (
                 <a
@@ -188,7 +190,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setManualUrl(e.target.value);
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
             />
           </div>
         </div>
@@ -196,24 +198,21 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
         {/* Tabla de Especificaciones Clave / Valor Dinámicas */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-              Especificaciones Técnicas Detalladas
-            </h4>
+            <SectionLabel as="h4">Especificaciones técnicas detalladas</SectionLabel>
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={handleAddRow}
-              className="h-7 text-xs gap-1"
+              onClick={handleAddRow} className="gap-1"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Agregar parámetro</span>
             </Button>
           </div>
 
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800">
+          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800 shadow-xs">
             {specRows.length === 0 ? (
-              <div className="p-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+              <div className={`p-4 ${STATE_TEXT_CLASS}`}>
                 No hay especificaciones definidas. Haz clic en "Agregar parámetro" para registrar características técnicas.
               </div>
             ) : (
@@ -221,7 +220,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 <div key={idx} className="flex items-center gap-2 p-2">
                   <input
                     type="text"
-                    placeholder="Parámetro (ej: Potencia, Puertos)"
+                    placeholder="Parámetro (ej: potencia, puertos)"
                     value={row.key}
                     onChange={(e) => handleRowChange(idx, 'key', e.target.value)}
                     className="flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950/40 px-2.5 py-1 text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
@@ -232,7 +231,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     placeholder="Valor (ej: 48x GbE PoE+ 370W)"
                     value={row.value}
                     onChange={(e) => handleRowChange(idx, 'value', e.target.value)}
-                    className="flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                    className="flex-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none shadow-xs"
                     aria-label={`Valor de parámetro ${idx + 1}`}
                   />
                   <button

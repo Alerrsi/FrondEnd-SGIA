@@ -1,6 +1,6 @@
 import { usePurchaseTrace } from '@sgia/api-client';
 import type { PurchaseTrace } from '@sgia/types';
-import { AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Loader2, ShoppingCart } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -8,6 +8,8 @@ import { Badge, PurchaseStatusBadge, QuotationStatusBadge } from '@/components/u
 import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { movementMeta } from '@/features/presupuestos/lib/movement-labels';
+import { PageHeading } from '@/components/ui/page-heading';
+import { SectionLabel } from '@/components/ui/section-label';
 
 function Step({ title, empty, children }: { title: string; empty?: string; children?: ReactNode }) {
   const hasContent = Array.isArray(children) ? children.length > 0 : Boolean(children);
@@ -17,9 +19,7 @@ function Step({ title, empty, children }: { title: string; empty?: string; child
         aria-hidden="true"
         className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full border border-zinc-400 bg-white dark:bg-zinc-900"
       />
-      <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {title}
-      </h2>
+      <SectionLabel as="h2">{title}</SectionLabel>
       {hasContent ? (
         <ul className="mt-1.5 flex flex-col gap-1.5">{children}</ul>
       ) : (
@@ -111,9 +111,10 @@ export default function CompraTrazabilidadPage() {
         <ArrowLeft className="h-3.5 w-3.5" />
         Volver a compras
       </Link>
-      <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-        Trazabilidad de la orden {data?.purchase.code ?? (purchaseId ? `#${purchaseId}` : '')}
-      </h1>
+      <PageHeading
+        icon={ShoppingCart}
+        title={`Trazabilidad de la orden ${data?.purchase.code ?? (purchaseId ? `#${purchaseId}` : '')}`}
+      />
       {isLoading && (
         <div role="status" className="flex items-center gap-2 text-xs text-zinc-500">
           <Loader2 className="h-4 w-4 animate-spin" />

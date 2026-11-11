@@ -24,6 +24,8 @@ import type { LocationEntity, CajonEntity } from '@sgia/types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { FIELD_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 export default function UbicacionesPage() {
   const [search, setSearch] = useState('');
@@ -170,20 +172,14 @@ export default function UbicacionesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4">
       {/* Encabezado Principal */}
-      <div className="flex flex-col gap-1 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Layers className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Gestión de Ubicaciones Físicas y Cajones
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol.
-            </p>
-          </div>
+          <PageHeading icon={Layers} title="Gestión de ubicaciones físicas y cajones">
+            Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol.
+          </PageHeading>
 
           <div className="flex items-center gap-2">
             <Button
@@ -200,18 +196,17 @@ export default function UbicacionesPage() {
               type="button"
               variant="primary"
               size="sm"
-              onClick={handleOpenCreateLocation}
-              className="text-xs gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+              onClick={handleOpenCreateLocation} className="gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
             >
               <Plus className="h-3.5 w-3.5" />
-              <span>Nueva Sala / Pañol</span>
+              <span>Nueva sala / pañol</span>
             </Button>
           </div>
         </div>
       </div>
 
       {/* Barra de Filtros */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-2xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
         <div className="flex flex-1 items-center gap-2 min-w-[240px]">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
@@ -251,12 +246,12 @@ export default function UbicacionesPage() {
           </div>
 
           {isLoading ? (
-            <div className="flex items-center justify-center p-8 text-xs font-mono text-zinc-400 gap-2">
+            <div className={`flex items-center justify-center p-8 gap-2 ${STATE_TEXT_CLASS}`}>
               <Loader2 className="h-4 w-4 animate-spin" />
               <span>Cargando ubicaciones…</span>
             </div>
           ) : locations.length === 0 ? (
-            <div className="p-6 text-center text-xs font-mono text-zinc-400">
+            <div className={`p-6 ${STATE_TEXT_CLASS}`}>
               No se encontraron salas o ubicaciones registradas.
             </div>
           ) : (
@@ -283,7 +278,7 @@ export default function UbicacionesPage() {
                         <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                           {loc.nombre}
                         </span>
-                        <div className="flex items-center gap-1.5 text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
+                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
                           <span className="uppercase px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
                             {loc.tipo}
                           </span>
@@ -342,22 +337,21 @@ export default function UbicacionesPage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={handleOpenCreateCajon}
-                  className="text-xs gap-1.5 h-7"
+                  onClick={handleOpenCreateCajon} className="gap-1.5"
                 >
                   <Plus className="h-3 w-3" />
-                  <span>Nuevo Cajón</span>
+                  <span>Nuevo cajón</span>
                 </Button>
               </div>
 
               {isLoadingCajones ? (
-                <div className="flex items-center justify-center p-8 text-xs font-mono text-zinc-400 gap-2">
+                <div className={`flex items-center justify-center p-8 gap-2 ${STATE_TEXT_CLASS}`}>
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span>Cargando compartimientos…</span>
                 </div>
               ) : cajones.length === 0 ? (
                 <div className="p-8 text-center text-xs font-mono text-zinc-400 border border-dashed border-zinc-200 dark:border-zinc-800 rounded">
-                  Esta ubicación no tiene cajones o gavetas configuradas. Pulsa en "Nuevo Cajón" para añadir una.
+                  Esta ubicación no tiene cajones o gavetas configuradas. Pulsa en "Nuevo cajón" para añadir una.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[600px] overflow-y-auto pr-1">
@@ -373,7 +367,7 @@ export default function UbicacionesPage() {
                             {cajon.codigo}
                           </span>
                           {cajon.descripcion && (
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
                               {cajon.descripcion}
                             </span>
                           )}
@@ -396,7 +390,7 @@ export default function UbicacionesPage() {
               )}
             </>
           ) : (
-            <div className="p-12 text-center text-xs font-mono text-zinc-400">
+            <div className={`p-12 ${STATE_TEXT_CLASS}`}>
               Selecciona o crea una sala en la columna izquierda para gestionar sus cajones.
             </div>
           )}
@@ -407,47 +401,47 @@ export default function UbicacionesPage() {
       <Dialog
         open={locationModalOpen}
         onClose={() => setLocationModalOpen(false)}
-        title={editingLocation ? 'Editar Ubicación' : 'Nueva Sala / Ubicación'}
+        title={editingLocation ? 'Editar Ubicación' : 'Nueva Sala / ubicación'}
         description="Define los datos del recinto o sala de pañol."
       >
         <form onSubmit={handleSaveLocation} className="flex flex-col gap-3 py-2">
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              Nombre de la Sala / Recinto *
+            <label className={FIELD_LABEL_CLASS}>
+              Nombre de la sala / recinto *
             </label>
             <input
               value={locNombre}
               onChange={(e) => setLocNombre(e.target.value)}
-              placeholder="Ej. Pañol Central, Lab 201, Taller Mecánica…"
+              placeholder="Ej. pañol central, lab 201, taller mecánica…"
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              Tipo de Espacio
+            <label className={FIELD_LABEL_CLASS}>
+              Tipo de espacio
             </label>
             <select
               value={locTipo}
               onChange={(e) => setLocTipo(e.target.value)}
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs font-mono text-zinc-700 dark:text-zinc-300 focus:outline-none"
             >
-              <option value="sala">Sala de Clases</option>
+              <option value="sala">Sala de clases</option>
               <option value="panol">Pañol TI</option>
-              <option value="taller">Taller Práctico</option>
-              <option value="bodega">Bodega de Almacenamiento</option>
+              <option value="taller">Taller práctico</option>
+              <option value="bodega">Bodega de almacenamiento</option>
             </select>
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              Descripción / Referencia
+            <label className={FIELD_LABEL_CLASS}>
+              Descripción / referencia
             </label>
             <input
               value={locDescripcion}
               onChange={(e) => setLocDescripcion(e.target.value)}
-              placeholder="Ej. Edificio B, Segundo Piso, Sector Redes"
+              placeholder="Ej. edificio B, segundo piso, sector redes"
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
             />
           </div>
@@ -457,7 +451,7 @@ export default function UbicacionesPage() {
               Cancelar
             </DialogCloseButton>
             <Button type="submit" variant="primary" size="sm">
-              Guardar Ubicación
+              Guardar ubicación
             </Button>
           </div>
         </form>
@@ -467,31 +461,31 @@ export default function UbicacionesPage() {
       <Dialog
         open={cajonModalOpen}
         onClose={() => setCajonModalOpen(false)}
-        title="Nuevo Cajón / Gaveta"
+        title="Nuevo cajón / gaveta"
         description={`Añade un compartimiento a ${activeLocation?.nombre}.`}
       >
         <form onSubmit={handleSaveCajon} className="flex flex-col gap-3 py-2">
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              Código / Identificador del Cajón *
+            <label className={FIELD_LABEL_CLASS}>
+              Código / identificador del cajón *
             </label>
             <input
               value={cajonCodigo}
               onChange={(e) => setCajonCodigo(e.target.value)}
-              placeholder="Ej. Estante 1, Gaveta B-4, Rack Principal…"
+              placeholder="Ej. estante 1, gaveta B-4, rack principal…"
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
               required
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              Descripción (Opcional)
+            <label className={FIELD_LABEL_CLASS}>
+              Descripción (opcional)
             </label>
             <input
               value={cajonDescripcion}
               onChange={(e) => setCajonDescripcion(e.target.value)}
-              placeholder="Ej. Cables HDMI y adaptadores VGA"
+              placeholder="Ej. cables HDMI y adaptadores VGA"
               className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
             />
           </div>
@@ -501,7 +495,7 @@ export default function UbicacionesPage() {
               Cancelar
             </DialogCloseButton>
             <Button type="submit" variant="primary" size="sm">
-              Guardar Cajón
+              Guardar cajón
             </Button>
           </div>
         </form>

@@ -3,6 +3,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useTheme, type ColorPalette, type ThemePreference } from '@/contexts/theme-context';
 import { cn } from '@/lib/cn';
+import { SectionLabel } from '@/components/ui/section-label';
 
 export interface SettingsModalProps {
   open: boolean;
@@ -30,9 +31,9 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Canvas Zinc', hex: '#f4f4f5', role: 'Fondo' },
       { name: 'Superficie', hex: '#ffffff', role: 'Panel' },
       { name: 'Acento INACAP', hex: '#dc2626', role: 'Institucional' },
-      { name: 'Disponible / Activo', hex: '#10b981', role: 'Óptimo' },
-      { name: 'En Préstamo', hex: '#3b82f6', role: 'Asignado' },
-      { name: 'Stock Crítico', hex: '#f43f5e', role: 'Alerta' },
+      { name: 'Disponible / activo', hex: '#10b981', role: 'Óptimo' },
+      { name: 'En préstamo', hex: '#3b82f6', role: 'Asignado' },
+      { name: 'Stock crítico', hex: '#f43f5e', role: 'Alerta' },
       { name: 'Mantención', hex: '#f59e0b', role: 'Taller' },
       { name: 'Zinc Oscuro', hex: '#18181b', role: 'Texto/Canvas' },
     ],
@@ -66,9 +67,9 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Menta Suave', hex: '#83c5be', role: 'Modo Oscuro' },
       { name: 'Salvia Bosque', hex: '#284b40', role: 'Texto Activo' },
       { name: 'Borde Menta', hex: '#b2c9ab', role: 'Borde Técnico' },
-      { name: 'Disponible / Activo', hex: '#52b788', role: 'Óptimo' },
-      { name: 'En Préstamo', hex: '#62929e', role: 'Asignado' },
-      { name: 'Stock Crítico', hex: '#e07a5f', role: 'Alerta' },
+      { name: 'Disponible / activo', hex: '#52b788', role: 'Óptimo' },
+      { name: 'En préstamo', hex: '#62929e', role: 'Asignado' },
+      { name: 'Stock crítico', hex: '#e07a5f', role: 'Alerta' },
     ],
   },
   {
@@ -83,9 +84,9 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Lavanda Suave', hex: '#9b87f5', role: 'Modo Oscuro' },
       { name: 'Púrpura Profundo', hex: '#3c3169', role: 'Texto Activo' },
       { name: 'Anillo Foco', hex: '#c8b6ff', role: 'Foco / Borde' },
-      { name: 'Disponible / Activo', hex: '#8f80c7', role: 'Óptimo' },
-      { name: 'En Préstamo', hex: '#6b7280', role: 'Asignado' },
-      { name: 'Stock Crítico', hex: '#f472b6', role: 'Alerta' },
+      { name: 'Disponible / activo', hex: '#8f80c7', role: 'Óptimo' },
+      { name: 'En préstamo', hex: '#6b7280', role: 'Asignado' },
+      { name: 'Stock crítico', hex: '#f472b6', role: 'Alerta' },
     ],
   },
   {
@@ -100,9 +101,9 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Hielo Claro', hex: '#64b5f6', role: 'Modo Oscuro' },
       { name: 'Azul Ártico', hex: '#1d4e89', role: 'Texto Activo' },
       { name: 'Borde Glaciar', hex: '#a2d2ff', role: 'Borde Técnico' },
-      { name: 'Disponible / Activo', hex: '#38bdf8', role: 'Óptimo' },
-      { name: 'En Préstamo', hex: '#0284c7', role: 'Asignado' },
-      { name: 'Stock Crítico', hex: '#fb7185', role: 'Alerta' },
+      { name: 'Disponible / activo', hex: '#38bdf8', role: 'Óptimo' },
+      { name: 'En préstamo', hex: '#0284c7', role: 'Asignado' },
+      { name: 'Stock crítico', hex: '#fb7185', role: 'Alerta' },
     ],
   },
   {
@@ -117,9 +118,9 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Melocotón Claro', hex: '#f4978e', role: 'Modo Oscuro' },
       { name: 'Marrón Arcilla', hex: '#6b3a2e', role: 'Texto Activo' },
       { name: 'Foco Melocotón', hex: '#ffc6a5', role: 'Foco / Borde' },
-      { name: 'Disponible / Activo', hex: '#e07a5f', role: 'Óptimo' },
-      { name: 'En Préstamo', hex: '#f4978e', role: 'Asignado' },
-      { name: 'Stock Crítico', hex: '#e63946', role: 'Alerta' },
+      { name: 'Disponible / activo', hex: '#e07a5f', role: 'Óptimo' },
+      { name: 'En préstamo', hex: '#f4978e', role: 'Asignado' },
+      { name: 'Stock crítico', hex: '#e63946', role: 'Alerta' },
     ],
   },
   {
@@ -134,9 +135,9 @@ const PALETTE_OPTIONS: PaletteOption[] = [
       { name: 'Miel Clara', hex: '#e2b866', role: 'Modo Oscuro' },
       { name: 'Ocre Mineral', hex: '#5c4015', role: 'Texto Activo' },
       { name: 'Borde Manzanilla', hex: '#f6df9d', role: 'Borde Técnico' },
-      { name: 'Disponible / Activo', hex: '#d4a34b', role: 'Óptimo' },
-      { name: 'En Préstamo', hex: '#a8a29e', role: 'Asignado' },
-      { name: 'Stock Crítico', hex: '#f87171', role: 'Alerta' },
+      { name: 'Disponible / activo', hex: '#d4a34b', role: 'Óptimo' },
+      { name: 'En préstamo', hex: '#a8a29e', role: 'Asignado' },
+      { name: 'Stock crítico', hex: '#f87171', role: 'Alerta' },
     ],
   },
 ];
@@ -154,7 +155,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
     <Dialog
       open={open}
       onClose={onClose}
-      title="Ajustes del Sistema"
+      title="Ajustes del sistema"
       description="Personaliza las preferencias cromáticas y la apariencia visual de la consola SGIA."
       className="max-w-3xl w-full max-h-[90vh] flex flex-col"
     >
@@ -163,19 +164,17 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
               <KeyRound className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-                Cuenta y seguridad
-              </h3>
+              <SectionLabel>Cuenta y seguridad</SectionLabel>
             </div>
             <div className="flex flex-wrap gap-2">
               {onChangePassword && (
-                <Button variant="secondary" size="sm" className="text-xs" onClick={onChangePassword}>
+                <Button variant="secondary" size="sm" onClick={onChangePassword}>
                   <KeyRound className="h-3.5 w-3.5" />
                   Cambiar contraseña
                 </Button>
               )}
               {onViewSessions && (
-                <Button variant="secondary" size="sm" className="text-xs" onClick={onViewSessions}>
+                <Button variant="secondary" size="sm" onClick={onViewSessions}>
                   <Monitor className="h-3.5 w-3.5" />
                   Sesiones activas
                 </Button>
@@ -188,9 +187,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
             <Palette className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              Paleta de Colores de Interfaz
-            </h3>
+            <SectionLabel>Paleta de colores de interfaz</SectionLabel>
           </div>
 
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -230,7 +227,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                         <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
                           {opt.name}
                         </span>
-                        <span className="inline-block mt-0.5 text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
+                        <span className="inline-block mt-0.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
                           {opt.badge}
                         </span>
                       </div>
@@ -256,7 +253,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
 
                   {/* Muestrario de Chips Cromáticos (Swatches) */}
                   <div className="mt-3 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/80">
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 mb-1.5 font-mono">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-400 dark:text-zinc-500 mb-1.5 font-mono">
                       <span>Muestrario de tonos</span>
                       <span className="tabular-nums">{opt.swatches.length} tonos</span>
                     </div>
@@ -284,9 +281,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
             <Sparkles className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              Modo de Visualización
-            </h3>
+            <SectionLabel>Modo de visualización</SectionLabel>
           </div>
 
           <div className="grid grid-cols-3 gap-2.5">

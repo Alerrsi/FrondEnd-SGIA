@@ -140,7 +140,7 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
     expect(screen.getByText('FLUKE-115-01')).toBeDefined();
 
     // Confirm checkout button
-    const checkoutButton = screen.getByRole('button', { name: /Registrar Entrega de Préstamo/i });
+    const checkoutButton = screen.getByRole('button', { name: /Registrar entrega de préstamo/i });
     expect(checkoutButton).toBeDefined();
 
     await user.click(checkoutButton);
@@ -175,14 +175,14 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
     const devolucionTab = screen.getByText(/Devolución y Recepción/i);
     await user.click(devolucionTab);
 
-    expect(screen.getByText('Buscar Préstamo Activo')).toBeDefined();
+    expect(screen.getByText('Buscar préstamo activo')).toBeDefined();
     expect(screen.getByText('Prof. Mario Valenzuela')).toBeDefined();
 
     // Select the loan to return
     const loanCard = screen.getByText('Prof. Mario Valenzuela');
     await user.click(loanCard);
 
-    expect(screen.getByText('Verificación de Estado por Ítem')).toBeDefined();
+    expect(screen.getByText('Verificación de estado por ítem')).toBeDefined();
 
     // Report damage toggle
     const reportDamageBtn = screen.getByText(/Reportar daño \/ falla/i);
@@ -193,7 +193,7 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
     await user.type(noteInput, 'Punta de prueba desoldada');
 
     // Complete check-in
-    const completeReturnBtn = screen.getByRole('button', { name: /Completar Devolución e Ingresar a Pañol/i });
+    const completeReturnBtn = screen.getByRole('button', { name: /Completar devolución e ingresar a pañol/i });
     await user.click(completeReturnBtn);
 
     await waitFor(() => {

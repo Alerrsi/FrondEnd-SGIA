@@ -24,7 +24,7 @@ describe('Badge Component with Palette & Status Support', () => {
   it('LoanStatusBadge incluye dot indicador y tone apropiado', () => {
     render(<LoanStatusBadge estado="activo" />);
 
-    const badge = screen.getByText('En Préstamo').closest('[data-tone]');
+    const badge = screen.getByText('En préstamo').closest('[data-tone]');
     expect(badge).toBeDefined();
     expect(badge?.getAttribute('data-tone')).toBe('loaned');
   });

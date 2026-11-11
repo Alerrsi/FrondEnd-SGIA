@@ -23,10 +23,10 @@ export function ForbiddenPage() {
 
       <div className="mb-2 flex items-center gap-2">
         <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">HTTP 403</span>
-        <Badge tone="critical">Acceso Restringido</Badge>
+        <Badge tone="critical">Acceso restringido</Badge>
       </div>
 
-      <h1 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+      <h1 className="mb-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
         No tienes permisos para ver esta sección
       </h1>
 

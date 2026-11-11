@@ -210,8 +210,8 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
 
     // Modal de ajustes abierto
     expect(screen.getByRole('dialog')).toBeDefined();
-    expect(screen.getByText('Ajustes del Sistema')).toBeDefined();
-    expect(screen.getByText('Paleta de Colores de Interfaz')).toBeDefined();
+    expect(screen.getByText('Ajustes del sistema')).toBeDefined();
+    expect(screen.getByText('Paleta de colores de interfaz')).toBeDefined();
     expect(screen.getByText('Paleta Principal (Industrial INACAP)')).toBeDefined();
     expect(screen.getByText('Paleta B1 (Azul Acero & Indigo)')).toBeDefined();
   });
@@ -240,7 +240,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     await user.click(settingsButton);
 
     expect(screen.getByRole('dialog')).toBeDefined();
-    expect(screen.getByText('Ajustes del Sistema')).toBeDefined();
+    expect(screen.getByText('Ajustes del sistema')).toBeDefined();
   });
 
   it('calls logout and redirects when logout button is clicked', async () => {

@@ -33,7 +33,7 @@ export function AuthenticatedImage({ load, alt, className }: AuthenticatedImageP
   if (!src)
     return (
       <div className="flex items-center gap-2 py-4 text-xs text-zinc-400">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" />
         Cargando…
       </div>
     );

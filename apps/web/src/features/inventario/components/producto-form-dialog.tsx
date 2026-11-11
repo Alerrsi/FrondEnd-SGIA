@@ -30,6 +30,8 @@ import {
   type ProductoFormValues,
 } from '../lib/producto-form-schema';
 import { AREAS_INACAP } from './inventario-table';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_BASE_CLASS, FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 type FormValues = ProductoFormValues;
 
@@ -52,7 +54,7 @@ const EMPTY_VALUES: FormValues = {
 };
 
 const inputClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50 font-mono';
+  FORM_CONTROL_CLASS;
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -69,7 +71,7 @@ function Label({
   required?: boolean;
 }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+    <label htmlFor={htmlFor} className={`mb-1 block ${FIELD_LABEL_CLASS}`}>
       {children}
       {required && <span className="ml-0.5 text-red-500">*</span>}
     </label>
@@ -271,10 +273,10 @@ export function ProductoFormDialog({
       className="max-w-xl"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
-        {/* Fieldset: Identificación de Hardware */}
+        {/* Fieldset: Identificación de hardware */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
           <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
-            Identificación de Hardware
+            Identificación de hardware
           </legend>
 
           <div>
@@ -299,7 +301,7 @@ export function ProductoFormDialog({
               rows={2}
               disabled={isPending}
               placeholder="Detalles sobre modelo, rango de medición, conectores incluidos…"
-              className="w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-2 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+              className={`${FORM_CONTROL_BASE_CLASS} py-2`}
               {...register('description')}
             />
           </div>
@@ -361,7 +363,7 @@ export function ProductoFormDialog({
             </div>
 
             <div>
-              <Label htmlFor="prod-area">Área académica / Especialidad</Label>
+              <Label htmlFor="prod-area">Área académica / especialidad</Label>
               <select id="prod-area" disabled={isPending} className={inputClasses} {...register('area')}>
                 {AREAS_INACAP.map((area) => (
                   <option key={area} value={area}>
@@ -408,7 +410,7 @@ export function ProductoFormDialog({
         {/* Fieldset: Parámetros de Stock */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
           <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
-            Parámetros de Stock y Alertas
+            Parámetros de stock y alertas
           </legend>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -456,33 +458,33 @@ export function ProductoFormDialog({
           </div>
         </fieldset>
 
-        {/* Fieldset: Ubicación en Pañol */}
+        {/* Fieldset: Ubicación en pañol */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
           <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
             <MapPin className="h-3 w-3 text-zinc-400" />
-            <span>Ubicación en Pañol</span>
+            <span>Ubicación en pañol</span>
           </legend>
 
           {manualLocationMode ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <Label htmlFor="prod-sala">Sala o Almacén</Label>
+                <Label htmlFor="prod-sala">Sala o almacén</Label>
                 <input
                   id="prod-sala"
                   type="text"
                   disabled={isPending}
-                  placeholder="Ej. Pañol Central"
+                  placeholder="Ej. pañol central"
                   className={inputClasses}
                   {...register('sala')}
                 />
               </div>
               <div>
-                <Label htmlFor="prod-cajon">Cajón o Gaveta</Label>
+                <Label htmlFor="prod-cajon">Cajón o gaveta</Label>
                 <input
                   id="prod-cajon"
                   type="text"
                   disabled={isPending}
-                  placeholder="Ej. Cajón 05"
+                  placeholder="Ej. cajón 05"
                   className={inputClasses}
                   {...register('cajon')}
                 />
@@ -491,7 +493,7 @@ export function ProductoFormDialog({
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <Label htmlFor="prod-loc-select">Sala / Ubicación</Label>
+                <Label htmlFor="prod-loc-select">Sala / ubicación</Label>
                 <select
                   id="prod-loc-select"
                   disabled={isPending}
@@ -510,7 +512,7 @@ export function ProductoFormDialog({
               </div>
 
               <div>
-                <Label htmlFor="prod-cajon-select">Cajón / Gaveta</Label>
+                <Label htmlFor="prod-cajon-select">Cajón / gaveta</Label>
                 <select
                   id="prod-cajon-select"
                   disabled={isPending || !selectedLocationId}
@@ -538,7 +540,7 @@ export function ProductoFormDialog({
             Cancelar
           </DialogCloseButton>
           <Button type="submit" disabled={isPending} size="sm" className="min-w-28">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             <span>{esEdicion ? 'Guardar Cambios' : 'Dar de Alta'}</span>
           </Button>
         </div>

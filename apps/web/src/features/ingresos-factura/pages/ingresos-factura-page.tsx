@@ -10,6 +10,9 @@ import { InvoiceIntakesTable } from '@/features/ingresos-factura/components/invo
 import { UploadInvoiceIntakeDialog } from '@/features/ingresos-factura/components/upload-invoice-intake-dialog';
 import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
 import { isPurchaseRequestCode } from '@/features/solicitudes-compra/lib/purchase-request-code';
+import { PageHeading } from '@/components/ui/page-heading';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 const STATUS_FILTERS: Array<{
   value: InvoiceIntakeStatus | '';
@@ -22,7 +25,7 @@ const STATUS_FILTERS: Array<{
 ];
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  FILTER_CONTROL_CLASS;
 
 const positiveParam = (value: string | null) => {
   const n = Number(value);
@@ -72,16 +75,10 @@ export default function IngresosFacturaPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <ReceiptText className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Ingresos de factura
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e
-              ingresar stock.
-            </p>
-          </div>
+          <PageHeading icon={ReceiptText} title="Ingresos de factura">
+            Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e
+            ingresar stock.
+          </PageHeading>
           <Button onClick={() => setUploadOpen(true)} className="text-xs">
             <Upload className="h-4 w-4" />
             Subir factura
@@ -139,7 +136,7 @@ export default function IngresosFacturaPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
             Cargando ingresos de factura…
           </div>
         ) : isError ? (

@@ -11,9 +11,12 @@ import { IncidentDetailSheet } from '@/features/novedades/components/incident-de
 import { IncidentStatusBadge } from '@/features/novedades/components/incident-status-badge';
 import { INCIDENT_STATUS_FILTERS } from '@/features/novedades/lib/incident-labels';
 import { NewIncidentDialog } from '@/features/profesor/components/new-incident-dialog';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  FILTER_CONTROL_CLASS;
 
 /** Resumen de una fila: los informes anteriores muestran su título; los nuevos, sus problemas. */
 function summary(report: IncidentReport): string {
@@ -42,18 +45,12 @@ export default function NovedadesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <ClipboardCheck className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-            Informes de novedades
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Fallas y faltantes reportados por docentes y pañol. Abre un informe para revisarlo y
-            cambiar su estado.
-          </p>
-        </div>
+        <PageHeading icon={ClipboardCheck} title="Informes de novedades">
+          Fallas y faltantes reportados por docentes y pañol. Abre un informe para revisarlo y
+          cambiar su estado.
+        </PageHeading>
         {canCreate && (
-          <Button className="text-xs" onClick={() => setFormOpen(true)}>
+          <Button onClick={() => setFormOpen(true)}>
             <Plus className="h-4 w-4" />
             Nuevo informe
           </Button>
@@ -95,7 +92,7 @@ export default function NovedadesPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
             Cargando informes…
           </div>
         ) : isError ? (
@@ -106,8 +103,8 @@ export default function NovedadesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
-              <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+              <thead className={TABLE_HEAD_CLASS}>
+                <tr>
                   {['Código', 'Reportado por', 'Asignatura', 'Lugar', 'Problemas', 'Fecha', 'Estado'].map(
                     (h) => (
                       <th key={h} className="px-4 py-2.5 font-medium">
@@ -120,7 +117,7 @@ export default function NovedadesPage() {
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
                 {(data?.data ?? []).length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-zinc-400">
+                    <td colSpan={7} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
                       No hay informes para el filtro seleccionado.
                     </td>
                   </tr>

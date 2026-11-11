@@ -1,6 +1,5 @@
 import type {
   ChartType,
-  DashboardTemplate,
   ExecutiveKpis,
   KpiTimeRange,
   MetricAggregation,
@@ -13,7 +12,6 @@ import type {
 
 export type {
   ChartType,
-  DashboardTemplate,
   ExecutiveKpis,
   KpiTimeRange,
   MetricAggregation,

@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatRun } from '@/features/usuarios/lib/run';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const columnHelper = createColumnHelper<Student>();
 
@@ -28,7 +29,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
       columnHelper.accessor('rut', {
         header: 'RUT',
         cell: (i) => (
-          <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 dark:border-zinc-700/60">
+          <span className={CODE_CHIP_CLASS}>
             {formatRun(i.getValue())}
           </span>
         ),
@@ -96,7 +97,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
           {table.getHeaderGroups().map((hg) => (
             <tr
               key={hg.id}
-              className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500"
+              className={TABLE_HEAD_CLASS}
             >
               {hg.headers.map((h) => (
                 <th key={h.id} className="px-4 py-2.5 font-medium">
@@ -109,7 +110,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
           {rows.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-10 text-center text-zinc-400">
+              <td colSpan={columns.length} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
                 No hay estudiantes para el filtro seleccionado.
               </td>
             </tr>

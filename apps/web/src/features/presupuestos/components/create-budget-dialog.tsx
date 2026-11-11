@@ -14,11 +14,12 @@ import {
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
-const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
+  FORM_CONTROL_CLASS;
+const labelClasses = FIELD_LABEL_CLASS;
 const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
 
 const toNumber = (v: unknown) =>

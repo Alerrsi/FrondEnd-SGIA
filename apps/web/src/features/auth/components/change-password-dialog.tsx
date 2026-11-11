@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const schema = z
   .object({
@@ -30,7 +32,7 @@ type FormValues = z.infer<typeof schema>;
 const EMPTY: FormValues = { current_password: '', password: '', password_confirmation: '' };
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  FORM_CONTROL_CLASS;
 
 const FIELDS: Array<{ name: keyof FormValues; label: string; autoComplete: string }> = [
   { name: 'current_password', label: 'Contraseña actual', autoComplete: 'current-password' },
@@ -78,7 +80,7 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
           <div key={name}>
             <label
               htmlFor={`pw-${name}`}
-              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+              className={`mb-1 block ${FIELD_LABEL_CLASS}`}
             >
               {label}
             </label>
@@ -103,8 +105,8 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
           <DialogCloseButton disabled={changePassword.isPending} className="text-xs">
             Cancelar
           </DialogCloseButton>
-          <Button type="submit" variant="primary" disabled={changePassword.isPending} className="min-w-28 text-xs">
-            {changePassword.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          <Button type="submit" variant="primary" disabled={changePassword.isPending} className="min-w-28">
+            {changePassword.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Cambiar contraseña
           </Button>
         </div>

@@ -94,11 +94,6 @@ export type {
   IncidentProblemType,
   IncidentReportQueryParams,
   CreateIncidentReportPayload,
-  DashboardStats,
-  DashboardAnalyticsParams,
-  TopDemandedItem,
-  CareerDistribution,
-  TeacherLoanRanking,
 } from './equipo';
 
 export type {
@@ -111,7 +106,6 @@ export type {
   MetricDataPoint,
   MetricResult,
   ExecutiveKpis,
-  DashboardTemplate,
 } from './metric';
 
 export type { PaginatedResponse, ApiError, AuthResponse } from './pagination';

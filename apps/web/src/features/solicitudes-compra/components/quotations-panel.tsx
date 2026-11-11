@@ -16,6 +16,8 @@ import { openBlob } from '@/features/solicitudes-compra/lib/open-blob';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
+import { SectionTitle } from '@/components/ui/section-title';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 interface QuotationsPanelProps {
   request: PurchaseRequest;
@@ -82,18 +84,17 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
     <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
         <div>
-          <h2 className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            <FileStack className="h-4 w-4 text-zinc-400" />
+          <SectionTitle icon={FileStack}>
             Cotizaciones recibidas
             <span
-              className={cn(
-                'font-mono text-xs',
-                enoughToSelect ? 'text-emerald-700 dark:text-emerald-400' : 'text-zinc-500',
-              )}
+            className={cn(
+            'font-mono text-xs',
+            enoughToSelect ? 'text-emerald-700 dark:text-emerald-400' : 'text-zinc-500',
+            )}
             >
-              {count}/{min}
+            {count}/{min}
             </span>
-          </h2>
+          </SectionTitle>
           <p className="text-[11px] text-zinc-500">
             {enoughToSelect
               ? 'Elige libremente con cuál quedarte; no tiene que ser la más barata.'
@@ -109,13 +110,13 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
       </header>
 
       {count === 0 ? (
-        <p className="px-3 py-6 text-center text-xs text-zinc-400">
+        <p className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
           Aún no se sube ninguna cotización.
         </p>
       ) : (
         <table className="w-full text-left text-xs">
-          <thead>
-            <tr className="border-b border-zinc-200 bg-zinc-50/60 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+          <thead className={TABLE_HEAD_CLASS}>
+            <tr>
               <th className="px-3 py-2 font-medium">Proveedor</th>
               <th className="px-3 py-2 font-medium">Comparación</th>
               <th className="px-3 py-2 text-right font-medium">Total</th>

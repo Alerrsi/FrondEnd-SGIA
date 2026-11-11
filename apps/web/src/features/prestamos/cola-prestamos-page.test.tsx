@@ -268,7 +268,7 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('Cola de Despacho de Solicitudes Remotas')).toBeDefined();
+    expect(screen.getByText('Cola de despacho de solicitudes remotas')).toBeDefined();
     expect(screen.getByText('SOL-2026-001')).toBeDefined();
     expect(screen.getByText('Prof. Carlos Rivera')).toBeDefined();
     expect(screen.getByText('Asignatura: Redes Avanzadas CCNA · Carrera: —')).toBeDefined();
@@ -308,7 +308,7 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
     const rejectButtons = screen.getAllByRole('button', { name: /Rechazar/i });
     await user.click(rejectButtons[1]!); // Reject second loan
 
-    expect(screen.getByText('Rechazar Solicitud Remota')).toBeDefined();
+    expect(screen.getByText('Rechazar solicitud remota')).toBeDefined();
     expect(screen.getAllByText(/SOL-2026-002/i).length).toBeGreaterThanOrEqual(1);
 
     const submitRejectBtn = screen.getByRole('button', {
@@ -542,7 +542,7 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
       expect(approve.disabled).toBe(true);
 
       await user.click(within(dialog).getByRole('button', { name: 'Rechazar' }));
-      expect(await screen.findByText('Rechazar Solicitud Remota')).toBeDefined();
+      expect(await screen.findByText('Rechazar solicitud remota')).toBeDefined();
     });
 
     it('sin cambios aprueba enviando todas las unidades propuestas, sin insumos', async () => {

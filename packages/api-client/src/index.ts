@@ -295,17 +295,9 @@ export {
   downloadEquipmentReports,
   fetchEquipos,
   fetchEquipo,
-  fetchDashboardStats,
-  fetchTopProducts,
-  fetchTopSupplies,
-  fetchCareersDistribution,
-  fetchLeastDemanded,
-  fetchTopTeachers,
-  fetchLoansByTeacher,
 } from './services/equipments';
 export {
   equipmentKeys,
-  dashboardKeys,
   useEquipos,
   useEquipo,
   useEquipmentSpecs,
@@ -314,13 +306,6 @@ export {
   useEquipmentReports,
   useDownloadTechnicalSheet,
   useDownloadEquipmentReports,
-  useDashboardStats,
-  useTopProducts,
-  useTopSupplies,
-  useCareersDistribution,
-  useLeastDemanded,
-  useTopTeachers,
-  useLoansByTeacher,
 } from './hooks/equipments';
 
 export {

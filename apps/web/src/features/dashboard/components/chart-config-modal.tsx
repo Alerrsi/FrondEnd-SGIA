@@ -4,8 +4,8 @@ import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
-import { CHART_PRESETS } from '../lib/chart-presets';
-import { isSameChart } from '../lib/chart-config';
+import type { ChartTemplate } from '@sgia/types';
+import { isSameChart, templateToInput } from '../lib/chart-config';
 import {
   AGGREGATIONS_BY_ENTITY,
   AGGREGATION_LABELS,
@@ -25,6 +25,8 @@ import {
   type MetricQueryInput,
   type TimeRange,
 } from '../types/metrics';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 interface ChartConfigModalProps {
   open: boolean;
@@ -34,12 +36,17 @@ interface ChartConfigModalProps {
   chartType: ChartType;
   /** Posición de inserción; si se omite, se agrega al final. */
   targetIndex?: number;
+  /** Consultas ya presentes en el panel (visibles u ocultas), para rechazar repetidos. */
   currentCharts: MetricQueryInput[];
+  /** Posiciones ocupadas del panel; por defecto, `currentCharts.length`. */
+  usedSlots?: number;
+  /** Plantillas del servidor: las que traen consulta se ofrecen como sugerencias de su tipo. */
+  templates?: ChartTemplate[];
 }
 
 const FIELD_CLASS =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-400';
-const LABEL_CLASS = 'font-semibold text-zinc-700 dark:text-zinc-300';
+  FILTER_CONTROL_CLASS;
+const LABEL_CLASS = FIELD_LABEL_CLASS;
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -52,6 +59,8 @@ export function ChartConfigModal({
   chartType: initialChartType,
   targetIndex,
   currentCharts,
+  usedSlots = currentCharts.length,
+  templates = [],
 }: ChartConfigModalProps) {
   const [chartType, setChartType] = useState<ChartType>(initialChartType);
   const [entity, setEntity] = useState<MetricEntity>('LOANS');
@@ -96,7 +105,7 @@ export function ChartConfigModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (currentCharts.length >= MAX_CHARTS) {
+    if (usedSlots >= MAX_CHARTS) {
       toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos simultáneos por plantilla`);
       return;
     }
@@ -117,7 +126,7 @@ export function ChartConfigModal({
     };
 
     if (currentCharts.some((c) => isSameChart(c, chart))) {
-      toast.error('Ya existe un gráfico con la misma consulta y tipo de visualización');
+      toast.error('Ya tienes un gráfico con la misma consulta y tipo de visualización');
       return;
     }
 
@@ -125,7 +134,15 @@ export function ChartConfigModal({
     onClose();
   };
 
-  const presets = CHART_PRESETS[chartType];
+  // Sugerencias: plantillas del servidor de este tipo que todavía no están en el panel.
+  const presets = templates
+    .map(templateToInput)
+    .filter(
+      (preset): preset is MetricQueryInput =>
+        preset !== null &&
+        preset.chartType === chartType &&
+        !currentCharts.some((c) => isSameChart(c, preset)),
+    );
 
   return (
     <Dialog
@@ -157,21 +174,23 @@ export function ChartConfigModal({
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-1.5">
-          <span className={LABEL_CLASS}>Sugerencias para {CHART_TYPE_LABELS[chartType].toLowerCase()}</span>
-          <div className="flex flex-wrap gap-1.5">
-            {presets.map((preset) => (
-              <button
-                key={preset.title}
-                type="button"
-                onClick={() => applyPreset(preset)}
-                className="rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 px-2 py-1 text-[11px] text-zinc-600 dark:text-zinc-400 hover:border-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-              >
-                {preset.title}
-              </button>
-            ))}
+        {presets.length > 0 && (
+          <div className="flex flex-col gap-1.5">
+            <span className={LABEL_CLASS}>Plantillas de {CHART_TYPE_LABELS[chartType].toLowerCase()}</span>
+            <div className="flex flex-wrap gap-1.5">
+              {presets.map((preset) => (
+                <button
+                  key={preset.title}
+                  type="button"
+                  onClick={() => applyPreset(preset)}
+                  className="rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 px-2 py-1 text-[11px] text-zinc-600 dark:text-zinc-400 hover:border-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                >
+                  {preset.title}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="flex flex-col gap-1">
@@ -338,7 +357,7 @@ export function ChartConfigModal({
 
         <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
           <span className="text-[11px] text-zinc-400">
-            Cupo tras añadir: {currentCharts.length + 1} de {MAX_CHARTS}
+            Cupo tras añadir: {usedSlots + 1} de {MAX_CHARTS}
           </span>
           <div className="flex gap-2">
             <DialogCloseButton variant="outline" size="sm">

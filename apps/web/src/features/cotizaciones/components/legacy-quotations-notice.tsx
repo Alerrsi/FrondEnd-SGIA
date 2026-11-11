@@ -17,7 +17,7 @@ export function LegacyQuotationsNotice() {
         to="/solicitudes-compra"
         className="inline-flex h-7 items-center gap-1 rounded-md bg-zinc-900 px-2.5 font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
       >
-        Ir a Solicitudes de compra
+        Ir a solicitudes de compra
         <ArrowRight className="h-3.5 w-3.5" />
       </Link>
     </div>

@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SupplierAreaBadges } from '@/features/proveedores/components/supplier-area-badges';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 export interface ProveedoresTableProps {
   suppliers: Supplier[];
@@ -70,7 +71,7 @@ export function ProveedoresTable({
   return (
     <div className="flex flex-col gap-3">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2">
+      <div className="flex flex-wrap items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2 shadow-xs">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
           <input
@@ -122,10 +123,10 @@ export function ProveedoresTable({
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
         {isLoading ? (
           <div
-            className="flex items-center justify-center py-12 text-xs text-zinc-400 dark:text-zinc-500 font-mono"
+            className={`flex items-center justify-center py-12 ${STATE_TEXT_CLASS}`}
             role="progressbar"
             aria-label="Cargando proveedores"
           >
@@ -133,8 +134,8 @@ export function ProveedoresTable({
           </div>
         ) : (
           <table className="w-full">
-            <thead>
-              <tr className="border-b border-zinc-100 dark:border-zinc-800">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
                 <th className={thClasses}>Empresa</th>
                 <th className={thClasses}>Contacto</th>
                 <th className={thClasses}>Correo</th>
@@ -150,7 +151,7 @@ export function ProveedoresTable({
                 <tr>
                   <td
                     colSpan={8}
-                    className="py-12 text-center text-xs text-zinc-400 dark:text-zinc-500"
+                    className={`py-12 ${STATE_TEXT_CLASS}`}
                   >
                     No se encontraron proveedores registrados.
                   </td>

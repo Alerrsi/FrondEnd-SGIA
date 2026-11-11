@@ -36,8 +36,8 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
 
     // Diálogo presente
     expect(screen.getByRole('dialog')).toBeDefined();
-    expect(screen.getByText('Ajustes del Sistema')).toBeDefined();
-    expect(screen.getByText('Paleta de Colores de Interfaz')).toBeDefined();
+    expect(screen.getByText('Ajustes del sistema')).toBeDefined();
+    expect(screen.getByText('Paleta de colores de interfaz')).toBeDefined();
 
     // Paleta Principal (Industrial INACAP)
     expect(screen.getByText('Paleta Principal (Industrial INACAP)')).toBeDefined();
@@ -54,7 +54,7 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
     expect(screen.getByText('Peach & Sand (Melocotón Pastel)')).toBeDefined();
     expect(screen.getByText('Chamomile Honey (Manzanilla Suave)')).toBeDefined();
 
-    // Controles de Modo de Visualización (Claro, Oscuro, Sistema)
+    // Controles de Modo de visualización (Claro, Oscuro, Sistema)
     expect(screen.getByRole('button', { name: 'Claro' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Oscuro' })).toBeDefined();
     expect(screen.getByRole('button', { name: 'Sistema' })).toBeDefined();

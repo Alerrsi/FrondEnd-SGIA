@@ -58,7 +58,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               variant="outline"
               size="sm"
               onClick={this.handleReset}
-              className="text-xs"
             >
               <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
               Reintentar
@@ -68,7 +67,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               variant="primary"
               size="sm"
               onClick={this.handleReload}
-              className="text-xs"
             >
               Recargar página
             </Button>

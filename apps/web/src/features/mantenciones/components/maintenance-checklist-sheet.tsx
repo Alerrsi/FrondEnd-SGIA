@@ -26,6 +26,8 @@ import {
 } from '@/features/mantenciones/lib/maintenance-labels';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_BASE_CLASS } from '@/components/ui/form-control';
 
 type Checklist = Required<
   Pick<
@@ -40,7 +42,7 @@ type Checklist = Required<
 >;
 
 const inputClasses =
-  'w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 text-xs text-zinc-800 dark:text-zinc-200 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50';
+  FORM_CONTROL_BASE_CLASS;
 
 function toForm(r: MaintenanceRecord) {
   return {
@@ -229,7 +231,7 @@ export function MaintenanceChecklistSheet({
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="mt-cost" className="font-mono text-[11px] text-zinc-500">
+                <label htmlFor="mt-cost" className={FIELD_LABEL_CLASS}>
                   Costo de reparación (CLP)
                 </label>
                 <input
@@ -243,7 +245,7 @@ export function MaintenanceChecklistSheet({
                 />
               </div>
               <div>
-                <label htmlFor="mt-parts" className="font-mono text-[11px] text-zinc-500">
+                <label htmlFor="mt-parts" className={FIELD_LABEL_CLASS}>
                   Repuestos usados
                 </label>
                 <input
@@ -256,7 +258,7 @@ export function MaintenanceChecklistSheet({
               </div>
             </div>
             <div>
-              <label htmlFor="mt-tech-notes" className="font-mono text-[11px] text-zinc-500">
+              <label htmlFor="mt-tech-notes" className={FIELD_LABEL_CLASS}>
                 Notas técnicas
               </label>
               <textarea

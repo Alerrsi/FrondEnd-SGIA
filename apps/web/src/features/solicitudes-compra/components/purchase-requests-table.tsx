@@ -11,6 +11,7 @@ import { formatDate } from '@/features/compras/lib/format';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { PurchaseRequestStatusBadge } from '@/features/solicitudes-compra/components/purchase-request-status-badge';
 import { cn } from '@/lib/cn';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const columnHelper = createColumnHelper<PurchaseRequest>();
 
@@ -27,7 +28,7 @@ export function PurchaseRequestsTable({ rows, onOpen }: PurchaseRequestsTablePro
       columnHelper.accessor('code', {
         header: 'Código',
         cell: (info) => (
-          <span className="rounded border border-zinc-200/80 bg-zinc-100 px-1.5 py-0.5 font-mono text-xs text-zinc-700 dark:border-zinc-700/60 dark:bg-zinc-800 dark:text-zinc-300">
+          <span className={CODE_CHIP_CLASS}>
             {info.getValue()}
           </span>
         ),
@@ -98,7 +99,7 @@ export function PurchaseRequestsTable({ rows, onOpen }: PurchaseRequestsTablePro
           {table.getHeaderGroups().map((hg) => (
             <tr
               key={hg.id}
-              className="border-b border-zinc-200 bg-zinc-50/60 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-400"
+              className={TABLE_HEAD_CLASS}
             >
               {hg.headers.map((h) => (
                 <th
@@ -114,7 +115,7 @@ export function PurchaseRequestsTable({ rows, onOpen }: PurchaseRequestsTablePro
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
           {rows.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-10 text-center text-zinc-400">
+              <td colSpan={columns.length} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
                 No hay solicitudes de compra para el filtro seleccionado.
               </td>
             </tr>

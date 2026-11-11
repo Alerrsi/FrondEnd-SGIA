@@ -41,7 +41,7 @@ function renderWithClient(ui: React.ReactElement) {
   );
 }
 
-describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
+describe('REQ-14: Drag & Drop, Modo edición y Asistente Post-Drop', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
@@ -57,18 +57,18 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     expect(screen.queryByTestId('drop-zone-0')).toBeNull();
     expect(screen.queryByTestId('edit-mode-banner')).toBeNull();
 
-    // Activar Modo Edición
-    const editModeBtn = screen.getByRole('button', { name: /Modo Edición/i });
+    // Activar Modo edición
+    const editModeBtn = screen.getByRole('button', { name: /Modo edición/i });
     await user.click(editModeBtn);
 
-    // En Modo Edición: aparecen drag handles, banner informativo y drop zones
+    // En Modo edición: aparecen drag handles, banner informativo y drop zones
     expect(screen.getByTestId('edit-mode-banner')).toBeDefined();
     expect(screen.getByTestId('drag-handle-0')).toBeDefined();
     expect(screen.getByTestId('drop-zone-0')).toBeDefined();
-    expect(screen.getByRole('button', { name: /Guardar y Salir/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Guardar y salir/i })).toBeDefined();
 
-    // Desactivar / Guardar y Salir
-    const saveBtn = screen.getByRole('button', { name: /Guardar y Salir/i });
+    // Desactivar / Guardar y salir
+    const saveBtn = screen.getByRole('button', { name: /Guardar y salir/i });
     await user.click(saveBtn);
 
     // Vuelve al Modo Visualización ergonómico
@@ -82,10 +82,10 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
 
     // Entrar en modo edición
-    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+    await user.click(screen.getByRole('button', { name: /Modo edición/i }));
 
     // Abrir paleta lateral
-    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    const paletteBtn = screen.getByRole('button', { name: /Abrir catálogo de widgets/i });
     await user.click(paletteBtn);
 
     // Se muestran las 4 formas genéricas
@@ -122,11 +122,11 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     vi.useFakeTimers();
 
     // Abrir catálogo de widgets
-    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    const paletteBtn = screen.getByRole('button', { name: /Abrir catálogo de widgets/i });
     fireEvent.click(paletteBtn);
 
     // El catálogo está desplegado
-    expect(screen.getByText(/Formas Gráficas Genéricas/i)).toBeDefined();
+    expect(screen.getByText(/Formas gráficas genéricas/i)).toBeDefined();
 
     // El usuario agarra el widget de línea (dragStart)
     const lineWidget = screen.getByTestId('widget-item-line');
@@ -154,7 +154,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
 
     // Abrir catálogo de widgets
-    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    const paletteBtn = screen.getByRole('button', { name: /Abrir catálogo de widgets/i });
     fireEvent.click(paletteBtn);
 
     // El usuario inicia arrastre de un gráfico BAR
@@ -216,7 +216,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
 
     // Entrar en modo edición
-    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+    await user.click(screen.getByRole('button', { name: /Modo edición/i }));
 
     // Simular drop de widget DOUGHNUT en drop zone 1
     const dropZone1 = screen.getByTestId('drop-zone-1');
@@ -255,7 +255,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     expect(initialChartCards.length).toBe(3);
 
     // Entrar en modo edición y soltar
-    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+    await user.click(screen.getByRole('button', { name: /Modo edición/i }));
     const dropZone0 = screen.getByTestId('drop-zone-0');
     fireEvent.drop(dropZone0, {
       dataTransfer: {
@@ -279,7 +279,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     const fetchMock = mockMetricsApi();
     await renderPanel();
 
-    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+    await user.click(screen.getByRole('button', { name: /Modo edición/i }));
     fireEvent.drop(screen.getByTestId('drop-zone-0'), {
       dataTransfer: { getData: () => JSON.stringify({ type: 'NEW_WIDGET', chartType: 'BAR' }) },
     });
@@ -312,7 +312,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
 
     // Entrar en modo edición
-    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+    await user.click(screen.getByRole('button', { name: /Modo edición/i }));
 
     // Reordenar gráfico de posición 2 a posición 0
     const dropZone0 = screen.getByTestId('drop-zone-0');
@@ -333,7 +333,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
 
     // Entrar en modo edición
-    await user.click(screen.getByRole('button', { name: /Modo Edición/i }));
+    await user.click(screen.getByRole('button', { name: /Modo edición/i }));
 
     const card0 = screen.getByTestId('chart-card-0');
     const card2 = screen.getByTestId('chart-card-2');
@@ -367,10 +367,11 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
 
   it('muestra la zona de soltado destacada y al soltar abre el menú para elegir los datos antes de añadir el gráfico', async () => {
     const user = userEvent.setup();
+    const fetchMock = mockMetricsApi();
     await renderPanel();
 
     // Abrir catálogo de widgets
-    const paletteBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    const paletteBtn = screen.getByRole('button', { name: /Abrir catálogo de widgets/i });
     fireEvent.click(paletteBtn);
 
     // Iniciar arrastre de widget DOUGHNUT
@@ -406,34 +407,86 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
     expect(screen.getByText('Configurar gráfico')).toBeDefined();
 
-    // El usuario elige una sugerencia del menú y confirma
-    await user.click(screen.getByRole('button', { name: 'Distribución de Alertas por Criticidad' }));
-    await user.click(screen.getByRole('button', { name: /Añadir al panel/i }));
+    // El usuario elige una plantilla del servidor en el menú y confirma
+    const dialog = screen.getByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Préstamos por estado' }));
+    await user.click(within(dialog).getByRole('button', { name: /Añadir al panel/i }));
 
     // El gráfico queda añadido en el lienzo (de 3 pasa a 4) y se visualiza
-    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
-    expect(screen.getByText('Distribución de Alertas por Criticidad')).toBeDefined();
+    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4));
+
+    // Queda asociado a la plantilla elegida, no a la genérica de su forma
+    const post = fetchMock.mock.calls.find(
+      ([url, init]) => String(url).endsWith('/me/charts') && init?.method === 'POST',
+    );
+    expect(JSON.parse(String(post?.[1]?.body))).toMatchObject({
+      chart_template_id: 10,
+      entity: 'LOANS',
+      group_by: 'status',
+      type: 'DOUGHNUT',
+    });
   });
 
-  it('añade una plantilla del servidor con un clic y respeta el máximo de 5 gráficos', async () => {
+  it('añade una plantilla del servidor con un clic y no permite repetirla', async () => {
     const user = userEvent.setup();
     const fetchMock = mockMetricsApi();
+    await renderPanel();
+    const posts = () =>
+      fetchMock.mock.calls.filter(
+        ([url, init]) => String(url).endsWith('/me/charts') && init?.method === 'POST',
+      );
+
+    await user.click(await screen.findByRole('button', { name: /Préstamos por estado/i }));
+    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4));
+    expect(JSON.parse(String(posts()[0]?.[1]?.body))).toEqual({ chart_template_id: 10 });
+
+    // La plantilla ya está en el panel: su acceso directo queda deshabilitado
+    const shortcut = screen.getByRole('button', { name: /Préstamos por estado/i }) as HTMLButtonElement;
+    await waitFor(() => expect(shortcut.disabled).toBe(true));
+    expect(shortcut.title).toContain('ya está en tu panel');
+    fireEvent.click(shortcut);
+    expect(posts().length).toBe(1);
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
+
+    // Las demás plantillas siguen disponibles
+    expect(
+      (screen.getByRole('button', { name: /Ranking de docentes/i }) as HTMLButtonElement).disabled,
+    ).toBe(false);
+  });
+
+  it('un doble clic rápido sobre el mismo acceso directo crea un solo gráfico', async () => {
+    const fetchMock = mockMetricsApi();
+    await renderPanel();
+
+    const shortcut = await screen.findByRole('button', { name: /Préstamos por estado/i });
+    // Dos clics en el mismo tick: el botón aún no se ha deshabilitado
+    fireEvent.click(shortcut);
+    fireEvent.click(shortcut);
+
+    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    });
+    expect(
+      fetchMock.mock.calls.filter(
+        ([url, init]) => String(url).endsWith('/me/charts') && init?.method === 'POST',
+      ).length,
+    ).toBe(1);
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
+  });
+
+  it('respeta el máximo de 5 gráficos por usuario', async () => {
+    const user = userEvent.setup();
+    mockMetricsApi();
     await renderPanel();
 
     await user.click(await screen.findByRole('button', { name: /Préstamos por estado/i }));
     await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4));
-
-    const post = fetchMock.mock.calls.find(
-      ([url, init]) => String(url).endsWith('/me/charts') && init?.method === 'POST',
-    );
-    expect(JSON.parse(String(post?.[1]?.body))).toEqual({ chart_template_id: 10 });
-
-    await user.click(screen.getByRole('button', { name: /Préstamos por estado/i }));
+    await user.click(screen.getByRole('button', { name: /Ranking de docentes/i }));
     await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(5));
 
-    // Con 5 gráficos ya no se puede añadir más
     expect(
-      (screen.getByRole('button', { name: /Préstamos por estado/i }) as HTMLButtonElement).disabled,
+      (screen.getByRole('button', { name: /Abrir catálogo de widgets/i }) as HTMLButtonElement).disabled,
     ).toBe(true);
   });
 
@@ -442,7 +495,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
     expect(screen.getAllByTestId(/^chart-card-/).length).toBe(3);
 
-    await user.click(screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i }));
+    await user.click(screen.getByRole('button', { name: /Abrir catálogo de widgets/i }));
     const barWidget = screen.getByTestId('widget-item-bar');
     await user.click(within(barWidget).getByRole('button', { name: /Añadir/i }));
 
@@ -475,7 +528,7 @@ describe('REQ-14: Drag & Drop, Modo Edición y Asistente Post-Drop', () => {
     await renderPanel();
 
     await user.click(screen.getAllByRole('button', { name: 'Eliminar gráfico' })[0]!);
-    await user.click(screen.getByRole('button', { name: 'Retirar Gráfico' }));
+    await user.click(screen.getByRole('button', { name: 'Retirar gráfico' }));
     await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(2));
     expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'DELETE')).toBe(true);
   });

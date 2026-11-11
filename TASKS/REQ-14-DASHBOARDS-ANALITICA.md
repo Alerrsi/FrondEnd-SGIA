@@ -219,6 +219,8 @@ DISCLAIMER: DE MOMENTO NO ESTA PROGRAMADA LA API DE EL BACKEND
 - [x] Al estar en la zona de enfoque arrastrando el grafico fuera de la zona de widgets aun se debe visualizar el movimiento del grafico con el mouse hasta soltarlo en la zona, si el usuario no ha soltado no quites el grafico, OBLIGATORIO
 - [x] Cuando se salga arrastrando el grafico se debe mostrar una zona clara donde soltar el grafico que resalte de las demas, una vez la suelte dentro el grafico se tiene que añadir y quedar
 - [x] Si el usuario esta dentro de una plantilla por defecto al añadir un grafico se debe crear una personalizada con ese grafico añadido
+- [x] No se pueden añadir 2 gráficos iguales: el acceso directo de una plantilla ya presente queda deshabilitado, un doble clic crea un solo gráfico y el backend responde `422` (`chart`).
+- [x] Plantillas del servidor (`/api/chart-templates`) como única fuente: las sugerencias del menú de configuración salen de ellas y cada gráfico queda asociado a su plantilla y a su usuario (`user_charts.chart_template_id`, `user_id`). Se eliminaron las listas fijas `DEFAULT_TEMPLATES` y `CHART_PRESETS`.
 
 ---
 

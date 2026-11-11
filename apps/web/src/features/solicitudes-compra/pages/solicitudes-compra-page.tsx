@@ -10,11 +10,14 @@ import { canDo } from '@/features/auth/types/roles';
 import { PurchaseRequestFormDialog } from '@/features/solicitudes-compra/components/purchase-request-form-dialog';
 import { PurchaseRequestsTable } from '@/features/solicitudes-compra/components/purchase-requests-table';
 import { PURCHASE_REQUEST_STATUS_LABEL } from '@/features/solicitudes-compra/lib/purchase-request-status';
+import { PageHeading } from '@/components/ui/page-heading';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 const STATUS_FILTERS: Array<PurchaseRequestStatus | ''> = ['', ...Object.values(PurchaseRequestStatus)];
 
 const inputClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  FILTER_CONTROL_CLASS;
 
 export default function SolicitudesCompraPage() {
   const { user } = useAuth();
@@ -58,15 +61,9 @@ export default function SolicitudesCompraPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            <ClipboardCheck className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-            Solicitudes de compra
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Solicitud → aprobación → envío por áreas → cotizaciones (mín. 3) → OC → factura.
-          </p>
-        </div>
+        <PageHeading icon={ClipboardCheck} title="Solicitudes de compra">
+          Solicitud → aprobación → envío por áreas → cotizaciones (mín. 3) → OC → factura.
+        </PageHeading>
         {canManage && (
           <Button onClick={() => setFormOpen(true)} className="text-xs">
             <Plus className="h-4 w-4" />
@@ -75,7 +72,7 @@ export default function SolicitudesCompraPage() {
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 rounded-md border border-zinc-200 bg-white px-4 py-2.5 text-xs dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex flex-wrap items-center gap-4 rounded-md border border-zinc-200 bg-white px-4 py-2.5 text-xs dark:border-zinc-800 dark:bg-zinc-900 shadow-xs">
         <span className="text-zinc-500 dark:text-zinc-400">
           Resultados:{' '}
           <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
@@ -153,7 +150,7 @@ export default function SolicitudesCompraPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
             Cargando solicitudes de compra…
           </div>
         ) : isError ? (

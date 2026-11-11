@@ -33,6 +33,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 
 import { ProductoUnidadesExpandidas } from './producto-unidades-expandidas';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 export const AREAS_INACAP = [
   'Informática',
@@ -194,7 +196,7 @@ export function InventarioTable({
       columnHelper.accessor('codigoBarras', {
         header: 'SKU / Code128',
         cell: (info) => (
-          <span className="inline-flex items-center gap-1 font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60">
+          <span className={`inline-flex items-center gap-1 ${CODE_CHIP_CLASS}`}>
             <Barcode className="h-3 w-3 text-zinc-400 dark:text-zinc-500" />
             <span>{info.getValue() || '—'}</span>
           </span>
@@ -405,7 +407,7 @@ export function InventarioTable({
   const lastShown = Math.min(currentPage * pageSize, totalRows);
 
   const controlClasses =
-    'h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2.5 font-mono text-xs text-zinc-800 dark:text-zinc-200 transition-colors placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600';
+    FILTER_CONTROL_CLASS;
 
   return (
     <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
@@ -433,7 +435,7 @@ export function InventarioTable({
                 <X className="h-3.5 w-3.5" />
               </button>
             ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[10px] text-zinc-400">
+              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
                 /
               </kbd>
             )}
@@ -506,7 +508,7 @@ export function InventarioTable({
             ))}
           </select>
 
-          {/* Toggle de Stock Crítico */}
+          {/* Toggle de Stock crítico */}
           <label className="flex items-center gap-1.5 cursor-pointer text-xs font-mono text-zinc-600 dark:text-zinc-300 ml-1 select-none">
             <input
               type="checkbox"
@@ -527,7 +529,7 @@ export function InventarioTable({
             aria-label="Cargando productos en pañol"
             className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono"
           >
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-400" />
+            <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
             <span>Buscando...</span>
           </div>
         )}
@@ -536,14 +538,14 @@ export function InventarioTable({
       {/* TanStack Table Container */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-sm">
-          <thead className="bg-zinc-50/90 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-semibold font-mono">
+          <thead className={TABLE_HEAD_CLASS}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
                   return (
-                    <th key={header.id} className="px-3.5 py-2.5">
+                    <th key={header.id} className="px-4 py-2.5 font-medium">
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
@@ -573,7 +575,7 @@ export function InventarioTable({
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {isLoading ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-xs text-zinc-500 font-mono">
+                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
                   <div
                     role="progressbar"
                     aria-label="Cargando productos en pañol"
@@ -586,7 +588,7 @@ export function InventarioTable({
               </tr>
             ) : safeProductos.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-xs text-zinc-500 font-mono">
+                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
                   No se encontraron productos con los criterios seleccionados.
                 </td>
               </tr>
@@ -595,7 +597,7 @@ export function InventarioTable({
                 <Fragment key={row.id}>
                   <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-3.5 py-2">
+                      <td key={cell.id} className="px-4 py-2.5">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}

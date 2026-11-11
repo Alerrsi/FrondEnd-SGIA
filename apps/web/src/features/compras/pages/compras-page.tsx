@@ -10,6 +10,8 @@ import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { PurchaseDetailSheet } from '@/features/compras/components/purchase-detail-sheet';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
   { value: '', label: 'Todas' },
@@ -42,15 +44,9 @@ export default function ComprasPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Órdenes de Compra
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Seguimiento de adquisiciones y recepción de mercancía.
-            </p>
-          </div>
+          <PageHeading icon={ShoppingCart} title="Órdenes de compra">
+            Seguimiento de adquisiciones y recepción de mercancía.
+          </PageHeading>
           {canRequest && (
             <Link
               to="/solicitudes-compra"
@@ -88,7 +84,7 @@ export default function ComprasPage() {
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center font-mono text-xs text-zinc-500">
+        <div className={`py-12 ${STATE_TEXT_CLASS}`}>
           Cargando órdenes de compra…
         </div>
       ) : isError || !data ? (
@@ -97,21 +93,21 @@ export default function ComprasPage() {
           <span>No se pudieron cargar las órdenes de compra desde el servidor.</span>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
           <table className="w-full text-xs">
-            <thead className="bg-zinc-50 dark:bg-zinc-950 text-zinc-500">
+            <thead className={TABLE_HEAD_CLASS}>
               <tr>
-                <th className="px-3 py-2 text-left font-semibold">Código</th>
-                <th className="px-3 py-2 text-left font-semibold">Proveedor</th>
-                <th className="px-3 py-2 text-right font-semibold">Total</th>
-                <th className="px-3 py-2 text-left font-semibold">Estado</th>
-                <th className="px-3 py-2 text-left font-semibold">Fecha</th>
+                <th className="px-3 py-2 text-left font-medium">Código</th>
+                <th className="px-3 py-2 text-left font-medium">Proveedor</th>
+                <th className="px-3 py-2 text-right font-medium">Total</th>
+                <th className="px-3 py-2 text-left font-medium">Estado</th>
+                <th className="px-3 py-2 text-left font-medium">Fecha</th>
               </tr>
             </thead>
             <tbody>
               {data.data.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-3 py-8 text-center text-zinc-400">
+                  <td colSpan={5} className={`px-3 py-8 ${STATE_TEXT_CLASS}`}>
                     No hay órdenes de compra para el filtro seleccionado.
                   </td>
                 </tr>

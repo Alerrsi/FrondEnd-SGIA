@@ -22,6 +22,8 @@ import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { normalizeStoredRun, validateRun } from '../lib/run';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 interface FormValues {
   run: string;
@@ -35,7 +37,7 @@ interface FormValues {
 }
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  FORM_CONTROL_CLASS;
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -46,7 +48,7 @@ function Label({ htmlFor, children }: { htmlFor: string; children: string }) {
   return (
     <label
       htmlFor={htmlFor}
-      className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+      className={`mb-1 block ${FIELD_LABEL_CLASS}`}
     >
       {children}
     </label>
@@ -193,7 +195,7 @@ export function UsuarioFormDialog({
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
             <User className="h-3.5 w-3.5 text-zinc-400" />
-            Identificación de Usuario
+            Identificación de usuario
           </legend>
 
           <div>
@@ -274,7 +276,7 @@ export function UsuarioFormDialog({
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
             <Shield className="h-3.5 w-3.5 text-zinc-400" />
-            Rol y Dependencia Institucional
+            Rol y dependencia institucional
           </legend>
 
           <div>
@@ -295,12 +297,12 @@ export function UsuarioFormDialog({
           </div>
 
           <div>
-            <Label htmlFor="usuario-area">Área o Departamento (opcional)</Label>
+            <Label htmlFor="usuario-area">Área o departamento (opcional)</Label>
             <input
               id="usuario-area"
               type="text"
               disabled={isPending}
-              placeholder="Informática, Telecomunicaciones, etc."
+              placeholder="Informática, telecomunicaciones, etc."
               className={inputClasses}
               {...register('area')}
             />
@@ -351,7 +353,7 @@ export function UsuarioFormDialog({
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
             <Lock className="h-3.5 w-3.5 text-zinc-400" />
-            Credenciales de Acceso
+            Credenciales de acceso
           </legend>
 
           {esEdicion ? (
@@ -398,8 +400,8 @@ export function UsuarioFormDialog({
           <DialogCloseButton disabled={isPending} className="text-xs">
             Cancelar
           </DialogCloseButton>
-          <Button type="submit" variant="primary" disabled={isPending} className="min-w-28 text-xs">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          <Button type="submit" variant="primary" disabled={isPending} className="min-w-28">
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Crear usuario'}
           </Button>
         </div>

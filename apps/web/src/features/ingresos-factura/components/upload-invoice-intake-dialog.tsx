@@ -186,8 +186,7 @@ export function UploadInvoiceIntakeDialog({
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
-                className="mt-3 text-xs"
+                size="sm" className="mt-3"
                 onClick={() => fileRef.current?.click()}
               >
                 <FileUp className="h-3.5 w-3.5" />

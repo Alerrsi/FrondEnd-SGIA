@@ -28,7 +28,7 @@ export function PurchaseRequestStepper({ status }: { status: PurchaseRequestStat
             {i > 0 && <span className="mx-1 h-px w-4 bg-zinc-200 dark:bg-zinc-700" aria-hidden="true" />}
             <span
               className={cn(
-                'flex h-4 w-4 items-center justify-center rounded-full border font-mono text-[9px]',
+                'flex h-4 w-4 items-center justify-center rounded-full border font-mono text-[11px]',
                 done && 'border-emerald-500 bg-emerald-500 text-white',
                 active && 'border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900',
                 !done && !active && 'border-zinc-300 text-zinc-400 dark:border-zinc-700',

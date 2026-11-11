@@ -21,6 +21,8 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { UsuarioFormDialog } from '@/features/usuarios/components/usuario-form-dialog';
 import { UsuariosTable, type EstadoFilter } from '@/features/usuarios/components/usuarios-table';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 export default function UsuariosPage() {
   const { user: currentUser } = useAuth();
@@ -141,7 +143,7 @@ export default function UsuariosPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400 py-12 justify-center">
+      <div className={`flex items-center gap-2 py-12 justify-center ${STATE_TEXT_CLASS}`}>
         <span>Cargando directorio de usuarios…</span>
       </div>
     );
@@ -162,16 +164,10 @@ export default function UsuariosPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Users className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Directorio de Usuarios
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Administración centralizada de cuentas de acceso, roles institucionales y estados de autenticación.
-            </p>
-          </div>
-          <Button variant="primary" onClick={handleOpenCreate} className="text-xs">
+          <PageHeading icon={Users} title="Directorio de usuarios">
+            Administración centralizada de cuentas de acceso, roles institucionales y estados de autenticación.
+          </PageHeading>
+          <Button variant="primary" onClick={handleOpenCreate}>
             <Plus className="h-4 w-4" />
             Nuevo usuario
           </Button>

@@ -94,7 +94,7 @@ describe('ReubicarProductoModal (REQ-05)', () => {
     expect(screen.getByText(/Pañol Central · Cajón A-1/i)).toBeDefined();
 
     // Dropdown contains options from mockLocations
-    const salaSelect = screen.getByLabelText(/1\. Sala o Almacén principal/i);
+    const salaSelect = screen.getByLabelText(/1\. Sala o almacén principal/i);
     expect(salaSelect).toBeDefined();
     expect(screen.getByRole('option', { name: /Pañol Central/i })).toBeDefined();
     expect(screen.getByRole('option', { name: /Laboratorio Redes/i })).toBeDefined();
@@ -112,7 +112,7 @@ describe('ReubicarProductoModal (REQ-05)', () => {
       />,
     );
 
-    const salaSelect = screen.getByLabelText(/1\. Sala o Almacén principal/i);
+    const salaSelect = screen.getByLabelText(/1\. Sala o almacén principal/i);
     await user.selectOptions(salaSelect, '1');
 
     const cajonSelect = screen.getByLabelText(/2\. Cajón, Estante o Gaveta/i);
@@ -150,7 +150,7 @@ describe('ReubicarProductoModal (REQ-05)', () => {
     const toggleBtn = screen.getByRole('button', { name: /Entrada manual/i });
     await user.click(toggleBtn);
 
-    const salaInput = screen.getByLabelText(/Nombre de la Sala/i);
+    const salaInput = screen.getByLabelText(/Nombre de la sala/i);
     const cajonInput = screen.getByLabelText(/Código de Cajón \/ Estante/i);
 
     await user.clear(salaInput);

@@ -11,6 +11,7 @@ import { formatCLP } from '@/features/compras/lib/format';
 import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
 import { BudgetExecutionBar } from '@/features/presupuestos/components/budget-execution-bar';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
+import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 interface BudgetCardProps {
   budget: BudgetSummaryRow;
@@ -43,7 +44,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
             {code && (
-              <span className="rounded border border-zinc-200/80 dark:border-zinc-700/60 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+              <span className={CODE_CHIP_CLASS}>
                 {code}
               </span>
             )}

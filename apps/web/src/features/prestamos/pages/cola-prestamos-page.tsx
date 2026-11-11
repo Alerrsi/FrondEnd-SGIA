@@ -36,6 +36,9 @@ import {
 } from '@/features/prestamos/lib/loan-display';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { SectionTitle } from '@/components/ui/section-title';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 export default function ColaPrestamosPage() {
   const navigate = useNavigate();
@@ -126,25 +129,12 @@ export default function ColaPrestamosPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Header técnico con miga de pan */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-600 dark:text-zinc-300">
-            <span>Operaciones Pañol</span>
-            <span>/</span>
-            <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-              Cola de Préstamos
-            </span>
-          </div>
-          <h1 className="mt-1 text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Cola de Despacho de Solicitudes Remotas
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {isAdmin
-              ? 'Solicitudes remotas de todos los pañoles; filtra por pañol para revisar una cola.'
-              : 'Solicitudes remotas de tu pañol enviadas por los docentes.'}
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <PageHeading icon={ClipboardCheck} title="Cola de despacho de solicitudes remotas">
+          {isAdmin
+            ? 'Solicitudes remotas de todos los pañoles; filtra por pañol para revisar una cola.'
+            : 'Solicitudes remotas de tu pañol enviadas por los docentes.'}
+        </PageHeading>
 
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5 text-xs">
@@ -169,7 +159,7 @@ export default function ColaPrestamosPage() {
             className="gap-1.5 text-xs bg-red-600 hover:bg-red-700 text-white"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span>Nuevo Préstamo Presencial</span>
+            <span>Nuevo préstamo presencial</span>
           </Button>
         </div>
       </div>
@@ -203,7 +193,7 @@ export default function ColaPrestamosPage() {
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-rose-500">
           <div>
             <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Vencidos / Fuera de plazo
+              Vencidos / fuera de plazo
             </span>
             <span className="mt-0.5 text-xl font-bold font-mono text-rose-600 dark:text-rose-400">
               {rawLoans.filter((l) => (l.estado || '').toLowerCase() === 'vencido').length}
@@ -242,13 +232,13 @@ export default function ColaPrestamosPage() {
           <span>Cargando cola de solicitudes desde la API…</span>
         </div>
       ) : filteredLoans.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center">
+        <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center shadow-xs">
           <Package className="h-8 w-8 text-zinc-300 dark:text-zinc-600 mb-2" />
-          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <SectionTitle as="h3">
             {search
-              ? 'Sin resultados para la búsqueda'
-              : 'No hay solicitudes pendientes en la cola'}
-          </h3>
+            ? 'Sin resultados para la búsqueda'
+            : 'No hay solicitudes pendientes en la cola'}
+          </SectionTitle>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm">
             {search
               ? 'Intenta con otro término de búsqueda o limpia el filtro.'
@@ -361,7 +351,7 @@ export default function ColaPrestamosPage() {
                                 {prodName}
                               </span>
                               {ubicacionStr && (
-                                <span className="flex items-center gap-1 text-[10px] text-zinc-600 dark:text-zinc-400">
+                                <span className="flex items-center gap-1 text-[11px] text-zinc-600 dark:text-zinc-400">
                                   <MapPin className="h-2.5 w-2.5" />
                                   <span>{ubicacionStr}</span>
                                 </span>
@@ -433,7 +423,7 @@ export default function ColaPrestamosPage() {
         hasUnsavedChanges={rejectionReason.trim().length > 0}
         confirmExitTitle="¿Descartar motivo de rechazo?"
         confirmExitDescription="Has escrito un motivo de rechazo. Si sales ahora, el texto ingresado se descartará."
-        title="Rechazar Solicitud Remota"
+        title="Rechazar solicitud remota"
         description="Indica el motivo por el cual no se puede preparar la solicitud. Será notificado al docente."
         className="max-w-md"
       >
@@ -448,9 +438,9 @@ export default function ColaPrestamosPage() {
           <div className="flex flex-col gap-1">
             <label
               htmlFor="rejection_reason"
-              className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300"
+              className={FIELD_LABEL_CLASS}
             >
-              Motivo de Rechazo <span className="text-rose-500">*</span>
+              Motivo de rechazo <span className="text-rose-500">*</span>
             </label>
             <textarea
               id="rejection_reason"

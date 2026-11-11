@@ -53,10 +53,3 @@ export interface ExecutiveKpis {
   alertasCriticasNoResueltas: number;
   tasaRotacionMensualPct: number;
 }
-
-export interface DashboardTemplate {
-  id: string;
-  name: string;
-  description: string;
-  charts: MetricQueryInput[];
-}

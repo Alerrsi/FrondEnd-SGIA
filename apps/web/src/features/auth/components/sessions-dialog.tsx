@@ -59,11 +59,10 @@ export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () =
           <DialogCloseButton className="text-xs">Cerrar</DialogCloseButton>
           <Button
             variant="primary"
-            className="text-xs"
             disabled={revokeOthers.isPending || tokens.length < 2}
             onClick={handleRevokeOthers}
           >
-            {revokeOthers.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {revokeOthers.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Cerrar otras sesiones
           </Button>
         </div>

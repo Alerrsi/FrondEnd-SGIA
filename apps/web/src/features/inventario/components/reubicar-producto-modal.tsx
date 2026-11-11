@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const controlClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 transition-colors placeholder:text-zinc-400 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 disabled:opacity-50';
+  FORM_CONTROL_CLASS;
 
 export function ReubicarProductoModal({
   open,
@@ -193,13 +195,13 @@ export function ReubicarProductoModal({
 
         {!manualMode ? (
           <div className="flex flex-col gap-3">
-            {/* Selector de Sala / Ubicación física (API) */}
+            {/* Selector de Sala / ubicación física (API) */}
             <div>
               <label
                 htmlFor="reubicar-sala-select"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
-                1. Sala o Almacén principal <span className="text-red-500">*</span>
+                1. Sala o almacén principal <span className="text-red-500">*</span>
               </label>
               <select
                 id="reubicar-sala-select"
@@ -223,7 +225,7 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-cajon-select"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
                 2. Cajón, Estante o Gaveta
               </label>
@@ -266,9 +268,9 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-custom-sala"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
-                Nombre de la Sala <span className="text-red-500">*</span>
+                Nombre de la sala <span className="text-red-500">*</span>
               </label>
               <input
                 id="reubicar-custom-sala"
@@ -276,7 +278,7 @@ export function ReubicarProductoModal({
                 disabled={isPending}
                 value={customSala}
                 onChange={(e) => setCustomSala(e.target.value)}
-                placeholder="Ej. Pañol Central"
+                placeholder="Ej. pañol central"
                 className={controlClasses}
               />
             </div>
@@ -284,9 +286,9 @@ export function ReubicarProductoModal({
             <div>
               <label
                 htmlFor="reubicar-custom-cajon"
-                className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+                className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
-                Código de Cajón / Estante <span className="text-red-500">*</span>
+                Código de cajón / estante <span className="text-red-500">*</span>
               </label>
               <input
                 id="reubicar-custom-cajon"
@@ -294,7 +296,7 @@ export function ReubicarProductoModal({
                 disabled={isPending}
                 value={customCajon}
                 onChange={(e) => setCustomCajon(e.target.value)}
-                placeholder="Ej. Estante B-2"
+                placeholder="Ej. estante B-2"
                 className={controlClasses}
               />
             </div>
@@ -305,9 +307,9 @@ export function ReubicarProductoModal({
         <div>
           <label
             htmlFor="reubicar-desc"
-            className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400"
+            className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
           >
-            Nota de referencia física (Opcional)
+            Nota de referencia física (opcional)
           </label>
           <input
             id="reubicar-desc"
@@ -315,7 +317,7 @@ export function ReubicarProductoModal({
             disabled={isPending}
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            placeholder="Ej. Gaveta antiestática, repisa superior"
+            placeholder="Ej. gaveta antiestática, repisa superior"
             className={controlClasses}
           />
         </div>
@@ -325,8 +327,8 @@ export function ReubicarProductoModal({
           <DialogCloseButton size="sm" disabled={isPending} className="text-xs">
             Cancelar
           </DialogCloseButton>
-          <Button type="submit" size="sm" disabled={isPending} className="min-w-32 text-xs">
-            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          <Button type="submit" size="sm" disabled={isPending} className="min-w-32">
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Confirmar reubicación
           </Button>
         </div>

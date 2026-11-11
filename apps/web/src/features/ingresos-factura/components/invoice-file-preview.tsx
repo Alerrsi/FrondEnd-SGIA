@@ -47,8 +47,7 @@ export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; ha
       </div>
       <Button
         variant="outline"
-        size="sm"
-        className="self-start text-xs"
+        size="sm" className="self-start"
         onClick={() => window.open(url, '_blank', 'noopener')}
       >
         <ExternalLink className="h-3.5 w-3.5" />

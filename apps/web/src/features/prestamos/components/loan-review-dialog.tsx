@@ -271,8 +271,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
             variant="primary"
             size="sm"
             onClick={handleApprove}
-            disabled={!canApprove}
-            className="gap-1 text-xs"
+            disabled={!canApprove} className="gap-1"
           >
             <Check className="h-3.5 w-3.5" />
             <span>{aprobarMutation.isPending ? 'Aprobando…' : 'Aprobar'}</span>

@@ -140,7 +140,7 @@ vi.mock('@/lib/toast', () => ({
   },
 }));
 
-describe('REQ-06: Alertas de Stock Crítico y Preventivo', () => {
+describe('REQ-06: Alertas de stock Crítico y Preventivo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -225,14 +225,14 @@ describe('REQ-06: Alertas de Stock Crítico y Preventivo', () => {
       await user.click(bellButton);
 
       // Verifica el menú de notificaciones con alertas
-      expect(screen.getByText(/Alertas de Stock/i)).toBeDefined();
+      expect(screen.getByText(/Alertas de stock/i)).toBeDefined();
       expect(screen.getByText('Tester Fluke 115 Multímetro')).toBeDefined();
       expect(screen.getByText('Bobina Cable UTP Cat6 305m')).toBeDefined();
       expect(screen.getByText('Ver bandeja completa de alertas')).toBeDefined();
     });
   });
 
-  describe('Bandeja Completa de Alertas de Stock (/alertas)', () => {
+  describe('Bandeja Completa de Alertas de stock (/alertas)', () => {
     it('renderiza cinta métrica, tabla con severidades y permite resolver una alerta', async () => {
       const user = userEvent.setup();
 
@@ -242,10 +242,10 @@ describe('REQ-06: Alertas de Stock Crítico y Preventivo', () => {
         </MemoryRouter>,
       );
 
-      expect(screen.getByText(/Alertas de Stock Crítico y Preventivo/i)).toBeDefined();
+      expect(screen.getByText(/Alertas de stock Crítico y Preventivo/i)).toBeDefined();
 
       // Cinta Métrica
-      expect(screen.getByText(/Alertas Activas:/i)).toBeDefined();
+      expect(screen.getByText(/Alertas activas:/i)).toBeDefined();
       expect(screen.getByText(/Nivel Crítico \(≤ mín\):/i)).toBeDefined();
       expect(screen.getByText(/Advertencia \(≤ mín \+ 5\):/i)).toBeDefined();
 
@@ -262,7 +262,7 @@ describe('REQ-06: Alertas de Stock Crítico y Preventivo', () => {
       // Abrir confirmación de resolución
       await user.click(resolveBtns[0]!);
 
-      expect(screen.getByText('Resolver Alerta de Existencias')).toBeDefined();
+      expect(screen.getByText('Resolver alerta de existencias')).toBeDefined();
 
       // Confirmar resolución
       mockResolveMutateAsync.mockResolvedValueOnce({
@@ -270,7 +270,7 @@ describe('REQ-06: Alertas de Stock Crítico y Preventivo', () => {
         is_resolved: true,
       });
 
-      const confirmBtn = screen.getByRole('button', { name: 'Marcar como Resuelta' });
+      const confirmBtn = screen.getByRole('button', { name: 'Marcar como resuelta' });
       await user.click(confirmBtn);
 
       await waitFor(() => {

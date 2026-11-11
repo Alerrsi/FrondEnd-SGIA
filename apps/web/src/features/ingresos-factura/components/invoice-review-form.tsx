@@ -25,11 +25,14 @@ import { parseOverBudget, type OverBudgetInfo } from '@/features/ingresos-factur
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 type ProductType = NonNullable<Producto['type']>;
 
 const inputClasses =
-  'w-full h-8 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  FORM_CONTROL_CLASS;
 const errorClasses = 'mt-0.5 text-[11px] text-rose-600 dark:text-rose-400';
 
 const toNumber = (v: unknown) =>
@@ -205,7 +208,7 @@ export function InvoiceReviewForm({
         <div className="flex flex-col gap-1">
           <label
             htmlFor="ii-document"
-            className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+            className={FIELD_LABEL_CLASS}
           >
             N° de factura
           </label>
@@ -224,7 +227,7 @@ export function InvoiceReviewForm({
         <div className="flex flex-col gap-1">
           <label
             htmlFor="ii-purchase"
-            className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+            className={FIELD_LABEL_CLASS}
           >
             Orden de compra (opcional)
           </label>
@@ -253,7 +256,7 @@ export function InvoiceReviewForm({
           <div className="flex flex-col gap-1">
             <label
               htmlFor="ii-budget"
-              className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono"
+              className={FIELD_LABEL_CLASS}
             >
               Presupuesto
             </label>
@@ -286,10 +289,10 @@ export function InvoiceReviewForm({
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
           <table className="w-full border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
                 <th className="min-w-56 p-2 font-medium">Producto</th>
                 <th className="w-36 p-2 font-medium">Cajón</th>
                 <th className="w-20 p-2 font-medium">Cant.</th>
@@ -501,7 +504,7 @@ export function InvoiceReviewForm({
               })}
               {fields.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-6 text-center text-zinc-400">
+                  <td colSpan={6} className={`p-6 ${STATE_TEXT_CLASS}`}>
                     Sin ítems. Agrega los productos de la factura.
                   </td>
                 </tr>

@@ -38,6 +38,9 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { playScannerBeep } from '@/lib/audio';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 interface ScannedCheckoutItem {
   producto: Producto;
@@ -300,15 +303,9 @@ export default function MostradorPrestamosPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Layers className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Mostrador de Pañol: Préstamos Presenciales y Devoluciones
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Atención ágil de mesón con lector de códigos Code128, control de credencial docente y restitución de stock.
-            </p>
-          </div>
+          <PageHeading icon={Layers} title="Mostrador de pañol: préstamos presenciales y devoluciones">
+            Atención ágil de mesón con lector de códigos Code128, control de credencial docente y restitución de stock.
+          </PageHeading>
 
           <div className="flex items-center gap-2">
             <Button
@@ -319,7 +316,7 @@ export default function MostradorPrestamosPage() {
               className="text-xs gap-1.5"
             >
               <Clock className="h-3.5 w-3.5" />
-              <span>Cola Remota</span>
+              <span>Cola remota</span>
             </Button>
             <Button
               type="button"
@@ -329,7 +326,7 @@ export default function MostradorPrestamosPage() {
               className="text-xs gap-1.5"
             >
               <History className="h-3.5 w-3.5" />
-              <span>Historial Auditoría</span>
+              <span>Historial auditoría</span>
             </Button>
           </div>
         </div>
@@ -345,7 +342,7 @@ export default function MostradorPrestamosPage() {
           className="text-xs gap-1.5"
         >
           <ArrowUpRight className="h-3.5 w-3.5" />
-          <span>Préstamo Presencial Directo (Entrega)</span>
+          <span>Préstamo presencial directo (entrega)</span>
         </Button>
         <Button
           type="button"
@@ -355,7 +352,7 @@ export default function MostradorPrestamosPage() {
           className="text-xs gap-1.5"
         >
           <ArrowDownLeft className="h-3.5 w-3.5" />
-          <span>Devolución y Recepción (Check-in)</span>
+          <span>Devolución y recepción (Check-in)</span>
         </Button>
 
         <div className="ml-auto flex items-center gap-2">
@@ -409,9 +406,9 @@ export default function MostradorPrestamosPage() {
                 <div>
                   <label
                     htmlFor="docente_run"
-                    className="font-mono text-xs text-zinc-700 dark:text-zinc-300"
+                    className={FIELD_LABEL_CLASS}
                   >
-                    RUN / Credencial Docente <span className="text-red-500">*</span>
+                    RUN / credencial docente <span className="text-red-500">*</span>
                   </label>
                   <div className="relative mt-1">
                     <User className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
@@ -437,9 +434,9 @@ export default function MostradorPrestamosPage() {
                 <div>
                   <label
                     htmlFor="docente_nombre"
-                    className="font-mono text-xs text-zinc-700 dark:text-zinc-300"
+                    className={FIELD_LABEL_CLASS}
                   >
-                    Nombre del Docente
+                    Nombre del docente
                   </label>
                   <input
                     id="docente_nombre"
@@ -453,7 +450,7 @@ export default function MostradorPrestamosPage() {
                 </>)}
 
                 <div>
-                  <label htmlFor="career" className="font-mono text-[11px] text-zinc-500">
+                  <label htmlFor="career" className={FIELD_LABEL_CLASS}>
                     Carrera <span className="text-rose-600 dark:text-rose-400">*</span>
                   </label>
                   <CareerSelect
@@ -466,7 +463,7 @@ export default function MostradorPrestamosPage() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label htmlFor="subject" className="font-mono text-[11px] text-zinc-500">
+                    <label htmlFor="subject" className={FIELD_LABEL_CLASS}>
                       Asignatura
                     </label>
                     <input
@@ -479,8 +476,8 @@ export default function MostradorPrestamosPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="room" className="font-mono text-[11px] text-zinc-500">
-                      Sala / Taller
+                    <label htmlFor="room" className={FIELD_LABEL_CLASS}>
+                      Sala / taller
                     </label>
                     <input
                       id="room"
@@ -501,10 +498,7 @@ export default function MostradorPrestamosPage() {
                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
                   2. Entrada Lector Code128
                 </span>
-                <span className="inline-flex items-center gap-1 rounded bg-red-100 dark:bg-red-900/40 px-1.5 py-0.5 font-mono text-[10px] text-red-700 dark:text-red-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" />
-                  Auto-foco
-                </span>
+                <Badge tone="accent" mono dot>Auto-foco</Badge>
               </div>
 
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
@@ -533,7 +527,7 @@ export default function MostradorPrestamosPage() {
               <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
-                    Ítems Agregados al Préstamo
+                    Ítems agregados al préstamo
                   </span>
                   <Badge tone="neutral">{scannedItems.length} distintos</Badge>
                   <span className="font-mono text-xs text-zinc-500 tabular-nums">
@@ -555,7 +549,7 @@ export default function MostradorPrestamosPage() {
               </div>
 
               {scannedItems.length === 0 ? (
-                <div className="p-12 text-center text-xs font-mono text-zinc-400 flex flex-col items-center gap-2">
+                <div className={`p-12 flex flex-col items-center gap-2 ${STATE_TEXT_CLASS}`}>
                   <Barcode className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
                   <span>No hay ítems escaneados aún.</span>
                   <span className="text-[11px] text-zinc-400">
@@ -565,13 +559,13 @@ export default function MostradorPrestamosPage() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left text-xs font-mono">
-                    <thead className="bg-zinc-50/90 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">
+                    <thead className={TABLE_HEAD_CLASS}>
                       <tr>
-                        <th className="px-3.5 py-2">Código / SKU</th>
-                        <th className="px-3.5 py-2">Producto</th>
-                        <th className="px-3.5 py-2">Ubicación</th>
-                        <th className="px-3.5 py-2 text-center">Cantidad</th>
-                        <th className="px-3.5 py-2 text-right">Acción</th>
+                        <th className="px-4 py-2.5 font-medium">Código / SKU</th>
+                        <th className="px-4 py-2.5 font-medium">Producto</th>
+                        <th className="px-4 py-2.5 font-medium">Ubicación</th>
+                        <th className="px-4 py-2.5 text-center font-medium">Cantidad</th>
+                        <th className="px-4 py-2.5 text-right font-medium">Acción</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -580,18 +574,18 @@ export default function MostradorPrestamosPage() {
                           key={item.producto.id}
                           className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40"
                         >
-                          <td className="px-3.5 py-2.5 font-semibold text-zinc-900 dark:text-zinc-100">
+                          <td className="px-4 py-2.5 font-semibold text-zinc-900 dark:text-zinc-100">
                             {item.barcode}
                           </td>
-                          <td className="px-3.5 py-2.5 font-sans font-medium text-zinc-800 dark:text-zinc-200">
+                          <td className="px-4 py-2.5 font-sans font-medium text-zinc-800 dark:text-zinc-200">
                             {item.producto.nombre}
                           </td>
-                          <td className="px-3.5 py-2.5 text-zinc-500 text-[11px]">
+                          <td className="px-4 py-2.5 text-zinc-500 text-[11px]">
                             {item.producto.ubicacion
                               ? `${item.producto.ubicacion.sala} · ${item.producto.ubicacion.cajon}`
                               : 'Pañol'}
                           </td>
-                          <td className="px-3.5 py-2.5 text-center">
+                          <td className="px-4 py-2.5 text-center">
                             <div className="inline-flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-800 rounded bg-zinc-50 dark:bg-zinc-950 p-0.5">
                               <button
                                 type="button"
@@ -612,7 +606,7 @@ export default function MostradorPrestamosPage() {
                               </button>
                             </div>
                           </td>
-                          <td className="px-3.5 py-2.5 text-right">
+                          <td className="px-4 py-2.5 text-right">
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(item.producto.id)}
@@ -652,7 +646,7 @@ export default function MostradorPrestamosPage() {
                   className="gap-2"
                 >
                   <CheckCircle2 className="h-4 w-4" />
-                  <span>Registrar Entrega de Préstamo</span>
+                  <span>Registrar entrega de préstamo</span>
                 </Button>
               </div>
             </div>
@@ -665,7 +659,7 @@ export default function MostradorPrestamosPage() {
           <div className="flex flex-col gap-3 lg:col-span-1">
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-                Buscar Préstamo Activo
+                Buscar préstamo activo
               </span>
               <div className="relative mt-2">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
@@ -673,7 +667,7 @@ export default function MostradorPrestamosPage() {
                   type="search"
                   value={checkinSearch}
                   onChange={(e) => setCheckinSearch(e.target.value)}
-                  placeholder="Docente, RUN o Código..."
+                  placeholder="Docente, RUN o código..."
                   className="h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-3 pl-8.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
                 />
               </div>
@@ -744,7 +738,7 @@ export default function MostradorPrestamosPage() {
                 {/* Lista de Ítems a devolver */}
                 <div className="flex flex-col gap-2">
                   <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
-                    Verificación de Estado por Ítem
+                    Verificación de estado por ítem
                   </span>
 
                   <div className="flex flex-col divide-y divide-zinc-100 dark:divide-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded">
@@ -765,7 +759,7 @@ export default function MostradorPrestamosPage() {
                               <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">
                                 {it.nombre || `Producto #${it.productoId}`}
                               </span>
-                              <span className="font-mono text-[10px] text-zinc-400">
+                              <span className="font-mono text-[11px] text-zinc-400">
                                 SKU: {it.codigoBarras || '—'} · Cantidad: {it.cantidad}
                               </span>
                             </div>
@@ -835,7 +829,7 @@ export default function MostradorPrestamosPage() {
                                     },
                                   }))
                                 }
-                                placeholder="Ej. Cable cortado, fusible quemado, punta de prueba faltante…"
+                                placeholder="Ej. cable cortado, fusible quemado, punta de prueba faltante…"
                                 className="h-7 w-full rounded border border-rose-300 dark:border-rose-700 bg-rose-50/20 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
                               />
                             </div>
@@ -847,7 +841,7 @@ export default function MostradorPrestamosPage() {
                 </div>
 
                 <div>
-                  <label className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                  <label className={FIELD_LABEL_CLASS}>
                     Observaciones generales de recepción
                   </label>
                   <textarea
@@ -878,7 +872,7 @@ export default function MostradorPrestamosPage() {
                     className="gap-1.5"
                   >
                     <CheckCircle2 className="h-4 w-4" />
-                    <span>Completar Devolución e Ingresar a Pañol</span>
+                    <span>Completar devolución e ingresar a pañol</span>
                   </Button>
                 </div>
               </div>

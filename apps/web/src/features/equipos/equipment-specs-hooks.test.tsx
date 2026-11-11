@@ -13,7 +13,7 @@ import {
 import type { EquipmentSpecs, UpdateEquipmentSpecsPayload } from '@sgia/types';
 import { calculateEquipmentLifeCycle } from './utils/lifecycle';
 
-describe('Unit Test: Hooks y Servicios de Fichas Técnicas de Equipos (REQ-12)', () => {
+describe('Unit Test: Hooks y Servicios de Fichas técnicas de Equipos (REQ-12)', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {

@@ -120,7 +120,7 @@ vi.mock('@/lib/toast', () => ({
   },
 }));
 
-describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', () => {
+describe('Integration Test: Módulo de Fichas técnicas de Equipos (/equipos)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -133,13 +133,13 @@ describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', 
     );
 
     // Título y badges
-    expect(screen.getByText('Fichas Técnicas de Equipos')).toBeDefined();
+    expect(screen.getByText('Fichas técnicas de equipos')).toBeDefined();
 
     // Cinta métrica compacta
-    expect(screen.getByText('Total Equipos')).toBeDefined();
-    expect(screen.getByText('En Operación')).toBeDefined();
-    expect(screen.getByText('En Mantención / Taller')).toBeDefined();
-    expect(screen.getByText('Obsolescencia Próxima')).toBeDefined();
+    expect(screen.getByText('Total equipos')).toBeDefined();
+    expect(screen.getByText('En operación')).toBeDefined();
+    expect(screen.getByText('En mantención / taller')).toBeDefined();
+    expect(screen.getByText('Obsolescencia próxima')).toBeDefined();
 
     // Filas de la tabla
     expect(screen.getByText('EQ-CISCO-01')).toBeDefined();
@@ -179,10 +179,10 @@ describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', 
 
     // Drawer visible
     await waitFor(() => {
-      expect(screen.getByText('Ciclo de Vida y Vida Útil Estimada')).toBeDefined();
+      expect(screen.getByText('Ciclo de vida y vida útil estimada')).toBeDefined();
     });
 
-    expect(screen.getByText('Manual Oficial de Usuario (S3 / Cloud)')).toBeDefined();
+    expect(screen.getByText('Manual oficial de usuario (S3 / Cloud)')).toBeDefined();
     expect(screen.getByText(/cisco-2960x\.pdf/)).toBeDefined();
 
     // Especificaciones del hardware
@@ -211,7 +211,7 @@ describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', 
     const verFichaButtons = screen.getAllByRole('button', { name: /ver ficha/i });
     await user.click(verFichaButtons[0]!);
 
-    // Clic en "Ficha Técnica (PDF)"
+    // Clic en "Ficha técnica (PDF)"
     const downloadSheetBtn = await screen.findByRole('button', { name: /descargar ficha técnica pdf/i });
     await user.click(downloadSheetBtn);
 
@@ -242,7 +242,7 @@ describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', 
     const verFichaButtons = screen.getAllByRole('button', { name: /ver ficha/i });
     await user.click(verFichaButtons[0]!);
 
-    // Clic en "Hoja de Vida (PDF)"
+    // Clic en "Hoja de vida (PDF)"
     const downloadReportsBtn = await screen.findByRole('button', { name: /descargar hoja de vida mantenciones pdf/i });
     await user.click(downloadReportsBtn);
 
@@ -280,7 +280,7 @@ describe('Integration Test: Módulo de Fichas Técnicas de Equipos (/equipos)', 
 
     // Modal de edición visible
     await waitFor(() => {
-      expect(screen.getByText('Editar Ficha Técnica y Especificaciones')).toBeDefined();
+      expect(screen.getByText('Editar ficha técnica y especificaciones')).toBeDefined();
     });
 
     // Modificar vida útil proyectada

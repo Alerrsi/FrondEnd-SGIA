@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 export function NotificationBell() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export function NotificationBell() {
           {totalUnresolved > 0 && (
             <span
               data-testid="notification-badge"
-              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[9px] font-bold text-white shadow-xs animate-pulse"
+              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[11px] font-bold text-white shadow-xs animate-pulse"
             >
               {totalUnresolved > 9 ? '9+' : totalUnresolved}
             </span>
@@ -53,16 +54,16 @@ export function NotificationBell() {
         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/70 dark:bg-zinc-900/70">
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              Alertas de Stock
+              Alertas de stock
             </span>
             {totalUnresolved > 0 && (
-              <span className="rounded bg-red-500/10 border border-red-500/20 px-1.5 py-0.2 font-mono text-[10px] font-bold text-red-600 dark:text-red-400">
+              <span className="rounded bg-red-500/10 border border-red-500/20 px-1.5 py-0.2 font-mono text-[11px] font-bold text-red-600 dark:text-red-400">
                 {totalUnresolved} activas
               </span>
             )}
           </div>
           {criticalCount > 0 && (
-            <span className="text-[10px] font-mono text-rose-600 dark:text-rose-400 font-medium">
+            <span className="text-[11px] font-mono text-rose-600 dark:text-rose-400 font-medium">
               {criticalCount} crítica(s)
             </span>
           )}
@@ -71,7 +72,7 @@ export function NotificationBell() {
         {/* Lista de Alertas Recientes */}
         <div className="max-h-72 overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800/80">
           {isLoading ? (
-            <div className="p-4 text-center text-xs font-mono text-zinc-400">
+            <div className={`p-4 ${STATE_TEXT_CLASS}`}>
               Cargando alertas…
             </div>
           ) : alerts.length === 0 ? (

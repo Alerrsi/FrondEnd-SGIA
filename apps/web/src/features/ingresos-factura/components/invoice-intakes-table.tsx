@@ -12,6 +12,7 @@ import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { cn } from '@/lib/cn';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const columnHelper = createColumnHelper<InvoiceIntake>();
 
@@ -92,7 +93,7 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
           {table.getHeaderGroups().map((hg) => (
             <tr
               key={hg.id}
-              className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+              className={TABLE_HEAD_CLASS}
             >
               {hg.headers.map((h) => (
                 <th
@@ -111,7 +112,7 @@ export function InvoiceIntakesTable({ rows, onOpen }: InvoiceIntakesTableProps) 
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
           {rows.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-10 text-center text-zinc-400">
+              <td colSpan={columns.length} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
                 No hay ingresos de factura para el filtro seleccionado.
               </td>
             </tr>

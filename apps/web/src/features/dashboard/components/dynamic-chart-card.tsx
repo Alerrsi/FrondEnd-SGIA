@@ -21,6 +21,7 @@ import {
   type MetricQueryInput,
 } from '../types/metrics';
 import { MetricChart } from './metric-chart';
+import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 interface DynamicChartCardProps {
   input: MetricQueryInput;
@@ -155,12 +156,12 @@ export function DynamicChartCard({
                 {title}
               </span>
               {isEditMode && (
-                <span className="font-mono text-[9px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-1 py-0.2 rounded border border-zinc-200 dark:border-zinc-700">
+                <span className={CODE_CHIP_CLASS}>
                   #{index + 1}
                 </span>
               )}
             </div>
-            <span className="font-mono text-[10px] text-zinc-400">
+            <span className="font-mono text-[11px] text-zinc-400">
               {describeRange(input)} · {CHART_TYPE_LABELS[input.chartType]}
             </span>
           </div>
@@ -171,8 +172,7 @@ export function DynamicChartCard({
             type="button"
             variant="ghost"
             size="icon"
-            onClick={onHide}
-            className="h-6 w-6 text-zinc-400 hover:text-zinc-700"
+            onClick={onHide} className="h-7 w-7 text-zinc-400 hover:text-zinc-700"
             title="Ocultar gráfico"
             aria-label="Ocultar gráfico"
           >
@@ -184,8 +184,7 @@ export function DynamicChartCard({
             type="button"
             variant="ghost"
             size="icon"
-            onClick={onDelete}
-            className="h-6 w-6 text-zinc-400 hover:text-rose-600"
+            onClick={onDelete} className="h-7 w-7 text-zinc-400 hover:text-rose-600"
             title="Eliminar gráfico"
             aria-label="Eliminar gráfico"
           >
@@ -239,7 +238,7 @@ export function DynamicChartCard({
       </div>
 
       {legend.length > 0 && (
-        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
+        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
           {legend.map((item) => (
             <li key={item.label} className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
@@ -252,7 +251,7 @@ export function DynamicChartCard({
       {data?.summary && (
         <p
           title={data.summary}
-          className="mt-2 truncate border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono text-[10px] text-zinc-400"
+          className="mt-2 truncate border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono text-[11px] text-zinc-400"
         >
           {data.summary}
         </p>

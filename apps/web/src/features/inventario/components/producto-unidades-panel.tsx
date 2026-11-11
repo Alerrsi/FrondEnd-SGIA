@@ -23,6 +23,7 @@ import { toast } from '@/lib/toast';
 import { AgregarUnidadesDialog } from './agregar-unidades-dialog';
 import { UnidadBarcodeDialog } from './unidad-barcode-dialog';
 import { UNIT_STATUS_LABELS, UnidadStatusBadge } from './unidad-status-badge';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const STATUS_FILTERS: Array<EquipmentUnitStatus | ''> = [
   '',
@@ -72,8 +73,7 @@ function UnitStatusControl({
       <Button
         type="button"
         variant="outline"
-        size="sm"
-        className="h-7 gap-1 text-xs"
+        size="sm" className="gap-1"
         onClick={() => onOpenMaintenance(active.id)}
       >
         <Wrench className="h-3 w-3" />
@@ -230,7 +230,7 @@ export function ProductoUnidadesPanel({
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center gap-2 p-6 text-xs text-zinc-500 font-mono">
+        <div className={`flex items-center justify-center gap-2 p-6 ${STATE_TEXT_CLASS}`}>
           <Loader2 className="h-4 w-4 animate-spin" />
           Cargando unidades…
         </div>
@@ -239,47 +239,47 @@ export function ProductoUnidadesPanel({
           {apiErrorToMessage(error)}
         </p>
       ) : units.length === 0 ? (
-        <p className="p-6 text-center text-xs text-zinc-500 dark:text-zinc-400">
+        <p className={`p-6 ${STATE_TEXT_CLASS}`}>
           Sin unidades registradas para este filtro.
         </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                <th className="px-2.5 py-1.5 font-medium">Código</th>
-                <th className="px-2.5 py-1.5 font-medium">Serie</th>
-                <th className="px-2.5 py-1.5 font-medium">Cajón</th>
-                <th className="px-2.5 py-1.5 font-medium">Estado</th>
-                <th className="px-2.5 py-1.5 font-medium text-right">Acciones</th>
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
+                <th className="px-3 py-2 font-medium">Código</th>
+                <th className="px-3 py-2 font-medium">Serie</th>
+                <th className="px-3 py-2 font-medium">Cajón</th>
+                <th className="px-3 py-2 font-medium">Estado</th>
+                <th className="px-3 py-2 font-medium text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
               {units.map((unit) => {
                 return (
                   <tr key={unit.id}>
-                    <td className="px-2.5 py-1.5">
-                      <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60">
+                    <td className="px-3 py-2">
+                      <span className={CODE_CHIP_CLASS}>
                         {unit.code}
                       </span>
                     </td>
-                    <td className="px-2.5 py-1.5 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className="px-3 py-2 font-mono text-zinc-600 dark:text-zinc-400">
                       {unit.serial_number || '—'}
                     </td>
-                    <td className="px-2.5 py-1.5 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className="px-3 py-2 font-mono text-zinc-600 dark:text-zinc-400">
                       {unit.cajon?.codigo ?? '—'}
                     </td>
-                    <td className="px-2.5 py-1.5">
+                    <td className="px-3 py-2">
                       <div className="flex flex-col gap-0.5">
                         <UnidadStatusBadge status={unit.status} />
                         {unit.active_loan?.code && (
-                          <span className="font-mono text-[10px] text-zinc-500">
+                          <span className="font-mono text-[11px] text-zinc-500">
                             {unit.active_loan.code}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-2.5 py-1.5">
+                    <td className="px-3 py-2">
                       <div className="flex items-center justify-end gap-1">
                         {canWrite && (
                           <UnitStatusControl
@@ -331,7 +331,7 @@ export function ProductoUnidadesPanel({
                           onClick={() => handleSheet(unit)}
                         >
                           {sheetLoadingId === unit.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
                             <FileText className="h-3.5 w-3.5" />
                           )}

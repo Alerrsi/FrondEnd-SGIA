@@ -28,6 +28,8 @@ import type { CriticalStockAlert, Producto } from '@sgia/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 export type AlertTypeFilter = 'all' | 'critical' | 'warning';
 export type AlertStatusFilter = 'all' | 'active' | 'resolved';
@@ -60,7 +62,7 @@ export interface AlertasTableProps {
 const columnHelper = createColumnHelper<CriticalStockAlert>();
 
 const controlClasses =
-  'h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2.5 font-mono text-xs text-zinc-800 dark:text-zinc-200 transition-colors placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600';
+  FILTER_CONTROL_CLASS;
 
 export function AlertasTable({
   alerts,
@@ -127,13 +129,13 @@ export function AlertasTable({
               </span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {sku && (
-                  <span className="inline-flex items-center gap-1 font-mono text-[10px] px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/60">
+                  <span className={`inline-flex items-center gap-1 ${CODE_CHIP_CLASS}`}>
                     <Barcode className="h-2.5 w-2.5 text-zinc-400" />
                     <span>{sku}</span>
                   </span>
                 )}
                 {area && (
-                  <span className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500">
+                  <span className="font-mono text-[11px] text-zinc-400 dark:text-zinc-500">
                     · {area}
                   </span>
                 )}
@@ -307,7 +309,7 @@ export function AlertasTable({
                 <X className="h-3.5 w-3.5" />
               </button>
             ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[10px] text-zinc-400">
+              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
                 /
               </kbd>
             )}
@@ -340,7 +342,7 @@ export function AlertasTable({
 
         {isFetching && (
           <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-400" />
+            <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
             <span>Actualizando…</span>
           </div>
         )}
@@ -349,14 +351,14 @@ export function AlertasTable({
       {/* TanStack Table Container */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-sm">
-          <thead className="bg-zinc-50/90 dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-semibold font-mono">
+          <thead className={TABLE_HEAD_CLASS}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
                   return (
-                    <th key={header.id} className="px-3.5 py-2.5">
+                    <th key={header.id} className="px-4 py-2.5 font-medium">
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
@@ -386,7 +388,7 @@ export function AlertasTable({
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {isLoading ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-xs text-zinc-500 font-mono">
+                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
                   <div className="flex items-center justify-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
                     <span>Cargando registro de alertas de stock…</span>
@@ -395,7 +397,7 @@ export function AlertasTable({
               </tr>
             ) : alerts.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-xs text-zinc-500 font-mono">
+                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
                   No se encontraron alertas de existencias con los filtros aplicados.
                 </td>
               </tr>
@@ -406,7 +408,7 @@ export function AlertasTable({
                   className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-3.5 py-2.5">
+                    <td key={cell.id} className="px-4 py-2.5">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

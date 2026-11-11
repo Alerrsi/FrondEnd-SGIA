@@ -5,6 +5,8 @@ import { Plus, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { LoanRequestItem } from "@/features/profesor/lib/loan-request-schema";
+import { SectionTitle } from '@/components/ui/section-title';
+import { STATE_TEXT_CLASS } from "@/components/ui/typography";
 
 interface CatalogPanelProps {
   /** Ids ya agregados a la solicitud. */
@@ -53,11 +55,9 @@ export function CatalogPanel({
   return (
     <section
       aria-label="Catálogo"
-      className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"
+      className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs"
     >
-      <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        Catálogo
-      </h2>
+      <SectionTitle>Catálogo</SectionTitle>
       {!hasStoreroom && (
         <p className="text-[11px] text-zinc-500">
           Elige un pañol para ver sus existencias.
@@ -76,7 +76,7 @@ export function CatalogPanel({
       </div>
 
       {isLoading ? (
-        <p className="py-6 text-center font-mono text-xs text-zinc-500">
+        <p className={`py-6 ${STATE_TEXT_CLASS}`}>
           Cargando catálogo…
         </p>
       ) : isError ? (
@@ -87,7 +87,7 @@ export function CatalogPanel({
           No se pudo cargar el catálogo.
         </p>
       ) : products.length === 0 ? (
-        <p className="py-6 text-center text-xs text-zinc-400">
+        <p className={`py-6 ${STATE_TEXT_CLASS}`}>
           No hay productos disponibles.
         </p>
       ) : (

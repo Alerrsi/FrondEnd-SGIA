@@ -31,6 +31,8 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
 import { calculateEquipmentLifeCycle } from '../utils/lifecycle';
 import { downloadBlob } from '../utils/download';
+import { SectionLabel } from '@/components/ui/section-label';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 interface EquipmentSpecSheetProps {
   open: boolean;
@@ -65,10 +67,10 @@ export function EquipmentSpecSheet({
   };
   const statusLabelMap: Record<EquipmentStatus, string> = {
     operativo: 'Operativo',
-    en_mantencion: 'En Mantención',
-    critico: 'Falla Crítica',
+    en_mantencion: 'En mantención',
+    critico: 'Falla crítica',
     baja: 'Dado de Baja',
-    en_prestamo: 'En Préstamo',
+    en_prestamo: 'En préstamo',
   };
 
   const pDate = equipo.purchase_date ?? equipo.specs?.purchase_date;
@@ -116,7 +118,7 @@ export function EquipmentSpecSheet({
         {/* Cabecera Técnica del Drawer */}
         <SheetHeader className="border-b border-zinc-200 dark:border-zinc-800 pb-4">
           <div className="flex items-center justify-between gap-2">
-            <span className="font-mono text-xs px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold tracking-wide">
+            <span className={CODE_CHIP_CLASS}>
               {equipo.codigo || equipo.sku || `ID: ${equipo.id}`}
             </span>
             <Badge tone={statusToneMap[rawStatus] || 'neutral'} dot>
@@ -124,7 +126,7 @@ export function EquipmentSpecSheet({
             </Badge>
           </div>
 
-          <SheetTitle className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mt-2">
+          <SheetTitle className="mt-2">
             {equipo.nombre}
           </SheetTitle>
 
@@ -159,16 +161,15 @@ export function EquipmentSpecSheet({
             variant="outline"
             size="sm"
             onClick={handleDownloadSheet}
-            disabled={downloadingSheet}
-            className="flex-1 min-w-[150px] text-xs gap-1.5"
-            aria-label="Descargar Ficha Técnica PDF"
+            disabled={downloadingSheet} className="flex-1 min-w-[150px] gap-1.5"
+            aria-label="Descargar ficha técnica PDF"
           >
             {downloadingSheet ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Download className="h-3.5 w-3.5" />
             )}
-            <span>Ficha Técnica (PDF)</span>
+            <span>Ficha técnica (PDF)</span>
           </Button>
 
           <Button
@@ -176,16 +177,15 @@ export function EquipmentSpecSheet({
             variant="outline"
             size="sm"
             onClick={handleDownloadReports}
-            disabled={downloadingReports}
-            className="flex-1 min-w-[150px] text-xs gap-1.5"
-            aria-label="Descargar Hoja de Vida Mantenciones PDF"
+            disabled={downloadingReports} className="flex-1 min-w-[150px] gap-1.5"
+            aria-label="Descargar hoja de vida mantenciones PDF"
           >
             {downloadingReports ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <FileCheck2 className="h-3.5 w-3.5" />
             )}
-            <span>Hoja de Vida (PDF)</span>
+            <span>Hoja de vida (PDF)</span>
           </Button>
 
           {canEdit && (
@@ -195,7 +195,7 @@ export function EquipmentSpecSheet({
               size="sm"
               onClick={() => onOpenEdit?.(equipo)}
               className="text-xs gap-1.5"
-              aria-label="Editar Especificaciones"
+              aria-label="Editar especificaciones"
             >
               <Edit className="h-3.5 w-3.5" />
               <span>Editar</span>
@@ -204,12 +204,9 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Ciclo de Vida y Obsolescencia */}
-        <div className="flex flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
+        <div className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              <Clock className="h-4 w-4 text-zinc-400" />
-              <span>Ciclo de Vida y Vida Útil Estimada</span>
-            </h4>
+            <SectionLabel as="h4" icon={Clock}><span>Ciclo de vida y vida útil estimada</span></SectionLabel>
             <Badge tone={lifeCycle.statusTone} dot>
               {lifeCycle.statusLabel}
             </Badge>
@@ -240,25 +237,25 @@ export function EquipmentSpecSheet({
           {/* Desglose de Parámetros de Ciclo de Vida */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800 text-xs">
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Adquisición</span>
+              <span className="text-[11px] uppercase font-semibold text-zinc-400">Adquisición</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.purchaseDateFormatted}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Vida Proyectada</span>
+              <span className="text-[11px] uppercase font-semibold text-zinc-400">Vida proyectada</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.lifespanYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Antigüedad</span>
+              <span className="text-[11px] uppercase font-semibold text-zinc-400">Antigüedad</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.ageYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-semibold text-zinc-400">Restante</span>
+              <span className="text-[11px] uppercase font-semibold text-zinc-400">Restante</span>
               <span
                 className={`font-mono font-bold mt-0.5 ${
                   lifeCycle.isCritical
@@ -273,11 +270,8 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Manual Oficial de Usuario en AWS S3 */}
-        <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
-          <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-            <FileText className="h-4 w-4 text-zinc-400" />
-            <span>Manual Oficial de Usuario (S3 / Cloud)</span>
-          </h4>
+        <div className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
+          <SectionLabel as="h4" icon={FileText}><span>Manual oficial de usuario (S3 / Cloud)</span></SectionLabel>
 
           {manualUrl ? (
             <div className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-2.5 mt-1">
@@ -313,13 +307,10 @@ export function EquipmentSpecSheet({
           )}
         </div>
 
-        {/* Sección: Especificaciones Técnicas Detalladas */}
-        <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
+        {/* Sección: Especificaciones técnicas detalladas */}
+        <div className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              <Cpu className="h-4 w-4 text-zinc-400" />
-              <span>Especificaciones Técnicas</span>
-            </h4>
+            <SectionLabel as="h4" icon={Cpu}><span>Especificaciones técnicas</span></SectionLabel>
             {canEdit && (
               <button
                 type="button"
@@ -333,7 +324,7 @@ export function EquipmentSpecSheet({
           </div>
 
           {specEntries.length === 0 ? (
-            <div className="py-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+            <div className={`py-4 ${STATE_TEXT_CLASS}`}>
               No se han registrado parámetros de hardware para este equipo.
             </div>
           ) : (
@@ -356,11 +347,8 @@ export function EquipmentSpecSheet({
         </div>
 
         {/* Sección: Historial de Mantenciones y Hoja de Vida */}
-        <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
-          <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-            <Wrench className="h-4 w-4 text-zinc-400" />
-            <span>Historial de Mantenciones e Intervenciones</span>
-          </h4>
+        <div className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
+          <SectionLabel as="h4" icon={Wrench}><span>Historial de mantenciones e intervenciones</span></SectionLabel>
 
           {equipo.maintenances && equipo.maintenances.length > 0 ? (
             <div className="flex flex-col gap-2 mt-1 divide-y divide-zinc-100 dark:divide-zinc-800">

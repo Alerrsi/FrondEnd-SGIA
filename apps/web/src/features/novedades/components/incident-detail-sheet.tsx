@@ -23,6 +23,7 @@ import { IncidentStatusBadge } from '@/features/novedades/components/incident-st
 import { INCIDENT_TRANSITION_LABELS } from '@/features/novedades/lib/incident-labels';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { SECTION_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 interface IncidentDetailSheetProps {
   reportId: number | null;
@@ -32,8 +33,7 @@ interface IncidentDetailSheetProps {
 }
 
 const sectionClasses = 'rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-1.5';
-const headingClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400';
+const headingClasses = SECTION_LABEL_CLASS;
 
 /** Detalle de un informe de novedades; los botones de estado salen de `allowed_transitions`. */
 export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: IncidentDetailSheetProps) {
@@ -79,14 +79,14 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
     <Sheet open={reportId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
         {isLoading || !report ? (
-          <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
+          <div className={`flex items-center justify-center py-16 ${STATE_TEXT_CLASS}`}>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Cargando informe…
           </div>
         ) : (
           <>
             <SheetHeader>
-              <SheetTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+              <SheetTitle>
                 <span className="font-mono">{report.code ?? `Informe #${report.id}`}</span>
                 <IncidentStatusBadge status={report.status} />
               </SheetTitle>
@@ -119,13 +119,13 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     <h3 className={headingClasses}>Datos</h3>
                     <dl className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <dt className="text-[10px] text-zinc-400">Laboratorio o pañol</dt>
+                        <dt className="text-[11px] text-zinc-400">Laboratorio o pañol</dt>
                         <dd className="text-zinc-800 dark:text-zinc-200">
                           {report.location?.nombre ?? '—'}
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-[10px] text-zinc-400">Fecha</dt>
+                        <dt className="text-[11px] text-zinc-400">Fecha</dt>
                         <dd className="font-mono text-zinc-800 dark:text-zinc-200">
                           {formatDateOnly(report.report_date)}
                         </dd>

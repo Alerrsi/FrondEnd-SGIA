@@ -40,6 +40,8 @@ import { EquipmentSpecSheet } from '../components/equipment-spec-sheet';
 import { EditSpecsDialog } from '../components/edit-specs-dialog';
 import { calculateEquipmentLifeCycle } from '../utils/lifecycle';
 import { downloadBlob } from '../utils/download';
+import { PageHeading } from '@/components/ui/page-heading';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 export default function EquiposPage() {
   const { user } = useAuth();
@@ -153,7 +155,7 @@ export default function EquiposPage() {
           const code = item.codigo || item.sku || `EQ-${item.id.toString().padStart(4, '0')}`;
           return (
             <div className="flex items-center gap-1.5">
-              <span className="font-mono text-xs px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold tracking-wide">
+              <span className={CODE_CHIP_CLASS}>
                 {code}
               </span>
             </div>
@@ -194,7 +196,7 @@ export default function EquiposPage() {
                 <span className="text-[11px] text-zinc-400">Sin categoría</span>
               )}
               {item.ubicacion && (
-                <span className="flex items-center gap-1 font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
+                <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
                   <MapPin className="h-2.5 w-2.5 shrink-0" />
                   <span className="truncate max-w-[130px]">{item.ubicacion}</span>
                 </span>
@@ -218,10 +220,10 @@ export default function EquiposPage() {
           };
           const labelMap: Record<EquipmentStatus, string> = {
             operativo: 'Operativo',
-            en_mantencion: 'En Mantención',
-            critico: 'Falla Crítica',
-            baja: 'De Baja',
-            en_prestamo: 'En Préstamo',
+            en_mantencion: 'En mantención',
+            critico: 'Falla crítica',
+            baja: 'De baja',
+            en_prestamo: 'En préstamo',
           };
           return (
             <Badge tone={toneMap[raw] || 'neutral'} dot>
@@ -309,7 +311,7 @@ export default function EquiposPage() {
                 className="h-7 px-2 text-xs font-medium"
                 aria-label={`Ver ficha de ${item.nombre}`}
               >
-                Ver Ficha
+                Ver ficha
               </Button>
 
               <DropdownMenu>
@@ -327,18 +329,18 @@ export default function EquiposPage() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => handleOpenSheet(item)}>
                     <Cpu className="h-3.5 w-3.5 text-zinc-400" />
-                    <span>Ver Ficha y Ciclo de Vida</span>
+                    <span>Ver ficha y ciclo de vida</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleQuickDownloadPdf(item)}>
                     <Download className="h-3.5 w-3.5 text-zinc-400" />
-                    <span>Descargar Ficha Técnica (PDF)</span>
+                    <span>Descargar ficha técnica (PDF)</span>
                   </DropdownMenuItem>
                   {canEdit && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleOpenEdit(item)}>
                         <Edit className="h-3.5 w-3.5 text-zinc-400" />
-                        <span>Editar Especificaciones</span>
+                        <span>Editar especificaciones</span>
                       </DropdownMenuItem>
                     </>
                   )}
@@ -367,20 +369,12 @@ export default function EquiposPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {/* Cabecera de Página */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Cpu className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Fichas Técnicas de Equipos
-            </h1>
-          </div>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Gestión de especificaciones de hardware, ciclo de vida útil y manuales de activos críticos.
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <PageHeading icon={Cpu} title="Fichas técnicas de equipos">
+          Gestión de especificaciones de hardware, ciclo de vida útil y manuales de activos críticos.
+        </PageHeading>
 
         <div className="flex items-center gap-2">
           <Button
@@ -401,7 +395,7 @@ export default function EquiposPage() {
       <EquipmentMetricsStrip equipos={equipos} />
 
       {/* Contenedor Unificado: Toolbar + TanStack Table */}
-      <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs overflow-hidden">
+      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs overflow-hidden">
         {/* Toolbar Unificado */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 p-3 sm:px-4 bg-zinc-50/60 dark:bg-zinc-950/40">
           <div className="flex flex-1 items-center gap-2.5">
@@ -412,7 +406,7 @@ export default function EquiposPage() {
                 placeholder="Buscar por serial, modelo, marca o ubicación..."
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
                 aria-label="Buscar equipos"
               />
             </div>
@@ -421,7 +415,7 @@ export default function EquiposPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none"
+              className="rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none shadow-xs"
               aria-label="Filtrar por categoría"
             >
               <option value="todos">Todas las categorías</option>
@@ -436,15 +430,15 @@ export default function EquiposPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none"
+              className="rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none shadow-xs"
               aria-label="Filtrar por estado operativo"
             >
               <option value="todos">Todos los estados</option>
               <option value="operativo">Operativo</option>
-              <option value="en_mantencion">En Mantención</option>
-              <option value="critico">Falla Crítica</option>
-              <option value="en_prestamo">En Préstamo</option>
-              <option value="baja">De Baja</option>
+              <option value="en_mantencion">En mantención</option>
+              <option value="critico">Falla crítica</option>
+              <option value="en_prestamo">En préstamo</option>
+              <option value="baja">De baja</option>
             </select>
           </div>
 
@@ -462,12 +456,12 @@ export default function EquiposPage() {
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr
                   key={headerGroup.id}
-                  className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60"
+                  className={TABLE_HEAD_CLASS}
                 >
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-4 py-2.5 font-semibold text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400 select-none"
+                      className="px-4 py-2.5 font-medium text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400 select-none"
                     >
                       {header.isPlaceholder
                         ? null
@@ -483,7 +477,7 @@ export default function EquiposPage() {
             <tbody className="divide-y divide-zinc-200/70 dark:divide-zinc-800">
               {isLoading ? (
                 <tr>
-                  <td colSpan={columns.length} className="py-12 text-center text-zinc-400">
+                  <td colSpan={columns.length} className={`py-12 ${STATE_TEXT_CLASS}`}>
                     <div className="flex flex-col items-center gap-2">
                       <RefreshCw className="h-5 w-5 animate-spin text-zinc-400" />
                       <span>Cargando catálogo de equipamiento técnico...</span>
@@ -498,7 +492,7 @@ export default function EquiposPage() {
                 </tr>
               ) : table.getRowModel().rows.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="py-12 text-center text-zinc-400">
+                  <td colSpan={columns.length} className={`py-12 ${STATE_TEXT_CLASS}`}>
                     No se encontraron equipos que coincidan con los filtros aplicados.
                   </td>
                 </tr>
@@ -559,7 +553,7 @@ export default function EquiposPage() {
         onOpenEdit={(eq) => handleOpenEdit(eq)}
       />
 
-      {/* Modal para Edición de Especificaciones Técnicas */}
+      {/* Modal para Edición de Especificaciones técnicas */}
       <EditSpecsDialog
         open={isEditDialogOpen}
         onClose={() => {

@@ -8,9 +8,11 @@ import {
   normalizePurchaseRequestCode,
 } from '@/features/solicitudes-compra/lib/purchase-request-code';
 import { cn } from '@/lib/cn';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs uppercase text-zinc-800 dark:text-zinc-200 placeholder:normal-case placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  `${FORM_CONTROL_CLASS} uppercase placeholder:normal-case`;
 
 interface PurchaseRequestCodeFieldProps {
   value: string;
@@ -39,7 +41,7 @@ export function PurchaseRequestCodeField({
     <div className="flex flex-col gap-1">
       <label
         htmlFor="ii-request-code"
-        className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+        className={FIELD_LABEL_CLASS}
       >
         Solicitud de compra (opcional)
       </label>

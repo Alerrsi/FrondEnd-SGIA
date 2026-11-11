@@ -20,9 +20,10 @@ import {
 } from '@/features/solicitudes-compra/lib/purchase-request-form-schema';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 transition-colors focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  FORM_CONTROL_CLASS;
 
 const legendClasses =
   'px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono';
@@ -188,7 +189,7 @@ export function PurchaseRequestFormDialog({
                       <span className="font-medium text-zinc-900 dark:text-zinc-100">
                         {productName(p)}
                       </span>
-                      <span className="font-mono text-[10px] text-zinc-400">
+                      <span className="font-mono text-[11px] text-zinc-400">
                         Stock {p.stock ?? p.quantity ?? 0}
                       </span>
                     </button>

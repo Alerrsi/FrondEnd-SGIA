@@ -18,12 +18,14 @@ import {
 } from '@/features/solicitudes-compra/lib/quotation-upload-schema';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  FORM_CONTROL_CLASS;
 
-const labelClasses =
-  'text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-mono';
+const labelClasses = FIELD_LABEL_CLASS;
 
 const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
 
@@ -186,8 +188,8 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
         </p>
         <div className="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
           <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50/60 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
                 <th className="px-3 py-2 font-medium">Producto</th>
                 <th className="px-3 py-2 text-right font-medium">Cant.</th>
                 <th className="px-3 py-2 text-right font-medium">Precio unit.</th>
@@ -198,11 +200,11 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
                 const priceError = errors.items?.[index]?.unit_price?.message;
                 return (
                   <tr key={item.id}>
-                    <td className="px-3 py-1.5 text-zinc-800 dark:text-zinc-200">
+                    <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
                       {item.product_name}
                     </td>
-                    <td className="px-3 py-1.5 text-right font-mono">{item.quantity}</td>
-                    <td className="px-3 py-1.5 text-right">
+                    <td className="px-3 py-2 text-right font-mono">{item.quantity}</td>
+                    <td className="px-3 py-2 text-right">
                       <input
                         type="number"
                         min={0}

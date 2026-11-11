@@ -11,9 +11,12 @@ import { StudentFormDialog } from '@/features/estudiantes/components/student-for
 import { StudentsTable } from '@/features/estudiantes/components/students-table';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 const controlClasses =
-  'h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400';
+  FILTER_CONTROL_CLASS;
 
 export default function EstudiantesPage() {
   const { user } = useAuth();
@@ -68,17 +71,10 @@ export default function EstudiantesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-            Estudiantes
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Registro de estudiantes que retiran préstamos presenciales.
-          </p>
-        </div>
+        <PageHeading icon={GraduationCap} title="Estudiantes">
+          Registro de estudiantes que retiran préstamos presenciales.
+        </PageHeading>
         <Button
-          className="text-xs"
           onClick={() => {
             setEditing(null);
             setFormOpen(true);
@@ -121,7 +117,7 @@ export default function EstudiantesPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando estudiantes…</div>
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando estudiantes…</div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
             <AlertCircle className="h-5 w-5 shrink-0" />

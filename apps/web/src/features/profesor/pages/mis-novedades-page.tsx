@@ -14,6 +14,8 @@ import { IncidentStatusBadge } from "@/features/novedades/components/incident-st
 import { NewIncidentDialog } from "@/features/profesor/components/new-incident-dialog";
 import { formatDateOnly } from "@/features/compras/lib/format";
 import { toast } from "@/lib/toast";
+import { PageHeading } from '@/components/ui/page-heading';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from "@/components/ui/typography";
 
 export default function MisNovedadesPage() {
   const [page, setPage] = useState(1);
@@ -28,24 +30,18 @@ export default function MisNovedadesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            <FileWarning className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-            Novedades
-          </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Informes de fallas y faltantes que has reportado.
-          </p>
-        </div>
-        <Button className="text-xs" onClick={() => setFormOpen(true)}>
+        <PageHeading icon={FileWarning} title="Novedades">
+          Informes de fallas y faltantes que has reportado.
+        </PageHeading>
+        <Button onClick={() => setFormOpen(true)}>
           <Plus className="h-4 w-4" />
           Nuevo informe
         </Button>
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
         {isLoading ? (
-          <div className="py-12 text-center font-mono text-xs text-zinc-500">
+          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
             Cargando informes…
           </div>
         ) : isError ? (
@@ -56,8 +52,8 @@ export default function MisNovedadesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
-              <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500">
+              <thead className={TABLE_HEAD_CLASS}>
+                <tr>
                   {[
                     "Código",
                     "Asignatura",
@@ -77,7 +73,7 @@ export default function MisNovedadesPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="px-4 py-10 text-center text-zinc-400"
+                      className={`px-4 py-10 ${STATE_TEXT_CLASS}`}
                     >
                       Aún no has enviado informes.
                     </td>

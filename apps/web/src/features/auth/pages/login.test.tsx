@@ -31,7 +31,7 @@ describe('LoginPage', () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText('Iniciar Sesión')).toBeDefined();
+    expect(screen.getByText('Iniciar sesión')).toBeDefined();
     expect(screen.getByLabelText(/correo institucional/i)).toBeDefined();
     expect(screen.getByPlaceholderText('••••••••')).toBeDefined();
     expect(screen.getByRole('button', { name: /acceder/i })).toBeDefined();

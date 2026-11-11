@@ -23,6 +23,7 @@ import { toast } from '@/lib/toast';
 
 import { useOptionalAuth } from '@/features/auth/context/auth-context';
 import { ProductoUnidadesPanel } from './producto-unidades-panel';
+import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 export interface ProductoDetailDialogProps {
   open: boolean;
@@ -133,12 +134,12 @@ export function ProductoDetailDialog({
           </div>
           <div className="flex items-center gap-2">
             {producto.categoria && (
-              <span className="font-mono text-xs px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+              <span className={CODE_CHIP_CLASS}>
                 {producto.categoria}
               </span>
             )}
             {producto.area && (
-              <span className="font-mono text-xs px-2 py-0.5 rounded bg-zinc-100/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+              <span className={CODE_CHIP_CLASS}>
                 {producto.area}
               </span>
             )}
@@ -155,7 +156,7 @@ export function ProductoDetailDialog({
           <div className="mb-2.5 flex items-center justify-between w-full">
             <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 font-mono">
               <Barcode className="h-4 w-4 text-zinc-500" />
-              Rotulado Code128 de Pañol
+              Rotulado Code128 de pañol
             </span>
             <button
               type="button"
@@ -200,12 +201,12 @@ export function ProductoDetailDialog({
           </p>
         </div>
 
-        {/* Especificaciones Técnicas y Parámetros Operativos */}
+        {/* Especificaciones técnicas y Parámetros Operativos */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {/* Tarjeta de Stock */}
           <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
             <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="font-mono">Control de Inventario</span>
+              <span className="font-mono">Control de inventario</span>
               <Badge tone={isCritical ? 'critical' : 'available'}>
                 {isCritical ? 'Crítico' : 'Normal'}
               </Badge>
@@ -233,7 +234,7 @@ export function ProductoDetailDialog({
           {/* Tarjeta de Ubicación Física */}
           <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
             <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="font-mono">Ubicación en Pañol</span>
+              <span className="font-mono">Ubicación en pañol</span>
               <MapPin className="h-3.5 w-3.5 text-zinc-400" />
             </div>
             <div className="mt-2 flex items-center gap-2">
@@ -242,7 +243,7 @@ export function ProductoDetailDialog({
               </span>
             </div>
             <div className="mt-2.5 flex items-center justify-between text-xs border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono">
-              <span className="text-zinc-500 dark:text-zinc-400">Gaveta / Cajón:</span>
+              <span className="text-zinc-500 dark:text-zinc-400">Gaveta / cajón:</span>
               <span className="font-semibold text-zinc-800 dark:text-zinc-200">
                 {producto.ubicacion?.cajon || 'Sin cajón'}
               </span>
@@ -284,8 +285,7 @@ export function ProductoDetailDialog({
             type="button"
             variant="outline"
             size="sm"
-            onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
-            className="flex items-center gap-1.5 text-xs"
+            onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel} className="flex items-center gap-1.5"
           >
             <Printer className="h-3.5 w-3.5 text-zinc-500" />
             <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
@@ -322,7 +322,7 @@ export function ProductoDetailDialog({
                 <span>Editar producto</span>
               </Button>
             )}
-            <Button type="button" variant="outline" size="sm" onClick={onClose} className="text-xs">
+            <Button type="button" variant="outline" size="sm" onClick={onClose}>
               Cerrar
             </Button>
           </div>

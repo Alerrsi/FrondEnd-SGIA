@@ -19,9 +19,12 @@ import {
 } from '@/features/solicitudes-compra/lib/quotation-upload-schema';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { SectionTitle } from '@/components/ui/section-title';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  'w-full h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 aria-invalid:border-rose-400 dark:aria-invalid:border-rose-700';
+  FORM_CONTROL_CLASS;
 
 const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
 
@@ -86,10 +89,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
   return (
     <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
       <header className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
-        <h2 className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          <ShoppingCart className="h-4 w-4 text-zinc-400" />
-          Orden de compra y factura
-        </h2>
+        <SectionTitle icon={ShoppingCart}>Orden de compra y factura</SectionTitle>
         <p className="text-[11px] text-zinc-500">
           La OC se emite fuera del sistema; aquí se sube su archivo ligado a {request.code}.
         </p>
@@ -152,7 +152,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="oc-number"
-                className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500"
+                className={FIELD_LABEL_CLASS}
               >
                 N° de la orden de compra
               </label>
@@ -184,7 +184,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
             <div>
               <Button type="submit" size="sm" disabled={pending}>
                 {pending ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Upload className="h-3.5 w-3.5" />
                 )}

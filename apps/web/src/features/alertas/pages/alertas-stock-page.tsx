@@ -19,6 +19,7 @@ import {
   type AlertStatusFilter,
   type AlertTypeFilter,
 } from '../components/alertas-table';
+import { PageHeading } from '@/components/ui/page-heading';
 
 export default function AlertasStockPage() {
   const navigate = useNavigate();
@@ -95,15 +96,9 @@ export default function AlertasStockPage() {
       <div className="flex flex-col gap-2">
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <Bell className="h-5 w-5 text-zinc-700 dark:text-zinc-300" />
-              Alertas de Stock Crítico y Preventivo
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Monitoreo en tiempo real de quiebres y umbrales mínimos de hardware.
-            </p>
-          </div>
+          <PageHeading icon={Bell} title="Alertas de stock crítico y preventivo">
+            Monitoreo en tiempo real de quiebres y umbrales mínimos de hardware.
+          </PageHeading>
 
           <div className="flex items-center gap-2">
             <Button
@@ -114,7 +109,7 @@ export default function AlertasStockPage() {
               className="text-xs gap-1.5"
             >
               <Layers className="h-3.5 w-3.5" />
-              <span>Ver Inventario</span>
+              <span>Ver inventario</span>
             </Button>
             <Button
               type="button"
@@ -124,7 +119,7 @@ export default function AlertasStockPage() {
               className="text-xs gap-1.5"
             >
               <ShoppingCart className="h-3.5 w-3.5" />
-              <span>Ir a Cotizaciones</span>
+              <span>Ir a cotizaciones</span>
             </Button>
           </div>
         </div>
@@ -133,7 +128,7 @@ export default function AlertasStockPage() {
       {/* Cinta Métrica Compacta (Metric Strip 36-40px) */}
       <div className="flex flex-wrap items-center divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2 text-xs font-mono shadow-xs">
         <div className="flex items-center gap-2 pr-4">
-          <span className="text-zinc-400 dark:text-zinc-500">Alertas Activas:</span>
+          <span className="text-zinc-400 dark:text-zinc-500">Alertas activas:</span>
           <strong className="text-zinc-900 dark:text-zinc-100 tabular-nums font-semibold">
             {totalActive}
           </strong>
@@ -141,7 +136,7 @@ export default function AlertasStockPage() {
 
         <div className="flex items-center gap-2 px-4">
           <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
-          <span className="text-zinc-400 dark:text-zinc-500">Nivel Crítico (≤ mín):</span>
+          <span className="text-zinc-400 dark:text-zinc-500">Nivel crítico (≤ mín):</span>
           <strong className="text-rose-600 dark:text-rose-400 tabular-nums font-semibold">
             {criticalCount}
           </strong>
@@ -157,7 +152,7 @@ export default function AlertasStockPage() {
 
         <div className="flex items-center gap-2 pl-4">
           <CheckCircle className="h-3 w-3 text-emerald-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Atendidas / Resueltas:</span>
+          <span className="text-zinc-400 dark:text-zinc-500">Atendidas / resueltas:</span>
           <strong className="text-zinc-700 dark:text-zinc-300 tabular-nums font-semibold">
             {totalResolved}
           </strong>
@@ -197,13 +192,13 @@ export default function AlertasStockPage() {
       {/* Diálogo de Confirmación para Resolver Alerta */}
       <ConfirmDialog
         open={resolvingAlert !== null}
-        title="Resolver Alerta de Existencias"
+        title="Resolver alerta de existencias"
         description={
           resolvingAlert
             ? `¿Deseas marcar como resuelta la alerta para "${resolvingAlert.product_name ?? 'este producto'}"? Esto indicará que la situación de inventario fue atendida o regularizada.`
             : ''
         }
-        confirmLabel="Marcar como Resuelta"
+        confirmLabel="Marcar como resuelta"
         variant="primary"
         loading={resolveMutation.isPending}
         onConfirm={handleConfirmResolve}

@@ -3,6 +3,7 @@ import { InvoiceIntakeStatus } from '@sgia/types';
 import { Link } from 'react-router-dom';
 
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 /** Ingresos de factura confirmados que consumieron este presupuesto. */
 export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
@@ -16,8 +17,8 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
   return (
     <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
       <table className="w-full border-collapse text-left text-xs">
-        <thead>
-          <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <thead className={TABLE_HEAD_CLASS}>
+          <tr>
             <th className="px-3 py-2 font-medium">N° factura</th>
             <th className="px-3 py-2 font-medium">Compra</th>
             <th className="px-3 py-2 font-medium">Recibida</th>
@@ -27,14 +28,14 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
           {isLoading && (
             <tr>
-              <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+              <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                 Cargando ingresos…
               </td>
             </tr>
           )}
           {!isLoading && rows.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+              <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                 Sin facturas confirmadas.
               </td>
             </tr>

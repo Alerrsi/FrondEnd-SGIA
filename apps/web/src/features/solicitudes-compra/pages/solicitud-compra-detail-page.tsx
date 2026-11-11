@@ -5,7 +5,16 @@ import {
   usePurchaseRequest,
 } from '@sgia/api-client';
 import { PurchaseRequestStatus } from '@sgia/types';
-import { AlertCircle, ArrowLeft, Ban, CheckCircle2, Package, Pencil, Send } from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowLeft,
+  Ban,
+  CheckCircle2,
+  ClipboardCheck,
+  Package,
+  Pencil,
+  Send,
+} from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -23,6 +32,9 @@ import { QuotationsPanel } from '@/features/solicitudes-compra/components/quotat
 import { SendPurchaseRequestDialog } from '@/features/solicitudes-compra/components/send-purchase-request-dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { PageHeading } from '@/components/ui/page-heading';
+import { SectionTitle } from '@/components/ui/section-title';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 export default function SolicitudCompraDetailPage() {
   const params = useParams<{ id: string }>();
@@ -42,7 +54,7 @@ export default function SolicitudCompraDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="py-12 text-center font-mono text-xs text-zinc-500">Cargando solicitud…</div>
+      <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando solicitud…</div>
     );
   }
 
@@ -106,20 +118,16 @@ export default function SolicitudCompraDetailPage() {
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <h1 className="font-mono text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-              {request.code}
-            </h1>
-            <PurchaseRequestStatusBadge status={request.status} />
-          </div>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Creada {formatDate(request.created_at)}
-            {request.creator_name && ` por ${request.creator_name}`}
-            {request.approved_at &&
-              ` · aprobada ${formatDate(request.approved_at)}${request.approver_name ? ` por ${request.approver_name}` : ''}`}
-          </p>
-        </div>
+        <PageHeading
+          icon={ClipboardCheck}
+          title={<span className="font-mono">{request.code}</span>}
+          aside={<PurchaseRequestStatusBadge status={request.status} />}
+        >
+          Creada {formatDate(request.created_at)}
+          {request.creator_name && ` por ${request.creator_name}`}
+          {request.approved_at &&
+            ` · aprobada ${formatDate(request.approved_at)}${request.approver_name ? ` por ${request.approver_name}` : ''}`}
+        </PageHeading>
 
         {canManage && (
           <div className="flex flex-wrap gap-2">
@@ -156,14 +164,11 @@ export default function SolicitudCompraDetailPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-2">
           <header className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
-            <h2 className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              <Package className="h-4 w-4 text-zinc-400" />
-              Productos solicitados ({request.items.length})
-            </h2>
+            <SectionTitle icon={Package}>Productos solicitados ({request.items.length})</SectionTitle>
           </header>
           <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50/60 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
                 <th className="px-3 py-2 font-medium">Producto</th>
                 <th className="px-3 py-2 text-right font-medium">Cantidad</th>
               </tr>

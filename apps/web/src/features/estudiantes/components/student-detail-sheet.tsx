@@ -14,6 +14,7 @@ import {
 import { formatDate } from '@/features/compras/lib/format';
 import { formatRun } from '@/features/usuarios/lib/run';
 import { apiErrorToMessage } from '@/lib/api-error';
+import { SectionLabel } from '@/components/ui/section-label';
 
 /** Ficha del estudiante: datos + historial de préstamos (`GET /students/{id}` y `/loans`). */
 export function StudentDetailSheet({
@@ -54,9 +55,7 @@ export function StudentDetailSheet({
           )
         )}
 
-        <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
-          Historial de préstamos
-        </h3>
+        <SectionLabel>Historial de préstamos</SectionLabel>
         <div className="flex-1 overflow-y-auto">
           {loans.isError ? (
             <p role="alert" className="text-xs text-rose-600">

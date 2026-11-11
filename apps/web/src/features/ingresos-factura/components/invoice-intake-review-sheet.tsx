@@ -17,6 +17,7 @@ import { InvoiceFilePreview } from '@/features/ingresos-factura/components/invoi
 import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
 import { InvoiceReviewForm } from '@/features/ingresos-factura/components/invoice-review-form';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 interface InvoiceIntakeReviewSheetProps {
   intakeId: number | null;
@@ -43,14 +44,14 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
         <SheetContent side="center" className="inset-y-auto top-1/2 h-[85dvh] -translate-y-1/2 overflow-y-auto rounded-lg border-y">
           {isLoading || !intake ? (
-            <div className="flex items-center justify-center py-16 text-xs text-zinc-400">
+            <div className={`flex items-center justify-center py-16 ${STATE_TEXT_CLASS}`}>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Cargando ingreso…
             </div>
           ) : (
             <>
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-lg text-zinc-900 dark:text-zinc-100">
+                <SheetTitle>
                   <span className="font-mono">
                     {intake.document_number ?? `Ingreso #${intake.id}`}
                   </span>
@@ -72,7 +73,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
 
                 <div className="flex flex-col gap-3">
                   {isDraft && !catalogReady ? (
-                    <div className="flex items-center justify-center py-10 text-xs text-zinc-400">
+                    <div className={`flex items-center justify-center py-10 ${STATE_TEXT_CLASS}`}>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Cargando catálogo de productos…
                     </div>
@@ -87,8 +88,8 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                   ) : (
                     <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
                       <table className="w-full border-collapse text-left text-xs">
-                        <thead>
-                          <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                        <thead className={TABLE_HEAD_CLASS}>
+                          <tr>
                             <th className="px-3 py-2 font-medium">Producto</th>
                             <th className="px-3 py-2 text-right font-medium">Cant.</th>
                             <th className="px-3 py-2 text-right font-medium">P. unit.</th>
@@ -123,7 +124,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                           ))}
                           {intake.items.length === 0 && (
                             <tr>
-                              <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">
+                              <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
                                 Sin ítems registrados.
                               </td>
                             </tr>

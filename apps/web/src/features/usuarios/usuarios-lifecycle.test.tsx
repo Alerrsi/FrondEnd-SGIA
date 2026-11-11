@@ -117,7 +117,7 @@ describe('REQ-02: Ciclo de vida de administración de usuarios', () => {
     const runInput = screen.getByPlaceholderText('12.345.678-9');
     const nameInput = screen.getByPlaceholderText('Nombre Apellido');
     const emailInput = screen.getByPlaceholderText('usuario@inacap.cl');
-    const areaInput = screen.getByPlaceholderText('Informática, Telecomunicaciones, etc.');
+    const areaInput = screen.getByPlaceholderText('Informática, telecomunicaciones, etc.');
     const passwordInput = screen.getByPlaceholderText('Mínimo 8 caracteres');
     const roleSelect = screen.getByLabelText('Rol');
 

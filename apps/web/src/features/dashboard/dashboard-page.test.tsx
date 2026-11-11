@@ -47,8 +47,8 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
     expect(screen.getByText(/Dashboards Analíticos y Métricas/i)).toBeDefined();
     await screen.findByText('Préstamos Diarios por Semana');
     expect(await screen.findByText('Disponibles')).toBeDefined();
-    expect(await screen.findByText('En Préstamo')).toBeDefined();
-    expect(await screen.findByText('Tasa Atrasos')).toBeDefined();
+    expect(await screen.findByText('En préstamo')).toBeDefined();
+    expect(await screen.findByText('Tasa atrasos')).toBeDefined();
 
     // Gráficos del panel personal (servidor)
     expect(screen.getByText('Préstamos Diarios por Semana')).toBeDefined();
@@ -66,11 +66,11 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
   it('muestra el contador sobre el límite de 5 gráficos por usuario', async () => {
     renderWithClient(<DashboardPage />);
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: /Abrir Catálogo de Widgets \(3\/5\)/i })).toBeDefined(),
+      expect(screen.getByRole('button', { name: /Abrir catálogo de widgets \(3\/5\)/i })).toBeDefined(),
     );
   });
 
-  it('reemplaza botón de nuevo gráfico: solo se pueden añadir mediante Abrir Catálogo de Widgets', async () => {
+  it('reemplaza botón de nuevo gráfico: solo se pueden añadir mediante Abrir catálogo de widgets', async () => {
     const user = userEvent.setup();
     renderWithClient(<DashboardPage />);
     await screen.findByTestId('chart-card-0');
@@ -78,14 +78,14 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
     // El botón tradicional "Nuevo Gráfico" ya no existe
     expect(screen.queryByRole('button', { name: /Nuevo Gráfico/i })).toBeNull();
 
-    // El acceso a agregar gráficos es mediante "Abrir Catálogo de Widgets"
-    const catalogBtn = screen.getByRole('button', { name: /Abrir Catálogo de Widgets/i });
+    // El acceso a agregar gráficos es mediante "Abrir catálogo de widgets"
+    const catalogBtn = screen.getByRole('button', { name: /Abrir catálogo de widgets/i });
     expect(catalogBtn).toBeDefined();
 
     await user.click(catalogBtn);
 
     // Al hacer clic, se activa el modo edición y se abre el catálogo lateral
-    expect(screen.getByText(/Formas Gráficas Genéricas/i)).toBeDefined();
+    expect(screen.getByText(/Formas gráficas genéricas/i)).toBeDefined();
     expect(screen.getByTestId('edit-mode-banner')).toBeDefined();
   });
 });

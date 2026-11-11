@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { formatDate } from '@/features/compras/lib/format';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { SectionTitle } from '@/components/ui/section-title';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 interface ContactedSuppliersPanelProps {
   request: PurchaseRequest;
@@ -34,10 +36,7 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
     <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
         <div>
-          <h2 className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            <Mail className="h-4 w-4 text-zinc-400" />
-            Proveedores contactados ({request.suppliers.length})
-          </h2>
+          <SectionTitle icon={Mail}>Proveedores contactados ({request.suppliers.length})</SectionTitle>
           <p className="text-[11px] text-zinc-500">
             Áreas:{' '}
             {request.areas.length
@@ -49,7 +48,7 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
         {canManage && request.actions.can_resend && failed > 0 && (
           <Button size="sm" variant="outline" onClick={handleResend} disabled={resend.isPending}>
             {resend.isPending ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <RotateCw className="h-3.5 w-3.5" />
             )}
@@ -58,13 +57,13 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
         )}
       </header>
       {request.suppliers.length === 0 ? (
-        <p className="px-3 py-6 text-center text-xs text-zinc-400">
+        <p className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
           Aún no se envía a proveedores.
         </p>
       ) : (
         <table className="w-full text-left text-xs">
-          <thead>
-            <tr className="border-b border-zinc-200 bg-zinc-50/60 font-mono text-[11px] uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+          <thead className={TABLE_HEAD_CLASS}>
+            <tr>
               <th className="px-3 py-2 font-medium">Proveedor</th>
               <th className="px-3 py-2 font-medium">Correo</th>
               <th className="px-3 py-2 font-medium">Estado del correo</th>

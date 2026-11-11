@@ -9,7 +9,7 @@ import {
   useResolveStockAlert,
 } from '@sgia/api-client';
 
-describe('Unit Test: Hooks y Servicios de Alertas de Stock (REQ-06)', () => {
+describe('Unit Test: Hooks y Servicios de Alertas de stock (REQ-06)', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
