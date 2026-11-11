@@ -21,8 +21,10 @@ export function NotificationBell() {
   });
 
   const alerts = data?.data ?? [];
-  const totalUnresolved = data?.meta?.total ?? alerts.length;
-  const criticalCount = alerts.filter((a) => a.alert_type === 'critical').length;
+  // Totales del servidor (stock real del inventario); la lista solo trae las 5 más recientes.
+  const totalUnresolved = data?.counts?.active ?? data?.meta?.total ?? alerts.length;
+  const criticalCount =
+    data?.counts?.critical ?? alerts.filter((a) => a.alert_type === 'critical').length;
 
   return (
     <DropdownMenu>

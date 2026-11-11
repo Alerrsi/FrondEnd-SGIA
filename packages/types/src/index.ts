@@ -30,6 +30,8 @@ export type {
   ProductBarcodeResponse,
   ProductConditionPayload,
   CriticalStockAlert,
+  CriticalStockAlertList,
+  StockAlertCounts,
   CriticalStockAlertQueryParams,
   ExtraerFacturaPayload,
 } from './producto';

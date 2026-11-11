@@ -2,6 +2,7 @@ import type {
   BorradorProducto,
   CreateProductoPayload,
   CriticalStockAlert,
+  CriticalStockAlertList,
   CriticalStockAlertQueryParams,
   InvoiceScanResponse,
   PaginatedResponse,
@@ -364,7 +365,7 @@ export async function extractFactura(
 
 export async function fetchCriticalStockAlerts(
   params?: CriticalStockAlertQueryParams,
-): Promise<PaginatedResponse<CriticalStockAlert>> {
+): Promise<CriticalStockAlertList> {
   const query = new URLSearchParams();
   if (params?.alert_type) query.set("alert_type", params.alert_type);
   if (params?.is_resolved !== undefined)
@@ -373,7 +374,7 @@ export async function fetchCriticalStockAlerts(
   if (params?.page) query.set("page", String(params.page));
 
   const qs = query.toString();
-  return get<PaginatedResponse<CriticalStockAlert>>(
+  return get<CriticalStockAlertList>(
     `/alerts/critical-stock${qs ? `?${qs}` : ""}`,
   );
 }

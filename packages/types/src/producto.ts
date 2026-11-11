@@ -1,3 +1,4 @@
+import type { PaginatedResponse } from './pagination';
 export interface Ubicacion {
   id: number;
   sala: string;
@@ -288,6 +289,19 @@ export interface ProductBarcodeResponse {
   svg: string;
   data_uri?: string;
   html?: string;
+}
+
+/** Totales reales de alertas, calculados contra el stock del inventario (no dependen de la página). */
+export interface StockAlertCounts {
+  active: number;
+  critical: number;
+  warning: number;
+  resolved: number;
+}
+
+/** Respuesta de `GET /api/alerts/critical-stock`. */
+export interface CriticalStockAlertList extends PaginatedResponse<CriticalStockAlert> {
+  counts?: StockAlertCounts;
 }
 
 export interface CriticalStockAlert {

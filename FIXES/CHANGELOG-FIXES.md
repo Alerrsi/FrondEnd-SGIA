@@ -661,3 +661,22 @@
 - **No incluido:** botones `<button>` con estilo dinámico (pestañas, chips de filtro, cabeceras ordenables), campos compactos `h-7` dentro de tablas y la app móvil.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` (74 archivos, 412 tests) en verde. Sin revisión visual en navegador.
 
+---
+
+## FIX-038: Las alertas de stock no coincidían con el inventario
+
+- **Fecha:** 2026-11-11
+- **Módulo:** Alertas de stock (REQ-06): campana y bandeja `/alertas` (`apps/web`) y backend
+- **Archivos Modificados:**
+  - Backend: `app/Services/StockAlertService.php`, `app/Http/Controllers/Api/StockAlertController.php`, `tests/Feature/StockAlertTest.php`
+  - Front: `notification-bell.tsx`, `alertas-stock-page.tsx`, `packages/types/src/producto.ts`, `packages/api-client/src/services/products.ts`, test nuevo `stock-alert-counts.test.tsx`
+- **Causa:**
+  1. La tabla `stock_alerts` guardaba una foto del stock del momento del aviso y solo se actualizaba cuando un movimiento pasaba por `checkStock`. Con la BD local: 5 críticas guardadas frente a 12 reales, 9 alertas con cifras viejas, 4 productos con dos alertas abiertas y 9 productos en crítico sin alerta.
+  2. Al pasar de crítico a advertencia (o al revés) la alerta anterior quedaba abierta junto a la nueva.
+  3. La campana contaba las críticas solo entre las 5 alertas que lista, y la cinta de la bandeja entre las 100 primeras.
+- **Solución:**
+  1. `StockAlertService::reconcile()` iguala las alertas abiertas al inventario antes de cada listado: una por producto activo en umbral, con tipo y cifras actuales; cierra las repuestas, duplicadas o de productos inactivos; abre las que faltan.
+  2. `GET /api/alerts/critical-stock` devuelve `counts` con los totales reales; campana y cinta los usan.
+  3. Una alerta atendida a mano no reaparece hasta que cambie el stock del producto.
+- **Verificación:** backend 585 tests; `pnpm typecheck` y `pnpm --filter @sgia/web test` (75 archivos, 414 tests) en verde. BD local tras sincronizar: 12 críticas y 9 advertencias, igual que el inventario.
+

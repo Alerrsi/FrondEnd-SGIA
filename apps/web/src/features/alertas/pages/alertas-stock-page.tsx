@@ -49,15 +49,17 @@ export default function AlertasStockPage() {
   const { data, isLoading, isFetching } = useCriticalStockAlerts(queryParams);
   const resolveMutation = useResolveStockAlert();
 
-  // Query global de conteo para cinta métrica
-  const { data: globalActiveData } = useCriticalStockAlerts({ is_resolved: false, per_page: 100 });
-  const { data: globalResolvedData } = useCriticalStockAlerts({ is_resolved: true, per_page: 100 });
-
-  const activeAlerts = globalActiveData?.data ?? [];
-  const totalActive = globalActiveData?.meta?.total ?? activeAlerts.length;
-  const criticalCount = activeAlerts.filter((a) => a.alert_type === 'critical').length;
-  const warningCount = activeAlerts.filter((a) => a.alert_type === 'warning').length;
-  const totalResolved = globalResolvedData?.meta?.total ?? (globalResolvedData?.data ?? []).length;
+  // Cinta métrica: totales del servidor, calculados contra el stock real del inventario.
+  // Sin `counts` (API antigua) se cuentan las alertas de la página cargada.
+  const counts = data?.counts;
+  const pageAlerts = data?.data ?? [];
+  const totalActive = counts?.active ?? pageAlerts.filter((a) => !a.is_resolved).length;
+  const criticalCount =
+    counts?.critical ??
+    pageAlerts.filter((a) => !a.is_resolved && a.alert_type === 'critical').length;
+  const warningCount =
+    counts?.warning ?? pageAlerts.filter((a) => !a.is_resolved && a.alert_type === 'warning').length;
+  const totalResolved = counts?.resolved ?? pageAlerts.filter((a) => a.is_resolved).length;
 
   const rawAlerts = data?.data ?? [];
 
