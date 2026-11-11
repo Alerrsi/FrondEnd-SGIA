@@ -292,3 +292,6 @@ Estas recomendaciones son del lado cliente y evitan sobrecargar la API o dejar a
 - Responden `application/pdf` (una página de 50x30 mm, código de barras Code128 + código en texto) con `Content-Disposition: attachment`. No es JSON: hay que pedir el binario con el token Bearer (`responseType: 'blob'`), no abrir la URL directo.
 
 - **Facturas sin presupuesto ni compra (nov 2026)**: `POST /api/invoice-intakes` solo recibe `file`; ya no acepta `annual_budget_id` ni `purchase_id`, y `GET /api/invoice-intakes` ya no filtra por `annual_budget_id`. `InvoiceIntakeResource` pierde `annual_budget_id`, `purchase_id` y `annual_budget`. Confirmar una factura solo ingresa stock: no reserva, consume ni libera presupuesto.
+
+## Nuevo flujo de compras (pendiente)
+Rediseño de cotización → OC en solicitud de compra con código, aprobación, envío por áreas de proveedor y cotizaciones subidas como archivo. Plan y contrato: `NUEVO-FLUJO-COMPRAS.md`. No implementar endpoints hasta que el backend los exponga (`BackEnd-SGIA/ENDPOINTS.md`).
