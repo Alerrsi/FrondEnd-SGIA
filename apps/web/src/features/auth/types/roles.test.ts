@@ -56,13 +56,15 @@ describe('Role and Route Permissions', () => {
       expect(canAccessRoute('PRO-01', '/novedades')).toBe(false);
       expect(canAccessRoute('PRO-01', '/prestamos/cola')).toBe(false);
       expect(canAccessRoute('PRO-01', '/cotizaciones')).toBe(false);
+      expect(canAccessRoute('PRO-01', '/solicitudes-compra')).toBe(false);
       expect(canAccessRoute('PRO-01', '/usuarios')).toBe(false);
     });
 
     it('gates actions like the backend', () => {
-      expect(canDo('DIR-01', 'changeQuotationStatus')).toBe(true);
-      expect(canDo('AD-01', 'changeQuotationStatus')).toBe(false);
-      expect(canDo('PAN-01', 'createPurchase')).toBe(false);
+      // Solo DIR-01 escribe solicitudes de compra (AD-01 → 403 en el backend).
+      expect(canDo('DIR-01', 'managePurchaseRequests')).toBe(true);
+      expect(canDo('AD-01', 'managePurchaseRequests')).toBe(false);
+      expect(canDo('PAN-01', 'cancelPurchase')).toBe(false);
       expect(canDo(undefined, 'manageBudgets')).toBe(false);
     });
 

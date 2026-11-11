@@ -25,6 +25,7 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/alertas': ['AD-01', 'DIR-01', 'PAN-01'],
   '/proveedores': ['DIR-01', 'AD-01'],
   '/cotizaciones': ['DIR-01', 'AD-01'],
+  '/solicitudes-compra': ['DIR-01', 'AD-01', 'PAN-01'],
   '/compras': ['PAN-01', 'DIR-01', 'AD-01'],
   '/presupuestos': ['DIR-01', 'AD-01'],
   '/ingresos-factura': ['DIR-01', 'AD-01'],
@@ -42,9 +43,8 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
 
 /** Acciones (botones) por rol; espejo de `routes/api.php` y las policies del backend. */
 export const ACTION_ROLES = {
-  changeQuotationStatus: ['DIR-01'],
-  respondQuotation: ['DIR-01', 'AD-01'],
-  createPurchase: ['DIR-01', 'AD-01'],
+  /** Crear, aprobar, enviar, subir cotizaciones/OC y cancelar solicitudes de compra. */
+  managePurchaseRequests: ['DIR-01'],
   cancelPurchase: ['DIR-01', 'AD-01'],
   manageBudgets: ['DIR-01', 'AD-01'],
   authorizeOverBudget: ['DIR-01'],

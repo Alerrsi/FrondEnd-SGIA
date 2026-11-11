@@ -1,24 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
-  Cotizacion,
   CotizacionParams,
-  CreateCotizacionPayload,
-  CreatePurchasePayload,
   CreateSupplierPayload,
   PurchaseArrivalScanPayload,
   PurchaseOrder,
   PurchaseQueryParams,
   PurchaseStatus,
-  QuotationResponsePayload,
-  QuotationStatus,
   Supplier,
   SupplierQueryParams,
 } from '@sgia/types';
 import { invalidateBudgets } from './budgets';
 import {
   cancelPurchase,
-  createCotizacion,
-  createPurchase,
   createSupplier,
   fetchPurchase,
   fetchPurchases,
@@ -30,8 +23,6 @@ import {
   scanPurchaseArrival,
   setSupplierStatus,
   updatePurchaseStatus,
-  updateQuotationResponse,
-  updateQuotationStatus,
   updateSupplier,
 } from '../services/quotations';
 
@@ -65,30 +56,6 @@ export function useCotizacion(id: number | undefined) {
     queryKey: quotationKeys.detail(id!),
     queryFn: () => fetchQuotation(id!),
     enabled: id !== undefined,
-  });
-}
-
-export function useCreateCotizacion() {
-  const queryClient = useQueryClient();
-  return useMutation<Cotizacion, Error, CreateCotizacionPayload>({
-    mutationFn: createCotizacion,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: quotationKeys.all }),
-  });
-}
-
-export function useUpdateQuotationStatus() {
-  const queryClient = useQueryClient();
-  return useMutation<Cotizacion, Error, { id: number; status: QuotationStatus | string }>({
-    mutationFn: ({ id, status }) => updateQuotationStatus(id, status),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: quotationKeys.all }),
-  });
-}
-
-export function useUpdateQuotationResponse() {
-  const queryClient = useQueryClient();
-  return useMutation<Cotizacion, Error, { id: number; payload: QuotationResponsePayload }>({
-    mutationFn: ({ id, payload }) => updateQuotationResponse(id, payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: quotationKeys.all }),
   });
 }
 
@@ -151,19 +118,6 @@ export function usePurchaseTrace(id: number | undefined) {
     queryKey: ['purchases', 'trace', id] as const,
     queryFn: () => fetchPurchaseTrace(id!),
     enabled: id !== undefined,
-  });
-}
-
-export function useCreatePurchase() {
-  const queryClient = useQueryClient();
-  return useMutation<PurchaseOrder, Error, CreatePurchasePayload>({
-    mutationFn: createPurchase,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: purchaseKeys.all });
-      // Crear la compra reserva presupuesto; desde cotización la deja «convertida».
-      invalidateBudgets(queryClient);
-      queryClient.invalidateQueries({ queryKey: quotationKeys.all });
-    },
   });
 }
 

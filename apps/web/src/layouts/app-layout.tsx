@@ -1,15 +1,16 @@
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { useEffect, useState } from 'react';
 import {
+  Archive,
   BarChart3,
   Bell,
   Boxes,
   Building2,
   CalendarClock,
   ClipboardPlus,
+  ClipboardCheck,
   FileWarning,
   PackageSearch,
-  ClipboardList,
   Cpu,
   GraduationCap,
   History,
@@ -85,10 +86,10 @@ const navigation: NavItem[] = [
     roles: ROUTE_PERMISSIONS['/equipos'] ?? [],
   },
   {
-    to: '/cotizaciones',
-    label: 'Cotizaciones',
-    icon: ClipboardList,
-    roles: ROUTE_PERMISSIONS['/cotizaciones'] ?? [],
+    to: '/solicitudes-compra',
+    label: 'Solicitudes de compra',
+    icon: ClipboardCheck,
+    roles: ROUTE_PERMISSIONS['/solicitudes-compra'] ?? [],
   },
   {
     to: '/compras',
@@ -113,6 +114,13 @@ const navigation: NavItem[] = [
     label: 'Proveedores',
     icon: Building2,
     roles: ROUTE_PERMISSIONS['/proveedores'] ?? [],
+  },
+  {
+    // Flujo antiguo en solo lectura (Fase 7): al final del bloque de compras.
+    to: '/cotizaciones',
+    label: 'Historial cotizaciones',
+    icon: Archive,
+    roles: ROUTE_PERMISSIONS['/cotizaciones'] ?? [],
   },
   {
     to: '/novedades',

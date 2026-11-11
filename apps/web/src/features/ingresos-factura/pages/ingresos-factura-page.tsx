@@ -9,6 +9,7 @@ import { InvoiceIntakeReviewSheet } from '@/features/ingresos-factura/components
 import { InvoiceIntakesTable } from '@/features/ingresos-factura/components/invoice-intakes-table';
 import { UploadInvoiceIntakeDialog } from '@/features/ingresos-factura/components/upload-invoice-intake-dialog';
 import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
+import { isPurchaseRequestCode } from '@/features/solicitudes-compra/lib/purchase-request-code';
 
 const STATUS_FILTERS: Array<{
   value: InvoiceIntakeStatus | '';
@@ -34,13 +35,20 @@ export default function IngresosFacturaPage() {
   const purchaseParam = positiveParam(searchParams.get('compra'));
   const budgetParam = positiveParam(searchParams.get('presupuesto'));
   const intakeParam = positiveParam(searchParams.get('ingreso'));
+  // Desde una solicitud de compra con OC: ?solicitud=SC-2026-0001.
+  const rawRequestParam = searchParams.get('solicitud') ?? '';
+  const requestParam = isPurchaseRequestCode(rawRequestParam)
+    ? rawRequestParam.trim().toUpperCase()
+    : undefined;
 
   const [status, setStatus] = useState<InvoiceIntakeStatus | ''>('');
   const [budgetId, setBudgetId] = useState<number | undefined>(undefined);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [page, setPage] = useState(1);
-  const [uploadOpen, setUploadOpen] = useState(purchaseParam !== undefined);
+  const [uploadOpen, setUploadOpen] = useState(
+    purchaseParam !== undefined || requestParam !== undefined,
+  );
   const [selectedId, setSelectedId] = useState<number | null>(intakeParam ?? null);
 
   const { data, isLoading, isError } = useInvoiceIntakes({
@@ -53,7 +61,8 @@ export default function IngresosFacturaPage() {
   });
 
   const clearParams = () => {
-    if (purchaseParam || budgetParam || intakeParam) setSearchParams({}, { replace: true });
+    if (purchaseParam || budgetParam || intakeParam || requestParam)
+      setSearchParams({}, { replace: true });
   };
 
   const meta = data?.meta;
@@ -174,6 +183,9 @@ export default function IngresosFacturaPage() {
 
       <UploadInvoiceIntakeDialog
         open={uploadOpen}
+        initialRequestCode={requestParam}
+        initialPurchaseId={purchaseParam}
+        initialBudgetId={budgetParam}
         onClose={() => {
           setUploadOpen(false);
           clearParams();

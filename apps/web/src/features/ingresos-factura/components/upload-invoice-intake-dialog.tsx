@@ -4,6 +4,11 @@ import type { InvoiceIntake } from '@sgia/types';
 import { FileText, FileUp, Loader2, UploadCloud, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { PurchaseRequestCodeField } from '@/features/ingresos-factura/components/purchase-request-code-field';
+import {
+  isPurchaseRequestCode,
+  normalizePurchaseRequestCode,
+} from '@/features/solicitudes-compra/lib/purchase-request-code';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
@@ -18,26 +23,41 @@ interface UploadInvoiceIntakeDialogProps {
   open: boolean;
   onClose: () => void;
   onUploaded: (intake: InvoiceIntake) => void;
+  /** Código `SC-AAAA-NNNN` precargado (desde el detalle de la solicitud). */
+  initialRequestCode?: string;
+  /** Desde una OC (`?compra=`): se envía `purchase_id` para ligar la factura. */
+  initialPurchaseId?: number;
+  /** Presupuesto de esa OC (`?presupuesto=`). */
+  initialBudgetId?: number;
 }
 
-/** Paso 1: solo el archivo (la factura ya no se asocia a presupuesto ni orden de compra). El backend corre el OCR y crea el borrador. */
+/**
+ * Paso 1: el archivo y, opcionalmente, el código de la solicitud (`purchase_request_code`) o la OC
+ * de origen (`purchase_id` + `annual_budget_id`, desde `?compra=`) para ligar la factura.
+ * El backend corre el OCR y crea el borrador.
+ */
 export function UploadInvoiceIntakeDialog({
   open,
   onClose,
   onUploaded,
+  initialRequestCode = '',
+  initialPurchaseId,
+  initialBudgetId,
 }: UploadInvoiceIntakeDialogProps) {
   const upload = useUploadInvoiceIntake();
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [requestCode, setRequestCode] = useState(initialRequestCode);
 
   useEffect(() => {
     if (!open) return;
     setFile(null);
     setErrors({});
+    setRequestCode(initialRequestCode);
     if (fileRef.current) fileRef.current.value = '';
-  }, [open]);
+  }, [open, initialRequestCode]);
 
   const pickFile = (f: File | undefined) => {
     if (!f) return;
@@ -58,14 +78,23 @@ export function UploadInvoiceIntakeDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) {
-      setErrors({ file: 'Selecciona el archivo de la factura.' });
-      return;
+    const code = normalizePurchaseRequestCode(requestCode);
+    const nextErrors: Record<string, string> = {};
+    if (!file) nextErrors.file = 'Selecciona el archivo de la factura.';
+    if (code && !isPurchaseRequestCode(code)) {
+      nextErrors.purchase_request_code = 'El código debe tener el formato SC-AAAA-NNNN.';
     }
-    setErrors({});
+    setErrors(nextErrors);
+    if (!file || Object.keys(nextErrors).length > 0) return;
 
     try {
-      const intake = await upload.mutateAsync({ file });
+      const intake = await upload.mutateAsync({
+        file,
+        ...(code ? { purchase_request_code: code } : {}),
+        // El código de solicitud ya resuelve la OC; si no viene, se respeta la OC de origen.
+        ...(!code && initialPurchaseId ? { purchase_id: initialPurchaseId } : {}),
+        ...(!code && initialBudgetId ? { annual_budget_id: initialBudgetId } : {}),
+      });
       toast.success(
         intake.raw_ocr_payload.ocr_available
           ? `Borrador creado: ${intake.raw_ocr_payload.items.length} ítem(s) detectados para revisar.`
@@ -88,7 +117,7 @@ export function UploadInvoiceIntakeDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      hasUnsavedChanges={Boolean(file) && !pending}
+      hasUnsavedChanges={(Boolean(file) || requestCode !== initialRequestCode) && !pending}
       title="Subir factura"
       description="Se guarda el archivo, se lee con OCR y se crea un borrador. Nada se descuenta hasta que lo confirmes."
       className="max-w-lg"
@@ -168,6 +197,16 @@ export function UploadInvoiceIntakeDialog({
           )}
         </div>
         {errors.file && <p className={errorClasses}>{errors.file}</p>}
+
+        <PurchaseRequestCodeField
+          value={requestCode}
+          onChange={(v) => {
+            setRequestCode(v);
+            setErrors(({ purchase_request_code: _omit, ...rest }) => rest);
+          }}
+          disabled={pending}
+          error={errors.purchase_request_code}
+        />
 
         <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>

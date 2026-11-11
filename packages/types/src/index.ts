@@ -70,12 +70,9 @@ export type {
   SupplierQueryParams,
   Cotizacion,
   CotizacionItem,
-  CreateCotizacionPayload,
   CotizacionParams,
-  QuotationResponsePayload,
   PurchaseItem,
   PurchaseOrder,
-  CreatePurchasePayload,
   PurchaseQueryParams,
   PurchaseTrace,
   PurchaseArrivalScanPayload,
@@ -135,6 +132,33 @@ export type {
   CreateBudgetPayload,
   UpdateBudgetPayload,
 } from './presupuesto';
+
+export {
+  SUPPLIER_AREAS,
+  SUPPLIER_AREA_LABELS,
+  PurchaseRequestStatus,
+  MIN_PURCHASE_REQUEST_QUOTATIONS,
+} from './solicitud-compra';
+export type {
+  SupplierArea,
+  PurchaseRequestStatus as PurchaseRequestStatusValue,
+  PurchaseRequestItem,
+  PurchaseRequestSupplier,
+  PurchaseRequestEmailStatus,
+  PurchaseRequestQuotationItem,
+  PurchaseRequestQuotation,
+  PurchaseRequestOrder,
+  PurchaseRequestInvoice,
+  PurchaseRequestActions,
+  PurchaseRequest,
+  PurchaseRequestQueryParams,
+  PurchaseRequestItemPayload,
+  CreatePurchaseRequestPayload,
+  UpdatePurchaseRequestPayload,
+  SendPurchaseRequestPayload,
+  UploadPurchaseRequestQuotationPayload,
+  UploadPurchaseRequestOrderPayload,
+} from './solicitud-compra';
 
 export { InvoiceIntakeStatus } from './ingreso-factura';
 export type {

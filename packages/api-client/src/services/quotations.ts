@@ -1,8 +1,6 @@
 import type {
   Cotizacion,
   CotizacionParams,
-  CreateCotizacionPayload,
-  CreatePurchasePayload,
   CreateSupplierPayload,
   PaginatedResponse,
   PurchaseArrivalScanPayload,
@@ -11,13 +9,14 @@ import type {
   PurchaseQueryParams,
   PurchaseStatus,
   PurchaseTrace,
-  QuotationResponsePayload,
-  QuotationStatus,
   Supplier,
+  SupplierArea,
   SupplierQueryParams,
 } from '@sgia/types';
+import { SUPPLIER_AREAS } from '@sgia/types';
 import { del, get, getBlob, patch, post } from '../http';
 import { normalizeMovement } from './budgets';
+import { unwrap } from './shared';
 import { normalizeInvoiceIntake } from './invoice-intakes';
 
 export function normalizeCotizacion(raw: any): Cotizacion {
@@ -101,72 +100,66 @@ export async function fetchQuotation(id: number): Promise<Cotizacion> {
   return normalizeCotizacion(response?.data ?? response);
 }
 
-export async function createCotizacion(payload: CreateCotizacionPayload): Promise<Cotizacion> {
-  const products = (payload.products ?? payload.items ?? []).map((it: any) => ({
-    id: it.id ?? it.product_id ?? it.productoId,
-    quantity: it.quantity ?? it.cantidad ?? 1,
-    name: it.name,
-    unit_price: it.unit_price,
-  }));
+// Proveedores (FU-03 / REQ-07). `areas` puede llegar como `['informatica']`, `[{ area }]` o `[{ value, label }]`.
+type RawSupplierArea = SupplierArea | { area?: string | null; value?: string | null };
 
-  const body = {
-    products,
-    supplier_ids: payload.supplier_ids ?? [],
-    notes: payload.notes ?? payload.notas,
-    expires_at: payload.expires_at,
-  };
+type RawSupplier = Omit<Supplier, 'areas'> & { areas?: RawSupplierArea[] | null };
 
-  const response = await post<any, any>('/quotations', body);
-  return normalizeCotizacion(response?.data ?? response);
+const SUPPLIER_AREA_SET = new Set<string>(SUPPLIER_AREAS);
+
+function isSupplierArea(value: unknown): value is SupplierArea {
+  return typeof value === 'string' && SUPPLIER_AREA_SET.has(value);
 }
 
-export async function updateQuotationStatus(
-  id: number,
-  status: QuotationStatus | string,
-): Promise<Cotizacion> {
-  const response = await patch<{ status: string }, any>(`/quotations/${id}/status`, { status });
-  return normalizeCotizacion(response?.data ?? response);
+export function normalizeSupplierAreas(raw: RawSupplierArea[] | null | undefined): SupplierArea[] {
+  const areas = (raw ?? []).map((a) => (typeof a === 'string' ? a : (a?.area ?? a?.value)));
+  return [...new Set(areas.filter(isSupplierArea))];
 }
 
-export async function updateQuotationResponse(
-  id: number,
-  payload: QuotationResponsePayload,
-): Promise<Cotizacion> {
-  const response = await patch<QuotationResponsePayload, any>(
-    `/quotations/${id}/responses`,
-    payload,
-  );
-  return normalizeCotizacion(response?.data ?? response);
+export function normalizeSupplier(raw: RawSupplier): Supplier {
+  return { ...raw, areas: normalizeSupplierAreas(raw.areas) };
 }
 
-// Proveedores (FU-03 / REQ-07)
 export async function fetchSuppliers(
   params?: SupplierQueryParams,
 ): Promise<PaginatedResponse<Supplier>> {
   const query = new URLSearchParams();
   if (params?.search) query.set('search', params.search);
   if (params?.category) query.set('category', params.category);
+  if (params?.area) query.set('area', params.area);
   if (params?.is_active !== undefined) query.set('is_active', String(params.is_active));
   if (params?.page) query.set('page', String(params.page));
   if (params?.per_page) query.set('per_page', String(params.per_page));
 
   const qs = query.toString();
-  return get<PaginatedResponse<Supplier>>(`/suppliers${qs ? `?${qs}` : ''}`);
+  const res = await get<Omit<PaginatedResponse<RawSupplier>, 'data'> & { data?: RawSupplier[] }>(
+    `/suppliers${qs ? `?${qs}` : ''}`,
+  );
+  return { ...res, data: (res?.data ?? []).map(normalizeSupplier) };
 }
 
 export async function fetchSupplier(id: number): Promise<Supplier> {
-  return get<Supplier>(`/suppliers/${id}`);
+  return normalizeSupplier(unwrap(await get<{ data?: RawSupplier } | RawSupplier>(`/suppliers/${id}`)));
 }
 
 export async function createSupplier(payload: CreateSupplierPayload): Promise<Supplier> {
-  return post<CreateSupplierPayload, Supplier>('/suppliers', payload);
+  return normalizeSupplier(
+    unwrap(await post<CreateSupplierPayload, { data?: RawSupplier } | RawSupplier>('/suppliers', payload)),
+  );
 }
 
 export async function updateSupplier(
   id: number,
   payload: Partial<CreateSupplierPayload>,
 ): Promise<Supplier> {
-  return patch<Partial<CreateSupplierPayload>, Supplier>(`/suppliers/${id}`, payload);
+  return normalizeSupplier(
+    unwrap(
+      await patch<Partial<CreateSupplierPayload>, { data?: RawSupplier } | RawSupplier>(
+        `/suppliers/${id}`,
+        payload,
+      ),
+    ),
+  );
 }
 
 export async function deleteSupplier(id: number): Promise<void> {
@@ -174,15 +167,24 @@ export async function deleteSupplier(id: number): Promise<void> {
 }
 
 export async function setSupplierStatus(id: number, is_active: boolean): Promise<Supplier> {
-  return patch<{ is_active: boolean }, Supplier>(`/suppliers/${id}/status`, {
-    is_active,
-  });
+  return normalizeSupplier(
+    unwrap(
+      await patch<{ is_active: boolean }, { data?: RawSupplier } | RawSupplier>(
+        `/suppliers/${id}/status`,
+        { is_active },
+      ),
+    ),
+  );
 }
 
 // Compras y Adquisiciones (FU-03 / REQ-08)
 interface RawPurchase {
   id: number;
   code?: string | null;
+  purchase_request_id?: number | null;
+  purchase_request?: { id: number; code: string; status: string } | null;
+  order_number?: string | null;
+  has_order_file?: boolean;
   quotation_id?: number | null;
   quotation_reference?: string | null;
   supplier_id?: number;
@@ -218,6 +220,10 @@ export function normalizePurchase(raw: RawPurchase): PurchaseOrder {
   return {
     id: raw.id,
     code: raw.code ?? null,
+    purchase_request_id: raw.purchase_request_id ?? raw.purchase_request?.id ?? null,
+    purchase_request: raw.purchase_request ?? null,
+    order_number: raw.order_number ?? null,
+    has_order_file: raw.has_order_file ?? false,
     quotation_id: raw.quotation_id ?? null,
     quotation_reference: raw.quotation_reference ?? null,
     supplier_id: raw.supplier_id ?? raw.supplier?.id ?? 0,
@@ -278,12 +284,6 @@ export async function fetchPurchase(id: number): Promise<PurchaseOrder> {
   return unwrapPurchase(await get<{ data?: RawPurchase }>(`/purchases/${id}`));
 }
 
-export async function createPurchase(payload: CreatePurchasePayload): Promise<PurchaseOrder> {
-  return unwrapPurchase(
-    await post<CreatePurchasePayload, { data?: RawPurchase }>('/purchases', payload),
-  );
-}
-
 export async function updatePurchaseStatus(
   id: number,
   status: PurchaseStatus | string,
@@ -330,6 +330,7 @@ export async function fetchPurchaseTrace(id: number): Promise<PurchaseTrace> {
     quotations?: unknown[];
     invoices?: Parameters<typeof normalizeInvoiceIntake>[0][];
     budget_movements?: Parameters<typeof normalizeMovement>[0][];
+    purchase_request?: { id: number; code: string; status: string } | null;
     stock_entries?: { product_id: number; name: string; quantity: number | string }[];
   }>(`/purchases/${id}/trace`);
   return {
@@ -337,6 +338,9 @@ export async function fetchPurchaseTrace(id: number): Promise<PurchaseTrace> {
     quotations: (res.quotations ?? []).map(normalizeCotizacion),
     invoices: (res.invoices ?? []).map(normalizeInvoiceIntake),
     budget_movements: (res.budget_movements ?? []).map(normalizeMovement),
+    purchase_request: res.purchase_request
+      ? { id: res.purchase_request.id, code: res.purchase_request.code, status: res.purchase_request.status }
+      : null,
     stock_entries: (res.stock_entries ?? []).map((s) => ({ ...s, quantity: Number(s.quantity) })),
   };
 }

@@ -35,6 +35,8 @@ function invalidateAfterStockChange(queryClient: QueryClient) {
     queryClient.invalidateQueries({ queryKey: ['products'] }),
     queryClient.invalidateQueries({ queryKey: ['equipment-units'] }),
     queryClient.invalidateQueries({ queryKey: ['purchases'] }),
+    // Confirmar deja la solicitud `facturada`; anular la devuelve a `con_oc`.
+    queryClient.invalidateQueries({ queryKey: ['purchase-requests'] }),
   ]);
 }
 

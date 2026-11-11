@@ -1,17 +1,7 @@
-import { useState } from 'react';
-import type { Cotizacion, Supplier } from '@sgia/types';
-import { useUpdateQuotationStatus } from '@sgia/api-client';
-import { QuotationStatus } from '@sgia/types';
-import { Building2, Calendar, FileText, Package, ShoppingCart } from 'lucide-react';
+import type { Cotizacion } from '@sgia/types';
+import { Building2, Calendar, FileText, Package } from 'lucide-react';
 
-import { canDo } from '@/features/auth/types/roles';
-import { useAuth } from '@/features/auth/context/auth-context';
-import { apiErrorToMessage } from '@/lib/api-error';
-import { toast } from '@/lib/toast';
-
-import { QuotationResponseDialog } from '@/features/cotizaciones/components/quotation-response-dialog';
 import { QuotationStatusBadge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -24,38 +14,17 @@ interface CotizacionDetailSheetProps {
   open: boolean;
   onClose: () => void;
   cotizacion: Cotizacion | null;
-  onGenerateOrder?: (cotizacion: Cotizacion) => void;
 }
 
 export function CotizacionDetailSheet({
   open,
   onClose,
   cotizacion,
-  onGenerateOrder,
 }: CotizacionDetailSheetProps) {
-  const { user } = useAuth();
-  const updateStatus = useUpdateQuotationStatus();
-  const [responding, setResponding] = useState<Supplier | null>(null);
   if (!cotizacion) return null;
 
   const items = cotizacion.items ?? cotizacion.products ?? [];
   const suppliers = cotizacion.suppliers ?? [];
-  const canGenerateOrder = cotizacion.estado === QuotationStatus.ACEPTADA;
-
-  // Solo el director cambia el estado; el backend valida la transición.
-  const canChangeStatus =
-    canDo(user?.rol, 'changeQuotationStatus') && cotizacion.estado === QuotationStatus.PENDIENTE;
-  const canRespond =
-    canDo(user?.rol, 'respondQuotation') && cotizacion.estado === QuotationStatus.PENDIENTE;
-  const changeStatus = async (status: string) => {
-    try {
-      await updateStatus.mutateAsync({ id: cotizacion.id, status });
-      toast.success('Estado de la cotización actualizado.');
-      onClose();
-    } catch (error) {
-      toast.error(apiErrorToMessage(error));
-    }
-  };
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -66,7 +35,7 @@ export function CotizacionDetailSheet({
             <span className="font-mono">Cotización #{cotizacion.id}</span>
           </SheetTitle>
           <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
-            Detalle de la cotización emitida y proveedores contactados.
+            Historial del flujo anterior: solo lectura.
           </SheetDescription>
         </SheetHeader>
 
@@ -130,11 +99,6 @@ export function CotizacionDetailSheet({
                       {supplier.name}
                     </span>
                     <span className="font-mono text-zinc-400 text-[10px]">{supplier.email}</span>
-                    {canRespond && (
-                      <Button size="sm" onClick={() => setResponding(supplier)}>
-                        Registrar respuesta
-                      </Button>
-                    )}
                   </div>
                 ))}
               </div>
@@ -153,50 +117,8 @@ export function CotizacionDetailSheet({
             </div>
           )}
 
-          {canChangeStatus && (
-            <div className="flex gap-2">
-              <Button
-                variant="primary"
-                disabled={updateStatus.isPending}
-                onClick={() => changeStatus(QuotationStatus.ACEPTADA)}
-                className="flex-1 text-xs"
-              >
-                Aceptar
-              </Button>
-              <Button
-                disabled={updateStatus.isPending}
-                onClick={() => changeStatus(QuotationStatus.RECHAZADA)}
-                className="flex-1 text-xs"
-              >
-                Rechazar
-              </Button>
-            </div>
-          )}
-
-          {/* Action: Generate Purchase Order */}
-          {canGenerateOrder && onGenerateOrder && (
-            <Button
-              variant="primary"
-              onClick={() => onGenerateOrder(cotizacion)}
-              className="w-full text-xs"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Aprobar y Generar Orden de Compra
-            </Button>
-          )}
         </div>
       </SheetContent>
-      {responding && (
-        <QuotationResponseDialog
-          open
-          onClose={() => {
-            setResponding(null);
-            onClose();
-          }}
-          cotizacion={cotizacion}
-          supplier={responding}
-        />
-      )}
     </Sheet>
   );
 }

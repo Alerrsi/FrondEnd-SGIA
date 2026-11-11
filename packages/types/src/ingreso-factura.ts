@@ -71,6 +71,12 @@ export interface InvoiceIntakeQueryParams {
 
 export interface UploadInvoiceIntakePayload {
   file: File;
+  /** Opcional: presupuesto del ingreso (si se omite, el de la compra o el detectado por OCR). */
+  annual_budget_id?: number;
+  /** Opcional: OC ligada (mismo presupuesto, con reserva vigente). */
+  purchase_id?: number;
+  /** Atajo del flujo nuevo: liga la factura a la OC de esa solicitud (`SC-AAAA-NNNN`). */
+  purchase_request_code?: string;
 }
 
 export interface ConfirmInvoiceIntakeItem {
@@ -86,6 +92,8 @@ export interface ConfirmInvoiceIntakePayload {
   document_number: string;
   /** Opcional: si se omite, el backend intenta asociar una orden abierta por productos y cantidades. */
   purchase_id?: number | null;
+  /** Flujo nuevo: liga la factura a la OC de esa solicitud (`SC-AAAA-NNNN`, debe estar `con_oc`). */
+  purchase_request_code?: string;
   /** Solo DIR-01: autoriza facturar por sobre lo libre del presupuesto (tras el 422 `over_budget`). */
   allow_over_budget?: boolean;
   items: ConfirmInvoiceIntakeItem[];
