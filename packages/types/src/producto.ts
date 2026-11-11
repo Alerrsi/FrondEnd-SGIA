@@ -310,6 +310,8 @@ export interface CriticalStockAlert {
   product?: Producto;
   producto?: Producto;
   product_name?: string;
+  /** Stock real del producto al listar (lo envía la API). */
+  current_stock?: number;
   stock?: number;
   stock_minimo?: number;
   alert_type: "warning" | "critical";

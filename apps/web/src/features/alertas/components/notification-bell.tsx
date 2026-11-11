@@ -25,6 +25,7 @@ export function NotificationBell() {
   const totalUnresolved = data?.counts?.active ?? data?.meta?.total ?? alerts.length;
   const criticalCount =
     data?.counts?.critical ?? alerts.filter((a) => a.alert_type === 'critical').length;
+  const warningCount = data?.counts?.warning ?? Math.max(totalUnresolved - criticalCount, 0);
 
   return (
     <DropdownMenu>
@@ -52,22 +53,25 @@ export function NotificationBell() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-80 p-0 shadow-lg">
-        {/* Header del Centro de Alertas */}
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/70 dark:bg-zinc-900/70">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+        {/* Header del Centro de Alertas: título y total arriba; desglose por severidad debajo */}
+        <div className="flex flex-col gap-2 border-b border-zinc-200 dark:border-zinc-800 px-3 py-2.5 bg-zinc-50/70 dark:bg-zinc-900/70">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
               Alertas de stock
             </span>
-            {totalUnresolved > 0 && (
-              <span className="rounded bg-red-500/10 border border-red-500/20 px-1.5 py-0.2 font-mono text-[11px] font-bold text-red-600 dark:text-red-400">
-                {totalUnresolved} activas
-              </span>
-            )}
-          </div>
-          {criticalCount > 0 && (
-            <span className="text-[11px] font-mono text-rose-600 dark:text-rose-400 font-medium">
-              {criticalCount} crítica(s)
+            <span className="shrink-0 whitespace-nowrap text-[11px] text-zinc-500 dark:text-zinc-400">
+              {totalUnresolved > 0 ? `${totalUnresolved} activas` : 'Sin alertas'}
             </span>
+          </div>
+          {totalUnresolved > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone="critical" dot className="whitespace-nowrap">
+                {`${criticalCount} ${criticalCount === 1 ? 'crítica' : 'críticas'}`}
+              </Badge>
+              <Badge tone="warning" dot className="whitespace-nowrap">
+                {`${warningCount} ${warningCount === 1 ? 'advertencia' : 'advertencias'}`}
+              </Badge>
+            </div>
           )}
         </div>
 
@@ -95,7 +99,7 @@ export function NotificationBell() {
                 alert.producto?.nombre ||
                 alert.product_name ||
                 `Producto #${alert.product_id}`;
-              const currentStock = alert.product?.stock ?? alert.stock ?? 0;
+              const currentStock = alert.current_stock ?? alert.product?.stock ?? alert.stock ?? 0;
               const minStock =
                 alert.product?.stockCritico ??
                 alert.product?.stock_minimo ??

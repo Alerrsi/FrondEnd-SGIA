@@ -680,3 +680,18 @@
   3. Una alerta atendida a mano no reaparece hasta que cambie el stock del producto.
 - **Verificación:** backend 585 tests; `pnpm typecheck` y `pnpm --filter @sgia/web test` (75 archivos, 414 tests) en verde. BD local tras sincronizar: 12 críticas y 9 advertencias, igual que el inventario.
 
+---
+
+## FIX-039: Encabezado de la campana apretado y stock de las alertas siempre en 0
+
+- **Fecha:** 2026-11-11
+- **Módulo:** Alertas de stock: campana y tabla de `/alertas` (`apps/web`)
+- **Archivos Modificados:** `notification-bell.tsx`, `alertas-table.tsx`, `packages/types/src/producto.ts`
+- **Causa:**
+  1. El encabezado ponía "N activas" y "N crítica(s)" en una sola fila de 320px junto al título: los textos se partían en dos líneas y quedaban pegados.
+  2. La campana y la tabla leían `alert.stock`, pero la API envía `current_stock`: el stock mostrado era siempre 0.
+- **Solución:**
+  1. Encabezado en dos filas: título y total a la derecha; debajo, un `Badge` por severidad ("12 críticas", "9 advertencias") con separación y sin salto de línea.
+  2. Se lee `current_stock` (tipo `CriticalStockAlert`).
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y tests (75 archivos, 414) en verde. Captura con Chromium headless contra el servidor local, en tema claro y oscuro.
+

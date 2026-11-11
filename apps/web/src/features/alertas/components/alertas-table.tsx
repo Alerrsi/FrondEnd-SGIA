@@ -144,12 +144,12 @@ export function AlertasTable({
           );
         },
       }),
-      columnHelper.accessor((row) => row.product?.stock ?? row.stock, {
+      columnHelper.accessor((row) => row.current_stock ?? row.product?.stock ?? row.stock, {
         id: 'existencias',
         header: 'Nivel de Existencias',
         cell: (info) => {
           const alert = info.row.original;
-          const stock = alert.product?.stock ?? alert.stock ?? 0;
+          const stock = alert.current_stock ?? alert.product?.stock ?? alert.stock ?? 0;
           const stockMin =
             alert.product?.stockCritico ??
             alert.product?.stock_minimo ??
