@@ -1448,6 +1448,31 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
     height: 36px;
   }
 
+  /* Sidebar encogido: todos los íconos (barras y bloques superior/inferior)
+     comparten tamaño; en pantallas bajas se compactan para no desbordar. */
+  .rail-collapsed {
+    --rail-item: 36px;
+    --rail-gap: 4px;
+  }
+
+  @media (max-height: 940px) {
+    .rail-collapsed {
+      --rail-item: 32px;
+      --rail-gap: 2px;
+    }
+  }
+
+  .rail-collapsed .gnav-item,
+  .rail-collapsed .gnav[data-orientation="vertical"] .gnav-item {
+    width: var(--rail-item);
+    height: var(--rail-item);
+    flex-shrink: 0;
+  }
+
+  .rail-collapsed .gnav[data-orientation="vertical"] {
+    gap: var(--rail-gap);
+  }
+
   :root[data-theme='light'] .gnav-item,
   html.light .gnav-item,
   :root:not(.dark):not([data-theme='dark']) .gnav-item {

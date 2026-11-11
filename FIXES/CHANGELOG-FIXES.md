@@ -584,3 +584,21 @@
   3. api-client: fuera `createCotizacion`, `updateQuotationStatus`, `updateQuotationResponse`, `createPurchase` y sus hooks; tipos `CreateCotizacionPayload`, `QuotationResponsePayload` y `CreatePurchasePayload`; acciones `changeQuotationStatus`, `respondQuotation` y `createPurchase` de `ACTION_ROLES`. Tests eliminados con ellos: `cotizacion-hooks.test.tsx`, `cotizacion-form.test.tsx` y `purchase-form-schema.test.ts`.
   4. El frontend solo llama `GET /api/quotations` y `GET /api/quotations/{id}` del flujo antiguo. `NUEVO-FLUJO-COMPRAS.md` se copió del backend conservando los checkboxes Front.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde.
+
+---
+
+## FIX-034: Solapamiento de bloques en el sidebar encogido
+
+- **Fecha:** 2026-11-11
+- **Módulo:** Layout / Sidebar colapsado (`apps/web`)
+- **Archivos Modificados:**
+  - [`apps/web/src/layouts/app-layout.tsx`](apps/web/src/layouts/app-layout.tsx)
+  - [`apps/web/src/index.css`](apps/web/src/index.css)
+- **Causa:**
+  1. Los íconos de los bloques superior (logo / expandir) e inferior (usuario, ajustes, tema, cerrar sesión) usan `.gnav-item`, pero su tamaño de 36px solo se aplicaba dentro de `.gnav[data-orientation="vertical"]`; fuera de la barra de módulos quedaban sin tamaño y pegados entre sí.
+  2. La barra de módulos se centraba con `justify-center` dentro de un contenedor con scroll: si no cabía en la altura de la ventana, desbordaba por arriba y abajo y quedaba recortada encima de los otros bloques.
+- **Solución:**
+  1. Clase `rail-collapsed` en el `aside` encogido con variables `--rail-item` (36px) y `--rail-gap` (4px); en ventanas de hasta 940px de alto bajan a 32px / 2px. Todos los `.gnav-item` del sidebar encogido usan ese tamaño.
+  2. `gap-2` entre bloques y `shrink-0` en los bloques superior e inferior.
+  3. La barra de módulos se centra con `my-auto` y tiene `max-h-full overflow-y-auto`: si no cabe, el scroll ocurre dentro de la barra y conserva sus bordes redondeados.
+- **Verificación:** `pnpm typecheck` y `pnpm --filter @sgia/web test` (73 archivos, 403 tests) en verde; revisión visual con Chromium headless a 620, 900 y 1080px de alto.

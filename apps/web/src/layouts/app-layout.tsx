@@ -270,7 +270,7 @@ export default function AppLayout() {
             'relative flex flex-col justify-between select-none overflow-hidden z-20',
             isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
             isCollapsed
-              ? 'py-3 px-2 items-center bg-transparent border-none shadow-none'
+              ? 'rail-collapsed gap-2 py-3 px-2 items-center bg-transparent border-none shadow-none'
               : 'p-3 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800',
           )}
         >
@@ -278,7 +278,7 @@ export default function AppLayout() {
             /* Modo Encogido (48px): 3 IconBars compactos según directriz de diseño */
             <>
               {/* IconBar 1: Brand Logo y Botón para desplegar (w-[48px]) */}
-              <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
+              <div className="bar-well w-[48px] shrink-0 flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="gnav-item flex items-center justify-center text-zinc-900 dark:text-zinc-100 cursor-default">
@@ -310,7 +310,7 @@ export default function AppLayout() {
               </div>
 
               {/* IconBar 2: Enlaces de Módulos (Navegación Vertical w-[48px], siempre centrado) */}
-              <div className="flex-1 w-full overflow-y-auto no-scrollbar flex flex-col items-center justify-center py-2">
+              <div className="flex-1 min-h-0 w-full flex flex-col items-center">
                 <GlassIconBar
                   axis="column"
                   items={allowedNavItems.map(({ to, label, icon: Icon, end }) => ({
@@ -323,12 +323,12 @@ export default function AppLayout() {
                   }))}
                   glyph={18}
                   hug={4}
-                  className="w-[48px] flex flex-col items-center justify-center"
+                  className="w-[48px] max-h-full min-h-0 my-auto overflow-y-auto no-scrollbar flex flex-col items-center justify-start"
                 />
               </div>
 
               {/* IconBar 3: Usuario, Ajustes, Botón de Tema y Cerrar sesión (w-[48px]) */}
-              <div className="bar-well w-[48px] flex flex-col items-center gap-1 p-1">
+              <div className="bar-well w-[48px] shrink-0 flex flex-col items-center gap-1 p-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
