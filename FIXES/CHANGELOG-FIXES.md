@@ -602,3 +602,23 @@
   2. `gap-2` entre bloques y `shrink-0` en los bloques superior e inferior.
   3. La barra de módulos se centra con `my-auto` y tiene `max-h-full overflow-y-auto`: si no cabe, el scroll ocurre dentro de la barra y conserva sus bordes redondeados.
 - **Verificación:** `pnpm typecheck` y `pnpm --filter @sgia/web test` (73 archivos, 403 tests) en verde; revisión visual con Chromium headless a 620, 900 y 1080px de alto.
+
+---
+
+## FIX-035: El sidebar ocultaba el bloque de usuario con muchos módulos
+
+- **Fecha:** 2026-11-11
+- **Módulo:** Layout / Sidebar expandido y encogido (`apps/web`)
+- **Archivos Modificados:**
+  - [`apps/web/src/layouts/app-layout.tsx`](apps/web/src/layouts/app-layout.tsx)
+  - [`apps/web/src/layouts/use-scroll-fade.ts`](apps/web/src/layouts/use-scroll-fade.ts) (nuevo)
+  - [`apps/web/src/index.css`](apps/web/src/index.css)
+  - Tests: [`app-layout.test.tsx`](apps/web/src/layouts/app-layout.test.tsx), [`use-scroll-fade.test.tsx`](apps/web/src/layouts/use-scroll-fade.test.tsx) (nuevo)
+- **Causa:**
+  1. Sidebar expandido: la lista de módulos no tenía scroll. Con los 19 módulos del administrador y ventanas de 768px de alto o menos, empujaba el bloque de usuario (nombre, ajustes, cerrar sesión, tema) fuera de la pantalla, porque el `aside` recorta con `overflow-hidden`.
+  2. Sidebar encogido: la clase `no-scrollbar` no estaba definida, así que aparecía una barra de scroll nativa (vertical y horizontal) dentro del riel de 48px y descentraba los íconos.
+- **Solución:**
+  1. Límite de la lista: ocupa solo el alto libre entre la cabecera y el bloque de usuario (`flex-1 min-h-0`). El bloque de usuario lleva `shrink-0`, nunca se encoge y queda fuera del área con scroll. Lo que no cabe se ve con scroll dentro de la lista, y los enlaces llevan `shrink-0` para no aplastarse.
+  2. Clase `.sidebar-scroll` (expandido) con scrollbar fina. En el modo encogido el `bar-well` recorta y la `.gnav` interna hace scroll sin scrollbar, con los bordes redondeados intactos.
+  3. Hook `useScrollFade`: marca `data-fade-top` / `data-fade-bottom` para difuminar el borde por donde queda contenido oculto (indica que hay más opciones) y desplaza el módulo activo hasta dejarlo visible.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` (74 archivos, 408 tests) en verde. Revisión visual con Chromium headless como AD-01 a 560, 620, 768, 900 y 1080px de alto, expandido y encogido, con la ruta activa al inicio y al final de la lista (`/auditoria`).

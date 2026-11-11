@@ -303,4 +303,67 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     expect(screen.queryByRole('link', { name: /mis solicitudes/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /catálogo/i })).toBeNull();
   });
+
+  it('con muchos módulos la lista expandida hace scroll y nunca tapa al usuario', () => {
+    mockUserRole = 'AD-01';
+    mockUserName = 'Admin Rodrigo';
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Test</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const nav = screen.getByRole('navigation', { name: 'Navegación principal' });
+    const userBlock = screen.getByTestId('sidebar-user-block');
+
+    // La lista tiene su propio scroll y puede encogerse por debajo de su contenido
+    expect(nav.className).toContain('sidebar-scroll');
+    expect(nav.className).toContain('min-h-0');
+    expect(nav.parentElement?.className).toContain('min-h-0');
+    expect(nav.parentElement?.className).toContain('flex-1');
+    // Los enlaces no se aplastan: desbordan hacia el scroll
+    expect(nav.querySelectorAll('a').length).toBeGreaterThan(12);
+    nav.querySelectorAll('a').forEach((a) => expect(a.className).toContain('shrink-0'));
+
+    // El bloque de usuario no se encoge y está fuera del área con scroll
+    expect(userBlock.className).toContain('shrink-0');
+    expect(nav.contains(userBlock)).toBe(false);
+    expect(userBlock.textContent).toContain('Admin Rodrigo');
+  });
+
+  it('en modo encogido el riel de módulos hace scroll y el bloque de usuario queda fijo', async () => {
+    mockUserRole = 'AD-01';
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={['/auditoria']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/auditoria" element={<div>Test</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByTitle('Encoger panel lateral'));
+
+    const rail = screen.getByRole('navigation', { name: 'Navegación principal' });
+    const well = rail.parentElement!;
+    const userBlock = screen.getByTestId('rail-user-block');
+
+    // El well recorta y la .gnav interna es la que hace scroll (estilos en index.css)
+    expect(rail.classList.contains('gnav')).toBe(true);
+    expect(well.className).toContain('overflow-hidden');
+    expect(well.className).toContain('max-h-full');
+    expect(well.className).not.toContain('no-scrollbar');
+
+    expect(userBlock.className).toContain('shrink-0');
+    expect(rail.contains(userBlock)).toBe(false);
+    expect(screen.getByLabelText(/usuario: admin rodrigo/i)).toBeDefined();
+  });
 });

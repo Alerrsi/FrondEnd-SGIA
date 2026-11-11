@@ -1473,6 +1473,55 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
     gap: var(--rail-gap);
   }
 
+  /* Listas de módulos del sidebar (expandido y encogido): ocupan solo el alto
+     libre entre la cabecera y el bloque de usuario y el resto va con scroll.
+     useScrollFade marca data-fade-top / data-fade-bottom para difuminar el
+     borde por donde queda contenido oculto. */
+  .sidebar-scroll,
+  .rail-collapsed .bar-well > .gnav {
+    --scroll-fade: 24px;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(161 161 170 / 0.5) transparent;
+  }
+
+  .rail-collapsed .bar-well > .gnav {
+    --scroll-fade: 16px;
+    flex-shrink: 1;
+    scrollbar-width: none;
+  }
+
+  .rail-collapsed .bar-well > .gnav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-scroll[data-fade-top],
+  .rail-collapsed .bar-well > .gnav[data-fade-top] {
+    mask-image: linear-gradient(to bottom, transparent, #000 var(--scroll-fade));
+  }
+
+  .sidebar-scroll[data-fade-bottom],
+  .rail-collapsed .bar-well > .gnav[data-fade-bottom] {
+    mask-image: linear-gradient(to bottom, #000 calc(100% - var(--scroll-fade)), transparent);
+  }
+
+  .sidebar-scroll[data-fade-top][data-fade-bottom],
+  .rail-collapsed .bar-well > .gnav[data-fade-top][data-fade-bottom] {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--scroll-fade),
+      #000 calc(100% - var(--scroll-fade)),
+      transparent
+    );
+  }
+
   :root[data-theme='light'] .gnav-item,
   html.light .gnav-item,
   :root:not(.dark):not([data-theme='dark']) .gnav-item {

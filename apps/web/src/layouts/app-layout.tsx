@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@/components/ui/error-boundary';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Archive,
   BarChart3,
@@ -29,7 +29,7 @@ import {
   Wallet,
   Warehouse,
 } from 'lucide-react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ROLE_LABELS, type RoleCode } from '@sgia/types';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -44,6 +44,7 @@ import { NotificationBell } from '@/features/alertas/components/notification-bel
 import { SettingsModal } from '@/components/settings/settings-modal';
 import { ChangePasswordDialog } from '@/features/auth/components/change-password-dialog';
 import { SessionsDialog } from '@/features/auth/components/sessions-dialog';
+import { useScrollFade } from './use-scroll-fade';
 
 interface NavItem {
   to: string;
@@ -194,6 +195,7 @@ export default function AppLayout() {
   const { user, logout } = useAuth();
   const { resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   // Estados de barra lateral
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -253,6 +255,13 @@ export default function AppLayout() {
 
   const allowedNavItems = navigation.filter((item) => item.roles.includes(userRole));
 
+  // La lista de módulos ocupa solo el alto que dejan libre la cabecera y el bloque
+  // de usuario; si no cabe, hace scroll dentro de sí misma (nunca tapa al usuario).
+  const navScrollRef = useRef<HTMLElement>(null);
+  const railScrollRef = useRef<HTMLDivElement>(null);
+  useScrollFade(navScrollRef, null, [isCollapsed, pathname, allowedNavItems.length]);
+  useScrollFade(railScrollRef, '.gnav', [isCollapsed, pathname, allowedNavItems.length]);
+
   const userInitials = (user?.nombre ?? 'U')
     .split(' ')
     .map((n) => n[0])
@@ -271,7 +280,7 @@ export default function AppLayout() {
             isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
             isCollapsed
               ? 'rail-collapsed gap-2 py-3 px-2 items-center bg-transparent border-none shadow-none'
-              : 'p-3 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800',
+              : 'gap-3 p-3 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800',
           )}
         >
           {isCollapsed ? (
@@ -310,7 +319,7 @@ export default function AppLayout() {
               </div>
 
               {/* IconBar 2: Enlaces de Módulos (Navegación Vertical w-[48px], siempre centrado) */}
-              <div className="flex-1 min-h-0 w-full flex flex-col items-center">
+              <div ref={railScrollRef} className="flex-1 min-h-0 w-full flex flex-col items-center">
                 <GlassIconBar
                   axis="column"
                   items={allowedNavItems.map(({ to, label, icon: Icon, end }) => ({
@@ -323,12 +332,15 @@ export default function AppLayout() {
                   }))}
                   glyph={18}
                   hug={4}
-                  className="w-[48px] max-h-full min-h-0 my-auto overflow-y-auto no-scrollbar flex flex-col items-center justify-start"
+                  className="w-[48px] max-h-full min-h-0 my-auto overflow-hidden flex flex-col items-center justify-start"
                 />
               </div>
 
               {/* IconBar 3: Usuario, Ajustes, Botón de Tema y Cerrar sesión (w-[48px]) */}
-              <div className="bar-well w-[48px] shrink-0 flex flex-col items-center gap-1 p-1">
+              <div
+                data-testid="rail-user-block"
+                className="bar-well w-[48px] shrink-0 flex flex-col items-center gap-1 p-1"
+              >
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
@@ -413,9 +425,9 @@ export default function AppLayout() {
           ) : (
             /* Modo Expandido: Panel completo estándar con marcas, enlaces de texto y perfil */
             <>
-              <div className="flex flex-col gap-4">
+              <div className="flex min-h-0 flex-1 flex-col gap-4">
                 {/* Brand Header */}
-                <div className="flex items-center justify-between px-1.5">
+                <div className="flex shrink-0 items-center justify-between px-1.5">
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
                       <Boxes className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
@@ -442,7 +454,11 @@ export default function AppLayout() {
                 </div>
 
                 {/* Lista Completa de Enlaces de Navegación */}
-                <nav aria-label="Navegación principal" className="flex flex-col gap-1">
+                <nav
+                  ref={navScrollRef}
+                  aria-label="Navegación principal"
+                  className="sidebar-scroll -mx-1 flex min-h-0 flex-col gap-1 px-1"
+                >
                   {allowedNavItems.map(({ to, label, icon: Icon, end }) => (
                     <NavLink
                       key={to}
@@ -451,7 +467,7 @@ export default function AppLayout() {
                       aria-label={label}
                       className={({ isActive }) =>
                         cn(
-                          'relative flex items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
+                          'relative flex shrink-0 items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
                           isActive
                             ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-zinc-900 dark:before:bg-zinc-100'
                             : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
@@ -477,7 +493,10 @@ export default function AppLayout() {
               </div>
 
               {/* User Profile and Bottom Controls */}
-              <div className="border-t border-zinc-200 dark:border-zinc-800 pt-3">
+              <div
+                data-testid="sidebar-user-block"
+                className="shrink-0 border-t border-zinc-200 dark:border-zinc-800 pt-3"
+              >
                 <div className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-2.5">
                   {/* Fila Superior: Perfil del Usuario + Botón de Ajustes + Botón Logout */}
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
