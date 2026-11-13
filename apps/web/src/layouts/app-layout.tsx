@@ -57,7 +57,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   {
     to: '/',
-    label: 'Dashboards',
+    label: 'Inicio',
     icon: BarChart3,
     end: true,
     roles: ROUTE_PERMISSIONS['/'] ?? [],
@@ -82,7 +82,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/equipos',
-    label: 'Fichas técnicas',
+    label: 'Equipos',
     icon: Cpu,
     roles: ROUTE_PERMISSIONS['/equipos'] ?? [],
   },
@@ -94,7 +94,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/compras',
-    label: 'Compras',
+    label: 'Órdenes de compra',
     icon: ShoppingCart,
     roles: ROUTE_PERMISSIONS['/compras'] ?? [],
   },
@@ -106,7 +106,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/ingresos-factura',
-    label: 'Ingresos de factura',
+    label: 'Facturas',
     icon: ReceiptText,
     roles: ROUTE_PERMISSIONS['/ingresos-factura'] ?? [],
   },
@@ -125,7 +125,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/novedades',
-    label: 'Novedades',
+    label: 'Informes',
     icon: FileWarning,
     roles: ROUTE_PERMISSIONS['/novedades'] ?? [],
   },
@@ -143,13 +143,13 @@ const navigation: NavItem[] = [
   },
   {
     to: '/historial',
-    label: 'Historial',
+    label: 'Historial de préstamos',
     icon: History,
     roles: ROUTE_PERMISSIONS['/historial'] ?? [],
   },
   {
     to: '/alertas',
-    label: 'Stock crítico',
+    label: 'Alertas de stock',
     icon: Bell,
     roles: ROUTE_PERMISSIONS['/alertas'] ?? [],
   },
@@ -167,7 +167,7 @@ const navigation: NavItem[] = [
   },
   {
     to: '/profesor/novedades',
-    label: 'Novedades',
+    label: 'Mis informes',
     icon: FileWarning,
     roles: ROUTE_PERMISSIONS['/profesor/novedades'] ?? [],
   },

@@ -106,7 +106,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
 
     // Presupuestos e ingresos de factura son solo de AD-01 / DIR-01 (REQ-16 / REQ-17)
     expect(screen.queryByText('Presupuestos')).toBeNull();
-    expect(screen.queryByText('Ingresos de factura')).toBeNull();
+    expect(screen.queryByText('Facturas')).toBeNull();
   });
 
   it('muestra Presupuestos e Ingresos de factura a DIR-01', () => {
@@ -124,7 +124,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     );
 
     expect(screen.getByText('Presupuestos')).toBeDefined();
-    expect(screen.getByText('Ingresos de factura')).toBeDefined();
+    expect(screen.getByText('Facturas')).toBeDefined();
   });
 
   it('toggles collapse and expand, maintaining option logos accessible', async () => {
@@ -279,7 +279,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
 
     expect(screen.getByRole('link', { name: /catálogo/i })).toBeDefined();
     expect(screen.getByRole('link', { name: /mis solicitudes/i })).toBeDefined();
-    expect(screen.getByRole('link', { name: /novedades/i })).toBeDefined();
+    expect(screen.getByRole('link', { name: /mis informes/i })).toBeDefined();
     expect(screen.queryByRole('link', { name: /inventario/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /usuarios/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /compras/i })).toBeNull();

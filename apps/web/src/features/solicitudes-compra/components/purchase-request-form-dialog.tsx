@@ -39,6 +39,9 @@ interface PurchaseRequestFormDialogProps {
   /** Con solicitud: edición (solo en `borrador`). */
   request?: PurchaseRequest | null;
   onSaved?: (request: PurchaseRequest) => void;
+  /** Al crear: productos precargados (p. ej. desde las alertas de stock). */
+  initialItems?: PurchaseRequestFormValues['items'];
+  initialNotes?: string;
 }
 
 function productName(p: Producto): string {
@@ -51,6 +54,8 @@ export function PurchaseRequestFormDialog({
   onClose,
   request = null,
   onSaved,
+  initialItems,
+  initialNotes,
 }: PurchaseRequestFormDialogProps) {
   const isEdit = request !== null;
   const createRequest = useCreatePurchaseRequest();
@@ -73,9 +78,14 @@ export function PurchaseRequestFormDialog({
 
   useEffect(() => {
     if (!open) return;
-    reset(purchaseRequestFormDefaults(request));
+    const defaults = purchaseRequestFormDefaults(request);
+    if (!request) {
+      if (initialItems) defaults.items = initialItems;
+      if (initialNotes) defaults.notes = initialNotes;
+    }
+    reset(defaults);
     setSearch('');
-  }, [open, request, reset]);
+  }, [open, request, initialItems, initialNotes, reset]);
 
   const selectedIds = useMemo(() => new Set(fields.map((f) => f.product_id)), [fields]);
   const matches = useMemo(() => {

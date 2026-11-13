@@ -53,6 +53,7 @@ interface RawIntake {
   user_id?: number | null;
   annual_budget_id: number;
   purchase_id?: number | null;
+  purchase?: { code: string | null; status: string } | null;
   annual_budget?: RawAnnualBudget | null;
   document_number?: string | null;
   status: InvoiceIntakeStatus;
@@ -86,6 +87,7 @@ export function normalizeInvoiceIntake(raw: RawIntake): InvoiceIntake {
     user_id: raw.user_id ?? null,
     annual_budget_id: raw.annual_budget_id,
     purchase_id: raw.purchase_id ?? null,
+    purchase: raw.purchase ?? null,
     annual_budget: raw.annual_budget ? normalizeBudget(raw.annual_budget) : undefined,
     document_number: raw.document_number ?? null,
     status: raw.status,

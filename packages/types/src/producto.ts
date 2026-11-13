@@ -1,4 +1,5 @@
 import type { PaginatedResponse } from './pagination';
+import type { PurchaseRequestStatus } from './solicitud-compra';
 export interface Ubicacion {
   id: number;
   sala: string;
@@ -315,6 +316,12 @@ export interface CriticalStockAlert {
   stock?: number;
   stock_minimo?: number;
   alert_type: "warning" | "critical";
+  /** Solicitud de compra abierta (no cancelada ni facturada) que ya incluye el producto. */
+  open_purchase_request?: {
+    id: number;
+    code: string;
+    status: PurchaseRequestStatus;
+  } | null;
   is_resolved: boolean;
   resolved_at?: string | null;
   resolved_by?: number | null;

@@ -43,6 +43,8 @@ export function normalizeCotizacion(raw: any): Cotizacion {
 
   return {
     id: raw.id,
+    code: raw.code ?? null,
+    purchase_code: raw.purchase_code ?? raw.purchase?.code ?? null,
     proveedor:
       raw.proveedor ??
       raw.supplier?.name ??
@@ -330,7 +332,13 @@ export async function fetchPurchaseTrace(id: number): Promise<PurchaseTrace> {
     quotations?: unknown[];
     invoices?: Parameters<typeof normalizeInvoiceIntake>[0][];
     budget_movements?: Parameters<typeof normalizeMovement>[0][];
-    purchase_request?: { id: number; code: string; status: string } | null;
+    purchase_request?: {
+      id: number;
+      code: string;
+      status: string;
+      selected_quotation_id?: number | null;
+      quotations?: { id: number; total: number | string; supplier?: { name?: string } | null }[];
+    } | null;
     stock_entries?: { product_id: number; name: string; quantity: number | string }[];
   }>(`/purchases/${id}/trace`);
   return {
@@ -339,7 +347,17 @@ export async function fetchPurchaseTrace(id: number): Promise<PurchaseTrace> {
     invoices: (res.invoices ?? []).map(normalizeInvoiceIntake),
     budget_movements: (res.budget_movements ?? []).map(normalizeMovement),
     purchase_request: res.purchase_request
-      ? { id: res.purchase_request.id, code: res.purchase_request.code, status: res.purchase_request.status }
+      ? {
+          id: res.purchase_request.id,
+          code: res.purchase_request.code,
+          status: res.purchase_request.status,
+          quotations: (res.purchase_request.quotations ?? []).map((q) => ({
+            id: q.id,
+            supplier_name: q.supplier?.name ?? null,
+            total: Number(q.total),
+            selected: q.id === res.purchase_request?.selected_quotation_id,
+          })),
+        }
       : null,
     stock_entries: (res.stock_entries ?? []).map((s) => ({ ...s, quantity: Number(s.quantity) })),
   };

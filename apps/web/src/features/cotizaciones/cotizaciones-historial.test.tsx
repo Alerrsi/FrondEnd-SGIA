@@ -62,3 +62,29 @@ describe('Historial de cotizaciones (Fase 7, solo lectura)', () => {
     }
   });
 });
+
+describe('Historial de cotizaciones: código y buscador', () => {
+  beforeEach(() => vi.restoreAllMocks());
+
+  it('muestra el código de la cotización y de su OC, y busca en el servidor', async () => {
+    const user = userEvent.setup();
+    const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: [{ ...rawQuotation, code: 'COT-2026-0004', purchase_code: 'OC-2026-0007' }],
+      }),
+    } as Response);
+
+    renderPage();
+
+    expect(await screen.findByText('COT-2026-0004')).toBeDefined();
+    expect(screen.getByText(/OC-2026-0007/)).toBeDefined();
+
+    await user.type(screen.getByLabelText('Buscar cotizaciones'), 'OC-2026');
+    await vi.waitFor(() => {
+      const urls = mockFetch.mock.calls.map(([url]) => String(url));
+      expect(urls.some((u) => u.includes('search=OC-2026'))).toBe(true);
+    });
+  });
+});

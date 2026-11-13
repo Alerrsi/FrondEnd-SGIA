@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   createColumnHelper,
   flexRender,
@@ -26,6 +27,7 @@ import {
 import type { CriticalStockAlert, Producto } from '@sgia/types';
 
 import { Badge } from '@/components/ui/badge';
+import { PurchaseRequestStatusBadge } from '@/features/solicitudes-compra/components/purchase-request-status-badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
@@ -47,6 +49,12 @@ export interface AlertasTableProps {
   onResolve?: (alert: CriticalStockAlert) => void;
   onViewProduct?: (producto: Producto) => void;
   onRequestQuote?: (alert: CriticalStockAlert) => void;
+  /** Muestra casillas para elegir alertas (solo quien puede crear solicitudes de compra). */
+  selectable?: boolean;
+  /** IDs de producto seleccionados. */
+  selectedProductIds?: ReadonlySet<number>;
+  onToggleSelect?: (alert: CriticalStockAlert) => void;
+  onToggleSelectAll?: (alerts: CriticalStockAlert[], checked: boolean) => void;
   page?: number;
   pageSize?: number;
   onPageChange?: (page: number) => void;
@@ -77,6 +85,10 @@ export function AlertasTable({
   onResolve,
   onViewProduct,
   onRequestQuote,
+  selectable = false,
+  selectedProductIds,
+  onToggleSelect,
+  onToggleSelectAll,
   page = 1,
   pageSize = 10,
   onPageChange,
@@ -85,8 +97,49 @@ export function AlertasTable({
 }: AlertasTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  /** Una alerta se puede pedir si sigue activa y su producto no está en otra solicitud abierta. */
+  const selectableAlerts = useMemo(
+    () => alerts.filter((a) => !a.is_resolved && !a.open_purchase_request),
+    [alerts],
+  );
+  const selectedCount = selectableAlerts.filter((a) => selectedProductIds?.has(a.product_id)).length;
+  const allSelected = selectableAlerts.length > 0 && selectedCount === selectableAlerts.length;
+
   const columns = useMemo(
     () => [
+      ...(selectable
+        ? [
+            columnHelper.display({
+              id: 'seleccion',
+              header: () => (
+                <input
+                  type="checkbox"
+                  aria-label="Seleccionar todas las alertas de la página"
+                  checked={allSelected}
+                  disabled={selectableAlerts.length === 0}
+                  onChange={(e) => onToggleSelectAll?.(selectableAlerts, e.target.checked)}
+                  className="h-4 w-4 accent-zinc-900 dark:accent-zinc-100"
+                />
+              ),
+              cell: ({ row }) => {
+                const alert = row.original;
+                const request = alert.open_purchase_request;
+                const disabled = alert.is_resolved || Boolean(request);
+                return (
+                  <input
+                    type="checkbox"
+                    aria-label={`Seleccionar ${alert.product_name ?? `producto ${alert.product_id}`}`}
+                    title={request ? `Ya está en la solicitud ${request.code}` : undefined}
+                    checked={selectedProductIds?.has(alert.product_id) ?? false}
+                    disabled={disabled}
+                    onChange={() => onToggleSelect?.(alert)}
+                    className="h-4 w-4 accent-zinc-900 dark:accent-zinc-100"
+                  />
+                );
+              },
+            }),
+          ]
+        : []),
       columnHelper.accessor('alert_type', {
         header: 'Severidad',
         cell: (info) => {
@@ -189,6 +242,25 @@ export function AlertasTable({
           );
         },
       }),
+      columnHelper.display({
+        id: 'solicitud',
+        header: 'Solicitud',
+        cell: ({ row }) => {
+          const request = row.original.open_purchase_request;
+          if (!request) return <span className="font-mono text-xs text-zinc-400">—</span>;
+          return (
+            <div className="flex flex-col items-start gap-1">
+              <Link
+                to={`/solicitudes-compra/${request.id}`}
+                className={`${CODE_CHIP_CLASS} hover:underline`}
+              >
+                {request.code}
+              </Link>
+              <PurchaseRequestStatusBadge status={request.status} />
+            </div>
+          );
+        },
+      }),
       columnHelper.accessor('created_at', {
         header: 'Fecha Alerta',
         cell: (info) => {
@@ -233,14 +305,14 @@ export function AlertasTable({
                 </Button>
               )}
 
-              {onRequestQuote && (
+              {onRequestQuote && !alert.is_resolved && !alert.open_purchase_request && (
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
                   onClick={() => onRequestQuote(alert)}
-                  title="Iniciar cotización de reposición"
-                  aria-label={`Cotizar reposición para ${alert.product_name ?? 'producto'}`}
+                  title="Crear solicitud de compra para este producto"
+                  aria-label={`Crear solicitud de compra para ${alert.product_name ?? 'producto'}`}
                   className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                 >
                   <ShoppingCart className="h-3.5 w-3.5" />
@@ -265,7 +337,17 @@ export function AlertasTable({
         },
       }),
     ],
-    [onResolve, onViewProduct, onRequestQuote],
+    [
+      onResolve,
+      onViewProduct,
+      onRequestQuote,
+      selectable,
+      selectedProductIds,
+      onToggleSelect,
+      onToggleSelectAll,
+      selectableAlerts,
+      allSelected,
+    ],
   );
 
   const table = useReactTable({
