@@ -1,10 +1,11 @@
 import { usePurchaseTrace } from '@sgia/api-client';
-import type { PurchaseTrace } from '@sgia/types';
+import type { PurchaseRequestStatus, PurchaseTrace } from '@sgia/types';
 import { AlertCircle, ArrowLeft, Loader2, ShoppingCart } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { Badge, PurchaseStatusBadge, QuotationStatusBadge } from '@/components/ui/badge';
+import { PurchaseRequestStatusBadge } from '@/features/solicitudes-compra/components/purchase-request-status-badge';
 import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { movementMeta } from '@/features/presupuestos/lib/movement-labels';
@@ -50,15 +51,35 @@ function Timeline({ trace }: { trace: PurchaseTrace }) {
           <span className="text-zinc-500">{formatDate(purchase.created_at)}</span>
         </li>
       </Step>
+      {trace.purchase_request && (
+        <Step title="Solicitud de compra">
+          <li className={rowClasses}>
+            <Link to={`/solicitudes-compra/${trace.purchase_request.id}`} className="font-mono font-medium hover:underline">
+              {trace.purchase_request.code}
+            </Link>
+            <PurchaseRequestStatusBadge status={trace.purchase_request.status as PurchaseRequestStatus} />
+          </li>
+        </Step>
+      )}
       <Step title="Cotizaciones" empty="Sin cotizaciones asociadas.">
-        {trace.quotations.map((q) => (
+        {/* Un solo arreglo: `Step` muestra el vacío según su largo. */}
+        {[
+          ...(trace.purchase_request?.quotations ?? []).map((q) => (
+            <li key={`sc-${q.id}`} className={rowClasses}>
+              <span>{q.supplier_name ?? 'Proveedor sin nombre'}</span>
+              <span className="font-mono">{formatCLP(q.total)}</span>
+              {q.selected && <Badge tone="available">Elegida</Badge>}
+            </li>
+          )),
+          ...trace.quotations.map((q) => (
           <li key={q.id} className={rowClasses}>
             <span className="font-mono font-medium">#{q.id}</span>
             <QuotationStatusBadge estado={q.estado} />
             <span>{q.proveedor ?? 'Múltiples proveedores'}</span>
             <span className="text-zinc-500">{formatDate(q.created_at)}</span>
           </li>
-        ))}
+          )),
+        ]}
       </Step>
       <Step title="Facturas" empty="Aún no hay facturas asociadas.">
         {trace.invoices.map((i) => (

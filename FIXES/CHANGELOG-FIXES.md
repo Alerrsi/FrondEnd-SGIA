@@ -695,3 +695,31 @@
   2. Se lee `current_stock` (tipo `CriticalStockAlert`).
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y tests (75 archivos, 414) en verde. Captura con Chromium headless contra el servidor local, en tema claro y oscuro.
 
+
+## FEAT-040: Crear solicitudes de compra desde las alertas de stock
+
+- **Fecha:** 2026-11-12
+- **Módulo:** `/alertas` (`apps/web`), solicitudes de compra
+- **Archivos Modificados:** `alertas-stock-page.tsx`, `alertas-table.tsx`, `purchase-request-form-dialog.tsx` (`initialItems`/`initialNotes`), `packages/types/src/producto.ts`
+- **Qué hace:** `DIR-01` (único rol que crea solicitudes) elige varias alertas y abre el formulario de solicitud con los productos precargados (cantidad sugerida = `stock_minimo − stock`, mínimo 1, editable). Al guardar va al detalle de la solicitud. El ícono del carrito de cada fila crea una solicitud solo para ese producto.
+- **Ya solicitado:** la API envía `open_purchase_request`; la columna "Solicitud" muestra el código con su estado y la casilla queda bloqueada. La selección se conserva al cambiar de página.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest de `features/alertas` en verde (nuevo `alertas-solicitud-compra.test.tsx`).
+
+## FEAT-041: Historial de cotizaciones con código, OC asociada y buscador
+
+- **Fecha:** 2026-11-12
+- **Módulo:** `/cotizaciones` (`apps/web`), `QuotationController`/`QuotationResource` (backend)
+- **Qué hace:** cada fila muestra el código de la cotización (antes `#id`) y, si se convirtió, "→ OC <código>". Buscador por código de cotización u OC (servidor, con espera de 300 ms). `GET /api/quotations` trae `purchase_code` y `search` también filtra por el código de la OC.
+- **Archivos:** `cotizaciones-page.tsx`, `cotizacion-detail-sheet.tsx`, `packages/types/src/cotizacion.ts`, `services/quotations.ts`.
+- **Verificación:** backend 587 tests y pint; front typecheck, lint y vitest de `features/cotizaciones`.
+
+## FIX-042: Detalles hallados en la prueba en navegador del flujo de compras
+
+- **Fecha:** 2026-11-12
+- **Módulo:** solicitudes de compra, ingresos de factura, trazabilidad de OC (`apps/web`, `packages/api-client`, `packages/types`)
+- **Problemas y solución:**
+  1. La trazabilidad de una OC decía "Sin cotizaciones asociadas" aunque naciera de una solicitud: ahora muestra el código `SC-…` (enlace) y las cotizaciones subidas, con la elegida marcada (`PurchaseTrace.purchase_request.quotations`).
+  2. En el borrador de factura ligado por código de solicitud, el selector de OC mostraba "Detectar automáticamente": la OC ya ligada no venía en `linkable`. Se agrega como opción con su código (`normalizeInvoiceIntake` ahora conserva `purchase`).
+  3. El presupuesto de una solicitud se leía "Carrera #4 · 2026": el backend ahora envía la carrera del presupuesto.
+  4. Fecha de recepción de una cotización: el máximo usaba el día UTC (de noche permitía mañana); ahora `todayIso()` local.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (76 archivos, 420) en verde; backend 587 tests y pint. Recorrido completo en Chrome headless (ver `NUEVO-FLUJO-COMPRAS.md`, Fase 7).

@@ -33,7 +33,7 @@ export function CotizacionDetailSheet({
         <SheetHeader>
           <SheetTitle>
             <FileText className="h-4 w-4 text-zinc-500" />
-            <span className="font-mono">Cotización #{cotizacion.id}</span>
+            <span className="font-mono">Cotización {cotizacion.code ?? `#${cotizacion.id}`}</span>
           </SheetTitle>
           <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
             Historial del flujo anterior: solo lectura.

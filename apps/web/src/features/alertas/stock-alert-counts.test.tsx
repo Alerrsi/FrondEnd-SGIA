@@ -21,6 +21,11 @@ const alert = (id: number, type: 'critical' | 'warning'): CriticalStockAlert =>
   }) as CriticalStockAlert;
 
 // El servidor pagina (aquí llegan 2 filas) pero informa los totales reales del inventario.
+vi.mock('@/features/auth/context/auth-context', async (importOriginal) => {
+  const auth = () => ({ user: { id: 1, nombre: 'Usuario', rol: 'PAN-01' } });
+  return { ...(await importOriginal<typeof import('@/features/auth/context/auth-context')>()), useAuth: auth, useOptionalAuth: auth };
+});
+
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
   useCriticalStockAlerts: () => ({

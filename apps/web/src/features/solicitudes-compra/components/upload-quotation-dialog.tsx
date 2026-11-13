@@ -8,6 +8,7 @@ import { Calculator, Loader2, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { formatCLP } from '@/features/compras/lib/format';
+import { todayIso } from '@/features/profesor/lib/dates';
 import { FileField } from '@/features/solicitudes-compra/components/file-field';
 import {
   itemsSubtotal,
@@ -174,7 +175,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
           <input
             id="q-received"
             type="date"
-            max={new Date().toISOString().slice(0, 10)}
+            max={todayIso()}
             {...register('received_at')}
             aria-invalid={Boolean(errors.received_at) || undefined}
             disabled={pending}

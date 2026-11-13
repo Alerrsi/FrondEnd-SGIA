@@ -69,6 +69,10 @@ export interface CotizacionItem {
 
 export interface Cotizacion {
   id: number;
+  /** Código visible de la cotización (COT-…). */
+  code?: string | null;
+  /** Código de la OC a la que se convirtió (solo en el historial). */
+  purchase_code?: string | null;
   proveedor?: string | null;
   supplier_ids?: number[];
   suppliers?: Supplier[];
@@ -153,7 +157,13 @@ export interface PurchaseTrace {
   quotations: Cotizacion[];
   invoices: InvoiceIntake[];
   /** Solicitud de origen (`{id, code, status, …}`); `null` en compras históricas. */
-  purchase_request?: { id: number; code: string; status: string } | null;
+  purchase_request?: {
+    id: number;
+    code: string;
+    status: string;
+    /** Cotizaciones subidas a la solicitud; `selected` marca la elegida. */
+    quotations?: { id: number; supplier_name: string | null; total: number; selected: boolean }[];
+  } | null;
   budget_movements: BudgetMovement[];
   stock_entries: { product_id: number; name: string; quantity: number }[];
 }

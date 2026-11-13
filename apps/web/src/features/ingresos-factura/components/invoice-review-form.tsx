@@ -239,6 +239,10 @@ export function InvoiceReviewForm({
             className={cn(inputClasses, 'max-w-xs')}
           >
             <option value="">Detectar automáticamente</option>
+            {/* La OC ya ligada al borrador no viene en `linkable` (su propio ingreso la excluye). */}
+            {intake.purchase_id && !openPurchases.some((p) => p.id === intake.purchase_id) && (
+              <option value={intake.purchase_id}>{intake.purchase?.code ?? `#${intake.purchase_id}`}</option>
+            )}
             {openPurchases.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.code ?? `#${p.id}`}

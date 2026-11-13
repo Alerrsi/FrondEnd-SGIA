@@ -54,4 +54,32 @@ describe('CompraTrazabilidadPage', () => {
     expect(screen.getByText('Sin cotizaciones asociadas.')).toBeDefined();
     expect(screen.getByText('Aún no hay facturas asociadas.')).toBeDefined();
   });
+
+  it('muestra la solicitud de origen y sus cotizaciones, marcando la elegida', () => {
+    mockState = {
+      isLoading: false,
+      isError: false,
+      data: {
+        purchase: { id: 4, code: 'OC-4', status: 'pendiente', total_amount: 1000, supplier: { name: 'Zenner' }, created_at: '2026-01-02T00:00:00Z' },
+        purchase_request: {
+          id: 7,
+          code: 'SC-2026-0007',
+          status: 'con_oc',
+          quotations: [
+            { id: 1, supplier_name: 'Zenner', total: 1000, selected: true },
+            { id: 2, supplier_name: 'Microtec', total: 900, selected: false },
+          ],
+        },
+        quotations: [],
+        invoices: [],
+        stock_entries: [],
+        budget_movements: [],
+      },
+    };
+    renderPage();
+    expect(screen.getByRole('link', { name: 'SC-2026-0007' }).getAttribute('href')).toBe('/solicitudes-compra/7');
+    expect(screen.getByText('Microtec')).toBeDefined();
+    expect(screen.getAllByText('Elegida')).toHaveLength(1);
+    expect(screen.queryByText('Sin cotizaciones asociadas.')).toBeNull();
+  });
 });

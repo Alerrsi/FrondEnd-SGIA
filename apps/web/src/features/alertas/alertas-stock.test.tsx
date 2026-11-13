@@ -131,6 +131,11 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
   }),
 }));
 
+vi.mock('@/features/auth/context/auth-context', async (importOriginal) => {
+  const auth = () => ({ user: { id: 1, nombre: 'Usuario', rol: 'PAN-01' } });
+  return { ...(await importOriginal<typeof import('@/features/auth/context/auth-context')>()), useAuth: auth, useOptionalAuth: auth };
+});
+
 vi.mock('@/lib/toast', () => ({
   toast: {
     success: vi.fn(),

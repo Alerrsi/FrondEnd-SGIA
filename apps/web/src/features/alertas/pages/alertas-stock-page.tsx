@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CheckCircle,
@@ -11,6 +11,10 @@ import type { CriticalStockAlert, Producto } from '@sgia/types';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { useAuth } from '@/features/auth/context/auth-context';
+import { canDo } from '@/features/auth/types/roles';
+import { PurchaseRequestFormDialog } from '@/features/solicitudes-compra/components/purchase-request-form-dialog';
+import type { PurchaseRequestFormValues } from '@/features/solicitudes-compra/lib/purchase-request-form-schema';
 import { ProductoDetailDialog } from '@/features/inventario/components/producto-detail-dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
@@ -21,8 +25,23 @@ import {
 } from '../components/alertas-table';
 import { PageHeading } from '@/components/ui/page-heading';
 
+type RequestItems = PurchaseRequestFormValues['items'];
+
+/** Cantidad sugerida para reponer: lo que falta para llegar al mínimo (al menos 1); editable en el diálogo. */
+function toRequestItem(alert: CriticalStockAlert): RequestItems[number] {
+  const stock = alert.current_stock ?? alert.product?.stock ?? alert.stock ?? 0;
+  const min = alert.stock_minimo ?? alert.product?.stock_minimo ?? alert.product?.stockCritico ?? 0;
+  return {
+    product_id: alert.product_id,
+    product_name: alert.product?.nombre ?? alert.producto?.nombre ?? alert.product_name ?? `Producto #${alert.product_id}`,
+    quantity: Math.max(min - stock, 1),
+  };
+}
+
 export default function AlertasStockPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const canRequest = canDo(user?.rol, 'managePurchaseRequests');
 
   // Estados de paginación y filtros
   const [page, setPage] = useState(1);
@@ -34,6 +53,31 @@ export default function AlertasStockPage() {
   // Modal / Diálogos
   const [resolvingAlert, setResolvingAlert] = useState<CriticalStockAlert | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Producto | null>(null);
+
+  // Selección para crear una solicitud de compra; se conserva al cambiar de página.
+  const [selected, setSelected] = useState<Map<number, CriticalStockAlert>>(new Map());
+  const [requestItems, setRequestItems] = useState<RequestItems | null>(null);
+  const selectedProductIds = useMemo(() => new Set(selected.keys()), [selected]);
+
+  const toggleSelect = useCallback((alert: CriticalStockAlert) => {
+    setSelected((prev) => {
+      const next = new Map(prev);
+      if (next.has(alert.product_id)) next.delete(alert.product_id);
+      else next.set(alert.product_id, alert);
+      return next;
+    });
+  }, []);
+
+  const toggleSelectAll = useCallback((alerts: CriticalStockAlert[], checked: boolean) => {
+    setSelected((prev) => {
+      const next = new Map(prev);
+      for (const a of alerts) {
+        if (checked) next.set(a.product_id, a);
+        else next.delete(a.product_id);
+      }
+      return next;
+    });
+  }, []);
 
   // Queries y Mutaciones
   const queryParams = useMemo(
@@ -87,10 +131,9 @@ export default function AlertasStockPage() {
     }
   };
 
-  const handleRequestQuote = (alert: CriticalStockAlert) => {
-    toast.info(`Iniciando solicitud de reposición para alerta #${alert.id}`);
-    navigate('/cotizaciones');
-  };
+  const handleRequestOne = useCallback((alert: CriticalStockAlert) => {
+    setRequestItems([toRequestItem(alert)]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -113,15 +156,27 @@ export default function AlertasStockPage() {
               <Layers className="h-3.5 w-3.5" />
               <span>Ver inventario</span>
             </Button>
+            {canRequest && selected.size > 0 && (
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                onClick={() => setRequestItems([...selected.values()].map(toRequestItem))}
+                className="text-xs gap-1.5"
+              >
+                <ShoppingCart className="h-3.5 w-3.5" />
+                <span>Crear solicitud de compra ({selected.size})</span>
+              </Button>
+            )}
             <Button
               type="button"
-              variant="primary"
+              variant="outline"
               size="sm"
-              onClick={() => navigate('/cotizaciones')}
+              onClick={() => navigate('/solicitudes-compra')}
               className="text-xs gap-1.5"
             >
               <ShoppingCart className="h-3.5 w-3.5" />
-              <span>Ir a cotizaciones</span>
+              <span>Ir a solicitudes de compra</span>
             </Button>
           </div>
         </div>
@@ -180,7 +235,11 @@ export default function AlertasStockPage() {
         }}
         onResolve={(alert) => setResolvingAlert(alert)}
         onViewProduct={(product) => setSelectedProduct(product)}
-        onRequestQuote={handleRequestQuote}
+        onRequestQuote={canRequest ? handleRequestOne : undefined}
+        selectable={canRequest}
+        selectedProductIds={selectedProductIds}
+        onToggleSelect={toggleSelect}
+        onToggleSelectAll={toggleSelectAll}
         page={page}
         pageSize={pageSize}
         onPageChange={setPage}
@@ -206,6 +265,19 @@ export default function AlertasStockPage() {
         onConfirm={handleConfirmResolve}
         onCancel={() => setResolvingAlert(null)}
       />
+
+      {canRequest && (
+        <PurchaseRequestFormDialog
+          open={requestItems !== null}
+          onClose={() => setRequestItems(null)}
+          initialItems={requestItems ?? undefined}
+          initialNotes="Reposición por alerta de stock."
+          onSaved={(r) => {
+            setSelected(new Map());
+            navigate(`/solicitudes-compra/${r.id}`);
+          }}
+        />
+      )}
 
       {/* Ficha Técnica de Producto Afectado */}
       <ProductoDetailDialog
