@@ -13,6 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { useBudgetMonthly } from '@sgia/api-client';
 
+import { ChartExpandButton } from '@/components/ui/chart-expand-button';
 import { useTheme } from '@/contexts/theme-context';
 import { formatCLP } from '@/features/compras/lib/format';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
@@ -124,12 +125,19 @@ export function BudgetMonthlyChart({ budgetId, year }: { budgetId: number; year:
   return (
     <div className="flex flex-col gap-3">
       {hasData ? (
-        <div
-          className="h-56"
-          role="img"
-          aria-label={`Reservado, consumido y repuesto por mes en ${year}`}
-        >
-          <Bar data={chartData} options={options} />
+        <div className="relative">
+          <div className="absolute left-0 -top-1 z-10">
+            <ChartExpandButton title={`Evolución mensual ${year}`}>
+              <Bar data={chartData} options={options} />
+            </ChartExpandButton>
+          </div>
+          <div
+            className="h-56"
+            role="img"
+            aria-label={`Reservado, consumido y repuesto por mes en ${year}`}
+          >
+            <Bar data={chartData} options={options} />
+          </div>
         </div>
       ) : (
         <p className={`py-6 ${STATE_TEXT_CLASS}`}>

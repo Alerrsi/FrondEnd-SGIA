@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ChartExpandButton } from '@/components/ui/chart-expand-button';
 import { useTheme } from '@/contexts/theme-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { buildLegend } from '../lib/chart-format';
@@ -167,6 +168,22 @@ export function DynamicChartCard({
           </div>
         </div>
 
+        <ChartExpandButton
+          title={title}
+          description={`${describeRange(input)} · ${CHART_TYPE_LABELS[input.chartType]}`}
+          disabled={!data || data.points.length === 0}
+        >
+          {data && visualization === 'kpi' ? (
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              <span className="font-mono text-7xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+                {formatKpiValue(data.points, input.metric)}
+              </span>
+              <span className="font-mono text-sm text-zinc-500">{title}</span>
+            </div>
+          ) : data ? (
+            <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />
+          ) : null}
+        </ChartExpandButton>
         {onHide && (
           <Button
             type="button"

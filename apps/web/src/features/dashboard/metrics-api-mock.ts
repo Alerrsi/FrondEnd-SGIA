@@ -9,6 +9,8 @@ interface MetricsApiMockOptions {
   status?: number;
   /** Gráficos iniciales del panel personal (`/api/me/charts`); por defecto, tres. */
   charts?: FakeChart[];
+  /** Plantillas de dashboard con nombre iniciales (`/api/me/dashboard-templates`); por defecto, ninguna. */
+  dashboardTemplates?: Array<{ id: number; name: string }>;
 }
 
 const KPIS = {
@@ -27,9 +29,10 @@ const DEFAULT_POINTS = [
   { label: 'Semana 2', value: 18, secondaryValue: null, category: null },
 ];
 
-interface FakeChart {
+export interface FakeChart {
   id: number;
   chart_template_id: number;
+  dashboard_template_id: number | null;
   custom_title: string | null;
   type: string;
   position: number;
@@ -53,10 +56,11 @@ const TEMPLATES = [
   { id: 11, code: 'top-teachers', name: 'Ranking de docentes', visualization_type: 'bar', chart_type: 'BAR', entity: 'TEACHERS', metric: 'COUNT', group_by: null, period: 'SEMESTER_CURRENT' },
 ];
 
-function fakeChart(id: number, position: number, title: string, q: Record<string, string>): FakeChart {
+export function fakeChart(id: number, position: number, title: string, q: Record<string, string>): FakeChart {
   return {
     id,
     chart_template_id: 1,
+    dashboard_template_id: null,
     custom_title: title,
     type: q.chartType!,
     position,
@@ -90,6 +94,10 @@ export interface MetricsRequest {
 export function mockMetricsApi(options: MetricsApiMockOptions = {}) {
   let charts = options.charts ?? seedCharts();
   let nextId = 100;
+  let dashTemplates = [...(options.dashboardTemplates ?? [])];
+  let nextTemplateId = 500;
+  const MAX = 9;
+  const inScope = (c: FakeChart, templateId: number | null) => c.dashboard_template_id === templateId;
 
   const fetchMock = vi.fn(async (url: RequestInfo | URL, init?: RequestInit) => {
     const json = (payload: unknown, status = 200) =>
@@ -99,21 +107,65 @@ export function mockMetricsApi(options: MetricsApiMockOptions = {}) {
       });
     const path = String(url);
     const method = init?.method ?? 'GET';
-    const sorted = () => [...charts].sort((a, b) => a.position - b.position);
+    const sorted = (templateId: number | null = null) =>
+      charts.filter((c) => inScope(c, templateId)).sort((a, b) => a.position - b.position);
+    const templateOut = (t: { id: number; name: string }) => ({
+      id: t.id,
+      name: t.name,
+      description: null,
+      charts_count: charts.filter((c) => c.dashboard_template_id === t.id).length,
+      max_charts: MAX,
+    });
 
     // --- Panel personal (REQ-15): servidor en memoria ---
     if (path.includes('/chart-templates')) return json({ data: TEMPLATES });
+    // Plantillas de dashboard con nombre del usuario.
+    const dashId = /\/me\/dashboard-templates\/(\d+)/.exec(path)?.[1];
+    if (path.includes('/me/dashboard-templates')) {
+      if (method === 'GET') return json({ data: dashTemplates.map(templateOut) });
+      if (method === 'POST') {
+        const { name } = JSON.parse(String(init?.body)) as { name: string };
+        if (dashTemplates.some((t) => t.name === name)) {
+          return json({ message: 'Ya tienes una plantilla con ese nombre.', errors: { name: ['Ya tienes una plantilla con ese nombre.'] } }, 422);
+        }
+        const created = { id: nextTemplateId++, name };
+        dashTemplates = [...dashTemplates, created];
+        return json({ data: templateOut(created) }, 201);
+      }
+      if (method === 'PATCH' && dashId) {
+        const { name } = JSON.parse(String(init?.body)) as { name: string };
+        dashTemplates = dashTemplates.map((t) => (t.id === Number(dashId) ? { ...t, name } : t));
+        return json({ data: templateOut(dashTemplates.find((t) => t.id === Number(dashId))!) });
+      }
+      if (method === 'DELETE' && dashId) {
+        dashTemplates = dashTemplates.filter((t) => t.id !== Number(dashId));
+        charts = charts.filter((c) => c.dashboard_template_id !== Number(dashId));
+        return json(null, 204);
+      }
+    }
     if (path.includes('/me/charts/positions')) {
-      const { positions } = JSON.parse(String(init?.body)) as { positions: Array<{ id: number; position: number }> };
-      charts = charts.map((c) => ({ ...c, position: positions.find((p) => p.id === c.id)?.position ?? c.position }));
-      return json({ data: sorted() });
+      const { positions, dashboard_template_id: scope = null } = JSON.parse(String(init?.body)) as {
+        positions: Array<{ id: number; position: number }>;
+        dashboard_template_id?: number | null;
+      };
+      charts = charts.map((c) =>
+        inScope(c, scope) ? { ...c, position: positions.find((p) => p.id === c.id)?.position ?? c.position } : c,
+      );
+      return json({ data: sorted(scope) });
     }
     const chartId = /\/me\/charts\/(\d+)/.exec(path)?.[1];
     if (path.includes('/me/charts')) {
-      if (method === 'GET') return json({ data: sorted() });
+      if (method === 'GET') {
+        const scope = /dashboard_template_id=(\d+)/.exec(path)?.[1];
+        return json({ data: sorted(scope ? Number(scope) : null) });
+      }
       if (method === 'POST') {
-        if (charts.length >= 5) return json({ message: 'Ya tienes 5 gráficos.', errors: { position: ['Ya tienes 5 gráficos.'] } }, 422);
         const payload = JSON.parse(String(init?.body)) as Record<string, string>;
+        const scope = payload.dashboard_template_id ? Number(payload.dashboard_template_id) : null;
+        if (charts.filter((c) => inScope(c, scope)).length >= MAX) {
+          const message = `Esta plantilla ya tiene ${MAX} gráficos.`;
+          return json({ message, errors: { position: [message] } }, 422);
+        }
         // Como el backend: lo no enviado se hereda de la plantilla y no se admiten repetidos.
         const template = TEMPLATES.find((t) => t.id === Number(payload.chart_template_id)) ?? TEMPLATES[0]!;
         const groupBy = payload.group_by ?? template.group_by;
@@ -130,15 +182,16 @@ export function mockMetricsApi(options: MetricsApiMockOptions = {}) {
           c.period === query.timeRange &&
           c.type === query.chartType &&
           (c.group_by ?? null) === (groupBy ?? null);
-        if (charts.some(same)) {
+        if (charts.some((c) => inScope(c, scope) && same(c))) {
           const message = 'Ya tienes este gráfico en tu panel.';
           return json({ message, errors: { chart: [message] } }, 422);
         }
-        const used = new Set(charts.map((c) => c.position));
-        const position = [1, 2, 3, 4, 5].find((n) => !used.has(n)) as number;
+        const used = new Set(charts.filter((c) => inScope(c, scope)).map((c) => c.position));
+        const position = [1, 2, 3, 4, 5, 6, 7, 8, 9].find((n) => !used.has(n)) as number;
         const created = fakeChart(nextId++, position, payload.custom_title ?? template.name, query);
         created.template = template;
         created.chart_template_id = Number(payload.chart_template_id);
+        created.dashboard_template_id = scope;
         charts = [...charts, created];
         return json({ data: created }, 201);
       }

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, act, within, waitFor } from '@testing-librar
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
-import { mockMetricsApi } from './metrics-api-mock';
+import { fakeChart, mockMetricsApi, seedCharts } from './metrics-api-mock';
 
 // Mock react-chartjs-2 to avoid canvas issues in happy-dom
 vi.mock('react-chartjs-2', () => ({
@@ -475,15 +475,19 @@ describe('REQ-14: Drag & Drop, Modo edición y Asistente Post-Drop', () => {
     expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4);
   });
 
-  it('respeta el máximo de 5 gráficos por usuario', async () => {
+  it('respeta el máximo de 9 gráficos por plantilla', async () => {
     const user = userEvent.setup();
-    mockMetricsApi();
+    const extra = [4, 5, 6, 7, 8, 9].map((n) =>
+      fakeChart(n, n, `Equipos ${n}`, { entity: 'EQUIPMENT', metric: `M${n}`, timeRange: 'LAST_30_DAYS', chartType: 'BAR' }),
+    );
+    mockMetricsApi({ charts: [...seedCharts(), ...extra].slice(0, 7) });
     await renderPanel();
+    expect(screen.getAllByTestId(/^chart-card-/).length).toBe(7);
 
     await user.click(await screen.findByRole('button', { name: /Préstamos por estado/i }));
-    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(4));
+    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(8));
     await user.click(screen.getByRole('button', { name: /Ranking de docentes/i }));
-    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(5));
+    await waitFor(() => expect(screen.getAllByTestId(/^chart-card-/).length).toBe(9));
 
     expect(
       (screen.getByRole('button', { name: /Abrir catálogo de widgets/i }) as HTMLButtonElement).disabled,

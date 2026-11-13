@@ -62,9 +62,14 @@ export class PanelRuleError extends Error {}
 /** Ya hay un alta en curso (doble clic): la segunda se descarta sin avisar. */
 export class PanelBusyError extends PanelRuleError {}
 
-/** Estado del panel personal (REQ-15): gráficos propios en el servidor, hasta 5 por usuario. */
-export function useMyPanel() {
-  const charts = useMyCharts();
+/**
+ * Estado del panel personal (REQ-15): gráficos propios en el servidor, hasta 9 por plantilla.
+ * `dashboardTemplateId` elige una plantilla con nombre; sin él, el panel principal.
+ */
+export function useMyPanel(dashboardTemplateId: number | null = null) {
+  const charts = useMyCharts(
+    dashboardTemplateId === null ? undefined : { dashboard_template_id: dashboardTemplateId },
+  );
   const templatesQuery = useChartTemplates();
   const create = useCreateMyChart();
   const update = useUpdateMyChart();
@@ -96,7 +101,7 @@ export function useMyPanel() {
   const findDuplicate = (input: MetricQueryInput): UserChart | undefined =>
     (all ?? []).find((c) => c.metric_input && isSameChart(c.metric_input, input));
   const templates = templatesQuery.data ?? [];
-  /** Los ocultos también ocupan posición: el límite de 5 cuenta todos. */
+  /** Los ocultos también ocupan posición: el límite de 9 cuenta todos. */
   const total = all?.length ?? 0;
 
   const reorder = async (sourceIndex: number, targetIndex: number) => {
@@ -105,7 +110,7 @@ export function useMyPanel() {
       visible.map((v) => v.chart),
       next.map((v) => v.chart),
     );
-    if (updates.length > 0) await positions.mutateAsync(updates);
+    if (updates.length > 0) await positions.mutateAsync({ positions: updates, dashboardTemplateId });
   };
 
   /**
@@ -132,6 +137,7 @@ export function useMyPanel() {
     try {
       const created = await create.mutateAsync({
         chart_template_id: template.id,
+        ...(dashboardTemplateId !== null ? { dashboard_template_id: dashboardTemplateId } : {}),
         ...(input
           ? {
               custom_title: input.title ?? null,
@@ -153,7 +159,7 @@ export function useMyPanel() {
           visible.map((v) => v.chart),
           order,
         );
-        if (updates.length > 0) await positions.mutateAsync(updates);
+        if (updates.length > 0) await positions.mutateAsync({ positions: updates, dashboardTemplateId });
       }
       return created;
     } finally {

@@ -20,6 +20,7 @@ import { WidgetPaletteDrawer } from '../components/widget-palette-drawer';
 import { ChartConfigModal } from '../components/chart-config-modal';
 import { DropZone } from '../components/drop-zone';
 import { DragGhostPreview } from '../components/drag-ghost-preview';
+import { DashboardTemplateBar } from '../components/dashboard-template-bar';
 import { PanelBusyError, useMyPanel, pickTemplateFor } from '../hooks/use-my-panel';
 import {
   MAX_CHARTS,
@@ -41,8 +42,9 @@ export default function DashboardPage() {
     error: kpisError,
   } = useApiClientExecutiveKpis('LAST_30_DAYS');
 
-  // Panel personal (REQ-15): los gráficos viven en el servidor (`/api/me/charts`), máximo 5.
-  const panel = useMyPanel();
+  // Panel personal (REQ-15): los gráficos viven en el servidor (`/api/me/charts`), máximo 9 por plantilla.
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
+  const panel = useMyPanel(selectedTemplateId);
   const panelCharts = panel.visible;
 
   // Modo edición / Visualización
@@ -128,7 +130,7 @@ export default function DashboardPage() {
 
   const handleAddFromTemplate = (template: ChartTemplate) => {
     if (!panel.canAdd) {
-      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por usuario`);
+      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por plantilla`);
       return;
     }
     if (panel.hasTemplate(template)) {
@@ -192,7 +194,7 @@ export default function DashboardPage() {
   // o, si es una consulta propia, a la plantilla genérica de su forma
   const addChartToPanel = async (newChart: MetricQueryInput, targetIndex?: number) => {
     if (!panel.canAdd) {
-      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por usuario`);
+      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por plantilla`);
       return;
     }
     const template = pickTemplateFor(panel.templates, newChart);
@@ -237,7 +239,7 @@ export default function DashboardPage() {
     setPaletteOpen(false);
 
     if (!panel.canAdd) {
-      toast.error('Límite alcanzado: Máximo 5 gráficos por usuario');
+      toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por plantilla`);
       return;
     }
 
@@ -266,7 +268,7 @@ export default function DashboardPage() {
 
     if (payload.type === 'NEW_WIDGET') {
       if (!panel.canAdd) {
-        toast.error('Límite alcanzado: Máximo 5 gráficos por usuario');
+        toast.error(`Límite alcanzado: máximo ${MAX_CHARTS} gráficos por plantilla`);
         return;
       }
       setPendingDrop({ chartType: payload.chartType, targetIndex });
@@ -318,7 +320,7 @@ export default function DashboardPage() {
               disabled={!panel.canAdd} className="gap-1.5"
             >
               <Palette className="h-3.5 w-3.5" />
-              <span>Abrir catálogo de widgets ({panel.total}/5)</span>
+              <span>Abrir catálogo de widgets ({panel.total}/{MAX_CHARTS})</span>
             </Button>
 
             {/* Toggle Modo edición / Guardar y salir */}
@@ -355,7 +357,7 @@ export default function DashboardPage() {
             <SlidersHorizontal className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
             <span>
               <strong>Modo edición activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
-              Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo 5 gráficos simultáneos.
+              Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo {MAX_CHARTS} gráficos simultáneos.
             </span>
           </div>
 
@@ -385,7 +387,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <span className="text-[11px] text-sky-400">
-            {panel.canAdd ? `Espacio disponible (${panel.total}/5)` : 'Límite de 5 alcanzado'}
+            {panel.canAdd ? `Espacio disponible (${panel.total}/${MAX_CHARTS})` : `Límite de ${MAX_CHARTS} alcanzado`}
           </span>
         </div>
       )}
@@ -393,7 +395,10 @@ export default function DashboardPage() {
       {/* Cinta Métrica Compacta Superior (Executive KPIs) */}
       <MetricStrip kpis={kpis} isLoading={isLoadingKpis} error={kpisError} />
 
-      {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 5 por usuario) */}
+      {/* Plantillas de dashboard con nombre: cada una agrupa hasta 9 gráficos */}
+      <DashboardTemplateBar selectedId={selectedTemplateId} onSelect={setSelectedTemplateId} />
+
+      {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 9 por plantilla) */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
           <LayoutGrid className="h-4 w-4" />
@@ -467,7 +472,7 @@ export default function DashboardPage() {
                     : 'Suelta tu gráfico aquí para configurarlo'}
                 </h3>
                 <p className="text-xs text-zinc-400 font-mono">
-                  Al soltar se abre el menú para elegir qué datos mostrar ({panel.total + 1}/5)
+                  Al soltar se abre el menú para elegir qué datos mostrar ({panel.total + 1}/{MAX_CHARTS})
                 </p>
               </div>
             </div>

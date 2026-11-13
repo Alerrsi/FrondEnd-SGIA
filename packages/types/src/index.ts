@@ -231,6 +231,9 @@ export type { AuditAction, AuditableType, AuditLog, AuditLogQueryParams } from '
 export { MAX_USER_CHARTS } from './dashboard-personal';
 export type {
   ChartTemplate,
+  DashboardTemplate,
+  CreateDashboardTemplatePayload,
+  UpdateDashboardTemplatePayload,
   UserChart,
   UserChartQueryParams,
   CreateUserChartPayload,

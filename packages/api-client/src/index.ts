@@ -402,6 +402,11 @@ export {
   updateMyChart,
   updateMyChartPositions,
   deleteMyChart,
+  fetchMyDashboardTemplates,
+  createMyDashboardTemplate,
+  updateMyDashboardTemplate,
+  deleteMyDashboardTemplate,
+  normalizeDashboardTemplate,
   normalizeChartTemplate,
   normalizeUserChart,
   normalizeMetricInput,
@@ -414,6 +419,10 @@ export {
   useUpdateMyChart,
   useUpdateMyChartPositions,
   useDeleteMyChart,
+  useMyDashboardTemplates,
+  useCreateMyDashboardTemplate,
+  useUpdateMyDashboardTemplate,
+  useDeleteMyDashboardTemplate,
 } from './hooks/dashboard-charts';
 
 // Administración: pañoles, roles y auditoría (REQ-NF-01)

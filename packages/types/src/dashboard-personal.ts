@@ -6,10 +6,26 @@ import type {
   TimeRange,
 } from './metric';
 
-// Dashboard personalizado (FU-06 / REQ-15): hasta 5 gráficos por usuario, persistidos en el servidor.
+// Dashboard personalizado (FU-06 / REQ-15): hasta 9 gráficos por plantilla, persistidos en el servidor.
 
-/** Máximo de gráficos por usuario (`position` 1–5, una por gráfico). */
-export const MAX_USER_CHARTS = 5;
+/** Máximo de gráficos por plantilla de dashboard y en el panel principal (`position` 1–9). */
+export const MAX_USER_CHARTS = 9;
+
+/** Plantilla de dashboard con nombre del usuario (`/api/me/dashboard-templates`): agrupa gráficos. */
+export interface DashboardTemplate {
+  id: number;
+  name: string;
+  description: string | null;
+  charts_count: number;
+  max_charts: number;
+}
+
+export interface CreateDashboardTemplatePayload {
+  name: string;
+  description?: string | null;
+}
+
+export type UpdateDashboardTemplatePayload = Partial<CreateDashboardTemplatePayload>;
 
 /**
  * Plantilla sembrada (`GET /api/chart-templates`).
@@ -33,6 +49,8 @@ export interface ChartTemplate {
 export interface UserChart {
   id: number;
   chart_template_id: number;
+  /** Plantilla de dashboard propia; `null` = panel principal. */
+  dashboard_template_id: number | null;
   template?: ChartTemplate | null;
   custom_title: string | null;
   type: ChartType | null;
@@ -55,10 +73,14 @@ export interface UserChart {
 export interface UserChartQueryParams {
   /** `true` = solo los visibles. */
   active?: boolean;
+  /** Plantilla de dashboard; sin ella, el panel principal. */
+  dashboard_template_id?: number | null;
 }
 
 export interface CreateUserChartPayload {
   chart_template_id: number;
+  /** Plantilla propia donde va el gráfico; sin ella entra al panel principal. */
+  dashboard_template_id?: number | null;
   custom_title?: string | null;
   type?: ChartType;
   position?: number;
@@ -72,7 +94,7 @@ export interface CreateUserChartPayload {
 }
 
 /** Edita cualquier campo salvo `user_id`. Cambiar `chart_template_id` toma la consulta de la nueva plantilla. */
-export type UpdateUserChartPayload = Partial<CreateUserChartPayload>;
+export type UpdateUserChartPayload = Partial<Omit<CreateUserChartPayload, 'dashboard_template_id'>>;
 
 export interface UserChartPosition {
   id: number;

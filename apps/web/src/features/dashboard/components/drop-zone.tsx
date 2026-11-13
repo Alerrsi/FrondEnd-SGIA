@@ -90,7 +90,7 @@ export function DropZone({
 
         <span>
           {disabled
-            ? 'Cupo máximo alcanzado (5/5)'
+            ? 'Cupo máximo alcanzado'
             : isOver
               ? `Soltar aquí para ubicar en posición #${index + 1}`
               : isFocused

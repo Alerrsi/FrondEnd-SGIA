@@ -1,7 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import type {
   ChartTemplate,
+  CreateDashboardTemplatePayload,
   CreateUserChartPayload,
+  DashboardTemplate,
+  UpdateDashboardTemplatePayload,
   UpdateUserChartPayload,
   UserChart,
   UserChartPosition,
@@ -9,9 +12,13 @@ import type {
 } from '@sgia/types';
 import {
   createMyChart,
+  createMyDashboardTemplate,
   deleteMyChart,
+  deleteMyDashboardTemplate,
   fetchChartTemplates,
   fetchMyCharts,
+  fetchMyDashboardTemplates,
+  updateMyDashboardTemplate,
   updateMyChart,
   updateMyChartPositions,
 } from '../services/dashboard-charts';
@@ -19,8 +26,15 @@ import {
 export const chartKeys = {
   all: ['my-charts'] as const,
   templates: ['chart-templates'] as const,
+  dashboardTemplates: ['my-dashboard-templates'] as const,
   list: (params?: UserChartQueryParams) => ['my-charts', 'list', params] as const,
 };
+
+/** Los gráficos cambian el `charts_count` de las plantillas de dashboard. */
+function invalidateCharts(queryClient: QueryClient) {
+  void queryClient.invalidateQueries({ queryKey: chartKeys.dashboardTemplates });
+  return queryClient.invalidateQueries({ queryKey: chartKeys.all });
+}
 
 /** Las plantillas están sembradas en el backend y casi nunca cambian. */
 export function useChartTemplates() {
@@ -42,7 +56,7 @@ export function useCreateMyChart() {
   const queryClient = useQueryClient();
   return useMutation<UserChart, Error, CreateUserChartPayload>({
     mutationFn: createMyChart,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: chartKeys.all }),
+    onSuccess: () => invalidateCharts(queryClient),
   });
 }
 
@@ -50,7 +64,7 @@ export function useUpdateMyChart() {
   const queryClient = useQueryClient();
   return useMutation<UserChart, Error, { id: number; payload: UpdateUserChartPayload }>({
     mutationFn: ({ id, payload }) => updateMyChart(id, payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: chartKeys.all }),
+    onSuccess: () => invalidateCharts(queryClient),
   });
 }
 
@@ -63,11 +77,12 @@ export function useUpdateMyChartPositions() {
   return useMutation<
     UserChart[],
     Error,
-    UserChartPosition[],
+    { positions: UserChartPosition[]; dashboardTemplateId?: number | null },
     { previous: Array<[readonly unknown[], UserChart[] | undefined]> }
   >({
-    mutationFn: updateMyChartPositions,
-    onMutate: async (positions) => {
+    mutationFn: ({ positions, dashboardTemplateId }) =>
+      updateMyChartPositions(positions, dashboardTemplateId),
+    onMutate: async ({ positions }) => {
       await queryClient.cancelQueries({ queryKey: chartKeys.all });
       const previous = queryClient.getQueriesData<UserChart[]>({ queryKey: chartKeys.all });
       const byId = new Map(positions.map((p) => [p.id, p.position]));
@@ -81,7 +96,7 @@ export function useUpdateMyChartPositions() {
     onError: (_error, _positions, context) => {
       for (const [key, data] of context?.previous ?? []) queryClient.setQueryData(key, data);
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: chartKeys.all }),
+    onSettled: () => invalidateCharts(queryClient),
   });
 }
 
@@ -89,6 +104,41 @@ export function useDeleteMyChart() {
   const queryClient = useQueryClient();
   return useMutation<void, Error, number>({
     mutationFn: deleteMyChart,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: chartKeys.all }),
+    onSuccess: () => invalidateCharts(queryClient),
+  });
+}
+
+/** Plantillas de dashboard con nombre del usuario (cada una con hasta 9 gráficos). */
+export function useMyDashboardTemplates() {
+  return useQuery<DashboardTemplate[]>({
+    queryKey: chartKeys.dashboardTemplates,
+    queryFn: fetchMyDashboardTemplates,
+  });
+}
+
+export function useCreateMyDashboardTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation<DashboardTemplate, Error, CreateDashboardTemplatePayload>({
+    mutationFn: createMyDashboardTemplate,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: chartKeys.dashboardTemplates }),
+  });
+}
+
+export function useUpdateMyDashboardTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation<DashboardTemplate, Error, { id: number; payload: UpdateDashboardTemplatePayload }>({
+    mutationFn: ({ id, payload }) => updateMyDashboardTemplate(id, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: chartKeys.dashboardTemplates }),
+  });
+}
+
+export function useDeleteMyDashboardTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, number>({
+    mutationFn: deleteMyDashboardTemplate,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: chartKeys.dashboardTemplates });
+      return queryClient.invalidateQueries({ queryKey: chartKeys.all });
+    },
   });
 }

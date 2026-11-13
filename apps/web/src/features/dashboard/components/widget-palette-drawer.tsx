@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BarChart3, PieChart, TrendingUp, Compass, AlertCircle, Plus } from 'lucide-react';
 import { cn } from '@/lib/cn';
-import type { ChartType } from '../types/metrics';
+import { MAX_CHARTS, type ChartType } from '../types/metrics';
 import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 interface WidgetShapeItem {
@@ -134,7 +134,7 @@ export function WidgetPaletteDrawer({
             className="flex items-center gap-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-mono"
           >
             <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-            <span>Límite de 5 gráficos alcanzado. Retira un gráfico del panel para añadir nuevos.</span>
+            <span>Límite de {MAX_CHARTS} gráficos alcanzado. Retira un gráfico del panel para añadir nuevos.</span>
           </div>
         )}
 

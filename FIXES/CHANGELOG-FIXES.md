@@ -723,3 +723,12 @@
   3. El presupuesto de una solicitud se leía "Carrera #4 · 2026": el backend ahora envía la carrera del presupuesto.
   4. Fecha de recepción de una cotización: el máximo usaba el día UTC (de noche permitía mañana); ahora `todayIso()` local.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (76 archivos, 420) en verde; backend 587 tests y pint. Recorrido completo en Chrome headless (ver `NUEVO-FLUJO-COMPRAS.md`, Fase 7).
+
+---
+
+## FIX: Plantillas de dashboard con nombre y límite de 9 gráficos (REQ-15)
+
+- **Fecha:** 2026-11-13
+- **Módulo:** Dashboards (`apps/web`, `packages/api-client`, `packages/types`) + backend (`dashboard_templates`)
+- **Cambio:** el usuario crea plantillas con nombre (`/api/me/dashboard-templates`) y agrega gráficos a cada una (`dashboard_template_id`); el panel principal sigue existiendo. Límite por plantilla y por panel principal: 9 (antes 5 por usuario). Barra de pestañas en `dashboard-template-bar.tsx`, diálogo de nombre en `dashboard-template-form-dialog.tsx`; `useMyPanel(templateId)` acota gráficos y reordenamiento a la plantilla. También: botón de ojo para ampliar cada gráfico en un pop-up (`chart-expand-button.tsx`).
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde (422 tests); backend `php artisan test` en verde.

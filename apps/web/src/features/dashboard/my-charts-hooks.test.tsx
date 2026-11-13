@@ -120,7 +120,7 @@ describe('Dashboard personalizado (REQ-15): cliente API', () => {
     let pending: Promise<unknown> = Promise.resolve();
     act(() => {
       pending = mutation.result.current
-        .mutateAsync([{ id: 1, position: 2 }, { id: 2, position: 1 }])
+        .mutateAsync({ positions: [{ id: 1, position: 2 }, { id: 2, position: 1 }] })
         .catch(() => undefined);
     });
     await waitFor(() => expect(charts.result.current.data?.map((c) => c.id)).toEqual([2, 1]));

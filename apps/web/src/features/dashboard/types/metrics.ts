@@ -28,7 +28,7 @@ export interface GroupByOption {
 }
 
 /** Máximo de gráficos simultáneos por plantilla. */
-export const MAX_CHARTS = 5;
+export const MAX_CHARTS = 9;
 
 /** `groupBy` válidos por entidad (metrics.md §4). `''` = sin agrupar. */
 export const GROUP_BY_OPTIONS_BY_ENTITY: Record<MetricEntity, GroupByOption[]> = {

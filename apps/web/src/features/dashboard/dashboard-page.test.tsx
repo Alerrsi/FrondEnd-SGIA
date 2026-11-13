@@ -63,10 +63,10 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
     expect(screen.queryByRole('button', { name: /^Barras$/ })).toBeNull();
   });
 
-  it('muestra el contador sobre el límite de 5 gráficos por usuario', async () => {
+  it('muestra el contador sobre el límite de 9 gráficos por plantilla', async () => {
     renderWithClient(<DashboardPage />);
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: /Abrir catálogo de widgets \(3\/5\)/i })).toBeDefined(),
+      expect(screen.getByRole('button', { name: /Abrir catálogo de widgets \(3\/9\)/i })).toBeDefined(),
     );
   });
 
