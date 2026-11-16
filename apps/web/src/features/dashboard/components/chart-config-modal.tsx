@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -150,8 +150,9 @@ export function ChartConfigModal({
       onClose={onClose}
       title="Configurar gráfico"
       description="Elige qué datos quieres ver y cómo mostrarlos antes de añadirlo al panel."
+      size="lg"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2 text-xs">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs">
         <fieldset className="flex flex-col gap-1.5">
           <legend className={cn(LABEL_CLASS, 'mb-1')}>Tipo de gráfico</legend>
           <div className="flex flex-wrap gap-1.5">
@@ -355,26 +356,22 @@ export function ChartConfigModal({
           </p>
         )}
 
-        <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <DialogFooter className="sm:justify-between">
           <span className="text-[11px] text-zinc-400">
             Cupo tras añadir: {usedSlots + 1} de {MAX_CHARTS}
           </span>
-          <div className="flex gap-2">
-            <DialogCloseButton variant="outline" size="sm">
-              Cancelar
-            </DialogCloseButton>
+          <div className="flex flex-wrap items-center gap-2">
+            <DialogCloseButton>Cancelar</DialogCloseButton>
             <Button
               type="submit"
-              variant="primary"
               size="sm"
               disabled={missingDateFrom || invalidRange || invalidLimit}
-              className="gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Añadir al panel</span>
             </Button>
           </div>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

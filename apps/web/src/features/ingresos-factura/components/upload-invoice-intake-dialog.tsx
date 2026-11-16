@@ -9,7 +9,7 @@ import {
   isPurchaseRequestCode,
   normalizePurchaseRequestCode,
 } from '@/features/solicitudes-compra/lib/purchase-request-code';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -120,7 +120,6 @@ export function UploadInvoiceIntakeDialog({
       hasUnsavedChanges={(Boolean(file) || requestCode !== initialRequestCode) && !pending}
       title="Subir factura"
       description="Se guarda el archivo, se lee con OCR y se crea un borrador. Nada se descuenta hasta que lo confirmes."
-      className="max-w-lg"
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <div
@@ -207,13 +206,13 @@ export function UploadInvoiceIntakeDialog({
           error={errors.purchase_request_code}
         />
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" size="sm" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}
             Subir y leer factura
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

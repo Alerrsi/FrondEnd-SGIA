@@ -6,7 +6,7 @@ import type { BudgetSummaryRow } from '@sgia/types';
 import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { formatCLP } from '@/features/compras/lib/format';
 import {
   buildUpdateBudgetSchema,
@@ -75,10 +75,10 @@ export function EditBudgetDialog({
       hasUnsavedChanges={isDirty}
       title={`Editar presupuesto ${budget.year}`}
       description={`${careerLabel(budget)}. Se registrará un movimiento de ajuste en el historial.`}
-      className="max-w-md"
+      size="sm"
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
-        <dl className="grid grid-cols-2 gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs">
+      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+        <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs">
           <div>
             <dt className="text-zinc-500">Consumido</dt>
             <dd className="font-mono">{formatCLP(budget.consumed_amount)}</dd>
@@ -103,13 +103,13 @@ export function EditBudgetDialog({
           />
           {errors.initial_amount && <p className={errorClasses}>{errors.initial_amount.message}</p>}
         </div>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" size="sm" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}
             Guardar
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

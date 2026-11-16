@@ -22,7 +22,7 @@ import {
 } from '@sgia/api-client';
 import type { LocationEntity, CajonEntity } from '@sgia/types';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { FIELD_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
@@ -71,6 +71,8 @@ export default function UbicacionesPage() {
   const deleteLocationMutation = useDeleteLocation();
   const createCajonMutation = useCreateCajon();
   const deleteCajonMutation = useDeleteCajon();
+  const savingLocation = createLocationMutation.isPending || updateLocationMutation.isPending;
+  const savingCajon = createCajonMutation.isPending;
 
   const handleOpenCreateLocation = () => {
     setEditingLocation(null);
@@ -401,10 +403,10 @@ export default function UbicacionesPage() {
       <Dialog
         open={locationModalOpen}
         onClose={() => setLocationModalOpen(false)}
-        title={editingLocation ? 'Editar Ubicación' : 'Nueva Sala / ubicación'}
+        title={editingLocation ? 'Editar ubicación' : 'Nueva sala / ubicación'}
         description="Define los datos del recinto o sala de pañol."
       >
-        <form onSubmit={handleSaveLocation} className="flex flex-col gap-3 py-2">
+        <form onSubmit={handleSaveLocation} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className={FIELD_LABEL_CLASS}>
               Nombre de la sala / recinto *
@@ -446,14 +448,13 @@ export default function UbicacionesPage() {
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-            <DialogCloseButton variant="outline" size="sm">
-              Cancelar
-            </DialogCloseButton>
-            <Button type="submit" variant="primary" size="sm">
+          <DialogFooter>
+            <DialogCloseButton disabled={savingLocation}>Cancelar</DialogCloseButton>
+            <Button type="submit" size="sm" disabled={savingLocation}>
+              {savingLocation && <Loader2 className="h-4 w-4 animate-spin" />}
               Guardar ubicación
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </Dialog>
 
@@ -464,7 +465,7 @@ export default function UbicacionesPage() {
         title="Nuevo cajón / gaveta"
         description={`Añade un compartimiento a ${activeLocation?.nombre}.`}
       >
-        <form onSubmit={handleSaveCajon} className="flex flex-col gap-3 py-2">
+        <form onSubmit={handleSaveCajon} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className={FIELD_LABEL_CLASS}>
               Código / identificador del cajón *
@@ -490,14 +491,13 @@ export default function UbicacionesPage() {
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-            <DialogCloseButton variant="outline" size="sm">
-              Cancelar
-            </DialogCloseButton>
-            <Button type="submit" variant="primary" size="sm">
+          <DialogFooter>
+            <DialogCloseButton disabled={savingCajon}>Cancelar</DialogCloseButton>
+            <Button type="submit" size="sm" disabled={savingCajon}>
+              {savingCajon && <Loader2 className="h-4 w-4 animate-spin" />}
               Guardar cajón
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </Dialog>
     </div>

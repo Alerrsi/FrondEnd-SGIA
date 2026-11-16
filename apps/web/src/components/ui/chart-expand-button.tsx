@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { Eye } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 
 interface ChartExpandButtonProps {
   title: string;
@@ -35,10 +35,16 @@ export function ChartExpandButton({ title, description, children, disabled }: Ch
         onClose={() => setOpen(false)}
         title={title}
         description={description}
-        className="max-w-5xl"
+        size="2xl"
       >
-        <div className="relative h-[65vh] w-full" data-testid="chart-expanded">
-          {children}
+        <div className="flex flex-col gap-4">
+          {/* El gráfico ocupa el alto disponible sin forzar scroll: pantalla menos cabecera y pie. */}
+          <div className="relative h-[min(65vh,calc(100dvh-15rem))] min-h-48 w-full" data-testid="chart-expanded">
+            {children}
+          </div>
+          <DialogFooter>
+            <DialogCloseButton>Cerrar</DialogCloseButton>
+          </DialogFooter>
         </div>
       </Dialog>
     </>

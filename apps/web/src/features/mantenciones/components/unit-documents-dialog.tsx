@@ -11,7 +11,7 @@ import { Download, FileUp, Loader2, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { formatDate } from '@/features/compras/lib/format';
 import { downloadBlob } from '@/features/equipos/utils/download';
 import {
@@ -128,7 +128,7 @@ export function UnitDocumentsDialog({
       onClose={onClose}
       title="Documentos de la unidad"
       description={unit ? `${unit.code} · certificados, manuales e informes en PDF` : undefined}
-      className="max-w-2xl"
+      size="lg"
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
@@ -195,7 +195,7 @@ export function UnitDocumentsDialog({
 
         {canWrite && (
           <form onSubmit={submit} noValidate className="flex flex-col gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <select
                 aria-label="Tipo de documento"
                 value={docType}
@@ -224,7 +224,7 @@ export function UnitDocumentsDialog({
               className={controlClasses}
             />
             {errors.title && <p className="text-[11px] text-rose-600">{errors.title}</p>}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <input
                 ref={fileRef}
                 type="file"
@@ -234,8 +234,8 @@ export function UnitDocumentsDialog({
                 onChange={(e) => pickFile(e.target.files?.[0])}
               />
               <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-                <FileUp className="h-3.5 w-3.5" />
-                {file ? file.name : 'Seleccionar PDF (máx. 10 MB)'}
+                <FileUp className="h-3.5 w-3.5 shrink-0" />
+                <span className="max-w-56 truncate">{file ? file.name : 'Seleccionar PDF (máx. 10 MB)'}</span>
               </Button>
               <Button type="submit" size="sm" disabled={upload.isPending} className="ml-auto">
                 {upload.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -249,6 +249,10 @@ export function UnitDocumentsDialog({
             )}
           </form>
         )}
+
+        <DialogFooter>
+          <DialogCloseButton>Cerrar</DialogCloseButton>
+        </DialogFooter>
       </div>
 
       <ConfirmDialog

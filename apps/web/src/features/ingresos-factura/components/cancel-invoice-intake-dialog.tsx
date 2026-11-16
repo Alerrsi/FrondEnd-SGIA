@@ -4,7 +4,7 @@ import { InvoiceIntakeStatus, type InvoiceIntake } from '@sgia/types';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { formatCLP } from '@/features/compras/lib/format';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
@@ -58,9 +58,9 @@ export function CancelInvoiceIntakeDialog({
       open
       onClose={onClose}
       title={confirmed ? `Anular factura ${label}` : `Anular borrador ${label}`}
-      className="max-w-md"
+      size="sm"
     >
-      <div className="flex flex-col gap-3 text-xs text-zinc-700 dark:text-zinc-300">
+      <div className="flex flex-col gap-4 text-xs text-zinc-700 dark:text-zinc-300">
         {confirmed ? (
           <>
             <p>La anulación revierte la factura completa, todo o nada:</p>
@@ -88,13 +88,18 @@ export function CancelInvoiceIntakeDialog({
           </p>
         )}
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <DialogFooter>
           <DialogCloseButton disabled={cancelIntake.isPending}>Volver</DialogCloseButton>
-          <Button variant="danger" onClick={handleCancel} disabled={cancelIntake.isPending}>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={handleCancel}
+            disabled={cancelIntake.isPending}
+          >
             {cancelIntake.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {confirmed ? 'Anular y revertir' : 'Anular borrador'}
           </Button>
-        </div>
+        </DialogFooter>
       </div>
     </Dialog>
   );

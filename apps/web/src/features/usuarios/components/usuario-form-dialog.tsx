@@ -18,7 +18,7 @@ import {
 import { Loader2, Lock, Shield, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { normalizeStoredRun, validateRun } from '../lib/run';
@@ -188,7 +188,6 @@ export function UsuarioFormDialog({
           ? 'Actualiza los datos del usuario. El RUN no se puede modificar.'
           : 'Crea una cuenta de acceso para el panel web o la app móvil.'
       }
-      className="max-w-lg"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación Personal */}
@@ -396,15 +395,13 @@ export function UsuarioFormDialog({
           )}
         </fieldset>
 
-        <div className="mt-1 flex justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-          <DialogCloseButton disabled={isPending} className="text-xs">
-            Cancelar
-          </DialogCloseButton>
-          <Button type="submit" variant="primary" disabled={isPending} className="min-w-28">
+        <DialogFooter>
+          <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
+          <Button type="submit" size="sm" disabled={isPending}>
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Crear usuario'}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Plus, Trash2, Save, X, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, Save, ExternalLink, Loader2 } from 'lucide-react';
 import type { Equipo, UpdateEquipmentSpecsPayload } from '@sgia/types';
 import { useUpdateEquipmentSpecs } from '@sgia/api-client';
 
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
 import { SectionLabel } from '@/components/ui/section-label';
@@ -117,9 +117,9 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
       hasUnsavedChanges={isDirty}
       title="Editar ficha técnica y especificaciones"
       description={`Modificando parámetros técnicos y ciclo de vida para ${equipo.nombre} (${equipo.codigo ?? `ID: ${equipo.id}`})`}
-      className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+      size="lg"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Parámetros de Ciclo de Vida y Almacenamiento S3 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-950/50 p-3.5">
           <div className="flex flex-col gap-1.5">
@@ -223,7 +223,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     placeholder="Parámetro (ej: potencia, puertos)"
                     value={row.key}
                     onChange={(e) => handleRowChange(idx, 'key', e.target.value)}
-                    className="flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950/40 px-2.5 py-1 text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                    className="min-w-0 flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950/40 px-2.5 py-1 text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
                     aria-label={`Nombre de parámetro ${idx + 1}`}
                   />
                   <input
@@ -231,7 +231,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     placeholder="Valor (ej: 48x GbE PoE+ 370W)"
                     value={row.value}
                     onChange={(e) => handleRowChange(idx, 'value', e.target.value)}
-                    className="flex-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none shadow-xs"
+                    className="min-w-0 flex-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none shadow-xs"
                     aria-label={`Valor de parámetro ${idx + 1}`}
                   />
                   <button
@@ -249,24 +249,17 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
           </div>
         </div>
 
-        {/* Botones de acción modal */}
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-          <DialogCloseButton
-            disabled={updateSpecsMutation.isPending}
-          >
-            <X className="h-4 w-4" />
-            <span>Cancelar</span>
-          </DialogCloseButton>
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={updateSpecsMutation.isPending}
-            className="gap-1.5"
-          >
-            <Save className="h-4 w-4" />
-            <span>{updateSpecsMutation.isPending ? 'Guardando...' : 'Guardar Ficha Técnica'}</span>
+        <DialogFooter>
+          <DialogCloseButton disabled={updateSpecsMutation.isPending}>Cancelar</DialogCloseButton>
+          <Button type="submit" size="sm" disabled={updateSpecsMutation.isPending}>
+            {updateSpecsMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            Guardar ficha técnica
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

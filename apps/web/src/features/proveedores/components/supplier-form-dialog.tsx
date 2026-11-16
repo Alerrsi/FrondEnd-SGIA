@@ -6,7 +6,7 @@ import type { Supplier } from '@sgia/types';
 import { Building2, Loader2, Tag } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { SupplierAreasField } from '@/features/proveedores/components/supplier-areas-field';
 import {
   supplierFormDefaults,
@@ -109,7 +109,6 @@ export function SupplierFormDialog({
           ? 'Actualiza los datos de la empresa proveedora.'
           : 'Registra una nueva empresa proveedora para cotizaciones y adquisiciones.'
       }
-      className="max-w-lg"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Datos de la empresa */}
@@ -208,15 +207,13 @@ export function SupplierFormDialog({
           </div>
         </fieldset>
 
-        <div className="mt-1 flex justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-          <DialogCloseButton disabled={isPending} className="text-xs">
-            Cancelar
-          </DialogCloseButton>
-          <Button type="submit" variant="primary" disabled={isPending} className="min-w-28">
+        <DialogFooter>
+          <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
+          <Button type="submit" size="sm" disabled={isPending}>
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Registrar proveedor'}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

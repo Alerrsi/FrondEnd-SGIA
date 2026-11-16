@@ -6,7 +6,7 @@ import type { PurchaseRequest } from '@sgia/types';
 import { Calculator, Loader2, Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { formatCLP } from '@/features/compras/lib/format';
 import { todayIso } from '@/features/profesor/lib/dates';
 import { FileField } from '@/features/solicitudes-compra/components/file-field';
@@ -119,7 +119,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
       hasUnsavedChanges={isDirty}
       title={`Subir cotización · ${request.code}`}
       description="Las cotizaciones no entran solas: sube el archivo que respondió el proveedor y digita el total y los precios unitarios."
-      className="max-w-2xl max-h-[90vh] overflow-y-auto"
+      size="lg"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <div className="flex flex-col gap-1.5">
@@ -187,7 +187,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
         <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
           Indica el precio unitario de <strong>cada</strong> producto de la solicitud.
         </p>
-        <div className="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
           <table className="w-full text-left text-xs">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
@@ -229,7 +229,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
           <label htmlFor="q-total" className={labelClasses}>
             Total de la cotización (CLP)
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <input
               id="q-total"
               type="number"
@@ -258,13 +258,13 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
           </p>
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending || candidates.length === 0}>
+          <Button type="submit" size="sm" disabled={pending || candidates.length === 0}>
             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
             Subir cotización
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

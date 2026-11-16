@@ -10,6 +10,7 @@ import {
   Clock,
   FlaskConical,
   History,
+  Loader2,
   MapPin,
   Package,
   Plus,
@@ -22,7 +23,7 @@ import { StoreroomSelect } from '@/components/shared/storeroom-select';
 import { LoanStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { LoanReviewDialog } from '@/features/prestamos/components/loan-review-dialog';
 import { formatDateOnly } from '@/features/compras/lib/format';
@@ -425,9 +426,9 @@ export default function ColaPrestamosPage() {
         confirmExitDescription="Has escrito un motivo de rechazo. Si sales ahora, el texto ingresado se descartará."
         title="Rechazar solicitud remota"
         description="Indica el motivo por el cual no se puede preparar la solicitud. Será notificado al docente."
-        className="max-w-md"
+        size="sm"
       >
-        <div className="flex flex-col gap-3 py-2 text-xs">
+        <div className="flex flex-col gap-4 text-xs">
           <p className="text-zinc-600 dark:text-zinc-300">
             Solicitud seleccionada:{' '}
             <strong className="font-mono text-zinc-900 dark:text-zinc-100">
@@ -457,21 +458,20 @@ export default function ColaPrestamosPage() {
               <span className="text-xs text-rose-600 dark:text-rose-400">{reasonError}</span>
             )}
           </div>
-        </div>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-          <DialogCloseButton variant="outline" size="sm">
-            Cancelar
-          </DialogCloseButton>
-          <Button
-            type="button"
-            variant="danger"
-            size="sm"
-            onClick={handleConfirmRechazo}
-            disabled={rechazarMutation.isPending || !rejectionReason.trim()}
-          >
-            {rechazarMutation.isPending ? 'Rechazando…' : 'Confirmar Rechazo'}
-          </Button>
+          <DialogFooter>
+            <DialogCloseButton disabled={rechazarMutation.isPending}>Cancelar</DialogCloseButton>
+            <Button
+              type="button"
+              variant="danger"
+              size="sm"
+              onClick={handleConfirmRechazo}
+              disabled={rechazarMutation.isPending || !rejectionReason.trim()}
+            >
+              {rechazarMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              Confirmar rechazo
+            </Button>
+          </DialogFooter>
         </div>
       </Dialog>
     </div>

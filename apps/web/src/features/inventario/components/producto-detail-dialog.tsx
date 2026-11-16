@@ -16,7 +16,7 @@ import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { printBlob } from '@/features/equipos/utils/download';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
@@ -117,7 +117,7 @@ export function ProductoDetailDialog({
       onClose={onClose}
       title="Ficha técnica de inventario"
       description={`Especificaciones técnicas de hardware y código óptico · ID #${producto.id}`}
-      className="max-w-3xl"
+      size="xl"
     >
       <div className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
         {/* Cabecera del producto */}
@@ -297,19 +297,19 @@ export function ProductoDetailDialog({
           <span className="text-zinc-400 dark:text-zinc-500">SGIA · Pañol TI</span>
         </div>
 
-        {/* Acciones de Pie */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3.5">
+        <DialogFooter className="sm:justify-between">
           <Button
             type="button"
             variant="outline"
             size="sm"
-            onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel} className="flex items-center gap-1.5"
+            onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
           >
             <Printer className="h-3.5 w-3.5 text-zinc-500" />
             <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <DialogCloseButton>Cerrar</DialogCloseButton>
             {onReubicar && (
               <Button
                 type="button"
@@ -319,7 +319,6 @@ export function ProductoDetailDialog({
                   onClose();
                   onReubicar(producto);
                 }}
-                className="flex items-center gap-1.5 text-xs"
               >
                 <ArrowRightLeft className="h-3.5 w-3.5" />
                 <span>Reubicar</span>
@@ -328,23 +327,19 @@ export function ProductoDetailDialog({
             {onEdit && (
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   onClose();
                   onEdit(producto);
                 }}
-                className="flex items-center gap-1.5 text-xs"
               >
                 <Pencil className="h-3.5 w-3.5" />
                 <span>Editar producto</span>
               </Button>
             )}
-            <Button type="button" variant="outline" size="sm" onClick={onClose}>
-              Cerrar
-            </Button>
           </div>
-        </div>
+        </DialogFooter>
       </div>
     </Dialog>
   );

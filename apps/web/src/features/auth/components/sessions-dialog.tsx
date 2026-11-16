@@ -2,7 +2,7 @@ import { useRevokeOtherTokens, useTokens } from '@sgia/api-client';
 import { Loader2, Monitor, Smartphone } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 
@@ -29,9 +29,8 @@ export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () =
       onClose={onClose}
       title="Sesiones activas"
       description="Dispositivos con la sesión abierta en tu cuenta."
-      className="max-w-lg"
     >
-      <div className="flex flex-col gap-3 text-zinc-900 dark:text-zinc-100">
+      <div className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
         {isLoading && <p className="text-xs text-zinc-500 dark:text-zinc-400">Cargando sesiones…</p>}
         {isError && <p className="text-xs text-red-600 dark:text-red-400">No se pudieron cargar las sesiones.</p>}
 
@@ -55,17 +54,17 @@ export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () =
           })}
         </ul>
 
-        <div className="mt-1 flex justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-          <DialogCloseButton className="text-xs">Cerrar</DialogCloseButton>
+        <DialogFooter>
+          <DialogCloseButton>Cerrar</DialogCloseButton>
           <Button
-            variant="primary"
+            size="sm"
             disabled={revokeOthers.isPending || tokens.length < 2}
             onClick={handleRevokeOthers}
           >
             {revokeOthers.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Cerrar otras sesiones
           </Button>
-        </div>
+        </DialogFooter>
       </div>
     </Dialog>
   );

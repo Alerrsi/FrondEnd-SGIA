@@ -8,7 +8,7 @@ import type { LocationEntity, Producto } from '@sgia/types';
 import { Loader2, MapPin, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
@@ -165,7 +165,6 @@ export function ReubicarProductoModal({
       hasUnsavedChanges={hasUnsavedChanges}
       title="Reubicar producto en pañol"
       description={`Asigna o cambia la ubicación física de almacenamiento para ${producto.nombre || producto.name}.`}
-      className="max-w-lg"
     >
       <form onSubmit={handleSave} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
         {/* Ubicación actual */}
@@ -322,16 +321,13 @@ export function ReubicarProductoModal({
           />
         </div>
 
-        {/* Botones de acción */}
-        <div className="mt-2 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-          <DialogCloseButton size="sm" disabled={isPending} className="text-xs">
-            Cancelar
-          </DialogCloseButton>
-          <Button type="submit" size="sm" disabled={isPending} className="min-w-32">
+        <DialogFooter>
+          <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
+          <Button type="submit" size="sm" disabled={isPending}>
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Confirmar reubicación
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

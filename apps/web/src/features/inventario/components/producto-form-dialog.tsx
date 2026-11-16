@@ -18,7 +18,7 @@ import type {
 import { Barcode, Loader2, MapPin, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
@@ -280,7 +280,7 @@ export function ProductoFormDialog({
           ? 'Actualiza los datos de stock, ubicación física o especificaciones técnicas del activo.'
           : 'Registra un nuevo activo o insumo para el control de inventario y préstamos.'
       }
-      className="max-w-xl"
+      size="lg"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación de hardware */}
@@ -580,15 +580,13 @@ export function ProductoFormDialog({
           <FieldError message={errors.cajon_id?.message} />
         </fieldset>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-          <DialogCloseButton disabled={isPending}>
-            Cancelar
-          </DialogCloseButton>
-          <Button type="submit" disabled={isPending} size="sm" className="min-w-28">
+        <DialogFooter>
+          <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
+          <Button type="submit" size="sm" disabled={isPending}>
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            <span>{esEdicion ? 'Guardar Cambios' : 'Dar de Alta'}</span>
+            {esEdicion ? 'Guardar cambios' : 'Dar de alta'}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

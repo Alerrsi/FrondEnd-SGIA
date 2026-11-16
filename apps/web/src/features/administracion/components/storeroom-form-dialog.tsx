@@ -6,7 +6,7 @@ import type { Storeroom } from '@sgia/types';
 import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import {
   storeroomFormSchema,
   type StoreroomFormValues,
@@ -78,9 +78,9 @@ export function StoreroomFormDialog({
       hasUnsavedChanges={isDirty}
       title={storeroom ? 'Editar pañol' : 'Nuevo pañol'}
       description="El código se guarda en mayúsculas y debe ser único."
-      className="max-w-md"
+      size="sm"
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <div>
           <label htmlFor="sr-name" className={labelClasses}>
             Nombre
@@ -102,13 +102,13 @@ export function StoreroomFormDialog({
           <input id="sr-loc" disabled={pending} className={`${inputClasses} mt-1.5 font-sans`} {...register('general_location')} />
           {errors.general_location && <p className={errorClasses}>{errors.general_location.message}</p>}
         </div>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" size="sm" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}
             {storeroom ? 'Guardar cambios' : 'Crear pañol'}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

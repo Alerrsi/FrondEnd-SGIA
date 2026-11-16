@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 interface DashboardTemplateFormDialogProps {
@@ -36,7 +37,7 @@ export function DashboardTemplateFormDialog({
       onClose={onClose}
       title={isRename ? 'Renombrar plantilla' : 'Nueva plantilla de dashboard'}
       description="Agrupa hasta 9 gráficos bajo un nombre para cambiar de panel con un clic."
-      className="max-w-md"
+      size="sm"
     >
       <form
         className="flex flex-col gap-4"
@@ -57,14 +58,13 @@ export function DashboardTemplateFormDialog({
             data-testid="template-name-input"
           />
         </label>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-          <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={!trimmed || loading}>
+        <DialogFooter>
+          <DialogCloseButton disabled={loading}>Cancelar</DialogCloseButton>
+          <Button type="submit" size="sm" disabled={!trimmed || loading}>
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {isRename ? 'Guardar' : 'Crear plantilla'}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

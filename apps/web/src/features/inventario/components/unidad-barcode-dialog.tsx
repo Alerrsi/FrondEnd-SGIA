@@ -2,8 +2,7 @@ import { useEquipmentUnitBarcode } from '@sgia/api-client';
 import type { EquipmentUnit } from '@sgia/types';
 import { Barcode, Loader2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 
 export function UnidadBarcodeDialog({
   unit,
@@ -22,9 +21,9 @@ export function UnidadBarcodeDialog({
       onClose={onClose}
       title="Código de la unidad"
       description={unit.serial_number ? `Serie ${unit.serial_number}` : 'Sin número de serie'}
-      className="max-w-sm"
+      size="sm"
     >
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <div
           data-testid="unit-barcode-container"
           className="flex min-h-[96px] flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-white p-3 text-black"
@@ -44,11 +43,9 @@ export function UnidadBarcodeDialog({
           )}
           <span className="mt-1 font-mono text-xs font-semibold tracking-widest">{unit.code}</span>
         </div>
-        <div className="flex justify-end">
-          <Button type="button" variant="outline" size="sm" onClick={onClose}>
-            Cerrar
-          </Button>
-        </div>
+        <DialogFooter>
+          <DialogCloseButton>Cerrar</DialogCloseButton>
+        </DialogFooter>
       </div>
     </Dialog>
   );

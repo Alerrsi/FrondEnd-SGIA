@@ -7,7 +7,7 @@ import type { Producto } from '@sgia/types';
 import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { AREAS_INACAP } from '@/features/inventario/components/inventario-table';
 import { OracleCategorySelect } from '@/features/inventario/components/oracle-category-select';
 import { oracleMasterFields } from '@/features/inventario/lib/producto-form-schema';
@@ -133,9 +133,9 @@ export function QuickProductDialog({
       onClose={onClose}
       title="Nuevo producto del catálogo"
       description="Se crea sin stock; la factura le sumará la cantidad (o las unidades, si es equipo o maqueta)."
-      className="max-w-lg"
+      size="lg"
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <div>
           <label htmlFor="qp-name" className={labelClasses}>
             Nombre
@@ -149,7 +149,7 @@ export function QuickProductDialog({
           />
           {errors.name && <p className={errorClasses}>{errors.name.message}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="qp-type" className={labelClasses}>
               Tipo
@@ -201,7 +201,7 @@ export function QuickProductDialog({
           </select>
           {errors.category_id && <p className={errorClasses}>{errors.category_id.message}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="qp-career" className={labelClasses}>
               Carrera
@@ -240,7 +240,7 @@ export function QuickProductDialog({
             </select>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="qp-master-code" className={labelClasses}>
               Código maestro (opcional)
@@ -269,13 +269,13 @@ export function QuickProductDialog({
             />
           </div>
         </div>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" size="sm" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}
             Crear producto
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

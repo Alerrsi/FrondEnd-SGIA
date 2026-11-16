@@ -4,7 +4,7 @@ import type { Producto } from '@sgia/types';
 import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
@@ -72,9 +72,9 @@ export function AgregarUnidadesDialog({
       onClose={onClose}
       title="Agregar unidades"
       description={producto.nombre}
-      className="max-w-md"
+      size="sm"
     >
-      <div className="flex flex-col gap-3 text-xs">
+      <div className="flex flex-col gap-4 text-xs">
         <label className="flex flex-col gap-1">
           <span className="font-mono text-zinc-500">Cajón</span>
           <select
@@ -113,10 +113,8 @@ export function AgregarUnidadesDialog({
             onChange={(e) => setSerials(e.target.value)}
           />
         </label>
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-          <Button type="button" variant="outline" size="sm" onClick={onClose}>
-            Cancelar
-          </Button>
+        <DialogFooter>
+          <DialogCloseButton disabled={createUnits.isPending}>Cancelar</DialogCloseButton>
           <Button
             type="button"
             size="sm"
@@ -126,7 +124,7 @@ export function AgregarUnidadesDialog({
             {createUnits.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Agregar
           </Button>
-        </div>
+        </DialogFooter>
       </div>
     </Dialog>
   );

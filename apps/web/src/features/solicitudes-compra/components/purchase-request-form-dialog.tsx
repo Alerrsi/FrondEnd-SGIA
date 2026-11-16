@@ -10,7 +10,7 @@ import type { Producto, PurchaseRequest } from '@sgia/types';
 import { FileText, Loader2, Package, Search, Wallet, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
 import {
   purchaseRequestFormDefaults,
@@ -137,7 +137,7 @@ export function PurchaseRequestFormDialog({
       hasUnsavedChanges={isDirty}
       title={isEdit ? `Editar solicitud ${request?.code ?? ''}` : 'Nueva solicitud de compra'}
       description="Se crea en borrador con código SC-AAAA-NNNN. Después de aprobarla se envía a los proveedores por área."
-      className="max-w-2xl max-h-[90vh] overflow-y-auto"
+      size="lg"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <fieldset className={fieldsetClasses}>
@@ -269,13 +269,13 @@ export function PurchaseRequestFormDialog({
           {errors.notes && <p className={errorClasses}>{errors.notes.message}</p>}
         </fieldset>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+        <DialogFooter>
           <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" size="sm" disabled={isPending}>
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {isEdit ? 'Guardar cambios' : 'Crear solicitud'}
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

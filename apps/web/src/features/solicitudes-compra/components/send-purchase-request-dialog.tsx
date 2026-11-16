@@ -7,7 +7,7 @@ import { Loader2, Send } from 'lucide-react';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { SupplierAreasField } from '@/features/proveedores/components/supplier-areas-field';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
@@ -81,7 +81,6 @@ export function SendPurchaseRequestDialog({ open, onClose, request }: SendPurcha
       hasUnsavedChanges={isDirty}
       title={`Enviar ${request.code} a proveedores`}
       description="Se contacta por correo a todos los proveedores activos de las áreas elegidas. Un proveedor que está en varias áreas recibe un solo correo."
-      className="max-w-lg"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <Controller
@@ -124,13 +123,13 @@ export function SendPurchaseRequestDialog({ open, onClose, request }: SendPurcha
           )}
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending || areas.length === 0}>
+          <Button type="submit" size="sm" disabled={pending || areas.length === 0}>
             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Enviar correos
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );

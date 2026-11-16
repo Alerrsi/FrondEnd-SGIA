@@ -1,7 +1,7 @@
 import { AlertTriangle, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogFooter } from '@/components/ui/dialog';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -27,7 +27,7 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   return (
-    <Dialog open={open} onClose={onCancel} title={title} className="max-w-md">
+    <Dialog open={open} onClose={onCancel} title={title} size="sm">
       <div className="flex flex-col gap-4">
         <div className="flex items-start gap-3">
           {variant === 'danger' && (
@@ -38,10 +38,11 @@ export function ConfirmDialog({
           <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{description}</p>
         </div>
 
-        <div className="flex justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+        <DialogFooter>
           <Button
             type="button"
             variant="ghost"
+            size="sm"
             onClick={onCancel}
             disabled={loading}
           >
@@ -50,13 +51,14 @@ export function ConfirmDialog({
           <Button
             type="button"
             variant={variant === 'danger' ? 'danger' : 'primary'}
+            size="sm"
             onClick={onConfirm}
             disabled={loading}
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {confirmLabel}
           </Button>
-        </div>
+        </DialogFooter>
       </div>
     </Dialog>
   );

@@ -1,5 +1,5 @@
 import { Check, KeyRound, Laptop, Monitor, Moon, Palette, Sparkles, Sun } from 'lucide-react';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useTheme, type ColorPalette, type ThemePreference } from '@/contexts/theme-context';
 import { cn } from '@/lib/cn';
@@ -157,9 +157,9 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
       onClose={onClose}
       title="Ajustes del sistema"
       description="Personaliza las preferencias cromáticas y la apariencia visual de la consola SGIA."
-      className="max-w-3xl w-full max-h-[90vh] flex flex-col"
+      size="xl"
     >
-      <div className="flex flex-col gap-6 py-2 overflow-y-auto pr-1 max-h-[calc(90vh-140px)]">
+      <div className="flex flex-col gap-4">
         {(onChangePassword || onViewSessions) && (
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
@@ -284,7 +284,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
             <SectionLabel>Modo de visualización</SectionLabel>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
             {THEME_OPTIONS.map((item) => {
               const active = theme === item.id;
               const Icon = item.icon;
@@ -308,13 +308,10 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
             })}
           </div>
         </div>
-      </div>
 
-
-      <div className="mt-4 flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
-        <Button variant="outline" size="sm" onClick={onClose}>
-          Cerrar
-        </Button>
+        <DialogFooter>
+          <DialogCloseButton>Cerrar</DialogCloseButton>
+        </DialogFooter>
       </div>
     </Dialog>
   );

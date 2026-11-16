@@ -10,7 +10,7 @@ import { INCIDENT_LOCATION_TYPES, INCIDENT_PROBLEM_LABELS } from "@sgia/types";
 import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogCloseButton } from "@/components/ui/dialog";
+import { Dialog, DialogCloseButton, DialogFooter } from "@/components/ui/dialog";
 import { SignaturePad } from "@/features/profesor/components/signature-pad";
 import {
   incidentFormSchema,
@@ -91,10 +91,10 @@ export function NewIncidentDialog({
       onClose={onClose}
       title="Nuevo informe de novedades"
       description="Reporta fallas, faltantes o problemas ocurridos en un laboratorio."
-      className="max-h-[92vh] max-w-2xl overflow-y-auto"
+      size="lg"
       hasUnsavedChanges={() => isDirty}
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="inc-subject" className={labelClasses}>
@@ -277,13 +277,13 @@ export function NewIncidentDialog({
           )}
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+        <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" size="sm" disabled={pending}>
             {pending && <Loader2 className="h-4 w-4 animate-spin" />}
             Enviar informe
           </Button>
-        </div>
+        </DialogFooter>
       </form>
     </Dialog>
   );
