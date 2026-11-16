@@ -9,24 +9,27 @@ import {
   Edit2,
   Loader2,
   MapPin,
+  Printer,
   RefreshCw,
 } from 'lucide-react';
 import {
   useLocations,
-  useCreateLocation,
-  useUpdateLocation,
   useDeleteLocation,
   useCajones,
-  useCreateCajon,
   useDeleteCajon,
+  useDownloadCajonLabel,
 } from '@sgia/api-client';
 import type { LocationEntity, CajonEntity } from '@sgia/types';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
+import { apiErrorToMessage } from '@/lib/api-error';
 import { PageHeading } from '@/components/ui/page-heading';
-import { FIELD_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { printBlob } from '@/features/equipos/utils/download';
+import { LocationFormDialog } from '@/features/ubicaciones/components/location-form-dialog';
+import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
+import { cajonFullCode } from '@/features/ubicaciones/lib/location-code';
 
 export default function UbicacionesPage() {
   const [search, setSearch] = useState('');
@@ -36,16 +39,10 @@ export default function UbicacionesPage() {
   // Modales
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [editingLocation, setEditingLocation] = useState<LocationEntity | null>(null);
-  const [locNombre, setLocNombre] = useState('');
-  const [locTipo, setLocTipo] = useState('sala');
-  const [locDescripcion, setLocDescripcion] = useState('');
-
   const [cajonModalOpen, setCajonModalOpen] = useState(false);
   // Confirmaciones de eliminación (modal estándar en vez del confirm() del navegador).
   const [locationToDelete, setLocationToDelete] = useState<LocationEntity | null>(null);
   const [cajonToDelete, setCajonToDelete] = useState<CajonEntity | null>(null);
-  const [cajonCodigo, setCajonCodigo] = useState('');
-  const [cajonDescripcion, setCajonDescripcion] = useState('');
 
   // Queries
   const { data: locationsData, isLoading, refetch } = useLocations({
@@ -70,60 +67,18 @@ export default function UbicacionesPage() {
   const cajones: CajonEntity[] = cajonesData?.data ?? [];
 
   // Mutations
-  const createLocationMutation = useCreateLocation();
-  const updateLocationMutation = useUpdateLocation();
   const deleteLocationMutation = useDeleteLocation();
-  const createCajonMutation = useCreateCajon();
   const deleteCajonMutation = useDeleteCajon();
-  const savingLocation = createLocationMutation.isPending || updateLocationMutation.isPending;
-  const savingCajon = createCajonMutation.isPending;
+  const labelMutation = useDownloadCajonLabel();
 
   const handleOpenCreateLocation = () => {
     setEditingLocation(null);
-    setLocNombre('');
-    setLocTipo('sala');
-    setLocDescripcion('');
     setLocationModalOpen(true);
   };
 
   const handleOpenEditLocation = (loc: LocationEntity) => {
     setEditingLocation(loc);
-    setLocNombre(loc.nombre);
-    setLocTipo(loc.tipo);
-    setLocDescripcion(loc.descripcion || '');
     setLocationModalOpen(true);
-  };
-
-  const handleSaveLocation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!locNombre.trim()) {
-      toast.error('El nombre de la ubicación es obligatorio');
-      return;
-    }
-
-    try {
-      if (editingLocation) {
-        await updateLocationMutation.mutateAsync({
-          id: editingLocation.id,
-          payload: {
-            nombre: locNombre.trim(),
-            tipo: locTipo,
-            descripcion: locDescripcion.trim() || undefined,
-          },
-        });
-        toast.success('Ubicación actualizada correctamente');
-      } else {
-        await createLocationMutation.mutateAsync({
-          nombre: locNombre.trim(),
-          tipo: locTipo,
-          descripcion: locDescripcion.trim() || undefined,
-        });
-        toast.success('Ubicación creada correctamente');
-      }
-      setLocationModalOpen(false);
-    } catch {
-      toast.error('Error al guardar la ubicación');
-    }
   };
 
   const handleDeleteLocation = (loc: LocationEntity) => setLocationToDelete(loc);
@@ -145,29 +100,18 @@ export default function UbicacionesPage() {
 
   const handleOpenCreateCajon = () => {
     if (!activeLocation) return;
-    setCajonCodigo('');
-    setCajonDescripcion('');
     setCajonModalOpen(true);
   };
 
-  const handleSaveCajon = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeLocation) return;
-    if (!cajonCodigo.trim()) {
-      toast.error('El código del cajón es obligatorio');
-      return;
-    }
+  /** Código completo del cajón; si la API aún no lo trae, se arma con el de la sala. */
+  const cajonCode = (cajon: CajonEntity) =>
+    cajon.barcode || cajonFullCode(cajon.location?.code ?? activeLocation?.code ?? '', cajon.codigo);
 
+  const handlePrintLabel = async (cajon: CajonEntity) => {
     try {
-      await createCajonMutation.mutateAsync({
-        location_id: activeLocation.id,
-        codigo: cajonCodigo.trim(),
-        descripcion: cajonDescripcion.trim() || undefined,
-      });
-      toast.success('Cajón / gaveta agregada');
-      setCajonModalOpen(false);
-    } catch {
-      toast.error('Error al agregar el cajón');
+      printBlob(await labelMutation.mutateAsync(cajon.id));
+    } catch (error) {
+      toast.error(apiErrorToMessage(error));
     }
   };
 
@@ -289,9 +233,12 @@ export default function UbicacionesPage() {
                         }`}
                       />
                       <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
-                          {loc.nombre}
-                        </span>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {loc.code && <span className={`${CODE_CHIP_CLASS} shrink-0`}>{loc.code}</span>}
+                          <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                            {loc.nombre}
+                          </span>
+                        </div>
                         <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
                           <span className="uppercase px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
                             {loc.tipo}
@@ -376,28 +323,48 @@ export default function UbicacionesPage() {
                     >
                       <div className="flex items-start gap-2 min-w-0">
                         <MapPin className="h-3.5 w-3.5 text-zinc-500 mt-0.5 shrink-0" />
-                        <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                        <div className="flex flex-col items-start gap-1 min-w-0">
+                          <span className="font-bold text-zinc-900 dark:text-zinc-100 truncate max-w-full">
                             {cajon.codigo}
                           </span>
+                          <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
                           {cajon.descripcion && (
-                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
+                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate max-w-full">
                               {cajon.descripcion}
                             </span>
                           )}
                         </div>
                       </div>
 
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteCajon(cajon)}
-                        className="h-6 w-6 text-zinc-400 hover:text-rose-600 shrink-0"
-                        title="Eliminar cajón"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => void handlePrintLabel(cajon)}
+                          disabled={labelMutation.isPending && labelMutation.variables === cajon.id}
+                          className="h-6 w-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                          title="Imprimir etiqueta"
+                          aria-label={`Imprimir etiqueta de ${cajonCode(cajon)}`}
+                        >
+                          {labelMutation.isPending && labelMutation.variables === cajon.id ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <Printer className="h-3 w-3" />
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteCajon(cajon)}
+                          className="h-6 w-6 text-zinc-400 hover:text-rose-600"
+                          title="Eliminar cajón"
+                          aria-label={`Eliminar cajón ${cajon.codigo}`}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -411,107 +378,19 @@ export default function UbicacionesPage() {
         </div>
       </div>
 
-      {/* Modal Crear/Editar Ubicación */}
-      <Dialog
+      <LocationFormDialog
         open={locationModalOpen}
         onClose={() => setLocationModalOpen(false)}
-        title={editingLocation ? 'Editar ubicación' : 'Nueva sala / ubicación'}
-        description="Define los datos del recinto o sala de pañol."
-      >
-        <form onSubmit={handleSaveLocation} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1">
-            <label className={FIELD_LABEL_CLASS}>
-              Nombre de la sala / recinto *
-            </label>
-            <input
-              value={locNombre}
-              onChange={(e) => setLocNombre(e.target.value)}
-              placeholder="Ej. pañol central, lab 201, taller mecánica…"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
-              required
-            />
-          </div>
+        location={editingLocation}
+      />
 
-          <div className="flex flex-col gap-1">
-            <label className={FIELD_LABEL_CLASS}>
-              Tipo de espacio
-            </label>
-            <select
-              value={locTipo}
-              onChange={(e) => setLocTipo(e.target.value)}
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 text-xs font-mono text-zinc-700 dark:text-zinc-300 focus:outline-none"
-            >
-              <option value="sala">Sala de clases</option>
-              <option value="panol">Pañol TI</option>
-              <option value="taller">Taller práctico</option>
-              <option value="bodega">Bodega de almacenamiento</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className={FIELD_LABEL_CLASS}>
-              Descripción / referencia
-            </label>
-            <input
-              value={locDescripcion}
-              onChange={(e) => setLocDescripcion(e.target.value)}
-              placeholder="Ej. edificio B, segundo piso, sector redes"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
-            />
-          </div>
-
-          <DialogFooter>
-            <DialogCloseButton disabled={savingLocation}>Cancelar</DialogCloseButton>
-            <Button type="submit" size="sm" disabled={savingLocation}>
-              {savingLocation && <Loader2 className="h-4 w-4 animate-spin" />}
-              Guardar ubicación
-            </Button>
-          </DialogFooter>
-        </form>
-      </Dialog>
-
-      {/* Modal Crear Cajón */}
-      <Dialog
-        open={cajonModalOpen}
-        onClose={() => setCajonModalOpen(false)}
-        title="Nuevo cajón / gaveta"
-        description={`Añade un compartimiento a ${activeLocation?.nombre}.`}
-      >
-        <form onSubmit={handleSaveCajon} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1">
-            <label className={FIELD_LABEL_CLASS}>
-              Código / identificador del cajón *
-            </label>
-            <input
-              value={cajonCodigo}
-              onChange={(e) => setCajonCodigo(e.target.value)}
-              placeholder="Ej. estante 1, gaveta B-4, rack principal…"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className={FIELD_LABEL_CLASS}>
-              Descripción (opcional)
-            </label>
-            <input
-              value={cajonDescripcion}
-              onChange={(e) => setCajonDescripcion(e.target.value)}
-              placeholder="Ej. cables HDMI y adaptadores VGA"
-              className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
-            />
-          </div>
-
-          <DialogFooter>
-            <DialogCloseButton disabled={savingCajon}>Cancelar</DialogCloseButton>
-            <Button type="submit" size="sm" disabled={savingCajon}>
-              {savingCajon && <Loader2 className="h-4 w-4 animate-spin" />}
-              Guardar cajón
-            </Button>
-          </DialogFooter>
-        </form>
-      </Dialog>
+      {activeLocation && (
+        <CajonFormDialog
+          open={cajonModalOpen}
+          onClose={() => setCajonModalOpen(false)}
+          location={activeLocation}
+        />
+      )}
 
       <ConfirmDialog
         open={locationToDelete !== null}

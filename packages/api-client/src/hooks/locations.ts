@@ -15,7 +15,9 @@ import {
   createLocation,
   deleteCajon,
   deleteLocation,
+  downloadCajonLabel,
   fetchCajon,
+  fetchCajonByCode,
   fetchCajones,
   fetchLocation,
   fetchLocations,
@@ -33,6 +35,7 @@ export const cajonKeys = {
   all: ['cajones'] as const,
   list: (params?: CajonQueryParams) => ['cajones', 'list', params] as const,
   detail: (id: number) => ['cajones', 'detail', id] as const,
+  byCode: (code: string) => ['cajones', 'by-code', code.toUpperCase()] as const,
 };
 
 export function useLocations(params?: LocationQueryParams) {
@@ -86,6 +89,23 @@ export function useCajon(id: number | undefined) {
     queryKey: cajonKeys.detail(id!),
     queryFn: () => fetchCajon(id!),
     enabled: id !== undefined,
+  });
+}
+
+/** Cajón por su código completo (`L206-RACK-R1`); solo consulta cuando hay código. */
+export function useCajonByCode(code: string | undefined) {
+  return useQuery<CajonEntity>({
+    queryKey: cajonKeys.byCode(code ?? ''),
+    queryFn: () => fetchCajonByCode(code!),
+    enabled: !!code,
+    retry: false,
+  });
+}
+
+/** Descarga el PDF de la etiqueta del cajón (para imprimirlo con `printBlob`). */
+export function useDownloadCajonLabel() {
+  return useMutation<Blob, Error, number>({
+    mutationFn: downloadCajonLabel,
   });
 }
 

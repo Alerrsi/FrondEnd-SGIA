@@ -11,6 +11,8 @@ export type LocationTipo = "sala" | "panol" | "taller" | "bodega";
 
 export interface LocationEntity {
   id: number;
+  /** Código corto de la sala (`L206`, `PCENTRAL`): solo A-Z0-9, máx. 10. No se puede cambiar una vez creado. */
+  code: string;
   nombre: string;
   tipo: LocationTipo | string;
   sala?: string;
@@ -30,9 +32,11 @@ export interface LocationEntity {
 export interface CajonEntity {
   id: number;
   codigo: string;
+  /** Código completo del cajón para escaneo y etiqueta: `{código sala}-{codigo normalizado}` (`L206-RACK-R1`). */
   barcode?: string | null;
   descripcion?: string | null;
   location_id: number;
+  /** Sala del cajón; trae `code` cuando el backend la carga. */
   location?: LocationEntity;
   products_count?: number;
   created_by?: number | null;
@@ -62,6 +66,8 @@ export interface CreateLocationPayload {
   building?: string;
   floor?: string;
   nombre: string;
+  /** Código de sala (solo al crear). Si no viene, el backend lo sugiere desde el nombre. */
+  code?: string;
   tipo?: LocationTipo | string;
   descripcion?: string;
 }

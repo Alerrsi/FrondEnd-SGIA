@@ -9,12 +9,13 @@ import type {
   UpdateCajonPayload,
   UpdateLocationPayload,
 } from '@sgia/types';
-import { del, get, patch, post } from '../http';
+import { del, get, getBlob, patch, post } from '../http';
 
 function normalizeLocation(raw: any): LocationEntity {
   if (!raw) return raw;
   return {
     id: raw.id,
+    code: raw.code ?? '',
     nombre: raw.nombre ?? raw.sala ?? '',
     tipo: raw.tipo ?? 'sala',
     sala: raw.sala ?? raw.nombre ?? '',
@@ -37,6 +38,7 @@ function normalizeCajon(raw: any): CajonEntity {
   return {
     id: raw.id,
     codigo: raw.codigo ?? '',
+    barcode: raw.barcode ?? null,
     descripcion: raw.descripcion ?? raw.description ?? null,
     location_id: raw.location_id ?? raw.location?.id ?? 0,
     location: raw.location ? normalizeLocation(raw.location) : undefined,
@@ -126,6 +128,17 @@ export async function fetchCajones(
 export async function fetchCajon(id: number): Promise<CajonEntity> {
   const response = await get<any>(`/cajones/${id}`);
   return normalizeCajon(response?.data ?? response);
+}
+
+/** Búsqueda exacta (sin distinguir mayúsculas) de un cajón por su código completo, para el escaneo. `404` si no existe. */
+export async function fetchCajonByCode(code: string): Promise<CajonEntity> {
+  const response = await get<any>(`/cajones/by-code/${encodeURIComponent(code)}`);
+  return normalizeCajon(response?.data ?? response);
+}
+
+/** PDF de la etiqueta 50x30 mm del cajón (código de barras + código). */
+export async function downloadCajonLabel(id: number): Promise<Blob> {
+  return getBlob(`/cajones/${id}/label`);
 }
 
 export async function createCajon(payload: CreateCajonPayload): Promise<CajonEntity> {
