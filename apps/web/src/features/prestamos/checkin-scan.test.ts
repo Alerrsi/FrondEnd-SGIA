@@ -85,8 +85,13 @@ describe('cajonProblem', () => {
     );
   });
 
-  it('rechaza un cajón de otro pañol', () => {
+  it('rechaza un cajón de otro pañol para una unidad', () => {
     expect(cajonProblem(byCode('EQP-II-000031'), rack, 1)).toBe('El cajón PREDES-RACK-R1 no pertenece al pañol del préstamo.');
+  });
+
+  it('acepta el cajón registrado de un insumo aunque esté en otro pañol', () => {
+    const cable = { ...byCode('INS-IC-000015'), registeredCajonId: 9, registeredCajonCode: 'PREDES-RACK-R1' } as ReturnTarget;
+    expect(cajonProblem(cable, rack, 1)).toBeNull();
   });
 });
 

@@ -21,7 +21,7 @@ import {
   useProducts,
   useUsers,
 } from '@sgia/api-client';
-import { LoanStatus, type Prestamo, type Producto } from '@sgia/types';
+import type { Prestamo, Producto } from '@sgia/types';
 
 import { Badge, LoanStatusBadge } from '@/components/ui/badge';
 import { StudentLookup } from '@/features/estudiantes/components/student-lookup';
@@ -81,8 +81,11 @@ export default function MostradorPrestamosPage() {
   const [selectedLoan, setSelectedLoan] = useState<Prestamo | null>(null);
 
   // Préstamos activos para devolución
+  // Préstamos entregados y aún sin devolver. La API no conoce el estado `activo` (respondía 422 y
+  // la lista quedaba vacía): son los `procesado` con `returned_at` nulo.
   const { data: activeLoansData, refetch: refetchActiveLoans } = useLoans({
-    estado: LoanStatus.ACTIVO,
+    estado: 'procesado',
+    devuelto: false,
     per_page: 50,
   });
   const activeLoans = activeLoansData?.data ?? [];

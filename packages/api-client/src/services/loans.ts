@@ -150,6 +150,7 @@ export async function fetchLoans(params?: PrestamoParams): Promise<PaginatedResp
   const query = new URLSearchParams();
   const status = params?.status ?? params?.estado;
   if (status) query.set('status', status);
+  if (params?.devuelto !== undefined) query.set('devuelto', params.devuelto ? '1' : '0');
 
   const tipo = params?.tipo ?? params?.type ?? params?.origen;
   if (tipo) query.set('tipo', tipo);

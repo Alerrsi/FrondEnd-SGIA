@@ -95,9 +95,13 @@ export function matchProductScan(rawCode: string, targets: ReturnTarget[], entri
   return { ok: true, target };
 }
 
-/** El cajón escaneado no sirve para este destino: texto del aviso, o `null` si es válido. */
+/**
+ * El cajón escaneado no sirve para este destino: texto del aviso, o `null` si es válido.
+ * La regla del pañol vale solo para unidades: los insumos no se controlan por pañol y su cajón
+ * registrado puede estar en otro pañol que el del préstamo.
+ */
 export function cajonProblem(target: ReturnTarget, cajon: ScannedCajon, loanStoreroomId: number | null | undefined): string | null {
-  if (loanStoreroomId && cajon.storeroomId && cajon.storeroomId !== loanStoreroomId) {
+  if (target.kind === 'unit' && loanStoreroomId && cajon.storeroomId && cajon.storeroomId !== loanStoreroomId) {
     return `El cajón ${cajon.code} no pertenece al pañol del préstamo.`;
   }
   if (target.kind === 'supply' && target.registeredCajonId !== null && target.registeredCajonId !== cajon.id) {

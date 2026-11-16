@@ -68,12 +68,14 @@ const mockCheckoutMutateAsync = vi.fn();
 const mockCheckinMutateAsync = vi.fn();
 const mockRefetchLoans = vi.fn();
 
+const mockUseLoansParams = vi.fn();
+
 vi.mock('@sgia/api-client', () => ({
   useProducts: () => ({
     data: { data: mockProducts },
   }),
-  useLoans: () => ({
-    data: { data: mockActiveLoans },
+  useLoans: (params: unknown) => ({
+    data: { data: (mockUseLoansParams(params), mockActiveLoans) },
     isLoading: false,
     refetch: mockRefetchLoans,
   }),
@@ -180,6 +182,8 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
 
     await user.click(screen.getByText(/Devolución y Recepción/i));
     expect(screen.getByText('Buscar préstamo activo')).toBeDefined();
+    // Préstamos entregados sin devolver (la API no acepta el estado `activo`).
+    expect(mockUseLoansParams).toHaveBeenCalledWith({ estado: 'procesado', devuelto: false, per_page: 50 });
 
     await user.click(screen.getByText('Prof. Mario Valenzuela'));
     expect(screen.getByText('Ítems por devolver (0 de 1 registrados)')).toBeDefined();
