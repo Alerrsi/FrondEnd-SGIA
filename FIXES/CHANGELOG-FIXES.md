@@ -745,3 +745,20 @@
   - Ambos en el alta/edición (`producto-form-dialog.tsx`, sección "Maestro Oracle (opcional)") y en el alta rápida desde factura (`quick-product-dialog.tsx`); al editar, vaciar el campo los borra (`null`). La ficha (`producto-detail-dialog.tsx`) los muestra si tienen valor. La búsqueda de productos también encuentra por código maestro.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde (428 tests); backend `php artisan test` (601), `pint --dirty` y `composer analyse` en verde.
 
+
+---
+
+## FIX: Modales estandarizados y sin cortes
+
+- **Fecha:** 2026-11-15
+- **Módulo:** todos los modales y paneles laterales de `apps/web` (`components/ui/dialog.tsx`, `confirm-dialog.tsx`, `sheet.tsx` y 31 modales)
+- **Problema:** cada modal definía su propio ancho, alto y pie; la mayoría no limitaba el alto, así que un formulario más alto que la pantalla quedaba cortado arriba y abajo sin poder alcanzar los botones. Dos confirmaciones usaban el `confirm()` nativo del navegador y la revisión de factura se cortaba por la derecha en móvil.
+- **Solución:**
+  1. `Dialog` limitado al alto de la pantalla, con cabecera fija, cuerpo con scroll y tamaños con nombre (`sm`, `md`, `lg`, `xl`, `2xl`).
+  2. `DialogFooter`: pie de acciones único, pegado abajo aunque el cuerpo haga scroll.
+  3. Los 31 modales (más `ConfirmDialog`) usan `size`, raíz `flex flex-col gap-4`, el mismo orden y tamaño de botones y grillas de una columna en móvil.
+  4. Eliminar ubicación / cajón con `ConfirmDialog`. `SheetContent` hace scroll por defecto.
+  5. Estándar documentado en `.claude/skills/sgia-design/SKILL.md` (§D2).
+  6. Tablas de Estudiantes, Pañoles, Auditoría, Inventario y Presupuestos dentro de `relative overflow-x-auto`: el `sr-only` de sus cabeceras (`position: absolute`) escapaba del contenedor y ensanchaba la página a 759-834px en un celular de 390px, lo que dejaba los modales fuera de la pantalla.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (78 archivos, 428 tests) en verde. Auditoría con Chromium headless contra la API local: 50 escenarios (40 modales y 10 paneles laterales) abiertos con datos reales en 1366×768, 1280×600, 390×844 y 1920×1080 = 200 mediciones, 0 problemas. En cada una se midió que el modal cabe en la pantalla, que el pie queda visible y pegado abajo (sin contenido asomando) y que ningún elemento se sale por los lados ni queda cortado sin scroll.
+- **Pendiente detectado (fuera de este cambio):** la página Equipos llama a `GET /api/equipment`, que no existe en el backend (404), así que siempre muestra 0 equipos. Sus modales se verificaron simulando esa respuesta.

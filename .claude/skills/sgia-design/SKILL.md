@@ -111,6 +111,15 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
 - **Drawers laterales (Radix Sheet):** Utilizados para operaciones frecuentes de mesón (Ficha técnica del equipo, Asignación rápida a alumno, Historial de movimientos). Permiten no perder el contexto de la tabla inferior.
 - **Modales centrados (Radix Dialog):** Reservados para confirmaciones destructivas (Dar de baja, Eliminar registro).
 
+### D2. Estándar de modales (obligatorio, `components/ui/dialog.tsx`)
+Todo modal usa `Dialog` (o `ConfirmDialog` para confirmar); nunca `window.confirm()`/`alert()` ni un overlay propio. El modal ya se limita al alto de la pantalla (`max-h-[calc(100dvh-2rem)]`): cabecera fija, cuerpo con scroll y pie fijo, así nunca se corta.
+- **Ancho:** prop `size`, nunca `max-w-*` en `className`. `sm` (448px) confirmaciones y formularios de 1 a 4 campos · `md` (512px, por defecto) formularios de una columna · `lg` (672px) formularios de dos columnas o con tablas cortas · `xl` (768px) fichas y revisiones · `2xl` (1024px) gráficos ampliados.
+- **Alto y scroll:** no poner `max-h-*`, `overflow-*` ni `flex` en el `className` del `Dialog`, ni envolver el contenido en un scroll propio. Solo listas acotadas internas (p. ej. `max-h-40 overflow-y-auto`).
+- **Raíz del contenido:** un único `<form>` o `<div>` con `flex flex-col gap-4`, sin padding propio.
+- **Pie:** siempre `<DialogFooter>` como último hijo de la raíz (dentro del `<form>`). Cancelar = `DialogCloseButton` (ghost, sm) primero; acción principal = `Button size="sm"` al final, con `Loader2` mientras está pendiente; destructiva `variant="danger"`; secundarias `variant="outline"`. Contenido a la izquierda: `DialogFooter className="sm:justify-between"`. Un modal informativo cierra con `DialogCloseButton` "Cerrar".
+- **Móvil:** grillas `grid-cols-1 sm:grid-cols-2` (nunca `grid-cols-2` fijo); tablas anchas dentro de `overflow-x-auto`.
+- **Paneles laterales (`SheetContent`):** hacen scroll por defecto; no agregar `overflow-y-auto`. Una grilla dentro del panel declara `grid-cols-1` para que el contenido ancho (imágenes) no la ensanche en móvil.
+
 ### E. Integración de Notificaciones con Sileo
 - Implementar avisos con Sileo en todos los eventos críticos del sistema:
   - Escaneo con lector de código de barras: `toast.success("Código Code128 detectado: SGIA-36824904")`.
