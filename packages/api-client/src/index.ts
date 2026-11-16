@@ -336,6 +336,8 @@ export { useUpdateProductCondition } from './hooks/products';
 export { updateProductCondition } from './services/products';
 export * from './services/categories';
 export * from './hooks/categories';
+export * from './services/oracle-categories';
+export * from './hooks/oracle-categories';
 
 // Estudiantes (REQ-20)
 export {

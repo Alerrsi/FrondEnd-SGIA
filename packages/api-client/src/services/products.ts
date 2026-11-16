@@ -154,6 +154,12 @@ export function normalizeProducto(raw: any): Producto {
     photo_url: raw.photo_url ?? raw.foto ?? null,
     type: raw.type,
     category_id: raw.category_id ?? null,
+    master_code: typeof raw.master_code === "string" ? raw.master_code : null,
+    oracle_category_id: raw.oracle_category_id ?? null,
+    oracle_category:
+      raw.oracle_category && typeof raw.oracle_category === "object"
+        ? { id: raw.oracle_category.id, name: raw.oracle_category.name }
+        : null,
     career_id: raw.career_id ?? null,
     maintenance_priority: raw.maintenance_priority ?? null,
     requires_calibration: raw.requires_calibration ?? false,

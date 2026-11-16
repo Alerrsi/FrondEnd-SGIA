@@ -9,6 +9,8 @@ import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 import { AREAS_INACAP } from '@/features/inventario/components/inventario-table';
+import { OracleCategorySelect } from '@/features/inventario/components/oracle-category-select';
+import { oracleMasterFields } from '@/features/inventario/lib/producto-form-schema';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
@@ -33,6 +35,7 @@ const schema = z.object({
     .positive('Selecciona la categoría.'),
   career_id: z.number({ error: 'Selecciona la carrera.' }).int().positive('Selecciona la carrera.'),
   area: z.string().min(1),
+  ...oracleMasterFields,
   stock_minimo: z
     .number({ error: 'Indica el stock mínimo.' })
     .int()
@@ -71,6 +74,8 @@ export function QuickProductDialog({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<Values>({
     resolver: zodResolver(schema),
@@ -81,6 +86,8 @@ export function QuickProductDialog({
       career_id: Number.NaN,
       area: AREAS_INACAP[0],
       stock_minimo: 5,
+      master_code: '',
+      oracle_category_id: null,
     },
   });
 
@@ -93,6 +100,8 @@ export function QuickProductDialog({
         career_id: Number.NaN,
         area: AREAS_INACAP[0],
         stock_minimo: 5,
+        master_code: '',
+        oracle_category_id: null,
       });
     }
   }, [open, initialName, reset]);
@@ -102,6 +111,8 @@ export function QuickProductDialog({
       const created = await createProducto.mutateAsync({
         ...values,
         name: values.name.trim(),
+        master_code: values.master_code.trim().toUpperCase() || undefined,
+        oracle_category_id: values.oracle_category_id ?? undefined,
         quantity: 0,
       });
       toast.success(
@@ -227,6 +238,35 @@ export function QuickProductDialog({
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="qp-master-code" className={labelClasses}>
+              Código maestro (opcional)
+            </label>
+            <input
+              id="qp-master-code"
+              maxLength={30}
+              placeholder="Ej. OF33075"
+              {...register('master_code')}
+              aria-invalid={Boolean(errors.master_code) || undefined}
+              disabled={pending}
+              className={`${inputClasses} mt-1.5 uppercase`}
+            />
+            {errors.master_code && <p className={errorClasses}>{errors.master_code.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="qp-oracle-category" className={labelClasses}>
+              Descripción de categoría
+            </label>
+            <OracleCategorySelect
+              id="qp-oracle-category"
+              value={watch('oracle_category_id')}
+              onChange={(id) => setValue('oracle_category_id', id)}
+              disabled={pending}
+              className="mt-1.5"
+            />
           </div>
         </div>
         <div className="flex justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">

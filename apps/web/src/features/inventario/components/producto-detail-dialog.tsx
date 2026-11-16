@@ -151,6 +151,24 @@ export function ProductoDetailDialog({
           </div>
         </div>
 
+        {/* Maestro de artículos de Oracle (opcional) */}
+        {(producto.master_code || producto.oracle_category) && (
+          <dl className="grid grid-cols-1 gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 text-xs shadow-xs sm:grid-cols-2">
+            <div>
+              <dt className="text-zinc-500 dark:text-zinc-400">Código maestro (Oracle)</dt>
+              <dd className="mt-0.5 font-mono font-semibold text-zinc-900 dark:text-zinc-100">
+                {producto.master_code || '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-zinc-500 dark:text-zinc-400">Descripción de categoría</dt>
+              <dd className="mt-0.5 font-semibold text-zinc-900 dark:text-zinc-100">
+                {producto.oracle_category?.name || '—'}
+              </dd>
+            </div>
+          </dl>
+        )}
+
         {/* Módulo de Identificación Óptica Code128 */}
         <div className="flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-4">
           <div className="mb-2.5 flex items-center justify-between w-full">

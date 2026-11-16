@@ -9,6 +9,8 @@ const base: ProductoFormValues = {
   description: '',
   category_id: 1,
   career_id: 2,
+  master_code: '',
+  oracle_category_id: null,
   area: 'Informática',
   quantity: 10,
   stock_minimo: 5,
@@ -70,5 +72,15 @@ describe('productoFormSchema', () => {
 
   it('en edición un insumo no exige carrera', () => {
     expect(issuePaths({ ...base, mode: 'edit', career_id: null })).toEqual([]);
+  });
+
+  it('el código maestro y la categoría de Oracle son opcionales', () => {
+    expect(issuePaths({ ...base, master_code: '', oracle_category_id: null })).toEqual([]);
+    expect(issuePaths({ ...base, master_code: 'OF33075', oracle_category_id: 3 })).toEqual([]);
+  });
+
+  it('valida el formato del código maestro', () => {
+    expect(issuePaths({ ...base, master_code: 'OF 33075' })).toContain('master_code');
+    expect(issuePaths({ ...base, master_code: 'A'.repeat(31) })).toContain('master_code');
   });
 });

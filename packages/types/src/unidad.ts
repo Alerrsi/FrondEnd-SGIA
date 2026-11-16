@@ -99,6 +99,16 @@ export interface Category {
   description?: string | null;
 }
 
+/** Descripción de categoría del maestro de artículos de Oracle (`Descr Categoria`). */
+export interface OracleCategory {
+  id: number;
+  name: string;
+}
+
+export interface CreateOracleCategoryPayload {
+  name: string;
+}
+
 export interface CategoryQueryParams {
   search?: string;
   per_page?: number;

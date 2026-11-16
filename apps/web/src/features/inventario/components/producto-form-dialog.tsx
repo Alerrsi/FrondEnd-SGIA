@@ -30,6 +30,7 @@ import {
   type ProductoFormValues,
 } from '../lib/producto-form-schema';
 import { AREAS_INACAP } from './inventario-table';
+import { OracleCategorySelect } from './oracle-category-select';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { FORM_CONTROL_BASE_CLASS, FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
@@ -42,6 +43,8 @@ const EMPTY_VALUES: FormValues = {
   description: '',
   category_id: Number.NaN,
   career_id: null,
+  master_code: '',
+  oracle_category_id: null,
   area: 'Informática',
   quantity: 1,
   stock_minimo: 5,
@@ -154,6 +157,8 @@ export function ProductoFormDialog({
           type: producto.type ?? 'insumo',
           category_id: producto.category_id ?? Number.NaN,
           career_id: producto.career_id ?? null,
+          master_code: producto.master_code ?? '',
+          oracle_category_id: producto.oracle_category_id ?? null,
           auto_barcode: false,
           name: producto.nombre || producto.name || '',
           description: producto.description || '',
@@ -212,6 +217,9 @@ export function ProductoFormDialog({
             type: values.type,
             category_id: values.category_id,
             career_id: values.career_id ?? undefined,
+            // Opcionales: `null` los borra en el backend.
+            master_code: values.master_code.trim().toUpperCase() || null,
+            oracle_category_id: values.oracle_category_id,
             name: values.name.trim(),
             description: values.description?.trim() || undefined,
             area: values.area || undefined,
@@ -232,6 +240,8 @@ export function ProductoFormDialog({
             type: values.type,
             category_id: values.category_id,
             career_id: values.career_id ?? undefined,
+            master_code: values.master_code.trim().toUpperCase() || undefined,
+            oracle_category_id: values.oracle_category_id ?? undefined,
             name: values.name.trim(),
             description: values.description?.trim() || undefined,
             area: values.area || undefined,
@@ -403,6 +413,41 @@ export function ProductoFormDialog({
                 <Barcode className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               </div>
               <FieldError message={errors.barcode?.message} />
+            </div>
+          </div>
+        </fieldset>
+
+        {/* Fieldset: Maestro de artículos de Oracle (opcional) */}
+        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
+          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+            Maestro Oracle (opcional)
+          </legend>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="prod-master-code">Código maestro</Label>
+              <input
+                id="prod-master-code"
+                type="text"
+                maxLength={30}
+                disabled={isPending}
+                placeholder="Ej. OF33075"
+                aria-invalid={Boolean(errors.master_code) || undefined}
+                className={cn(inputClasses, 'uppercase')}
+                {...register('master_code')}
+              />
+              <FieldError message={errors.master_code?.message} />
+            </div>
+
+            <div>
+              <Label htmlFor="prod-oracle-category">Descripción de categoría</Label>
+              <OracleCategorySelect
+                id="prod-oracle-category"
+                value={watch('oracle_category_id')}
+                onChange={(id) => setValue('oracle_category_id', id, { shouldDirty: true })}
+                disabled={isPending}
+                className="font-sans"
+              />
             </div>
           </div>
         </fieldset>

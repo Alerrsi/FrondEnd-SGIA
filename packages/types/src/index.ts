@@ -183,6 +183,8 @@ export type {
   IncidentRequestType,
   Category,
   CategoryQueryParams,
+  OracleCategory,
+  CreateOracleCategoryPayload,
   Career,
   CareerQueryParams,
   CreateCareerPayload,

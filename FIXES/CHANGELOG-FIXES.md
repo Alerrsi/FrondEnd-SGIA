@@ -732,3 +732,16 @@
 - **Módulo:** Dashboards (`apps/web`, `packages/api-client`, `packages/types`) + backend (`dashboard_templates`)
 - **Cambio:** el usuario crea plantillas con nombre (`/api/me/dashboard-templates`) y agrega gráficos a cada una (`dashboard_template_id`); el panel principal sigue existiendo. Límite por plantilla y por panel principal: 9 (antes 5 por usuario). Barra de pestañas en `dashboard-template-bar.tsx`, diálogo de nombre en `dashboard-template-form-dialog.tsx`; `useMyPanel(templateId)` acota gráficos y reordenamiento a la plantilla. También: botón de ojo para ampliar cada gráfico en un pop-up (`chart-expand-button.tsx`).
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde (422 tests); backend `php artisan test` en verde.
+
+---
+
+## FIX: Código maestro y descripción de categoría de Oracle en productos
+
+- **Fecha:** 2026-11-15
+- **Módulo:** Inventario e ingresos de factura (`apps/web`, `packages/api-client`, `packages/types`) + backend (`oracle_categories`, `products.master_code`, `products.oracle_category_id`)
+- **Cambio:** los productos tienen dos campos opcionales del maestro de artículos de Oracle (`Maestro Alumnos.xlsx`):
+  1. **Código maestro** (`master_code`, columna `Art`, p. ej. `OF33075`): único, máx. 30, se guarda en mayúsculas.
+  2. **Descripción de categoría** (`oracle_category_id`): catálogo con las 62 del Excel. El selector `OracleCategorySelect` permite elegir una, dejarla vacía o "+ Agregar nueva…" (`POST /api/oracle-categories`), que queda seleccionada.
+  - Ambos en el alta/edición (`producto-form-dialog.tsx`, sección "Maestro Oracle (opcional)") y en el alta rápida desde factura (`quick-product-dialog.tsx`); al editar, vaciar el campo los borra (`null`). La ficha (`producto-detail-dialog.tsx`) los muestra si tienen valor. La búsqueda de productos también encuentra por código maestro.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde (428 tests); backend `php artisan test` (601), `pint --dirty` y `composer analyse` en verde.
+

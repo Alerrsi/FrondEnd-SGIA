@@ -16,6 +16,19 @@ export const toNumber = (v: unknown) =>
 export const toNullableNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? null : Number(v);
 
+/** Código `Art` del maestro de Oracle (p. ej. OF33075): mismo formato que valida el backend. */
+export const MASTER_CODE_REGEX = /^[A-Za-z0-9._-]*$/;
+
+/** Campos opcionales del maestro de artículos de Oracle, compartidos por el alta completa y la rápida. */
+export const oracleMasterFields = {
+  master_code: z
+    .string()
+    .trim()
+    .max(30, 'El código maestro no puede superar los 30 caracteres.')
+    .regex(MASTER_CODE_REGEX, 'Solo letras, números, punto, guion y guion bajo (sin espacios).'),
+  oracle_category_id: z.number().int().positive().nullable(),
+};
+
 /**
  * Validación de UX del alta/edición de producto (§3 de ENDPOINTS.md). El backend sigue siendo
  * la fuente de verdad: si una regla no se puede ver aquí (p. ej. carrera sin `code`), responde 422.
@@ -31,6 +44,7 @@ export const productoFormSchema = z
       .int()
       .positive('Selecciona la categoría.'),
     career_id: z.number().int().positive().nullable(),
+    ...oracleMasterFields,
     area: z.string().optional(),
     quantity: z
       .number({ error: 'Indica la cantidad.' })

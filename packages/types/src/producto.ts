@@ -121,6 +121,10 @@ export interface Producto {
   photo_url?: string | null;
   type?: "equipo" | "insumo" | "maqueta";
   category_id?: number | null;
+  /** Código `Art` del maestro de artículos de Oracle (p. ej. OF33075). Opcional y único. */
+  master_code?: string | null;
+  oracle_category_id?: number | null;
+  oracle_category?: { id: number; name: string } | null;
   career_id?: number | null;
   maintenance_priority?: "A" | "B" | "C" | null;
   requires_calibration?: boolean;
@@ -139,6 +143,8 @@ export interface Producto {
 export interface CreateProductoPayload {
   type?: "equipo" | "insumo" | "maqueta";
   category_id?: number;
+  master_code?: string | null;
+  oracle_category_id?: number | null;
   career_id?: number;
   maintenance_priority?: "A" | "B" | "C";
   requires_calibration?: boolean;
@@ -179,6 +185,8 @@ export interface CreateProductoPayload {
 export interface UpdateProductoPayload {
   type?: "equipo" | "insumo" | "maqueta";
   category_id?: number;
+  master_code?: string | null;
+  oracle_category_id?: number | null;
   career_id?: number;
   maintenance_priority?: "A" | "B" | "C";
   requires_calibration?: boolean;
