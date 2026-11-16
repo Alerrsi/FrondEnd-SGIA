@@ -160,7 +160,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
   return (
     <>
       <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+        <SheetContent className="w-full sm:max-w-lg">
           <SheetHeader>
             <SheetTitle className="font-mono">
               Orden {code}

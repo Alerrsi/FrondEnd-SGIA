@@ -640,7 +640,7 @@ export default function HistorialPrestamosPage() {
 
       {/* Sheet / Drawer Lateral de Detalle y Bitácora */}
       <Sheet open={selectedLoan !== null} onOpenChange={(open) => !open && setSelectedLoan(null)}>
-        <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto">
+        <SheetContent side="right" className="w-full sm:max-w-lg">
           {selectedLoan && (
             <div className="flex flex-col gap-5 py-2">
               <SheetHeader className="text-left border-b border-zinc-200 dark:border-zinc-800 pb-3">

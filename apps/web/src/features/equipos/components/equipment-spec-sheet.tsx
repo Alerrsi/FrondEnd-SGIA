@@ -113,7 +113,7 @@ export function EquipmentSpecSheet({
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
       <SheetContent
         side="right"
-        className="overflow-y-auto max-w-xl w-full flex flex-col gap-6"
+        className="max-w-xl w-full flex flex-col gap-6"
       >
         {/* Cabecera Técnica del Drawer */}
         <SheetHeader className="border-b border-zinc-200 dark:border-zinc-800 pb-4">

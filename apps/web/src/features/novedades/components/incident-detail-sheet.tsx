@@ -77,7 +77,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
 
   return (
     <Sheet open={reportId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-lg">
         {isLoading || !report ? (
           <div className={`flex items-center justify-center py-16 ${STATE_TEXT_CLASS}`}>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -32,7 +32,7 @@ interface BudgetDetailSheetProps {
 export function BudgetDetailSheet({ budget, onClose }: BudgetDetailSheetProps) {
   return (
     <Sheet open={budget !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-2xl">
         {budget && (
           <>
             <SheetHeader>

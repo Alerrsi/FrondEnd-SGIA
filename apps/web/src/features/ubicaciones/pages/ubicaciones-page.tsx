@@ -22,6 +22,7 @@ import {
 } from '@sgia/api-client';
 import type { LocationEntity, CajonEntity } from '@sgia/types';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
@@ -40,6 +41,9 @@ export default function UbicacionesPage() {
   const [locDescripcion, setLocDescripcion] = useState('');
 
   const [cajonModalOpen, setCajonModalOpen] = useState(false);
+  // Confirmaciones de eliminación (modal estándar en vez del confirm() del navegador).
+  const [locationToDelete, setLocationToDelete] = useState<LocationEntity | null>(null);
+  const [cajonToDelete, setCajonToDelete] = useState<CajonEntity | null>(null);
   const [cajonCodigo, setCajonCodigo] = useState('');
   const [cajonDescripcion, setCajonDescripcion] = useState('');
 
@@ -122,14 +126,18 @@ export default function UbicacionesPage() {
     }
   };
 
-  const handleDeleteLocation = async (loc: LocationEntity) => {
-    if (!confirm(`¿Eliminar la ubicación "${loc.nombre}" y sus cajones asociados?`)) return;
+  const handleDeleteLocation = (loc: LocationEntity) => setLocationToDelete(loc);
+
+  const confirmDeleteLocation = async () => {
+    const loc = locationToDelete;
+    if (!loc) return;
     try {
       await deleteLocationMutation.mutateAsync(loc.id);
       if (selectedLocation?.id === loc.id) {
         setSelectedLocation(null);
       }
       toast.success('Ubicación eliminada');
+      setLocationToDelete(null);
     } catch {
       toast.error('Error al eliminar la ubicación');
     }
@@ -163,11 +171,15 @@ export default function UbicacionesPage() {
     }
   };
 
-  const handleDeleteCajon = async (cajon: CajonEntity) => {
-    if (!confirm(`¿Eliminar el compartimiento "${cajon.codigo}"?`)) return;
+  const handleDeleteCajon = (cajon: CajonEntity) => setCajonToDelete(cajon);
+
+  const confirmDeleteCajon = async () => {
+    const cajon = cajonToDelete;
+    if (!cajon) return;
     try {
       await deleteCajonMutation.mutateAsync(cajon.id);
       toast.success('Cajón eliminado');
+      setCajonToDelete(null);
     } catch {
       toast.error('Error al eliminar el cajón');
     }
@@ -500,6 +512,28 @@ export default function UbicacionesPage() {
           </DialogFooter>
         </form>
       </Dialog>
+
+      <ConfirmDialog
+        open={locationToDelete !== null}
+        title="Eliminar ubicación"
+        description={`¿Eliminar la ubicación «${locationToDelete?.nombre ?? ''}» y sus cajones asociados? Esta acción no se puede deshacer.`}
+        confirmLabel="Eliminar"
+        variant="danger"
+        loading={deleteLocationMutation.isPending}
+        onConfirm={() => void confirmDeleteLocation()}
+        onCancel={() => setLocationToDelete(null)}
+      />
+
+      <ConfirmDialog
+        open={cajonToDelete !== null}
+        title="Eliminar cajón"
+        description={`¿Eliminar el compartimiento «${cajonToDelete?.codigo ?? ''}»? Esta acción no se puede deshacer.`}
+        confirmLabel="Eliminar"
+        variant="danger"
+        loading={deleteCajonMutation.isPending}
+        onConfirm={() => void confirmDeleteCajon()}
+        onCancel={() => setCajonToDelete(null)}
+      />
     </div>
   );
 }

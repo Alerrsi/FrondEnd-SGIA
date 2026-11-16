@@ -110,7 +110,7 @@ export function WidgetPaletteDrawer({
           isDraggingWidget ? 'opacity-0' : 'opacity-100 bg-black/20 backdrop-blur-2xs',
         )}
         className={cn(
-          'w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 flex flex-col p-6 overflow-y-auto transition-transform duration-300',
+          'w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 flex flex-col p-6 transition-transform duration-300',
           isDraggingWidget && 'translate-x-[92%] opacity-30 shadow-none',
         )}
       >

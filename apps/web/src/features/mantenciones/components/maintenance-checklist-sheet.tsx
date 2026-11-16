@@ -166,7 +166,7 @@ export function MaintenanceChecklistSheet({
 
   return (
     <Sheet open={recordId !== null} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent className="overflow-y-auto">
+      <SheetContent>
         <SheetHeader>
           <SheetTitle>Mantención {record ? `#${record.id}` : ''}</SheetTitle>
           <SheetDescription>

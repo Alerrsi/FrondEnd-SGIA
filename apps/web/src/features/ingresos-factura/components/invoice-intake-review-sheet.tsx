@@ -42,7 +42,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
   return (
     <>
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent side="center" className="inset-y-auto top-1/2 h-[85dvh] -translate-y-1/2 overflow-y-auto rounded-lg border-y">
+        <SheetContent side="center" className="inset-y-auto top-1/2 h-[85dvh] -translate-y-1/2 rounded-lg border-y">
           {isLoading || !intake ? (
             <div className={`flex items-center justify-center py-16 ${STATE_TEXT_CLASS}`}>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -68,7 +68,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="mt-2 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              <div className="mt-2 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
                 <InvoiceFilePreview intakeId={intake.id} hasFile={intake.has_file} />
 
                 <div className="flex flex-col gap-3">

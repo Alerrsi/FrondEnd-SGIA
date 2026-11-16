@@ -50,7 +50,7 @@ export function LoanRequestDetailSheet({
 
   return (
     <Sheet open={loan !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <SheetContent className="overflow-y-auto sm:max-w-xl">
+      <SheetContent className="sm:max-w-xl">
         {loan && (
           <>
             <SheetHeader>

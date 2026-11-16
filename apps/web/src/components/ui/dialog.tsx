@@ -236,7 +236,8 @@ export function DialogFooter({ className, children }: { className?: string; chil
     <div
       data-dialog-footer
       className={cn(
-        'sticky bottom-0 z-10 -mx-6 -mb-4 mt-2 flex flex-wrap items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3',
+        // sticky se ancla al borde del contenido del cuerpo (sin su padding): -bottom-4 compensa el py-4.
+        'sticky -bottom-4 z-10 -mx-6 -mb-4 mt-2 flex flex-wrap items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3',
         className,
       )}
     >

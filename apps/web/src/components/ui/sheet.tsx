@@ -36,7 +36,8 @@ export const SheetContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed z-50 flex flex-col gap-4 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-6 shadow-xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out duration-200',
+        // El panel nunca se corta: si su contenido es más alto que la pantalla, hace scroll.
+        'fixed z-50 flex flex-col gap-4 overflow-y-auto overscroll-contain bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-6 shadow-xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out duration-200',
         side === 'right' &&
           'inset-y-0 right-0 h-full w-full sm:max-w-lg border-l border-zinc-200 dark:border-zinc-800 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
         side === 'left' &&
