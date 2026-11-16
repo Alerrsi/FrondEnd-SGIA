@@ -58,7 +58,7 @@ Garantizar la trazabilidad y rápida localización física de cada activo o insu
   - [x] Visualización de ubicación en cada fila con badge distintivo `Sala · Cajón` (estilo mono-espaciado zed.dev).
   - [x] Conexión de query params `sala` y `cajon` a `useProducts` en `ProductosListPage`.
 
-### 2. Códigos de ubicación (plan en `BackEnd-SGIA/docs/codigos-ubicacion.md`, frontend de Ubicaciones implementado; falta verificar contra la API)
+### 2. Códigos de ubicación (plan en `BackEnd-SGIA/docs/codigos-ubicacion.md`, implementado y verificado contra la API)
 - [x] Tipos y cliente: `code` en `LocationEntity`, `fetchCajonByCode` (`GET /api/cajones/by-code/{code}`) y descarga de etiqueta (`GET /api/cajones/{id}/label`). Hooks `useCajonByCode` y `useDownloadCajonLabel`.
 - [x] Modal de sala: campo «Código de sala» con sugerencia automática desde el nombre; editable solo al crear (en edición, solo lectura «No se puede cambiar»).
 - [x] Modal de cajón: vista previa del código final (`L206-RACK-R1`) y aviso del límite de 12 caracteres.

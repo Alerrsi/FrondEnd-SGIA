@@ -771,3 +771,17 @@
 - **Módulo:** Alertas de stock (`apps/web/src/features/alertas/components/alertas-table.tsx`)
 - **Cambio:** una alerta cuyo producto ya tiene una solicitud de compra abierta mostraba solo «Resolver»; el carrito desaparecía. Ahora conserva el carrito, tachado y en gris, como indicador (no es un botón): al pasar el mouse dice «Solicitud de compra SC-… en proceso» y un lector de pantalla lo anuncia igual. Mismo tamaño que el botón del carrito (32×32), así «Resolver» queda alineado en todas las filas.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (78 archivos, 429 tests) en verde; test nuevo en `alertas-solicitud-compra.test.tsx`. Revisado en Chromium como DIR-01 contra la API local: las alertas con SC-2026-0002 y SC-2026-0003 muestran el carrito tachado y el resto el carrito normal.
+
+---
+
+## FEAT: Códigos de ubicación, etiqueta de cajón y devolución con escaneo
+
+- **Fecha:** 2026-11-16
+- **Módulo:** Ubicaciones y mostrador de préstamos (`apps/web`, `packages/api-client`, `packages/types`) + backend. Plan y contrato: `BackEnd-SGIA/docs/codigos-ubicacion.md`.
+- **Cambio:**
+  1. Cada sala tiene un código corto e inmutable (`L206`, `PCENTRAL`), sugerido desde el nombre al crearla. El código del cajón es `{sala}-{cajón}` (`L206-RACK-R1`), con vista previa al crearlo, y reemplaza al `EST-…` aleatorio.
+  2. Botón «Imprimir etiqueta» por cajón (PDF 50x30 mm).
+  3. Devolución en el mostrador escaneando cada unidad o insumo y luego el cajón donde se guarda: la unidad queda en ese cajón; el insumo debe ir a su cajón registrado; dañado con detalle, extraviado sin escanear, deshacer y devolución parcial.
+- **Bugs encontrados en la prueba de punta a punta y corregidos:** la pestaña Devolución pedía `status=activo` (la API responde `422`) y su lista quedaba siempre vacía; y la regla «el cajón debe ser del pañol del préstamo» bloqueaba insumos con cajón en otro pañol (ahora vale solo para unidades).
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (81 archivos, 469 tests) en verde; backend 628 tests, pint y Larastan. Recorrido en Chromium contra la API local: alta de sala con código sugerido, vista previa del cajón, códigos y etiquetas visibles, y devolución de `REM-2026-HOFDSK` en dos rondas (unidad movida de cajón, unidad dañada, cajón de otro pañol y cajón equivocado rechazados, insumo con cajón en otro pañol devuelto).
+
