@@ -762,3 +762,12 @@
   6. Tablas de Estudiantes, Pañoles, Auditoría, Inventario y Presupuestos dentro de `relative overflow-x-auto`: el `sr-only` de sus cabeceras (`position: absolute`) escapaba del contenedor y ensanchaba la página a 759-834px en un celular de 390px, lo que dejaba los modales fuera de la pantalla.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (78 archivos, 428 tests) en verde. Auditoría con Chromium headless contra la API local: 50 escenarios (40 modales y 10 paneles laterales) abiertos con datos reales en 1366×768, 1280×600, 390×844 y 1920×1080 = 200 mediciones, 0 problemas. En cada una se midió que el modal cabe en la pantalla, que el pie queda visible y pegado abajo (sin contenido asomando) y que ningún elemento se sale por los lados ni queda cortado sin scroll.
 - **Pendiente detectado (fuera de este cambio):** la página Equipos llama a `GET /api/equipment`, que no existe en el backend (404), así que siempre muestra 0 equipos. Sus modales se verificaron simulando esa respuesta.
+
+---
+
+## FIX: Carrito tachado en alertas con solicitud de compra en proceso
+
+- **Fecha:** 2026-11-16
+- **Módulo:** Alertas de stock (`apps/web/src/features/alertas/components/alertas-table.tsx`)
+- **Cambio:** una alerta cuyo producto ya tiene una solicitud de compra abierta mostraba solo «Resolver»; el carrito desaparecía. Ahora conserva el carrito, tachado y en gris, como indicador (no es un botón): al pasar el mouse dice «Solicitud de compra SC-… en proceso» y un lector de pantalla lo anuncia igual. Mismo tamaño que el botón del carrito (32×32), así «Resolver» queda alineado en todas las filas.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (78 archivos, 429 tests) en verde; test nuevo en `alertas-solicitud-compra.test.tsx`. Revisado en Chromium como DIR-01 contra la API local: las alertas con SC-2026-0002 y SC-2026-0003 muestran el carrito tachado y el resto el carrito normal.

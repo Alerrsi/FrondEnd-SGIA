@@ -319,6 +319,21 @@ export function AlertasTable({
                 </Button>
               )}
 
+              {/* Ya tiene solicitud de compra abierta: carrito tachado (no se puede pedir otra). */}
+              {onRequestQuote && !alert.is_resolved && alert.open_purchase_request && (
+                <span
+                  role="img"
+                  title={`Solicitud de compra ${alert.open_purchase_request.code} en proceso`}
+                  aria-label={`Solicitud de compra ${alert.open_purchase_request.code} en proceso para ${alert.product_name ?? 'producto'}`}
+                  className="inline-flex h-8 w-8 shrink-0 cursor-not-allowed items-center justify-center text-zinc-400 dark:text-zinc-500"
+                >
+                  <ShoppingCart className="h-3.5 w-3.5" aria-hidden="true">
+                    {/* Misma diagonal que los íconos "-off" de Lucide. */}
+                    <path d="m2 2 20 20" />
+                  </ShoppingCart>
+                </span>
+              )}
+
               {product && onViewProduct && (
                 <Button
                   type="button"

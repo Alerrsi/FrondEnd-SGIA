@@ -84,6 +84,20 @@ describe('Alertas de stock → solicitud de compra', () => {
     expect((within(row).getByLabelText('Seleccionar Fuente ATX') as HTMLInputElement).disabled).toBe(true);
   });
 
+  it('con solicitud abierta el carrito aparece tachado (en proceso) en vez del botón', () => {
+    renderPage();
+
+    const pending = screen.getByText('Fuente ATX').closest('tr')!;
+    const crossed = within(pending).getByRole('img', { name: 'Solicitud de compra SC-2026-0009 en proceso para Fuente ATX' });
+    expect(crossed.getAttribute('title')).toBe('Solicitud de compra SC-2026-0009 en proceso');
+    expect(crossed.querySelector('svg path[d="m2 2 20 20"]')).not.toBeNull();
+    expect(within(pending).queryByRole('button', { name: /Crear solicitud de compra para/ })).toBeNull();
+
+    const free = screen.getByText('Cable UTP').closest('tr')!;
+    expect(within(free).getByRole('button', { name: 'Crear solicitud de compra para Cable UTP' })).toBeDefined();
+    expect(within(free).queryByRole('img', { name: /en proceso/ })).toBeNull();
+  });
+
   it('"seleccionar todo" omite las alertas ya solicitadas', async () => {
     const user = userEvent.setup();
     renderPage();
@@ -98,6 +112,7 @@ describe('Alertas de stock → solicitud de compra', () => {
 
     expect(screen.queryByLabelText('Seleccionar Cable UTP')).toBeNull();
     expect(screen.queryByRole('button', { name: /Crear solicitud de compra/ })).toBeNull();
+    expect(screen.queryByRole('img', { name: /en proceso/ })).toBeNull();
     role = 'DIR-01';
   });
 });
