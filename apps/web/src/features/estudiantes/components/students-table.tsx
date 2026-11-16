@@ -91,7 +91,7 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
   const table = useReactTable({ data: rows, columns, getCoreRowModel: getCoreRowModel() });
 
   return (
-    <div className="overflow-x-auto">
+    <div className="relative overflow-x-auto">
       <table className="w-full border-collapse text-left text-xs">
         <thead>
           {table.getHeaderGroups().map((hg) => (

@@ -53,7 +53,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+      <div className="relative overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
         <table className="w-full border-collapse text-left text-xs">
           <thead className={TABLE_HEAD_CLASS}>
             <tr>

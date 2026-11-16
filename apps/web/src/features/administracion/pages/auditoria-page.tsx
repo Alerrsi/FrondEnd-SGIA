@@ -106,68 +106,70 @@ export default function AuditoriaPage() {
             No se pudo cargar la auditoría.
           </div>
         ) : (
-          <table className="w-full border-collapse text-left text-xs">
-            <thead className={TABLE_HEAD_CLASS}>
-              <tr>
-                {['Fecha', 'Acción', 'Entidad', 'Autor', ''].map((h) => (
-                  <th key={h || 'd'} className="px-4 py-2.5 font-medium">
-                    {h || <span className="sr-only">Detalle</span>}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-              {(data?.data ?? []).length === 0 && (
+          <div className="relative overflow-x-auto">
+            <table className="w-full border-collapse text-left text-xs">
+              <thead className={TABLE_HEAD_CLASS}>
                 <tr>
-                  <td colSpan={5} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
-                    No hay eventos para el filtro seleccionado.
-                  </td>
+                  {['Fecha', 'Acción', 'Entidad', 'Autor', ''].map((h) => (
+                    <th key={h || 'd'} className="px-4 py-2.5 font-medium">
+                      {h || <span className="sr-only">Detalle</span>}
+                    </th>
+                  ))}
                 </tr>
-              )}
-              {data?.data.map((log) => {
-                const details = auditDetails(log);
-                const open = openId === log.id;
-                return (
-                  <Fragment key={log.id}>
-                    <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
-                      <td className="px-4 py-2.5 font-mono text-zinc-500">{formatDateTime(log.created_at)}</td>
-                      <td className="px-4 py-2.5">
-                        <Badge tone={log.action.endsWith('deleted') || log.action.endsWith('written_off') || log.action.endsWith('cancelled') ? 'danger' : 'neutral'}>
-                          {auditActionLabel(log.action)}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        {AUDITABLE_TYPE_LABELS[log.auditable_type] ?? log.auditable_type}{' '}
-                        <span className="font-mono text-zinc-500">#{log.auditable_id ?? '—'}</span>
-                      </td>
-                      <td className="px-4 py-2.5">{log.user?.name ?? log.user?.nombre ?? '—'}</td>
-                      <td className="px-4 py-2.5 text-right">
-                        {details.length > 0 && (
-                          <Button size="sm" variant="ghost" aria-expanded={open} onClick={() => setOpenId(open ? null : log.id)}>
-                            {open ? 'Ocultar' : 'Detalle'}
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                    {open && (
-                      <tr>
-                        <td colSpan={5} className="bg-zinc-50/60 dark:bg-zinc-950/40 px-4 py-2.5">
-                          {details.map(([label, value]) => (
-                            <div key={label} className="mb-1">
-                              <span className="font-mono text-[11px] uppercase text-zinc-500">{label}</span>
-                              <pre className="overflow-x-auto font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
-                                {JSON.stringify(value, null, 2)}
-                              </pre>
-                            </div>
-                          ))}
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                {(data?.data ?? []).length === 0 && (
+                  <tr>
+                    <td colSpan={5} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
+                      No hay eventos para el filtro seleccionado.
+                    </td>
+                  </tr>
+                )}
+                {data?.data.map((log) => {
+                  const details = auditDetails(log);
+                  const open = openId === log.id;
+                  return (
+                    <Fragment key={log.id}>
+                      <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
+                        <td className="px-4 py-2.5 font-mono text-zinc-500">{formatDateTime(log.created_at)}</td>
+                        <td className="px-4 py-2.5">
+                          <Badge tone={log.action.endsWith('deleted') || log.action.endsWith('written_off') || log.action.endsWith('cancelled') ? 'danger' : 'neutral'}>
+                            {auditActionLabel(log.action)}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          {AUDITABLE_TYPE_LABELS[log.auditable_type] ?? log.auditable_type}{' '}
+                          <span className="font-mono text-zinc-500">#{log.auditable_id ?? '—'}</span>
+                        </td>
+                        <td className="px-4 py-2.5">{log.user?.name ?? log.user?.nombre ?? '—'}</td>
+                        <td className="px-4 py-2.5 text-right">
+                          {details.length > 0 && (
+                            <Button size="sm" variant="ghost" aria-expanded={open} onClick={() => setOpenId(open ? null : log.id)}>
+                              {open ? 'Ocultar' : 'Detalle'}
+                            </Button>
+                          )}
                         </td>
                       </tr>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+                      {open && (
+                        <tr>
+                          <td colSpan={5} className="bg-zinc-50/60 dark:bg-zinc-950/40 px-4 py-2.5">
+                            {details.map(([label, value]) => (
+                              <div key={label} className="mb-1">
+                                <span className="font-mono text-[11px] uppercase text-zinc-500">{label}</span>
+                                <pre className="overflow-x-auto font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+                                  {JSON.stringify(value, null, 2)}
+                                </pre>
+                              </div>
+                            ))}
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {meta && meta.lastPage > 1 && (

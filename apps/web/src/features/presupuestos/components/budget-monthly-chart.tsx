@@ -145,7 +145,7 @@ export function BudgetMonthlyChart({ budgetId, year }: { budgetId: number; year:
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+      <div className="relative overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
         <table className="w-full border-collapse text-xs">
           <caption className="sr-only">Detalle mensual del presupuesto {year}</caption>
           <thead className={TABLE_HEAD_CLASS}>

@@ -74,61 +74,63 @@ export default function PanolesPage() {
             No se pudieron cargar los pañoles.
           </div>
         ) : (
-          <table className="w-full border-collapse text-left text-xs">
-            <thead className={TABLE_HEAD_CLASS}>
-              <tr>
-                {['Código', 'Nombre', 'Ubicación', 'Salas', 'Usuarios', ''].map((h) => (
-                  <th key={h || 'actions'} className="px-4 py-2.5 font-medium">
-                    {h || <span className="sr-only">Acciones</span>}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-              {(data?.data ?? []).length === 0 && (
+          <div className="relative overflow-x-auto">
+            <table className="w-full border-collapse text-left text-xs">
+              <thead className={TABLE_HEAD_CLASS}>
                 <tr>
-                  <td colSpan={6} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
-                    No hay pañoles registrados.
-                  </td>
+                  {['Código', 'Nombre', 'Ubicación', 'Salas', 'Usuarios', ''].map((h) => (
+                    <th key={h || 'actions'} className="px-4 py-2.5 font-medium">
+                      {h || <span className="sr-only">Acciones</span>}
+                    </th>
+                  ))}
                 </tr>
-              )}
-              {data?.data.map((st) => (
-                <tr key={String(st.id)} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
-                  <td className="px-4 py-2.5">
-                    <span className={CODE_CHIP_CLASS}>
-                      {st.code}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-100">{st.name}</td>
-                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400">{st.general_location || '—'}</td>
-                  <td className="px-4 py-2.5 font-mono tabular-nums">{st.locations_count ?? 0}</td>
-                  <td className="px-4 py-2.5 font-mono tabular-nums">{st.users_count ?? 0}</td>
-                  <td className="px-4 py-2.5 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost" aria-label={`Acciones de ${st.code}`}>
-                          <MoreHorizontal className="h-3.5 w-3.5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onSelect={() => {
-                            setEditing(st);
-                            setFormOpen(true);
-                          }}
-                        >
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-rose-600 dark:text-rose-400" onSelect={() => setToDelete(st)}>
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                {(data?.data ?? []).length === 0 && (
+                  <tr>
+                    <td colSpan={6} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
+                      No hay pañoles registrados.
+                    </td>
+                  </tr>
+                )}
+                {data?.data.map((st) => (
+                  <tr key={String(st.id)} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
+                    <td className="px-4 py-2.5">
+                      <span className={CODE_CHIP_CLASS}>
+                        {st.code}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-100">{st.name}</td>
+                    <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400">{st.general_location || '—'}</td>
+                    <td className="px-4 py-2.5 font-mono tabular-nums">{st.locations_count ?? 0}</td>
+                    <td className="px-4 py-2.5 font-mono tabular-nums">{st.users_count ?? 0}</td>
+                    <td className="px-4 py-2.5 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="ghost" aria-label={`Acciones de ${st.code}`}>
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onSelect={() => {
+                              setEditing(st);
+                              setFormOpen(true);
+                            }}
+                          >
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-rose-600 dark:text-rose-400" onSelect={() => setToDelete(st)}>
+                            Eliminar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

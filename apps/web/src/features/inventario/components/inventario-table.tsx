@@ -536,7 +536,7 @@ export function InventarioTable({
       </div>
 
       {/* TanStack Table Container */}
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table className="w-full border-collapse text-left text-sm">
           <thead className={TABLE_HEAD_CLASS}>
             {table.getHeaderGroups().map((headerGroup) => (
