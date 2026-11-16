@@ -63,6 +63,12 @@ Optimizar el flujo de mesón del pañol. Permitir el despacho de solicitudes rem
   - [x] Verificación de cada producto recibido.
   - [x] Opción "Reportar daño o falla" por ítem: cambia estado a `en_revision`/`en_reparacion` y abre reporte hacia `REQ-13`.
   - [x] Botón "Completar Devolución" (`POST /api/loans/checkin`) que reincorpora el stock al pañol.
+- [ ] **Devolución con escaneo de producto y cajón** (plan en `BackEnd-SGIA/docs/codigos-ubicacion.md`, sin implementar; rompe el contrato de `checkin`):
+  - [ ] Escaneo por pares: unidad (equipo/maqueta) o código del insumo, y luego el cajón (`GET /api/cajones/by-code/{code}`).
+  - [ ] Insumo: el cajón debe ser su cajón registrado (aviso antes de enviar); equipo: la unidad queda en el cajón escaneado.
+  - [ ] Estados por fila («Esperando cajón» → «Guardado en …»), «Dañado» con detalle, deshacer escaneo y «Extraviada» sin escanear.
+  - [ ] Envío solo de lo escaneado o marcado: `units: [{id, cajon_id}]` / `cajon_id` (devolución parcial).
+  - [ ] Tests: escaneo correcto, código ajeno al préstamo, cajón equivocado de insumo, extraviada y envío parcial.
 
 ---
 
