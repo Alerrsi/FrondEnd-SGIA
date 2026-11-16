@@ -13,6 +13,7 @@ export const ROLE_DEFAULT_PATH: Record<WebRoleCode, string> = {
 
 export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/': ['DIR-01', 'AD-01'],
+  '/inicio': ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'],
   '/dashboard': ['DIR-01', 'AD-01'],
   '/inventario': ['PAN-01', 'DIR-01', 'AD-01'],
   '/prestamos': ['PAN-01', 'AD-01'],

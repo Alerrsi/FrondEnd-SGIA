@@ -785,3 +785,15 @@
 - **Bugs encontrados en la prueba de punta a punta y corregidos:** la pestaña Devolución pedía `status=activo` (la API responde `422`) y su lista quedaba siempre vacía; y la regla «el cajón debe ser del pañol del préstamo» bloqueaba insumos con cajón en otro pañol (ahora vale solo para unidades).
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (81 archivos, 469 tests) en verde; backend 628 tests, pint y Larastan. Recorrido en Chromium contra la API local: alta de sala con código sugerido, vista previa del cajón, códigos y etiquetas visibles, y devolución de `REM-2026-HOFDSK` en dos rondas (unidad movida de cajón, unidad dañada, cajón de otro pañol y cajón equivocado rechazados, insumo con cajón en otro pañol devuelto).
 
+---
+
+## FIX-043: Portada `/inicio` común a todos los roles
+
+- **Fecha:** 2026-11-16
+- **Módulo:** Portada (`apps/web/src/features/inicio`)
+- **Qué cambia:** nueva página de inicio, aparte del layout con sidebar, abierta a AD-01, DIR-01, PAN-01 y PRO-01. Basada en una referencia de landing (titular grande, panel oscuro en diagonal, ilustración central, tarjeta punteada con carrusel). Las fotos de la referencia se reemplazaron por ilustraciones SVG propias del pañol: bandeja con multímetro, placa de desarrollo, cable USB, resistencias y destornilladores; LED, chip y tuerca flotando; trama de iconos de TI (Lucide) en el panel oscuro.
+- **Contenido por rol** (`lib/inicio-content.ts`): titular, descripción, acción principal (PAN-01 → mostrador, PRO-01 → catálogo, DIR-01 → panel, AD-01 → usuarios) y recomendación. Los accesos rápidos y el menú "Módulos" se filtran con `canAccessRoute`, así nunca ofrecen una ruta prohibida.
+- **Enrutado:** `ROUTE_PERMISSIONS['/inicio']` con los cuatro roles; ruta dentro de `RequireAuth` pero fuera de `AppLayout`; entrada "Portada" (icono `House`) al inicio del menú lateral. No cambia la ruta por defecto de cada rol después del login.
+- **Diseño:** CTA principal monocromo; ámbar solo como acento decorativo; rojo solo en la micro-etiqueta de sede. Modo claro y oscuro; en móvil el panel oscuro pasa a tarjeta redondeada bajo el texto.
+- **Verificación:** `inicio-page.test.tsx` (6 tests); `pnpm typecheck` 5/5; `pnpm --filter @sgia/web test` 82 archivos, 475 tests. Revisado en navegador (1440×900 claro/oscuro y 390×844).
+

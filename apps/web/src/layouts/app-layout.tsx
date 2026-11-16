@@ -14,6 +14,7 @@ import {
   Cpu,
   GraduationCap,
   History,
+  House,
   Layers,
   LogOut,
   Moon,
@@ -55,6 +56,12 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
+  {
+    to: '/inicio',
+    label: 'Portada',
+    icon: House,
+    roles: ROUTE_PERMISSIONS['/inicio'] ?? [],
+  },
   {
     to: '/',
     label: 'Inicio',
