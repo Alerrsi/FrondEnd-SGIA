@@ -54,6 +54,8 @@ export interface LoanItemUnit {
 export interface LoanPlaceCajon {
   id: number;
   codigo: string;
+  /** Código completo del cajón (`L206-RACK-R1`). */
+  barcode?: string | null;
   descripcion?: string | null;
 }
 
@@ -146,6 +148,10 @@ export interface Prestamo {
     delivered_quantity?: number;
     returned_quantity?: number;
     units?: LoanItemUnit[];
+    /** Cajón registrado del producto (insumos: la devolución debe guardarse ahí). */
+    cajon_id?: number | null;
+    /** Código completo de ese cajón (`PCENTRAL-CAJON-A1`), si la API lo envía. */
+    cajon_barcode?: string | null;
   }>;
   origen: LoanOrigin | string;
   estado: LoanStatus | string;
@@ -284,21 +290,31 @@ export interface LoanCheckoutPayload {
   }>;
 }
 
+export type LoanReturnCondition = 'bueno' | 'regular' | 'dañado' | 'danado' | 'optimo' | 'extraviado';
+
+/** Unidad devuelta y el cajón escaneado donde se guarda (sin cajón solo si está extraviada). */
+export interface LoanCheckinUnit {
+  id: number;
+  cajon_id?: number;
+}
+
+/**
+ * Fila de devolución (`docs/codigos-ubicacion.md`). Equipo/maqueta: `units`; insumo: `cajon_id`
+ * (debe ser su cajón registrado). Varias filas pueden apuntar al mismo ítem con distinta condición.
+ */
+export interface LoanCheckinItem {
+  item_id?: number;
+  product_id?: number;
+  condition: LoanReturnCondition;
+  damaged?: boolean;
+  units?: LoanCheckinUnit[];
+  cajon_id?: number;
+}
+
 export interface LoanCheckinPayload {
   loan_id: number;
   general_notes?: string;
-  items: Array<{
-    product_id?: number;
-    productoId?: number;
-    item_id?: number;
-    condition?: 'bueno' | 'regular' | 'dañado' | 'danado' | 'optimo' | 'extraviado';
-    unit_ids?: number[];
-    damaged?: boolean;
-    dañado?: boolean;
-    quantity_returned?: number;
-    notes?: string;
-    observaciones?: string;
-  }>;
+  items: LoanCheckinItem[];
 }
 
 export interface LoanExportParams {

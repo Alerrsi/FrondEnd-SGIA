@@ -16,7 +16,6 @@ import {
   Volume2,
 } from 'lucide-react';
 import {
-  useCheckinLoan,
   useCheckoutLoan,
   useLoans,
   useProducts,
@@ -32,6 +31,7 @@ import {
   type StudentBorrower,
 } from '@/features/estudiantes/lib/student-borrower';
 import { CareerSelect } from '@/components/shared/career-select';
+import { LoanCheckinPanel } from '@/features/prestamos/components/loan-checkin-panel';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { apiErrorToMessage } from '@/lib/api-error';
@@ -75,15 +75,10 @@ export default function MostradorPrestamosPage() {
   const teachers = usersData?.data ?? [];
 
   const checkoutMutation = useCheckoutLoan();
-  const checkinMutation = useCheckinLoan();
 
   // --- CHECKIN STATE ---
   const [checkinSearch, setCheckinSearch] = useState('');
   const [selectedLoan, setSelectedLoan] = useState<Prestamo | null>(null);
-  const [itemConditions, setItemConditions] = useState<
-    Record<number, { condition: 'bueno' | 'regular' | 'dañado'; damaged: boolean; notes: string }>
-  >({});
-  const [generalCheckinNotes, setGeneralCheckinNotes] = useState('');
 
   // Préstamos activos para devolución
   const { data: activeLoansData, refetch: refetchActiveLoans } = useLoans({
@@ -229,59 +224,8 @@ export default function MostradorPrestamosPage() {
     }
   };
 
-  // Checkin selection
-  const handleSelectLoanForCheckin = (loan: Prestamo) => {
-    setSelectedLoan(loan);
-    const initialConditions: Record<
-      number,
-      { condition: 'bueno' | 'regular' | 'dañado'; damaged: boolean; notes: string }
-    > = {};
-    loan.items.forEach((it) => {
-      initialConditions[it.productoId] = {
-        condition: 'bueno',
-        damaged: false,
-        notes: '',
-      };
-    });
-    setItemConditions(initialConditions);
-  };
-
-  const handleConfirmCheckin = async () => {
-    if (!selectedLoan) return;
-
-    try {
-      const itemsPayload = selectedLoan.items.map((it) => {
-        const cond = itemConditions[it.productoId] || {
-          condition: 'bueno',
-          damaged: false,
-          notes: '',
-        };
-        return {
-          product_id: it.productoId,
-          productoId: it.productoId,
-          condition: cond.condition,
-          damaged: cond.damaged,
-          notes: cond.notes || undefined,
-        };
-      });
-
-      await checkinMutation.mutateAsync({
-        loan_id: selectedLoan.id,
-        items: itemsPayload,
-        general_notes: generalCheckinNotes || undefined,
-      });
-
-      toast.success(
-        `Devolución de préstamo #${selectedLoan.codigo ?? selectedLoan.id} completada e ingresada al stock`,
-      );
-      setSelectedLoan(null);
-      setCheckinSearch('');
-      setGeneralCheckinNotes('');
-      refetchActiveLoans();
-    } catch (err) {
-      toast.error(apiErrorToMessage(err));
-    }
-  };
+  // Devolución: el panel de escaneo (`LoanCheckinPanel`) maneja el resto.
+  const handleSelectLoanForCheckin = (loan: Prestamo) => setSelectedLoan(loan);
 
   const filteredActiveLoans = activeLoans.filter((loan) => {
     if (!checkinSearch.trim()) return true;
@@ -721,161 +665,16 @@ export default function MostradorPrestamosPage() {
                 <span>Selecciona un préstamo activo del panel izquierdo para recepcionar insumos.</span>
               </div>
             ) : (
-              <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs flex flex-col gap-4">
-                <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
-                  <div className="flex flex-col">
-                    <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
-                      Recepcionando Préstamo {selectedLoan.codigo ?? `#${selectedLoan.id}`}
-                    </span>
-                    <span className="text-xs text-zinc-500">
-                      Docente: {selectedLoan.solicitanteNombre}{' '}
-                      {selectedLoan.solicitanteRun ? `(${selectedLoan.solicitanteRun})` : ''}
-                    </span>
-                  </div>
-                  <LoanStatusBadge estado={selectedLoan.estado} />
-                </div>
-
-                {/* Lista de Ítems a devolver */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
-                    Verificación de estado por ítem
-                  </span>
-
-                  <div className="flex flex-col divide-y divide-zinc-100 dark:divide-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded">
-                    {selectedLoan.items.map((it) => {
-                      const cond = itemConditions[it.productoId] || {
-                        condition: 'bueno',
-                        damaged: false,
-                        notes: '',
-                      };
-
-                      return (
-                        <div
-                          key={it.productoId}
-                          className="flex flex-col gap-2 p-3 text-xs bg-white dark:bg-zinc-900"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex flex-col">
-                              <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">
-                                {it.nombre || `Producto #${it.productoId}`}
-                              </span>
-                              <span className="font-mono text-[11px] text-zinc-400">
-                                SKU: {it.codigoBarras || '—'} · Cantidad: {it.cantidad}
-                              </span>
-                            </div>
-
-                            {/* Selector de Condición */}
-                            <div className="flex items-center gap-1 text-[11px] font-mono">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setItemConditions((prev) => ({
-                                    ...prev,
-                                    [it.productoId]: {
-                                      ...cond,
-                                      condition: 'bueno',
-                                      damaged: false,
-                                    },
-                                  }))
-                                }
-                                className={cn(
-                                  'px-2 py-0.5 rounded border transition-colors',
-                                  cond.condition === 'bueno'
-                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 font-semibold'
-                                    : 'text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50',
-                                )}
-                              >
-                                Buen estado
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setItemConditions((prev) => ({
-                                    ...prev,
-                                    [it.productoId]: {
-                                      ...cond,
-                                      condition: 'dañado',
-                                      damaged: true,
-                                    },
-                                  }))
-                                }
-                                className={cn(
-                                  'px-2 py-0.5 rounded border transition-colors',
-                                  cond.condition === 'dañado'
-                                    ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700 font-semibold'
-                                    : 'text-zinc-500 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50',
-                                )}
-                              >
-                                Reportar daño / falla
-                              </button>
-                            </div>
-                          </div>
-
-                          {cond.damaged && (
-                            <div className="mt-1 flex flex-col gap-1">
-                              <label className="text-[11px] font-mono text-rose-600 dark:text-rose-400">
-                                Detalle de daño o novedad para pañol:
-                              </label>
-                              <input
-                                type="text"
-                                value={cond.notes}
-                                onChange={(e) =>
-                                  setItemConditions((prev) => ({
-                                    ...prev,
-                                    [it.productoId]: {
-                                      ...cond,
-                                      notes: e.target.value,
-                                    },
-                                  }))
-                                }
-                                placeholder="Ej. cable cortado, fusible quemado, punta de prueba faltante…"
-                                className="h-7 w-full rounded border border-rose-300 dark:border-rose-700 bg-rose-50/20 px-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <label className={FIELD_LABEL_CLASS}>
-                    Observaciones generales de recepción
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={generalCheckinNotes}
-                    onChange={(e) => setGeneralCheckinNotes(e.target.value)}
-                    placeholder="Comentarios adicionales opcionales..."
-                    className="mt-1 w-full rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 p-2 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex items-center justify-end gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setSelectedLoan(null)}
-                  >
-                    Cancelar
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="sm"
-                    onClick={handleConfirmCheckin}
-                    disabled={checkinMutation.isPending}
-                    className="gap-1.5"
-                  >
-                    <CheckCircle2 className="h-4 w-4" />
-                    <span>Completar devolución e ingresar a pañol</span>
-                  </Button>
-                </div>
-              </div>
+              <LoanCheckinPanel
+                loan={selectedLoan}
+                soundEnabled={soundEnabled}
+                onCancel={() => setSelectedLoan(null)}
+                onDone={() => {
+                  setSelectedLoan(null);
+                  setCheckinSearch('');
+                  refetchActiveLoans();
+                }}
+              />
             )}
           </div>
         </div>

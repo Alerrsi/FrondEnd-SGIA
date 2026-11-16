@@ -39,6 +39,8 @@ export function normalizePrestamo(raw: any): Prestamo {
     delivered_quantity: it.delivered_quantity,
     returned_quantity: it.returned_quantity,
     units: it.units,
+    cajon_id: (typeof it.cajon === 'object' ? it.cajon?.id : undefined) ?? it.product?.cajon_id ?? null,
+    cajon_barcode: (typeof it.cajon === 'object' ? it.cajon?.barcode : undefined) ?? null,
   }));
 
   const eventos = (raw.eventos ?? raw.history ?? raw.events ?? []).map((ev: any, idx: number) => ({

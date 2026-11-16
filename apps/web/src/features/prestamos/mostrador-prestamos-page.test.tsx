@@ -92,6 +92,13 @@ vi.mock('@sgia/api-client', () => ({
     mutateAsync: mockCheckinMutateAsync,
     isPending: false,
   }),
+  fetchCajonByCode: async (code: string) => ({
+    id: 7,
+    codigo: 'Rack-R2',
+    barcode: code.toUpperCase(),
+    location_id: 4,
+    location: { id: 4, nombre: 'Pañol de Redes', tipo: 'panol', code: 'PREDES', storeroom_id: '1' },
+  }),
 }));
 
 vi.mock('@/lib/toast', () => ({
@@ -161,7 +168,7 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
     });
   });
 
-  it('permite seleccionar un préstamo activo, reportar daños y completar check-in / devolución', async () => {
+  it('devolución con escaneo: producto, cajón, daño y registro', async () => {
     mockCheckinMutateAsync.mockResolvedValueOnce({ id: 50, estado: 'DEVUELTO' });
     const user = userEvent.setup();
 
@@ -171,44 +178,32 @@ describe('REQ-10: Operación de Mostrador de Pañol (MostradorPrestamosPage)', (
       </MemoryRouter>
     );
 
-    // Switch to Devoluciones tab
-    const devolucionTab = screen.getByText(/Devolución y Recepción/i);
-    await user.click(devolucionTab);
-
+    await user.click(screen.getByText(/Devolución y Recepción/i));
     expect(screen.getByText('Buscar préstamo activo')).toBeDefined();
-    expect(screen.getByText('Prof. Mario Valenzuela')).toBeDefined();
 
-    // Select the loan to return
-    const loanCard = screen.getByText('Prof. Mario Valenzuela');
-    await user.click(loanCard);
+    await user.click(screen.getByText('Prof. Mario Valenzuela'));
+    expect(screen.getByText('Ítems por devolver (0 de 1 registrados)')).toBeDefined();
 
-    expect(screen.getByText('Verificación de estado por ítem')).toBeDefined();
+    // Escanea el producto y luego el cajón donde se guarda
+    await user.type(screen.getByLabelText('Escanea una unidad o insumo del préstamo'), 'FLUKE-115-01{Enter}');
+    await user.type(
+      screen.getByLabelText('Escanea el cajón donde guardas Multímetro Fluke 115 (FLUKE-115-01)'),
+      'PREDES-RACK-R2{Enter}',
+    );
+    await waitFor(() => expect(screen.getByText('PREDES-RACK-R2')).toBeDefined());
 
-    // Report damage toggle
-    const reportDamageBtn = screen.getByText(/Reportar daño \/ falla/i);
-    await user.click(reportDamageBtn);
+    // Reporta el daño con su detalle
+    await user.click(screen.getByRole('button', { name: /Dañado/ }));
+    await user.type(screen.getByLabelText('Detalle del daño de FLUKE-115-01'), 'Punta de prueba desoldada');
 
-    // Write damage notes
-    const noteInput = screen.getByPlaceholderText(/Ej. Cable cortado, fusible quemado/i);
-    await user.type(noteInput, 'Punta de prueba desoldada');
-
-    // Complete check-in
-    const completeReturnBtn = screen.getByRole('button', { name: /Completar devolución e ingresar a pañol/i });
-    await user.click(completeReturnBtn);
+    await user.click(screen.getByRole('button', { name: 'Registrar devolución (1)' }));
 
     await waitFor(() => {
-      expect(mockCheckinMutateAsync).toHaveBeenCalledWith(
-        expect.objectContaining({
-          loan_id: 50,
-          items: [
-            expect.objectContaining({
-              product_id: 101,
-              damaged: true,
-              notes: 'Punta de prueba desoldada',
-            }),
-          ],
-        })
-      );
+      expect(mockCheckinMutateAsync).toHaveBeenCalledWith({
+        loan_id: 50,
+        general_notes: 'Dañado Multímetro Fluke 115: Punta de prueba desoldada',
+        items: [{ item_id: 501, condition: 'dañado', damaged: true, cajon_id: 7 }],
+      });
     });
   });
 });
