@@ -785,3 +785,14 @@
 - **Bugs encontrados en la prueba de punta a punta y corregidos:** la pestaña Devolución pedía `status=activo` (la API responde `422`) y su lista quedaba siempre vacía; y la regla «el cajón debe ser del pañol del préstamo» bloqueaba insumos con cajón en otro pañol (ahora vale solo para unidades).
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (81 archivos, 469 tests) en verde; backend 628 tests, pint y Larastan. Recorrido en Chromium contra la API local: alta de sala con código sugerido, vista previa del cajón, códigos y etiquetas visibles, y devolución de `REM-2026-HOFDSK` en dos rondas (unidad movida de cajón, unidad dañada, cajón de otro pañol y cajón equivocado rechazados, insumo con cajón en otro pañol devuelto).
 
+---
+
+## FEAT-043: Notificaciones push en la app móvil
+
+- **Fecha:** 2026-11-12
+- **Módulo:** `apps/mobile` (`features/notifications`), `packages/api-client` (`services/devices.ts`)
+- **Qué hace:** al iniciar sesión la app pide permiso, obtiene el token de Expo y lo registra con `POST /api/devices`; al cerrar sesión lo elimina con `DELETE /api/devices/{id}` antes de revocar el token. Con la app abierta el aviso también se muestra. Al tocar un aviso de préstamo (`loan_status`, vencimientos) abre "Mis Préstamos".
+- **Archivos:** `features/notifications/push.ts`, `use-push-notifications.ts`, `app/(app)/_layout.tsx`, `features/auth/auth-context.tsx`, `app.json` (plugin `expo-notifications`), `services/devices.ts`.
+- **Requisitos para probarlo en un teléfono:** `eas init` (escribe `extra.eas.projectId` en `app.json`; sin él la app avisa por consola y no registra nada), un **development build** (`eas build --profile development`; Expo Go en Android no entrega tokens de push) y, en Android, credenciales FCM cargadas en EAS. En el backend, `php artisan queue:work` si la cola no es `sync`.
+- **Límite conocido:** si la sesión se cierra sola (token vencido o revocado), el dispositivo sigue registrado hasta el próximo inicio de sesión en ese teléfono.
+- **Verificación:** `pnpm typecheck`, `pnpm lint`, vitest (`devices-api.test.ts`) y `expo export --platform android` en verde. **No probado en un dispositivo físico.**
