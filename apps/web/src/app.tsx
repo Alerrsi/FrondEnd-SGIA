@@ -1,8 +1,9 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Toaster } from 'sileo';
 
 import AlertasStockPage from '@/features/alertas/pages/alertas-stock-page';
 import ComprasPage from '@/features/compras/pages/compras-page';
+import ComprasHubPage from '@/features/compras/pages/compras-hub-page';
 import CompraTrazabilidadPage from '@/features/compras/pages/compra-trazabilidad-page';
 import CotizacionesPage from '@/features/cotizaciones/pages/cotizaciones-page';
 import SolicitudesCompraPage from '@/features/solicitudes-compra/pages/solicitudes-compra-page';
@@ -38,6 +39,21 @@ import MisSolicitudesPage from '@/features/profesor/pages/mis-solicitudes-page';
 import NovedadesPage from '@/features/novedades/pages/novedades-page';
 import MisNovedadesPage from '@/features/profesor/pages/mis-novedades-page';
 import { getRoleDefaultPath, rolesForRoute } from '@/features/auth/types/roles';
+
+
+/** URLs anteriores al módulo Compras (nov 2026) → nuevas; conserva el resto de la ruta y la query. */
+const LEGACY_PURCHASE_PATHS: Array<[string, string]> = [
+  ['/solicitudes-compra', '/compras/solicitudes'],
+  ['/ingresos-factura', '/compras/facturas'],
+  ['/presupuestos', '/compras/presupuestos'],
+  ['/proveedores', '/compras/proveedores'],
+  ['/cotizaciones', '/compras/cotizaciones'],
+];
+
+function LegacyRedirect({ from, to }: { from: string; to: string }) {
+  const { pathname, search } = useLocation();
+  return <Navigate to={to + pathname.slice(from.length) + search} replace />;
+}
 
 function RootRoute() {
   const { user } = useAuth();
@@ -183,72 +199,86 @@ function AppContent() {
             />
 
             <Route
-              path="/proveedores"
+              path="/compras"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/proveedores') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras') ?? []}>
+                  <ComprasHubPage />
+                </RequireRole>
+              }
+            />
+
+            {LEGACY_PURCHASE_PATHS.map(([from, to]) => (
+              <Route key={from} path={`${from}/*`} element={<LegacyRedirect from={from} to={to} />} />
+            ))}
+            <Route path="/compras/:id/trazabilidad" element={<LegacyRedirect from="/compras" to="/compras/ordenes" />} />
+
+            <Route
+              path="/compras/proveedores"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/compras/proveedores') ?? []}>
                   <ProveedoresPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/solicitudes-compra"
+              path="/compras/solicitudes"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/solicitudes-compra') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/solicitudes') ?? []}>
                   <SolicitudesCompraPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/solicitudes-compra/:id"
+              path="/compras/solicitudes/:id"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/solicitudes-compra') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/solicitudes') ?? []}>
                   <SolicitudCompraDetailPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/cotizaciones"
+              path="/compras/cotizaciones"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/cotizaciones') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/cotizaciones') ?? []}>
                   <CotizacionesPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/compras"
+              path="/compras/ordenes"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/compras') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/ordenes') ?? []}>
                   <ComprasPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/compras/:id/trazabilidad"
+              path="/compras/ordenes/:id/trazabilidad"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/compras') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/ordenes') ?? []}>
                   <CompraTrazabilidadPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/presupuestos"
+              path="/compras/presupuestos"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/presupuestos') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/presupuestos') ?? []}>
                   <PresupuestosPage />
                 </RequireRole>
               }
             />
 
             <Route
-              path="/ingresos-factura"
+              path="/compras/facturas"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/ingresos-factura') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/compras/facturas') ?? []}>
                   <IngresosFacturaPage />
                 </RequireRole>
               }

@@ -34,7 +34,7 @@ const positiveParam = (value: string | null) => {
 
 export default function IngresosFacturaPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  // Desde una compra: /ingresos-factura?compra=12&presupuesto=3. Desde el ledger: ?ingreso=5.
+  // Desde una compra: /compras/facturas?compra=12&presupuesto=3. Desde el ledger: ?ingreso=5.
   const purchaseParam = positiveParam(searchParams.get('compra'));
   const budgetParam = positiveParam(searchParams.get('presupuesto'));
   const intakeParam = positiveParam(searchParams.get('ingreso'));

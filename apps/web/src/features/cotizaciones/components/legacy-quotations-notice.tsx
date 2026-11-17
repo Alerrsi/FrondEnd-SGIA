@@ -14,7 +14,7 @@ export function LegacyQuotationsNotice() {
         nuevas se piden, cotizan y adjudican desde Solicitudes de compra.
       </span>
       <Link
-        to="/solicitudes-compra"
+        to="/compras/solicitudes"
         className="inline-flex h-7 items-center gap-1 rounded-md bg-zinc-900 px-2.5 font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
       >
         Ir a solicitudes de compra

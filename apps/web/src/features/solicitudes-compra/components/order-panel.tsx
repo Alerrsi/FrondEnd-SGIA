@@ -140,7 +140,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
                 </Button>
               )}
               <Link
-                to={`/compras/${order.id}/trazabilidad`}
+                to={`/compras/ordenes/${order.id}/trazabilidad`}
                 className="text-xs font-medium text-zinc-700 underline underline-offset-2 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
               >
                 Ver trazabilidad
@@ -235,7 +235,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
         {canInvoice && (
           <div>
             <Link
-              to={`/ingresos-factura?solicitud=${encodeURIComponent(request.code)}`}
+              to={`/compras/facturas?solicitud=${encodeURIComponent(request.code)}`}
               className="inline-flex h-8 items-center gap-1.5 rounded-md bg-zinc-900 px-3 text-xs font-medium text-white shadow-xs hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
             >
               <ReceiptText className="h-3.5 w-3.5" />

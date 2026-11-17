@@ -251,7 +251,7 @@ export function AlertasTable({
           return (
             <div className="flex flex-col items-start gap-1">
               <Link
-                to={`/solicitudes-compra/${request.id}`}
+                to={`/compras/solicitudes/${request.id}`}
                 className={`${CODE_CHIP_CLASS} hover:underline`}
               >
                 {request.code}

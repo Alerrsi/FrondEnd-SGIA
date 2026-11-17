@@ -39,7 +39,7 @@ describe('Historial de cotizaciones (Fase 7, solo lectura)', () => {
 
     expect(await screen.findByText('Historial de cotizaciones')).toBeDefined();
     const link = screen.getByRole('link', { name: /Ir a solicitudes de compra/ });
-    expect(link.getAttribute('href')).toBe('/solicitudes-compra');
+    expect(link.getAttribute('href')).toBe('/compras/solicitudes');
     expect(screen.queryByRole('button', { name: /Nueva cotización/ })).toBeNull();
     expect(mockFetch.mock.calls.every(([, init]) => (init?.method ?? 'GET') === 'GET')).toBe(true);
   });

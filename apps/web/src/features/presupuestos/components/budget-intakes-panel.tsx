@@ -44,7 +44,7 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
             <tr key={intake.id}>
               <td className="px-3 py-2">
                 <Link
-                  to={`/ingresos-factura?ingreso=${intake.id}`}
+                  to={`/compras/facturas?ingreso=${intake.id}`}
                   className="font-mono text-zinc-800 underline-offset-2 hover:underline dark:text-zinc-200"
                 >
                   {intake.document_number ?? `#${intake.id}`}

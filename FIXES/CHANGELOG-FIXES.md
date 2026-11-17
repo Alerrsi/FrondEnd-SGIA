@@ -785,3 +785,14 @@
 - **Bugs encontrados en la prueba de punta a punta y corregidos:** la pestaña Devolución pedía `status=activo` (la API responde `422`) y su lista quedaba siempre vacía; y la regla «el cajón debe ser del pañol del préstamo» bloqueaba insumos con cajón en otro pañol (ahora vale solo para unidades).
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (81 archivos, 469 tests) en verde; backend 628 tests, pint y Larastan. Recorrido en Chromium contra la API local: alta de sala con código sugerido, vista previa del cajón, códigos y etiquetas visibles, y devolución de `REM-2026-HOFDSK` en dos rondas (unidad movida de cajón, unidad dañada, cajón de otro pañol y cajón equivocado rechazados, insumo con cajón en otro pañol devuelto).
 
+
+---
+
+## FEAT-044: Módulo Compras (hub y menú desplegable)
+
+- **Fecha:** 2026-11-16
+- **Módulo:** `apps/web` (`features/compras`, `layouts`, `app.tsx`, `auth/types/roles.ts`)
+- **Qué hace:** la barra lateral muestra una sola entrada «Compras» con un desplegable (solicitudes, órdenes, facturas, presupuestos, proveedores, historial de cotizaciones) que se abre solo al estar en una de sus páginas; en el riel encogido solo aparece el icono de Compras. La página `/compras` muestra las 5 etapas del flujo con cuántas solicitudes esperan en cada una (enlazan a la lista filtrada por `?status=`) y los módulos que permite el rol.
+- **Rutas nuevas:** `/compras/solicitudes[/:id]`, `/compras/ordenes[/:id/trazabilidad]`, `/compras/facturas`, `/compras/presupuestos`, `/compras/proveedores`, `/compras/cotizaciones`. Las anteriores (`/solicitudes-compra`, `/ingresos-factura`, `/presupuestos`, `/proveedores`, `/cotizaciones`, `/compras/:id/trazabilidad`) redirigen conservando la query. Sin cambios en la API.
+- **Permisos:** `rolesForRoute` ahora usa el prefijo más largo (antes el primero en orden), para que `/compras` no dé acceso a PAN-01 a las subpáginas de DIR-01/AD-01.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest en verde (un test de la cola de préstamos falla de forma intermitente con la suite completa y pasa aislado). Recorrido en Chrome contra la API local como DIR-01 y PAN-01: hub con contadores, desplegable, filtro por etapa y redirección de `/ingresos-factura?ingreso=1`.

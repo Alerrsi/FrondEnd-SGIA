@@ -81,7 +81,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           if (m.purchase_id) {
             return (
               <Link
-                to="/compras"
+                to="/compras/ordenes"
                 className="font-mono text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
               >
                 Compra #{m.purchase_id}
@@ -91,7 +91,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           if (m.invoice_intake_id) {
             return (
               <Link
-                to={`/ingresos-factura?ingreso=${m.invoice_intake_id}`}
+                to={`/compras/facturas?ingreso=${m.invoice_intake_id}`}
                 className="font-mono text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
               >
                 Ingreso #{m.invoice_intake_id}

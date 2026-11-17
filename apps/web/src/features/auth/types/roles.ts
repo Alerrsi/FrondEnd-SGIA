@@ -23,12 +23,14 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/historial': ['PAN-01', 'DIR-01', 'AD-01'],
   '/equipos': ['AD-01', 'DIR-01', 'PAN-01'],
   '/alertas': ['AD-01', 'DIR-01', 'PAN-01'],
-  '/proveedores': ['DIR-01', 'AD-01'],
-  '/cotizaciones': ['DIR-01', 'AD-01'],
-  '/solicitudes-compra': ['DIR-01', 'AD-01', 'PAN-01'],
+  // Módulo Compras: el hub lo ve quien vea al menos una de sus páginas.
   '/compras': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/presupuestos': ['DIR-01', 'AD-01'],
-  '/ingresos-factura': ['DIR-01', 'AD-01'],
+  '/compras/solicitudes': ['DIR-01', 'AD-01', 'PAN-01'],
+  '/compras/ordenes': ['PAN-01', 'DIR-01', 'AD-01'],
+  '/compras/facturas': ['DIR-01', 'AD-01'],
+  '/compras/presupuestos': ['DIR-01', 'AD-01'],
+  '/compras/proveedores': ['DIR-01', 'AD-01'],
+  '/compras/cotizaciones': ['DIR-01', 'AD-01'],
   '/novedades': ['PAN-01', 'DIR-01', 'AD-01'],
   '/mantenciones': ['PAN-01', 'DIR-01', 'AD-01'],
   '/estudiantes': ['PAN-01', 'AD-01'],
@@ -78,9 +80,10 @@ export function getRoleDefaultPath(role: RoleCode): string {
 export function rolesForRoute(pathname: string): WebRoleCode[] | undefined {
   const exact = ROUTE_PERMISSIONS[pathname];
   if (exact) return exact;
+  // El prefijo más largo gana: `/compras/facturas/x` no hereda los roles de `/compras`.
   const prefix = Object.keys(ROUTE_PERMISSIONS)
-    .filter((route) => route !== '/')
-    .find((route) => pathname.startsWith(route));
+    .filter((route) => route !== '/' && pathname.startsWith(`${route}/`))
+    .sort((a, b) => b.length - a.length)[0];
   return prefix ? ROUTE_PERMISSIONS[prefix] : undefined;
 }
 

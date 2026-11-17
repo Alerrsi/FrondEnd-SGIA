@@ -54,7 +54,7 @@ function Timeline({ trace }: { trace: PurchaseTrace }) {
       {trace.purchase_request && (
         <Step title="Solicitud de compra">
           <li className={rowClasses}>
-            <Link to={`/solicitudes-compra/${trace.purchase_request.id}`} className="font-mono font-medium hover:underline">
+            <Link to={`/compras/solicitudes/${trace.purchase_request.id}`} className="font-mono font-medium hover:underline">
               {trace.purchase_request.code}
             </Link>
             <PurchaseRequestStatusBadge status={trace.purchase_request.status as PurchaseRequestStatus} />
@@ -126,7 +126,7 @@ export default function CompraTrazabilidadPage() {
   return (
     <div className="flex flex-col gap-4">
       <Link
-        to="/compras"
+        to="/compras/ordenes"
         className="inline-flex w-fit items-center gap-1 rounded text-xs text-zinc-500 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:hover:text-zinc-100"
       >
         <ArrowLeft className="h-3.5 w-3.5" />

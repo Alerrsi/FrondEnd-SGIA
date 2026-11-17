@@ -172,7 +172,7 @@ export default function AlertasStockPage() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => navigate('/solicitudes-compra')}
+              onClick={() => navigate('/compras/solicitudes')}
               className="text-xs gap-1.5"
             >
               <ShoppingCart className="h-3.5 w-3.5" />
@@ -274,7 +274,7 @@ export default function AlertasStockPage() {
           initialNotes="Reposición por alerta de stock."
           onSaved={(r) => {
             setSelected(new Map());
-            navigate(`/solicitudes-compra/${r.id}`);
+            navigate(`/compras/solicitudes/${r.id}`);
           }}
         />
       )}

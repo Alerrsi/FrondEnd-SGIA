@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePurchaseRequests } from '@sgia/api-client';
 import { PurchaseRequestStatus } from '@sgia/types';
 import { AlertCircle, ClipboardCheck, Plus, Search } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/features/auth/context/auth-context';
@@ -24,7 +24,12 @@ export default function SolicitudesCompraPage() {
   const navigate = useNavigate();
   const canManage = canDo(user?.rol, 'managePurchaseRequests');
 
-  const [status, setStatus] = useState<PurchaseRequestStatus | ''>('');
+  const [searchParams] = useSearchParams();
+  // El hub de Compras enlaza con `?status=` para abrir la lista ya filtrada por etapa.
+  const [status, setStatus] = useState<PurchaseRequestStatus | ''>(() => {
+    const initial = searchParams.get('status');
+    return STATUS_FILTERS.find((s) => s === initial) ?? '';
+  });
   const [code, setCode] = useState('');
   const [debouncedCode, setDebouncedCode] = useState('');
   const [from, setFrom] = useState('');
@@ -161,7 +166,7 @@ export default function SolicitudesCompraPage() {
         ) : (
           <PurchaseRequestsTable
             rows={rows}
-            onOpen={(r) => navigate(`/solicitudes-compra/${r.id}`)}
+            onOpen={(r) => navigate(`/compras/solicitudes/${r.id}`)}
           />
         )}
 
@@ -196,7 +201,7 @@ export default function SolicitudesCompraPage() {
         <PurchaseRequestFormDialog
           open={formOpen}
           onClose={() => setFormOpen(false)}
-          onSaved={(r) => navigate(`/solicitudes-compra/${r.id}`)}
+          onSaved={(r) => navigate(`/compras/solicitudes/${r.id}`)}
         />
       )}
     </div>
