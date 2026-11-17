@@ -11,6 +11,7 @@ import {
   Cpu,
   GraduationCap,
   History,
+  House,
   Layers,
   LogOut,
   Moon,
@@ -62,6 +63,12 @@ const navLinkClass = (isActive: boolean) =>
   );
 
 const navigation: NavItem[] = [
+  {
+    to: '/inicio',
+    label: 'Portada',
+    icon: House,
+    roles: ROUTE_PERMISSIONS['/inicio'] ?? [],
+  },
   {
     to: '/',
     label: 'Inicio',

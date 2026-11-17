@@ -39,6 +39,7 @@ import MisSolicitudesPage from '@/features/profesor/pages/mis-solicitudes-page';
 import NovedadesPage from '@/features/novedades/pages/novedades-page';
 import MisNovedadesPage from '@/features/profesor/pages/mis-novedades-page';
 import { getRoleDefaultPath, rolesForRoute } from '@/features/auth/types/roles';
+import InicioPage from '@/features/inicio/pages/inicio-page';
 
 
 /** URLs anteriores al módulo Compras (nov 2026) → nuevas; conserva el resto de la ruta y la query. */
@@ -81,6 +82,18 @@ function AppContent() {
               <PublicOnlyRoute>
                 <LoginPage />
               </PublicOnlyRoute>
+            }
+          />
+
+          {/* Portada común a todos los roles, fuera del layout con sidebar */}
+          <Route
+            path="/inicio"
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={rolesForRoute('/inicio') ?? []}>
+                  <InicioPage />
+                </RequireRole>
+              </RequireAuth>
             }
           />
 
