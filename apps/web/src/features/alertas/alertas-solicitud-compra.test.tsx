@@ -80,7 +80,7 @@ describe('Alertas de stock → solicitud de compra', () => {
     renderPage();
 
     const row = screen.getByText('Fuente ATX').closest('tr')!;
-    expect(within(row).getByRole('link', { name: 'SC-2026-0009' }).getAttribute('href')).toBe('/solicitudes-compra/9');
+    expect(within(row).getByRole('link', { name: 'SC-2026-0009' }).getAttribute('href')).toBe('/compras/solicitudes/9');
     expect((within(row).getByLabelText('Seleccionar Fuente ATX') as HTMLInputElement).disabled).toBe(true);
   });
 

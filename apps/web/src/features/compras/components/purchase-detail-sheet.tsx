@@ -139,8 +139,8 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
     const requestCode = purchase.purchase_request?.code;
     navigate(
       requestCode
-        ? `/ingresos-factura?solicitud=${encodeURIComponent(requestCode)}`
-        : `/ingresos-factura?compra=${purchase.id}&presupuesto=${purchase.annual_budget_id}`,
+        ? `/compras/facturas?solicitud=${encodeURIComponent(requestCode)}`
+        : `/compras/facturas?compra=${purchase.id}&presupuesto=${purchase.annual_budget_id}`,
     );
   };
 
@@ -170,7 +170,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
               {purchase.quotation_id ? ` · Cotización #${purchase.quotation_id}` : ''}
             </SheetDescription>
             <Link
-              to={`/compras/${purchase.id}/trazabilidad`}
+              to={`/compras/ordenes/${purchase.id}/trazabilidad`}
               className="w-fit rounded text-xs font-medium text-zinc-700 underline underline-offset-2 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:text-zinc-300 dark:hover:text-zinc-100"
             >
               Ver trazabilidad
@@ -352,7 +352,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
 
             {fromRequest && isManager && isOpen && (
               <Link
-                to={`/solicitudes-compra/${purchase.purchase_request_id}`}
+                to={`/compras/solicitudes/${purchase.purchase_request_id}`}
                 className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
               >
                 Para cancelar esta OC, cancela la solicitud{' '}

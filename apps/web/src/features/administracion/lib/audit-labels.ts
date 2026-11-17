@@ -15,6 +15,9 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   'purchase.cancelled': 'Compra cancelada',
   'invoice_intake.confirmed': 'Factura confirmada',
   'invoice_intake.cancelled': 'Factura anulada',
+  'purchase_request.created': 'Solicitud de compra creada',
+  'purchase_request.status_changed': 'Cambio de estado de solicitud',
+  'purchase_request.quotation_selected': 'Cotización elegida',
 };
 
 export const AUDITABLE_TYPE_LABELS: Record<string, string> = {
@@ -23,6 +26,7 @@ export const AUDITABLE_TYPE_LABELS: Record<string, string> = {
   product: 'Producto',
   purchase: 'Compra',
   invoice_intake: 'Ingreso de factura',
+  purchase_request: 'Solicitud de compra',
 };
 
 /** Etiqueta legible; las acciones desconocidas se muestran tal cual. */

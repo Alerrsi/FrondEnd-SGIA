@@ -797,6 +797,29 @@
 - **Diseño:** CTA principal monocromo; ámbar solo como acento decorativo; rojo solo en la micro-etiqueta de sede. Modo claro y oscuro; en móvil el panel oscuro pasa a tarjeta redondeada bajo el texto.
 - **Verificación:** `inicio-page.test.tsx` (6 tests); `pnpm typecheck` 5/5; `pnpm --filter @sgia/web test` 82 archivos, 475 tests. Revisado en navegador (1440×900 claro/oscuro y 390×844).
 
+---
+
+## FEAT-044: Módulo Compras (hub y menú desplegable)
+
+- **Fecha:** 2026-11-16
+- **Módulo:** `apps/web` (`features/compras`, `layouts`, `app.tsx`, `auth/types/roles.ts`)
+- **Qué hace:** la barra lateral muestra una sola entrada «Compras» con un desplegable (solicitudes, órdenes, facturas, presupuestos, proveedores, historial de cotizaciones) que se abre solo al estar en una de sus páginas; en el riel encogido solo aparece el icono de Compras. La página `/compras` muestra las 5 etapas del flujo con cuántas solicitudes esperan en cada una (enlazan a la lista filtrada por `?status=`) y los módulos que permite el rol.
+- **Rutas nuevas:** `/compras/solicitudes[/:id]`, `/compras/ordenes[/:id/trazabilidad]`, `/compras/facturas`, `/compras/presupuestos`, `/compras/proveedores`, `/compras/cotizaciones`. Las anteriores (`/solicitudes-compra`, `/ingresos-factura`, `/presupuestos`, `/proveedores`, `/cotizaciones`, `/compras/:id/trazabilidad`) redirigen conservando la query. Sin cambios en la API.
+- **Permisos:** `rolesForRoute` ahora usa el prefijo más largo (antes el primero en orden), para que `/compras` no dé acceso a PAN-01 a las subpáginas de DIR-01/AD-01.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest en verde (un test de la cola de préstamos falla de forma intermitente con la suite completa y pasa aislado). Recorrido en Chrome contra la API local como DIR-01 y PAN-01: hub con contadores, desplegable, filtro por etapa y redirección de `/ingresos-factura?ingreso=1`.
+
+---
+
+## FEAT-045: Inicio con pendientes reales dentro del layout
+
+- **Fecha:** 2026-11-16
+- **Módulo:** `apps/web` (`features/inicio`, `components/ui/module-grid.tsx`, `features/compras`, `auth/types/roles.ts`, `layouts`), `packages/types`, `packages/api-client`
+- **Qué cambia respecto de FIX-043:** `/inicio` pasa a estar dentro del layout con sidebar y es a donde llega cada rol al iniciar sesión (`ROLE_DEFAULT_PATH`). En el menú, «Portada» se reemplaza por «Inicio» y el panel de `/` se llama «Analítica». Se quitan la cabecera propia, el carrusel, la recomendación fija, el panel diagonal y la tarjeta de presentación del rol (con la ilustración): la página parte con el saludo y los pendientes, con el estilo del sistema.
+- **«Lo que te toca hoy» con datos reales:** DIR-01 ve las 5 etapas de compras (`PurchaseFlowSteps`, compartido con el hub), stock crítico y préstamos atrasados; PAN-01 la cola por despachar, atrasados y stock crítico; AD-01 atrasados, stock crítico y la actividad reciente de la auditoría; PRO-01 sus solicitudes en revisión, listas para retirar y atrasadas. Cada tarjeta enlaza a la pantalla donde se atiende.
+- **Accesos:** grilla `ModuleGrid` (la misma de «Módulos» en Compras).
+- **Contrato:** `LoanParams.atrasado` envía `atrasado=1` a `GET /api/loans` (filtro ya existente en la API). La auditoría reconoce `purchase_request.*` (creada, cambio de estado, cotización elegida) y el tipo `purchase_request`, que el backend ya registraba.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (83 archivos, 479 tests) en verde. Recorrido en Chrome contra la API local con los cuatro roles: todos llegan a `/inicio` y ven sus contadores reales.
+- **Pendiente conocido (previo):** la campana de notificaciones pide `/alerts/critical-stock` también para PRO-01 y recibe `403`.
 
 ---
 
@@ -805,5 +828,5 @@
 - **Fecha:** 2026-11-16
 - **Módulo:** `apps/web` (`index.css`, `index.html`, `components/ui`, `layouts/app-layout.tsx`, `features/dashboard/lib/chart-format.ts`, 33 vistas sin `uppercase`), reglas en `AGENTS.md`, `CLAUDE.md` y skill `sgia-design`.
 - **Qué cambia:** paleta burdeo `#490b1a` / navy `#142841` / slate `#798da6` / crema `#e5ded2`. La escala `zinc` de Tailwind se redefine en `@theme` como neutros fríos de slate a navy, así que las vistas se recolorean sin tocarlas. Menú lateral navy en ambos temas (`aside.dark`) con el ítem activo como etiqueta crema. CTA burdeo (rosa en oscuro). Schibsted Grotesk en toda la interfaz; `font-mono` pasa a ser la misma fuente con cifras tabulares y Geist Mono (`font-code`) queda solo en los chips de código, que se ven como etiqueta crema. Rótulos y cabeceras en tipo oración. Radios 12/8/6 px por jerarquía, tarjetas sin sombra. Gráficos con paleta propia.
-- **Fuera de alcance:** app móvil y `packages/design-tokens` (sin cambios), portada `/inicio` de `main` (se reemplaza en FEAT-045).
+- **Fuera de alcance:** app móvil y `packages/design-tokens` (sin cambios), portada `/inicio`.
 - **Verificación:** typecheck, lint y vitest en verde; capturas en Chrome contra la API local (inventario, compras, dashboard, login) en claro y oscuro.

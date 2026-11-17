@@ -1,14 +1,11 @@
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { useEffect, useRef, useState } from 'react';
 import {
-  Archive,
   BarChart3,
   Bell,
   Boxes,
-  Building2,
   CalendarClock,
   ClipboardPlus,
-  ClipboardCheck,
   FileWarning,
   PackageSearch,
   Cpu,
@@ -20,14 +17,12 @@ import {
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
-  ReceiptText,
   ScrollText,
   Settings,
   Sun,
   Users,
   Wrench,
-  ShoppingCart,
-  Wallet,
+  ShoppingBag,
   Warehouse,
 } from 'lucide-react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -45,6 +40,8 @@ import { NotificationBell } from '@/features/alertas/components/notification-bel
 import { SettingsModal } from '@/components/settings/settings-modal';
 import { ChangePasswordDialog } from '@/features/auth/components/change-password-dialog';
 import { SessionsDialog } from '@/features/auth/components/sessions-dialog';
+import { purchaseLinksFor } from '@/features/compras/lib/purchase-nav';
+import { SidebarNavGroup } from './sidebar-nav-group';
 import { useScrollFade } from './use-scroll-fade';
 
 interface NavItem {
@@ -53,18 +50,27 @@ interface NavItem {
   icon: typeof BarChart3;
   end?: boolean;
   roles: WebRoleCode[];
+  /** Muestra las páginas del módulo Compras en un desplegable. */
+  group?: boolean;
 }
+
+const navLinkClass = (isActive: boolean) =>
+  cn(
+    'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
+    // Menú navy: el activo es una etiqueta crema con tinta burdeo (el icono hereda el color)
+    isActive ? 'bg-tag text-tag-ink font-semibold' : 'text-zinc-300 hover:bg-white/8 hover:text-white',
+  );
 
 const navigation: NavItem[] = [
   {
     to: '/inicio',
-    label: 'Portada',
+    label: 'Inicio',
     icon: House,
     roles: ROUTE_PERMISSIONS['/inicio'] ?? [],
   },
   {
     to: '/',
-    label: 'Inicio',
+    label: 'Analítica',
     icon: BarChart3,
     end: true,
     roles: ROUTE_PERMISSIONS['/'] ?? [],
@@ -94,41 +100,12 @@ const navigation: NavItem[] = [
     roles: ROUTE_PERMISSIONS['/equipos'] ?? [],
   },
   {
-    to: '/solicitudes-compra',
-    label: 'Solicitudes de compra',
-    icon: ClipboardCheck,
-    roles: ROUTE_PERMISSIONS['/solicitudes-compra'] ?? [],
-  },
-  {
+    // Agrupa el flujo de compras; sus páginas van en un desplegable (`PURCHASE_NAV_LINKS`).
     to: '/compras',
-    label: 'Órdenes de compra',
-    icon: ShoppingCart,
+    label: 'Compras',
+    icon: ShoppingBag,
     roles: ROUTE_PERMISSIONS['/compras'] ?? [],
-  },
-  {
-    to: '/presupuestos',
-    label: 'Presupuestos',
-    icon: Wallet,
-    roles: ROUTE_PERMISSIONS['/presupuestos'] ?? [],
-  },
-  {
-    to: '/ingresos-factura',
-    label: 'Facturas',
-    icon: ReceiptText,
-    roles: ROUTE_PERMISSIONS['/ingresos-factura'] ?? [],
-  },
-  {
-    to: '/proveedores',
-    label: 'Proveedores',
-    icon: Building2,
-    roles: ROUTE_PERMISSIONS['/proveedores'] ?? [],
-  },
-  {
-    // Flujo antiguo en solo lectura (Fase 7): al final del bloque de compras.
-    to: '/cotizaciones',
-    label: 'Historial cotizaciones',
-    icon: Archive,
-    roles: ROUTE_PERMISSIONS['/cotizaciones'] ?? [],
+    group: true,
   },
   {
     to: '/novedades',
@@ -467,34 +444,29 @@ export default function AppLayout() {
                   aria-label="Navegación principal"
                   className="sidebar-scroll -mx-1 flex min-h-0 flex-col gap-1 px-1"
                 >
-                  {allowedNavItems.map(({ to, label, icon: Icon, end }) => (
-                    <NavLink
-                      key={to}
-                      to={to}
-                      end={end}
-                      aria-label={label}
-                      className={({ isActive }) =>
-                        cn(
-                          'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
-                          isActive
-                            ? 'bg-tag text-tag-ink font-semibold'
-                            : 'text-zinc-300 hover:bg-white/8 hover:text-white',
-                        )
-                      }
-                    >
-                      {({ isActive }) => (
-                        <>
-                          <Icon
-                            className={cn(
-                              'h-4 w-4 shrink-0',
-                              isActive ? 'text-tag-ink' : 'text-zinc-400',
-                            )}
-                          />
-                          <span className="truncate">{label}</span>
-                        </>
-                      )}
-                    </NavLink>
-                  ))}
+                  {allowedNavItems.map(({ to, label, icon: Icon, end, group }) =>
+                    group ? (
+                      <SidebarNavGroup
+                        key={to}
+                        to={to}
+                        label={label}
+                        icon={Icon}
+                        links={purchaseLinksFor(userRole)}
+                        linkClassName={navLinkClass}
+                      />
+                    ) : (
+                      <NavLink
+                        key={to}
+                        to={to}
+                        end={end}
+                        aria-label={label}
+                        className={({ isActive }) => navLinkClass(isActive)}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{label}</span>
+                      </NavLink>
+                    ),
+                  )}
                 </nav>
               </div>
 

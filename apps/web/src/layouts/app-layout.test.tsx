@@ -84,7 +84,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     expect(screen.getByTitle('Encoger panel lateral')).toBeDefined();
   });
 
-  it('renders "Pañol" when user has role PAN-01 and without technical code', () => {
+  it('renders "Pañol" when user has role PAN-01 and without technical code', async () => {
     mockUserRole = 'PAN-01';
     mockUserName = 'Pañolero Juan';
 
@@ -104,12 +104,15 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     // NO debe mostrar el código técnico "PAN-01"
     expect(screen.queryByText('PAN-01')).toBeNull();
 
-    // Presupuestos e ingresos de factura son solo de AD-01 / DIR-01 (REQ-16 / REQ-17)
+    // En Compras, PAN-01 solo ve solicitudes y órdenes; presupuestos y facturas son de AD-01 / DIR-01.
+    await userEvent.setup().click(screen.getByRole('button', { name: 'Desplegar Compras' }));
+    expect(screen.getByRole('link', { name: 'Solicitudes de compra' })).toBeDefined();
+    expect(screen.getByRole('link', { name: 'Órdenes de compra' })).toBeDefined();
     expect(screen.queryByText('Presupuestos')).toBeNull();
     expect(screen.queryByText('Facturas')).toBeNull();
   });
 
-  it('muestra Presupuestos e Ingresos de factura a DIR-01', () => {
+  it('agrupa el flujo de compras de DIR-01 en el desplegable Compras', async () => {
     mockUserRole = 'DIR-01';
     mockUserName = 'Director Ana';
 
@@ -123,8 +126,41 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('Presupuestos')).toBeDefined();
-    expect(screen.getByText('Facturas')).toBeDefined();
+    // Cerrado fuera del módulo: solo se ve la entrada Compras.
+    expect(screen.getByRole('link', { name: 'Compras' }).getAttribute('href')).toBe('/compras');
+    expect(screen.queryByText('Presupuestos')).toBeNull();
+
+    await userEvent.setup().click(screen.getByRole('button', { name: 'Desplegar Compras' }));
+    const labels = screen
+      .getAllByRole('link')
+      .map((a) => a.getAttribute('href'))
+      .filter((href) => href?.startsWith('/compras/'));
+    expect(labels).toEqual([
+      '/compras/solicitudes',
+      '/compras/ordenes',
+      '/compras/facturas',
+      '/compras/presupuestos',
+      '/compras/proveedores',
+      '/compras/cotizaciones',
+    ]);
+  });
+
+  it('abre el desplegable Compras solo al estar en una de sus páginas', () => {
+    mockUserRole = 'DIR-01';
+
+    render(
+      <MemoryRouter initialEntries={['/compras/facturas']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/compras/facturas" element={<div>Facturas</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const factura = screen.getByRole('link', { name: 'Facturas' });
+    expect(factura.getAttribute('aria-current')).toBe('page');
+    expect(screen.getByRole('button', { name: 'Contraer Compras' }).getAttribute('aria-expanded')).toBe('true');
   });
 
   it('toggles collapse and expand, maintaining option logos accessible', async () => {

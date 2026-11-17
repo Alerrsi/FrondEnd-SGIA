@@ -61,7 +61,7 @@ export default function SolicitudCompraDetailPage() {
   if (isError || !request) {
     return (
       <div className="flex flex-col gap-3">
-        <Link to="/solicitudes-compra" className="inline-flex items-center gap-1 text-xs text-zinc-500">
+        <Link to="/compras/solicitudes" className="inline-flex items-center gap-1 text-xs text-zinc-500">
           <ArrowLeft className="h-3.5 w-3.5" />
           Volver a solicitudes
         </Link>
@@ -110,7 +110,7 @@ export default function SolicitudCompraDetailPage() {
   return (
     <div className="flex flex-col gap-4">
       <Link
-        to="/solicitudes-compra"
+        to="/compras/solicitudes"
         className="inline-flex w-fit items-center gap-1 text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
       >
         <ArrowLeft className="h-3.5 w-3.5" />

@@ -16,9 +16,9 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
 
 const renderPage = () =>
   render(
-    <MemoryRouter initialEntries={['/compras/4/trazabilidad']}>
+    <MemoryRouter initialEntries={['/compras/ordenes/4/trazabilidad']}>
       <Routes>
-        <Route path="/compras/:id/trazabilidad" element={<CompraTrazabilidadPage />} />
+        <Route path="/compras/ordenes/:id/trazabilidad" element={<CompraTrazabilidadPage />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -77,7 +77,7 @@ describe('CompraTrazabilidadPage', () => {
       },
     };
     renderPage();
-    expect(screen.getByRole('link', { name: 'SC-2026-0007' }).getAttribute('href')).toBe('/solicitudes-compra/7');
+    expect(screen.getByRole('link', { name: 'SC-2026-0007' }).getAttribute('href')).toBe('/compras/solicitudes/7');
     expect(screen.getByText('Microtec')).toBeDefined();
     expect(screen.getAllByText('Elegida')).toHaveLength(1);
     expect(screen.queryByText('Sin cotizaciones asociadas.')).toBeNull();

@@ -17,6 +17,9 @@ export const AUDIT_ACTIONS = [
   'purchase.cancelled',
   'invoice_intake.confirmed',
   'invoice_intake.cancelled',
+  'purchase_request.created',
+  'purchase_request.status_changed',
+  'purchase_request.quotation_selected',
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
@@ -27,6 +30,7 @@ export const AUDITABLE_TYPES = [
   'product',
   'purchase',
   'invoice_intake',
+  'purchase_request',
 ] as const;
 
 export type AuditableType = (typeof AUDITABLE_TYPES)[number];
