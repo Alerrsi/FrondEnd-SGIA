@@ -169,7 +169,7 @@ export default function ColaPrestamosPage() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-amber-500">
           <div>
-            <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
               Solicitudes por preparar
             </span>
             <span className="mt-0.5 text-xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
@@ -181,7 +181,7 @@ export default function ColaPrestamosPage() {
 
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-blue-500">
           <div>
-            <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
               Total solicitudes en cola
             </span>
             <span className="mt-0.5 text-xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
@@ -193,7 +193,7 @@ export default function ColaPrestamosPage() {
 
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-rose-500">
           <div>
-            <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
               Vencidos / fuera de plazo
             </span>
             <span className="mt-0.5 text-xl font-bold font-mono text-rose-600 dark:text-rose-400">
@@ -327,7 +327,7 @@ export default function ColaPrestamosPage() {
 
                   {/* Insumos solicitados con micro-inspección de ubicación */}
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 mb-1.5">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">
                       <span>Insumos solicitados</span>
                       <span className="font-mono text-zinc-600 dark:text-zinc-400">
                         ({itemsCount} {itemsCount === 1 ? 'ítem' : 'ítems'})

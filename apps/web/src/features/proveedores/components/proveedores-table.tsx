@@ -41,7 +41,7 @@ export interface ProveedoresTableProps {
 }
 
 const thClasses =
-  'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500';
+  'px-3 py-2 text-left text-xs font-semibold text-zinc-400 dark:text-zinc-500';
 const tdClasses =
   'px-3 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 whitespace-nowrap';
 

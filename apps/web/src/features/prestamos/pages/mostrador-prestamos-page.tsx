@@ -327,7 +327,7 @@ export default function MostradorPrestamosPage() {
           {/* Columna Izquierda: Datos del Docente y Escáner */}
           <div className="flex flex-col gap-4 lg:col-span-1">
             <Card className="flex flex-col gap-3 p-4 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
+              <span className="text-xs font-semibold text-zinc-500">
                 1. Quién retira
               </span>
 
@@ -442,7 +442,7 @@ export default function MostradorPrestamosPage() {
             {/* Captura de Escáner Code128 */}
             <Card className="flex flex-col gap-2 p-4 border-2 border-red-500/30 bg-red-500/5 dark:bg-red-500/10 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
+                <span className="text-xs font-bold text-red-600 dark:text-red-400">
                   2. Entrada Lector Code128
                 </span>
                 <Badge tone="accent" mono dot>Auto-foco</Badge>
@@ -473,7 +473,7 @@ export default function MostradorPrestamosPage() {
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
               <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
+                  <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                     Ítems agregados al préstamo
                   </span>
                   <Badge tone="neutral">{scannedItems.length} distintos</Badge>
@@ -605,7 +605,7 @@ export default function MostradorPrestamosPage() {
           {/* Columna Izquierda: Búsqueda de Préstamo Activo */}
           <div className="flex flex-col gap-3 lg:col-span-1">
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
+              <span className="text-xs font-semibold text-zinc-500">
                 Buscar préstamo activo
               </span>
               <div className="relative mt-2">

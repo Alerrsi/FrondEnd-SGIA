@@ -797,3 +797,13 @@
 - **Diseño:** CTA principal monocromo; ámbar solo como acento decorativo; rojo solo en la micro-etiqueta de sede. Modo claro y oscuro; en móvil el panel oscuro pasa a tarjeta redondeada bajo el texto.
 - **Verificación:** `inicio-page.test.tsx` (6 tests); `pnpm typecheck` 5/5; `pnpm --filter @sgia/web test` 82 archivos, 475 tests. Revisado en navegador (1440×900 claro/oscuro y 390×844).
 
+
+---
+
+## Rediseño «Pañol» (rama `feature/rediseno-paleta`, experimental)
+
+- **Fecha:** 2026-11-16
+- **Módulo:** `apps/web` (`index.css`, `index.html`, `components/ui`, `layouts/app-layout.tsx`, `features/dashboard/lib/chart-format.ts`, 33 vistas sin `uppercase`), reglas en `AGENTS.md`, `CLAUDE.md` y skill `sgia-design`.
+- **Qué cambia:** paleta burdeo `#490b1a` / navy `#142841` / slate `#798da6` / crema `#e5ded2`. La escala `zinc` de Tailwind se redefine en `@theme` como neutros fríos de slate a navy, así que las vistas se recolorean sin tocarlas. Menú lateral navy en ambos temas (`aside.dark`) con el ítem activo como etiqueta crema. CTA burdeo (rosa en oscuro). Schibsted Grotesk en toda la interfaz; `font-mono` pasa a ser la misma fuente con cifras tabulares y Geist Mono (`font-code`) queda solo en los chips de código, que se ven como etiqueta crema. Rótulos y cabeceras en tipo oración. Radios 12/8/6 px por jerarquía, tarjetas sin sombra. Gráficos con paleta propia.
+- **Fuera de alcance:** app móvil y `packages/design-tokens` (sin cambios), portada `/inicio` de `main` (se reemplaza en FEAT-045).
+- **Verificación:** typecheck, lint y vitest en verde; capturas en Chrome contra la API local (inventario, compras, dashboard, login) en claro y oscuro.

@@ -187,7 +187,7 @@ export function ProductoUnidadesPanel({
       className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs"
     >
       <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
-        <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+        <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
           Unidades{meta ? ` · ${meta.total}` : ''}
         </span>
         <input

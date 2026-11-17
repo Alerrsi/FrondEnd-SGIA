@@ -198,7 +198,7 @@ export default function UbicacionesPage() {
         {/* Columna Izquierda: Salas y Ubicaciones (5 cols) */}
         <div className="md:col-span-5 flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
           <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            <span className="text-xs font-semibold text-zinc-500">
               Salas y Recintos ({locations.length})
             </span>
           </div>
@@ -240,7 +240,7 @@ export default function UbicacionesPage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
-                          <span className="uppercase px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
+                          <span className="px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
                             {loc.tipo}
                           </span>
                           {loc.descripcion && <span className="truncate max-w-[150px]">{loc.descripcion}</span>}

@@ -22,7 +22,7 @@ const CARD_CLASS =
 function StatCard({ label, value, accent }: { label: string; value: number; accent?: string }) {
   return (
     <div className={CARD_CLASS}>
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+      <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
       <p className={cn('mt-1 font-mono text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100', accent)}>

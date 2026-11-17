@@ -155,7 +155,7 @@ export default function AuditoriaPage() {
                           <td colSpan={5} className="bg-zinc-50/60 dark:bg-zinc-950/40 px-4 py-2.5">
                             {details.map(([label, value]) => (
                               <div key={label} className="mb-1">
-                                <span className="font-mono text-[11px] uppercase text-zinc-500">{label}</span>
+                                <span className="text-[11px] text-zinc-500">{label}</span>
                                 <pre className="overflow-x-auto font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
                                   {JSON.stringify(value, null, 2)}
                                 </pre>

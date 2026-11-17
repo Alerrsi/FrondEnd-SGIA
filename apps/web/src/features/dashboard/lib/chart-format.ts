@@ -2,28 +2,28 @@ import type { ChartData, ChartOptions } from 'chart.js';
 import type { ChartType, MetricDataPoint, MetricResult } from '../types/metrics';
 import { isPieLike } from '../types/metrics';
 
-/** Paleta categórica sin rojo: el rojo institucional se reserva para alertas críticas. */
+/** Paleta categórica del sistema «Pañol» (derivada de burdeo, navy, slate y crema; legible en claro y oscuro). */
 const CATEGORICAL = [
-  '#3b82f6',
-  '#06b6d4',
-  '#8b5cf6',
-  '#f59e0b',
-  '#10b981',
-  '#ec4899',
-  '#64748b',
-  '#84cc16',
+  '#798DA6',
+  '#B0415A',
+  '#D9A45B',
+  '#4F8A7B',
+  '#3D5F8C',
+  '#C98B9B',
+  '#8A6E52',
+  '#A9BBD3',
 ];
 
 /** Etiquetas con significado fijo en el contrato (metrics.md §4 y §5). */
 const SEMANTIC: Record<string, string> = {
-  crítica: '#e11d48',
-  advertencia: '#f59e0b',
-  atrasado: '#e11d48',
-  activo: '#3b82f6',
-  'devuelto a tiempo': '#10b981',
-  disponible: '#10b981',
-  'en taller': '#f59e0b',
-  'dado de baja': '#71717a',
+  crítica: '#C2414F',
+  advertencia: '#D9A45B',
+  atrasado: '#C2414F',
+  activo: '#3D5F8C',
+  'devuelto a tiempo': '#4F8A7B',
+  disponible: '#4F8A7B',
+  'en taller': '#D9A45B',
+  'dado de baja': '#8E9BAE',
 };
 
 const MAX_TICK_LABEL = 16;
@@ -85,7 +85,7 @@ export function buildChartData(
   const { points } = result;
   const labels = points.map((p) => p.label);
   const values = points.map((p) => p.value);
-  const surface = isDark ? '#18181b' : '#ffffff';
+  const surface = isDark ? '#142841' : '#ffffff';
 
   if (isPieLike(chartType)) {
     return {
@@ -101,8 +101,8 @@ export function buildChartData(
     };
   }
 
-  const primary = isDark ? '#60a5fa' : '#3b82f6';
-  const secondary = isDark ? '#71717a' : '#a1a1aa';
+  const primary = isDark ? '#E8A3B1' : '#490B1A';
+  const secondary = isDark ? '#55677E' : '#B9C4D2';
   const byCategory = categoryColors(points);
   const pointColors = points.map((p) =>
     p.category ? (byCategory.get(p.category) ?? primary) : primary,
@@ -116,7 +116,7 @@ export function buildChartData(
           label: title,
           data: values,
           borderColor: primary,
-          backgroundColor: isDark ? 'rgba(96, 165, 250, 0.15)' : 'rgba(59, 130, 246, 0.10)',
+          backgroundColor: isDark ? 'rgba(232, 163, 177, 0.14)' : 'rgba(73, 11, 26, 0.08)',
           fill: true,
           tension: 0.3,
           pointBackgroundColor: pointColors,
@@ -171,9 +171,9 @@ export function buildChartOptions(
   isDark: boolean,
 ): ChartOptions {
   const isPercent = result.metric === 'RATE';
-  const textColor = isDark ? '#a1a1aa' : '#52525b';
-  const gridColor = isDark ? 'rgba(63, 63, 70, 0.45)' : 'rgba(228, 228, 231, 0.9)';
-  const mono = { family: 'ui-monospace, monospace', size: 10 };
+  const textColor = isDark ? '#8E9BAE' : '#55677E';
+  const gridColor = isDark ? 'rgba(185, 196, 210, 0.12)' : '#E6EBF1';
+  const font = { family: "'Schibsted Grotesk', system-ui, sans-serif", size: 11 };
   const pieLike = isPieLike(chartType);
   const showLegend = pieLike || hasSecondary(result.points);
 
@@ -190,7 +190,7 @@ export function buildChartOptions(
         position: 'bottom',
         labels: {
           color: textColor,
-          font: mono,
+          font,
           boxWidth: 10,
           generateLabels: pieLike
             ? (chart) =>
@@ -209,14 +209,14 @@ export function buildChartOptions(
         },
       },
       tooltip: {
-        backgroundColor: isDark ? '#18181b' : '#ffffff',
-        titleColor: isDark ? '#fafafa' : '#18181b',
-        bodyColor: isDark ? '#d4d4d8' : '#27272a',
-        borderColor: isDark ? '#3f3f46' : '#e4e4e7',
+        backgroundColor: isDark ? '#142841' : '#ffffff',
+        titleColor: isDark ? '#EFEADF' : '#142841',
+        bodyColor: isDark ? '#B9C4D2' : '#2F4058',
+        borderColor: isDark ? '#1E3350' : '#D8DFE8',
         borderWidth: 1,
         padding: 8,
-        bodyFont: mono,
-        titleFont: { ...mono, weight: 'bold' },
+        bodyFont: font,
+        titleFont: { ...font, weight: 'bold' },
         callbacks: {
           title: labelOf,
           label: (item) => {
@@ -244,7 +244,7 @@ export function buildChartOptions(
             ticks: {
               color: textColor,
               backdropColor: 'transparent',
-              font: mono,
+              font,
               callback: (v) => formatValue(Number(v), isPercent),
             },
           },
@@ -261,7 +261,7 @@ export function buildChartOptions(
         grid: { display: false },
         ticks: {
           color: textColor,
-          font: mono,
+          font,
           maxRotation: 45,
           autoSkip: true,
           callback(value) {
@@ -274,7 +274,7 @@ export function buildChartOptions(
         grid: { color: gridColor },
         ticks: {
           color: textColor,
-          font: mono,
+          font,
           callback: (v) => formatValue(Number(v), isPercent),
         },
       },

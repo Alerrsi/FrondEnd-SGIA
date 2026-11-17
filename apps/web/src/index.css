@@ -5,6 +5,37 @@
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"] *, [data-theme="dark"]));
 
 /*
+ * Sistema «Pañol» (feature/rediseno-paleta). Paleta: burdeo #490b1a, navy #142841, slate #798da6, crema #e5ded2.
+ * La app usa zinc-* en casi todas las vistas: redefinir la escala aquí la convierte en neutros fríos derivados
+ * del slate y el navy sin tocar componentes. 500 (claro) y 400 (oscuro) cumplen AA como texto secundario.
+ */
+@theme {
+  --color-zinc-50: #EFF2F6;
+  --color-zinc-100: #E6EBF1;
+  --color-zinc-200: #D8DFE8;
+  --color-zinc-300: #B9C4D2;
+  --color-zinc-400: #8E9BAE;
+  --color-zinc-500: #55677E;
+  --color-zinc-600: #45566C;
+  --color-zinc-700: #2F4058;
+  --color-zinc-800: #1E3350;
+  --color-zinc-900: #142841;
+  --color-zinc-950: #0A1626;
+  /* Etiqueta de inventario: crema con tinta burdeo (chips de código, ítem activo del menú) */
+  --color-tag: #E5DED2;
+  --color-tag-ink: #490B1A;
+  --font-sans: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
+  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+  /* `font-mono` se usa en ~400 lugares como «estilo técnico»: apunta a la fuente de interfaz con cifras
+     tabulares (ver regla al final). La monoespaciada real queda solo en `font-code` (chips de código). */
+  --font-mono: 'Schibsted Grotesk', system-ui, sans-serif;
+  --font-code: 'Geist Mono', ui-monospace, monospace;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/*
  * Notificaciones (sileo) por encima de modales y sheets.
  * Sileo trae z-index: 50, igual que los overlays de Dialog/Sheet (50 y 60),
  * y como el portal del modal se monta después en el DOM, lo tapaba y
@@ -21,28 +52,28 @@
   :root[data-theme='light'] {
     color-scheme: light;
     /* Marca */
-    --brand: #E1060D;
-    --brand-strong: #B8050A;
-    --brand-soft: #FDEEEE;
+    --brand: #490B1A;
+    --brand-strong: #6B1729;
+    --brand-soft: #F3E4E3;
 
-    /* Neutros cálidos */
-    --ink: #202124;
-    --ink-muted: #5F6368;
-    --bg: #FAF8F5;
+    /* Neutros fríos (slate) y tinta navy */
+    --ink: #142841;
+    --ink-muted: #55677E;
+    --bg: #EFF2F6;
     --surface: #FFFFFF;
-    --surface-alt: #F3F0EB;
-    --line: #E4E1DC;
+    --surface-alt: #E6EBF1;
+    --line: #D8DFE8;
 
     /* Información y foco */
-    --info: #1A73E8;
+    --info: #3E5A7E;
 
     /* Estados de stock */
-    --ok: #1E7B4F;
-    --ok-bg: #E6F4EC;
-    --warn: #A15C00;
-    --warn-bg: #FFF3D9;
-    --danger: #B42318;
-    --danger-bg: #FEE4E2;
+    --ok: #1E6B47;
+    --ok-bg: #E3EFE6;
+    --warn: #8A5300;
+    --warn-bg: #F8EBCF;
+    --danger: #A3202E;
+    --danger-bg: #F7E1DF;
 
     /* Aliases para compatibilidad */
     --color-background: var(--bg);
@@ -61,31 +92,32 @@
 
   /* Modo oscuro cálido institucional (descanso visual en jornadas largas) */
   html.dark,
-  :root[data-theme='dark'] {
+  :root[data-theme='dark'],
+  .dark {
     color-scheme: dark;
-    /* Marca */
-    --brand: #E1060D;
-    --brand-strong: #FF3B42;
-    --brand-soft: rgba(225, 6, 13, 0.15);
+    /* Marca: el burdeo no se ve sobre navy, en oscuro pasa a rosa */
+    --brand: #E8A3B1;
+    --brand-strong: #F2C2CB;
+    --brand-soft: rgba(232, 163, 177, 0.14);
 
-    /* Neutros cálidos oscuros (carbón cálido / no negro puro) */
-    --ink: #F1F2F4;
-    --ink-muted: #9AA0A6;
-    --bg: #141517;
-    --surface: #1E2023;
-    --surface-alt: #26292D;
-    --line: rgba(255, 255, 255, 0.1);
+    /* Neutros navy */
+    --ink: #EFEADF;
+    --ink-muted: #8E9BAE;
+    --bg: #0A1626;
+    --surface: #142841;
+    --surface-alt: #1E3350;
+    --line: rgba(185, 196, 210, 0.14);
 
     /* Información y foco */
-    --info: #8AB4F8;
+    --info: #A9BBD3;
 
     /* Estados de stock */
-    --ok: #34A853;
-    --ok-bg: rgba(52, 168, 83, 0.15);
-    --warn: #FBBC04;
-    --warn-bg: rgba(251, 188, 4, 0.15);
-    --danger: #EA4335;
-    --danger-bg: rgba(234, 67, 53, 0.15);
+    --ok: #6CC18F;
+    --ok-bg: rgba(108, 193, 143, 0.14);
+    --warn: #E8B860;
+    --warn-bg: rgba(232, 184, 96, 0.14);
+    --danger: #F08A8F;
+    --danger-bg: rgba(240, 138, 143, 0.14);
 
     /* Aliases para compatibilidad */
     --color-background: var(--bg);
@@ -540,7 +572,7 @@
   body {
     background-color: var(--bg);
     color: var(--ink);
-    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
   }
@@ -1212,11 +1244,11 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
 
 @layer components {
   .font-display {
-    font-family: 'Sora', 'IBM Plex Sans', sans-serif;
+    font-family: var(--font-display);
   }
 
   .font-mono-tabular {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
 
@@ -1224,7 +1256,7 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
   .sku-chip {
     display: inline-flex;
     align-items: center;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: var(--font-code);
     font-variant-numeric: tabular-nums;
     font-size: 0.75rem;
     padding: 0.125rem 0.375rem;
@@ -1550,4 +1582,28 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
   html.dark .gnav-item[data-active="true"] {
     color: #FAFAFA;
   }
+}
+
+/*
+ * Menú lateral navy (sistema «Pañol»). Va fuera de @layer para ganarle a los estilos claros
+ * del IconBar, que se basan en el tema de la raíz y no en el `.dark` del aside.
+ */
+aside.dark .bar-well {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+aside.dark .gnav-ind {
+  background-color: var(--color-tag);
+  border: none;
+  box-shadow: none;
+}
+
+aside.dark .gnav-item[data-active='true'] {
+  color: var(--color-tag-ink);
+}
+
+.font-mono {
+  font-variant-numeric: tabular-nums;
 }

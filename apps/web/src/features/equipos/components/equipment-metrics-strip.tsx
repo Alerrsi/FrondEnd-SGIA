@@ -34,7 +34,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
           <Cpu className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
             Total equipos
           </p>
           <p className="font-mono text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 tabular-nums">
@@ -49,7 +49,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
           <CheckCircle2 className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
             En operación
           </p>
           <p className="font-mono text-xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400 tabular-nums">
@@ -64,7 +64,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
           <Wrench className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
             En mantención / taller
           </p>
           <p className="font-mono text-xl font-bold tracking-tight text-amber-600 dark:text-amber-400 tabular-nums">
@@ -79,7 +79,7 @@ export function EquipmentMetricsStrip({ equipos }: EquipmentMetricsStripProps) {
           <AlertTriangle className="h-4.5 w-4.5" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
             Obsolescencia próxima
           </p>
           <p className="font-mono text-xl font-bold tracking-tight text-rose-600 dark:text-rose-400 tabular-nums">

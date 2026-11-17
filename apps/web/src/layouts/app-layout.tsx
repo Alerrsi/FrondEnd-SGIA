@@ -283,11 +283,12 @@ export default function AppLayout() {
         <aside
           style={{ width: isCollapsed ? 64 : sidebarWidth }}
           className={cn(
-            'relative flex flex-col justify-between select-none overflow-hidden z-20',
+            // `dark` fija el menú en navy también en modo claro: sus hijos usan las variantes dark:
+            'dark relative flex flex-col justify-between select-none overflow-hidden z-20 bg-zinc-900 text-zinc-100',
             isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
             isCollapsed
-              ? 'rail-collapsed gap-2 py-3 px-2 items-center bg-transparent border-none shadow-none'
-              : 'gap-3 p-3 bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800',
+              ? 'rail-collapsed gap-2 py-3 px-2 items-center'
+              : 'gap-3 p-3',
           )}
         >
           {isCollapsed ? (
@@ -440,8 +441,8 @@ export default function AppLayout() {
                       <Boxes className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="font-mono text-xs font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-                        SGIA · Pañol
+                      <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                        SGIA Pañol
                       </span>
                       <span className="truncate text-[11px] sede-text text-zinc-400 dark:text-zinc-500">
                         INACAP Sede Temuco
@@ -474,10 +475,10 @@ export default function AppLayout() {
                       aria-label={label}
                       className={({ isActive }) =>
                         cn(
-                          'relative flex shrink-0 items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
+                          'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
                           isActive
-                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-zinc-900 dark:before:bg-zinc-100'
-                            : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
+                            ? 'bg-tag text-tag-ink font-semibold'
+                            : 'text-zinc-300 hover:bg-white/8 hover:text-white',
                         )
                       }
                     >
@@ -486,9 +487,7 @@ export default function AppLayout() {
                           <Icon
                             className={cn(
                               'h-4 w-4 shrink-0',
-                              isActive
-                                ? 'text-zinc-900 dark:text-zinc-100'
-                                : 'text-zinc-500 dark:text-zinc-400',
+                              isActive ? 'text-tag-ink' : 'text-zinc-400',
                             )}
                           />
                           <span className="truncate">{label}</span>
@@ -601,7 +600,7 @@ export default function AppLayout() {
           {/* Top Header: Unificado con el mismo color del body (bg-zinc-50 dark:bg-zinc-950) sin discrepancias */}
           <header className="flex h-12 flex-shrink-0 items-center justify-between border-b border-zinc-200/80 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-6 transition-colors">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-wider sede-text text-zinc-400 dark:text-zinc-500">
+              <span className="text-xs sede-text text-zinc-400 dark:text-zinc-500">
                 Módulo activo
               </span>
               <span className="text-zinc-300 dark:text-zinc-700">/</span>

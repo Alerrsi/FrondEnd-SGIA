@@ -252,7 +252,7 @@ export function QuickProductDialog({
               {...register('master_code')}
               aria-invalid={Boolean(errors.master_code) || undefined}
               disabled={pending}
-              className={`${inputClasses} mt-1.5 uppercase`}
+              className={`${inputClasses} mt-1.5`}
             />
             {errors.master_code && <p className={errorClasses}>{errors.master_code.message}</p>}
           </div>

@@ -172,7 +172,7 @@ export function ProductoDetailDialog({
         {/* Módulo de Identificación Óptica Code128 */}
         <div className="flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-4">
           <div className="mb-2.5 flex items-center justify-between w-full">
-            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 font-mono">
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
               <Barcode className="h-4 w-4 text-zinc-500" />
               Rotulado Code128 de pañol
             </span>

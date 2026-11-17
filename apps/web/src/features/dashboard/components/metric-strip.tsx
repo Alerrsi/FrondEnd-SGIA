@@ -40,7 +40,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-y sm:divide-y-0 sm:divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 font-mono shadow-xs overflow-hidden">
       {/* 1. Activos Disponibles */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <CheckCircle2 className="h-3 w-3 text-emerald-500" />
           <span>Disponibles</span>
         </div>
@@ -51,7 +51,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 2. En préstamo */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <Boxes className="h-3 w-3 text-blue-500" />
           <span>En préstamo</span>
         </div>
@@ -62,7 +62,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 3. En taller / Mantención */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <Wrench className="h-3 w-3 text-amber-500" />
           <span>En taller</span>
         </div>
@@ -73,7 +73,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 4. De baja */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <AlertOctagon className="h-3 w-3 text-zinc-400" />
           <span>De baja</span>
         </div>
@@ -84,7 +84,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 5. Préstamos hoy */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <CalendarClock className="h-3 w-3 text-indigo-500" />
           <span>Préstamos hoy</span>
         </div>
@@ -95,7 +95,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 6. Tasa de Atrasos */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <Percent className="h-3 w-3 text-rose-500" />
           <span>Tasa atrasos</span>
         </div>
@@ -106,7 +106,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 7. Alertas Críticas */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <AlertOctagon className="h-3 w-3 text-red-600 animate-pulse" />
           <span>Alertas stock</span>
         </div>
@@ -117,7 +117,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
       {/* 8. Tasa Rotación */}
       <div className="flex flex-col p-2.5">
-        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
           <TrendingUp className="h-3 w-3 text-teal-500" />
           <span>Rotación mes</span>
         </div>

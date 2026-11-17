@@ -75,15 +75,17 @@ FrondEnd-SGIA/
 
 > Especificación completa (tokens, tablas, drawers, patrón de componente): [`.claude/skills/sgia-design/SKILL.md`](.claude/skills/sgia-design/SKILL.md). Paletas alternativas: [`references/paletas.md`](.claude/skills/sgia-design/references/paletas.md).
 
-Estética industrial, técnica y de alta densidad (inspirada en Linear, Supabase y Vercel), con doble tema claro/oscuro y escala neutra `zinc`.
+Sistema «Pañol»: paleta burdeo `#490b1a`, navy `#142841`, slate `#798da6` y crema `#e5ded2`, con doble tema claro/oscuro. La escala `zinc` de Tailwind está redefinida en `apps/web/src/index.css` como neutros fríos de slate a navy: se sigue escribiendo `zinc-*`.
 
-- **Canvas:** `bg-zinc-100 dark:bg-zinc-950`; paneles `bg-white dark:bg-zinc-900` con borde de 1px y elevación mínima.
-- **Rojo institucional (`#d9232a`):** solo etiqueta de sede y paradas o alertas críticas. El CTA principal es monocromo; nunca fondos grandes ni cabeceras rojas.
+- **Canvas:** `bg-zinc-50 dark:bg-zinc-950`; paneles `bg-white dark:bg-zinc-900` con borde de 1px y sin sombra. El menú lateral es navy en ambos temas (`aside.dark`).
+- **Burdeo (`bg-accent`):** acento único. CTA principal (`Button` primary), etiqueta de sede y línea de los gráficos; en oscuro pasa a rosa `#E8A3B1` con texto navy. Nunca como fondo grande. Los estados críticos usan `rose`/`danger`, no el burdeo.
+- **Crema (`bg-tag` + `text-tag-ink`):** etiqueta de inventario. Solo chips de código (`CODE_CHIP_CLASS`) y el ítem activo del menú.
 - **Badges de estado:** componente `Badge` (`apps/web/src/components/ui/badge.tsx`), pastilla tintada con borde, icono + texto y punto opcional.
-- **Tipografía:** `font-mono` obligatorio en SKU, seriales, Code128, IP/MAC, gavetas y RUT; `font-sans` (Inter o Geist) para el resto.
+- **Tipografía:** Schibsted Grotesk para todo (`font-sans`/`font-display`). `font-mono` es la misma fuente con cifras tabulares (datos técnicos, montos); la monoespaciada real (Geist Mono, `font-code`) va solo en chips de código. Rótulos y cabeceras en tipo oración: sin `uppercase` ni `tracking-wider`.
 - **Tablas:** TanStack Table, cabeceras compactas, máximo 1 acción directa por fila y el resto en `DropdownMenu`.
 - **Formularios y mesón:** React Hook Form + Zod; Drawers (Radix Sheet) para operaciones frecuentes, Dialog solo para confirmaciones destructivas; escáner Code128 por `keydown` + `Enter`; avisos con Sileo.
-- **Paletas alternativas:** el fondo sigue siendo blanco/negro. El color va en botones, textos y estados; prohibido teñir canvas o tarjetas con fondos saturados.
+- **Forma:** radios por jerarquía: contenedores `rounded-lg` (12px), controles `rounded-md` (8px), chips `rounded-sm` (6px).
+- **Paletas alternativas:** el fondo sigue siendo claro/oscuro. El color va en botones, textos y estados; prohibido teñir canvas o tarjetas con fondos saturados.
 
 > **RESTRICCIÓN OBLIGATORIA (Sidebar encogido):** con `isCollapsed === true` (ancho `64px`), el `IconBar` y todos los muelles de iconos del lateral izquierdo **DEBEN PERMANECER SIEMPRE EN ORIENTACIÓN VERTICAL** (`axis="column"`, `data-orientation="vertical"`, `flex flex-col items-center`). Prohibido renderizarlos en horizontal (`row`).
 

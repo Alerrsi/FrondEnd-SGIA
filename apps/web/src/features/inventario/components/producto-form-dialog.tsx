@@ -285,7 +285,7 @@ export function ProductoFormDialog({
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación de hardware */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
             Identificación de hardware
           </legend>
 
@@ -419,7 +419,7 @@ export function ProductoFormDialog({
 
         {/* Fieldset: Maestro de artículos de Oracle (opcional) */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
             Maestro Oracle (opcional)
           </legend>
 
@@ -433,7 +433,7 @@ export function ProductoFormDialog({
                 disabled={isPending}
                 placeholder="Ej. OF33075"
                 aria-invalid={Boolean(errors.master_code) || undefined}
-                className={cn(inputClasses, 'uppercase')}
+                className={cn(inputClasses, '')}
                 {...register('master_code')}
               />
               <FieldError message={errors.master_code?.message} />
@@ -454,7 +454,7 @@ export function ProductoFormDialog({
 
         {/* Fieldset: Parámetros de Stock */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
             Parámetros de stock y alertas
           </legend>
 
@@ -505,7 +505,7 @@ export function ProductoFormDialog({
 
         {/* Fieldset: Ubicación en pañol */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
+          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
             <MapPin className="h-3 w-3 text-zinc-400" />
             <span>Ubicación en pañol</span>
           </legend>

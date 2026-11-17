@@ -7,66 +7,57 @@ description: Diseño visual de la UI de SGIA (web). Usar al crear o modificar co
 
 # Sistema de Gestión de Inventario y Activos (SGIA) - Global UI Specification (Dual Theme: Light & Dark)
 
-Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React, TypeScript y Tailwind CSS. Tu objetivo es diseñar e implementar interfaces para todo el ecosistema de la plataforma SGIA (Pañol TI, Inventario general, Mantenimiento, Préstamos, Gestión de Usuarios y Reportes), erradicando el aspecto de plantilla administrativa genérica mediante una estética técnica, industrial y de alta densidad de información (inspirada en Linear, Supabase y Vercel).Como senior debes usar variables CSS para codigo modular y que los temas no relentizen el sistema
+Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React, TypeScript y Tailwind CSS. Tu objetivo es diseñar e implementar interfaces para todo el ecosistema de la plataforma SGIA (Pañol TI, Inventario general, Mantenimiento, Préstamos, Gestión de Usuarios y Reportes), erradicando el aspecto de plantilla administrativa genérica con el sistema «Pañol»: alta densidad de información, marco navy, acento burdeo y etiquetas crema.Como senior debes usar variables CSS para codigo modular y que los temas no relentizen el sistema
 
 
 
-> **Decisión (Fase 2, resuelta según el código existente):** canvas `bg-zinc-100 dark:bg-zinc-950` (27 archivos lo usan, ninguno `slate-50`); CTA principal monocromo, sin rojo (`Button` variant `primary`; `danger` es rose); badges con el componente `Badge` (pastilla tintada + dot opcional). Los mismos tres puntos están en `AGENTS.md`.
-
-> **NOTA DE PRESERVACIÓN DE FONDOS (vigente):** en las paletas alternativas el fondo sigue siendo blanco/negro (con variación leve). El color va en botones, textos y estados; prohibido teñir canvas o tarjetas con fondos saturados.
+> **Sistema «Pañol» (vigente desde nov 2026, rama `feature/rediseno-paleta`).** Reemplaza la estética monocroma zinc anterior. Los tokens viven en `apps/web/src/index.css` (`@theme`).
 
 ---
 
 ## 1. Stack Tecnológico Obligatorio
 - **Core:** React con TypeScript en modo estricto (cero `any`).
-- **Estilos:** Tailwind CSS con arquitectura de doble tema basada en clases (`dark:...`) y escala neutra `zinc`.
+- **Estilos:** Tailwind CSS con doble tema por clase (`dark:...`). Se escribe `zinc-*`: la escala está redefinida con la paleta (abajo).
 - **Iconografía:** Lucide React (`lucide-react`).
 - **Primitivas UI y Accesibilidad:** Radix UI / Shadcn UI (`DropdownMenu`, `Dialog`, `Sheet`/Drawer, `Tooltip`, `Select`, `Tabs`, `Popover`).
-- **Tablas de Datos:** TanStack Table (`@tanstack/react-table`) para ordenamiento, filtros en memoria y data grids densos.
-- **Formularios & Validación:** React Hook Form + Zod para esquemas fuertemente tipados.
-- **Notificaciones & Feedback:** Sileo (`sileo`) para avisos fluidos, alertas de escáner y confirmaciones de estado.
+- **Tablas de Datos:** TanStack Table (`@tanstack/react-table`).
+- **Formularios & Validación:** React Hook Form + Zod.
+- **Notificaciones & Feedback:** Sileo (`sileo`).
 
 ---
 
-## 2. Identidad Visual y Tokens de Superficie (Dual Theme)
+## 2. Identidad Visual «Pañol» (Dual Theme)
 
-### A. Superficies y Capas (Canvas Hierarchy)
-- **Fondo base (Canvas):** `bg-zinc-100 dark:bg-zinc-950`. Prohibido usar blanco puro o negro plano en todo el fondo.
-- **Contenedores y Paneles:** `bg-white dark:bg-zinc-900` con bordes nítidos de 1px (`border-zinc-200 dark:border-zinc-800`) y sombras leves (`shadow-xs`). Prohibido usar sombras difusas pesadas o tarjetas infladas.
-- **Divisores y Separadores:** Líneas neutras delgadas de 1px (`border-zinc-200 dark:border-zinc-800` o `divide-zinc-100 dark:divide-zinc-800/60`).
+### A. Paleta
+| Nombre | Hex | Rol |
+|---|---|---|
+| Burdeo | `#490b1a` | Acento único: CTA (`bg-accent`), etiqueta de sede, línea de gráficos. En oscuro pasa a rosa `#E8A3B1` con texto navy (el burdeo no contrasta sobre navy). |
+| Navy | `#142841` | Tinta del texto (`zinc-900`), menú lateral, superficies en oscuro. |
+| Slate | `#798da6` | Origen de los neutros fríos: bordes, texto secundario, gráficos. |
+| Crema | `#e5ded2` | Etiqueta de inventario (`bg-tag` + `text-tag-ink` burdeo): solo chips de código y el ítem activo del menú. Nunca de fondo de página. |
 
-### B. Paleta Semántica y Acentos
-- **Acento Institucional INACAP (`#dc2626` / `#ef4444`):**
-  - **Uso estricto y delimitado:** Reservado exclusivamente para la micro-etiqueta institucional (`SEDE TEMUCO · PAÑOL TI`) y estados de parada o alerta crítica real.
-  - **Prohibición:** No usar botones rojos saturados gigantes como acción principal cotidiana para evitar fatiga visual y el aspecto de botón de emergencia.
-- **Botón de Acción Principal Global (CTA):** Monocromático de alto contraste técnico:
-  - Claro: `bg-zinc-900 text-white hover:bg-zinc-800`
-  - Oscuro: `bg-zinc-100 text-zinc-900 hover:bg-white`
-- **Escala de Textos:**
-  - Títulos principales: `text-zinc-900 dark:text-zinc-100 font-semibold`.
-  - Textos secundarios / metadatos: `text-zinc-500 dark:text-zinc-400 text-xs`.
-  - Bordes e inputs: `border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100`.
-- **Estados Semánticos Técnicos (Status Badges con Status Dot):**
-  - Usar el componente `Badge` (`apps/web/src/components/ui/badge.tsx`): pastilla tintada suave de baja saturación con borde (`bg-emerald-50 text-emerald-700 border-emerald-200/60`, y equivalentes `dark:`), icono + texto, y punto de estado de 6px opcional (`dot`). No usar colores fluorescentes. Tonos (punto):
-    - **Disponible / Activo:** Dot `bg-emerald-500 dark:bg-emerald-400`.
-    - **En Préstamo / Asignado:** Dot `bg-blue-500 dark:bg-blue-400`.
-    - **Stock Crítico / Umbral Mínimo:** Dot `bg-rose-500 dark:bg-rose-400`.
-    - **En Mantención / Revisión:** Dot `bg-amber-500 dark:bg-amber-400`.
-    - **De Baja / Retirado:** Dot `bg-zinc-400 dark:bg-zinc-500`.
+Escala `zinc` redefinida (no usar `slate-*`/`gray-*`): 50 `#EFF2F6` (canvas) · 100 `#E6EBF1` · 200 `#D8DFE8` (bordes) · 300 `#B9C4D2` · 400 `#8E9BAE` (texto secundario en oscuro, decorativo en claro) · 500 `#55677E` (texto secundario en claro, AA) · 600–700 · 800 `#1E3350` · 900 `#142841` · 950 `#0A1626` (canvas oscuro). En claro no usar `text-zinc-400` para texto que se debe leer (2.5:1).
 
+### B. Superficies y forma
+- **Canvas:** `bg-zinc-50 dark:bg-zinc-950`. **Paneles:** `bg-white dark:bg-zinc-900`, borde 1px `border-zinc-200 dark:border-zinc-800`, **sin sombra**.
+- **Menú lateral:** navy en ambos temas. El `<aside>` lleva la clase `dark`, así sus hijos usan las variantes `dark:` y los tokens oscuros. Ítem activo: `bg-tag text-tag-ink`.
+- **Radios por jerarquía:** contenedor `rounded-lg` (12px) · control/botón `rounded-md` (8px) · chip `rounded-sm` (6px).
+- **CTA principal:** `Button` variant `primary` (burdeo). Secundarias `outline`/`ghost`. Destructiva `danger` (rose).
+- **Estados (Badge):** emerald disponible · blue en préstamo · rose crítico · amber mantención · zinc de baja. El burdeo no es un estado.
 
-
-### C. Tipografía Específica
-- `font-mono`: Obligatorio para identificadores técnicos: SKUs, seriales de fábrica, rotulado Code128, direcciones IP/MAC (equipos Cisco), gavetas (`Cajon-A2`, `Sala-L3`) y RUT de usuarios.
-- `font-sans`: Tipografía de interfaz (Inter o Geist) para títulos, formularios, textos descriptivos y navegación.
+### C. Tipografía
+- **Schibsted Grotesk** para toda la interfaz (`font-sans`, `font-display`). Títulos de página en `font-bold tracking-tight`.
+- `font-mono` = la misma fuente con cifras tabulares: ubicaciones, RUT, montos, fechas.
+- `font-code` = **Geist Mono**, monoespaciada real: solo dentro de `CODE_CHIP_CLASS` (SKU, Code128, códigos de solicitud u OC).
+- **Tipo oración siempre:** prohibido `uppercase` y `tracking-wider` en rótulos, cabeceras de tabla y etiquetas de campo.
 - **Escala única de títulos (obligatoria).** No escribir clases de tamaño o peso a mano en `h1`–`h4` ni en `<thead>`; usar los componentes de `apps/web/src/components/ui/` (clases en `typography.ts`):
 
   | Nivel | Componente | Estilo |
   |---|---|---|
-  | Título y subtítulo de página | `PageHeading` (`icon`, `title`, `aside`, subtítulo como `children`) | `text-xl font-bold tracking-tight`, icono 20px; subtítulo `text-xs text-zinc-500` |
+  | Título y subtítulo de página | `PageHeading` (`icon`, `title`, `aside`, subtítulo como `children`) | `text-2xl font-bold tracking-tight`, icono 20px; subtítulo `text-sm text-zinc-500` |
   | Título de sección, tarjeta o panel | `SectionTitle` (`icon`, `as`) | `text-sm font-semibold`, icono 16px |
-  | Rótulo de bloque en un detalle (sheet, ficha, modal) | `SectionLabel` (`icon`, `as`) | `text-xs font-semibold uppercase tracking-wider text-zinc-500`, icono 14px |
-  | Cabecera de tabla | `TABLE_HEAD_CLASS` en `<thead>` | `text-[11px] font-mono uppercase tracking-wider text-zinc-500` |
+  | Rótulo de bloque en un detalle (sheet, ficha, modal) | `SectionLabel` (`icon`, `as`) | `text-xs font-semibold text-zinc-500`, icono 14px |
+  | Cabecera de tabla | `TABLE_HEAD_CLASS` en `<thead>` | `text-xs font-medium text-zinc-500` |
   | Título de modal / panel lateral | `Dialog` / `SheetTitle` | `text-base font-semibold` |
 
   La cabecera de página es `flex flex-wrap items-center justify-between gap-3` con `PageHeading` a la izquierda y las acciones a la derecha, sin borde inferior. Excepciones: la marca del login y las pantallas de error.
@@ -77,11 +68,11 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
   |---|---|---|
   | Campo de formulario | `FORM_CONTROL_CLASS` (`form-control.ts`; `FORM_CONTROL_BASE_CLASS` para `<textarea>`) | ancho completo, `h-8.5`, `px-3`, fondo blanco |
   | Filtro de barra de tabla | `FILTER_CONTROL_CLASS` | `h-8`, `px-2`, fondo `zinc-50` |
-  | Etiqueta de campo | `FIELD_LABEL_CLASS` | `text-xs font-semibold uppercase tracking-wider text-zinc-500` |
-  | Chip de código (SKU, ID) | `CODE_CHIP_CLASS` | `font-mono text-xs`, fondo `zinc-100`, borde |
+  | Etiqueta de campo | `FIELD_LABEL_CLASS` | `text-xs font-medium text-zinc-600` |
+  | Chip de código (SKU, ID) | `CODE_CHIP_CLASS` | `font-code text-xs`, etiqueta crema `bg-tag text-tag-ink` |
   | Mensaje de carga / sin datos | `STATE_TEXT_CLASS` | `text-xs` centrado `zinc-500`; `Loader2` siempre `h-4 w-4` |
   | Celdas de tabla | — | listado: `px-4 py-2.5`; tabla dentro de panel: `px-3 py-2`; `<th>` en `font-medium` |
-  | Tarjeta / contenedor | `Card` o las mismas clases | `rounded-md` + `shadow-xs` |
+  | Tarjeta / contenedor | `Card` o las mismas clases | `rounded-lg`, borde, sin sombra |
   | Botón | `Button` con `variant` y `size` | sin colores ni alturas por `className` |
   | Pastilla de estado | `Badge` con `tone` | nunca un `<span>` coloreado a mano |
 
@@ -100,9 +91,9 @@ Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React,
 - Se integran como la cabecera superior del marco de la tabla, con acceso rápido mediante teclado (`/` o `Ctrl + K`) y botones compactos tipo chip para desplegar filtros.
 
 ### C. Data Grids de Alta Densidad (TanStack Table)
-- **Cabeceras:** Tipografía compacta en mayúsculas atenuadas (`text-[11px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 bg-zinc-50/60 dark:bg-zinc-950/40 border-b border-zinc-200 dark:border-zinc-800`).
+- **Cabeceras:** `TABLE_HEAD_CLASS` (tipo oración, `text-xs font-medium text-zinc-500`, fondo `zinc-50/70`).
 - **Filas de Activos:**
-  - SKU destacado en bloque monoespaciado tenue (`font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60`).
+  - SKU como etiqueta crema con `CODE_CHIP_CLASS` (Geist Mono).
   - Nombre del producto en seminegrita con categoría o modelo secundario debajo.
   - Indicador visual de stock: microbarra de nivel compacto (40-60px) en lugar de texto plano huérfano.
   - Acciones por fila: Máximo 1 botón de acción contextual directa (ej. "Prestar" o "Ficha") y el resto agrupadas en menú flotante `MoreHorizontal` de Radix UI.
@@ -136,6 +127,8 @@ Todo modal usa `Dialog` (o `ConfirmDialog` para confirmar); nunca `window.confir
 ---
 
 ## 4. Patrón de Componente de Referencia (Dual Theme)
+
+> Estructura vigente; sus clases de color y tipografía son del sistema anterior. Ante diferencias, manda la sección 2.
 
 ```tsx
 import React from 'react';

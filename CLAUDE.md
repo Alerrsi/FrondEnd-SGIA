@@ -38,11 +38,11 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - **Formularios:** React Hook Form + Zod.
 - **Tablas densas:** TanStack Table. Los identificadores técnicos (SKU, seriales, RUT, IP/MAC) van en `font-mono`.
 - **Sidebar colapsado (`isCollapsed === true`):** el `IconBar` debe permanecer siempre en orientación vertical (`axis="column"`, `flex flex-col items-center`). Nunca en horizontal.
-- **Rojo institucional (`#d9232a`)** solo para paradas, alertas críticas y la etiqueta de sede. El CTA principal es monocromo. Nunca como fondo grande ni cabecera.
+- **Burdeo (`bg-accent`)** es el único acento: CTA principal, etiqueta de sede y gráficos. Nunca como fondo grande ni cabecera. Las alertas críticas van en `rose`/`danger`.
 
 ## Decisiones de diseño
 
-Resueltas en Fase 2 de `rework.md` según el código existente (detalle en el skill `sgia-design`): canvas `bg-zinc-100 dark:bg-zinc-950`; CTA principal monocromo (sin rojo); badges con el componente `Badge`; paletas alternativas no tiñen canvas ni tarjetas.
+Sistema «Pañol» (detalle en el skill `sgia-design`): paleta burdeo/navy/slate/crema; la escala `zinc` está redefinida en `apps/web/src/index.css`, así que se sigue escribiendo `zinc-*`. Canvas `bg-zinc-50 dark:bg-zinc-950`, menú lateral navy en ambos temas, CTA burdeo, chips de código como etiqueta crema (`CODE_CHIP_CLASS`), Schibsted Grotesk en toda la interfaz y rótulos en tipo oración (sin `uppercase`). Badges con el componente `Badge`; paletas alternativas no tiñen canvas ni tarjetas.
 
 ## Convenciones de trabajo
 

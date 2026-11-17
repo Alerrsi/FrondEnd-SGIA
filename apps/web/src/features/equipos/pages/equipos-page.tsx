@@ -461,7 +461,7 @@ export default function EquiposPage() {
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-4 py-2.5 font-medium text-[11px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400 select-none"
+                      className="px-4 py-2.5 font-medium text-[11px] text-zinc-500 dark:text-zinc-400 select-none"
                     >
                       {header.isPlaceholder
                         ? null

@@ -113,7 +113,7 @@ export function SupplierFormDialog({
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Datos de la empresa */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
+          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
             <Building2 className="h-3.5 w-3.5 text-zinc-400" />
             Datos de la empresa
           </legend>
@@ -177,13 +177,13 @@ export function SupplierFormDialog({
 
         {/* Fieldset: Clasificación */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
+          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
             <Tag className="h-3.5 w-3.5 text-zinc-400" />
             Áreas
           </legend>
 
           <div>
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="mb-1 block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               Áreas (al menos 1)
             </span>
             <Controller
