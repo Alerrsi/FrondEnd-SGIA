@@ -110,8 +110,7 @@ describe('LoginPage', () => {
                 <MemoryRouter initialEntries={['/login']}>
                   <Routes>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/inventario" element={<div>Pantalla inventario</div>} />
-                    <Route path="/profesor/solicitudes" element={<div>Pantalla profesor</div>} />
+                    <Route path="/inicio" element={<div>Pantalla inicio</div>} />
                   </Routes>
                 </MemoryRouter>
               </TooltipProvider>
@@ -130,19 +129,19 @@ describe('LoginPage', () => {
       localStorage.clear();
     });
 
-    it('login exitoso guarda el token y redirige según el rol', async () => {
+    it('login exitoso guarda el token y lleva al inicio', async () => {
       mockApi({ status: 200, body: { token: 'tok-123', user: user('PAN-01') } });
       await submit();
 
-      expect(await screen.findByText('Pantalla inventario')).toBeDefined();
+      expect(await screen.findByText('Pantalla inicio')).toBeDefined();
       expect(localStorage.getItem('sgia_token')).toBe('tok-123');
     });
 
-    it('el profesor (PRO-01) entra a la web y va a sus solicitudes', async () => {
+    it('el profesor (PRO-01) entra a la web y llega al inicio', async () => {
       mockApi({ status: 200, body: { token: 'tok-pro', user: user('PRO-01') } }, 'PRO-01');
       await submit();
 
-      expect(await screen.findByText('Pantalla profesor')).toBeDefined();
+      expect(await screen.findByText('Pantalla inicio')).toBeDefined();
       expect(localStorage.getItem('sgia_token')).toBe('tok-pro');
     });
 

@@ -340,6 +340,8 @@ export interface LoanParams {
   estado?: LoanStatus | string;
   /** `false`: solo préstamos sin devolver (`returned_at` nulo); `true`: solo devueltos. */
   devuelto?: boolean;
+  /** `true`: solo entregados, sin devolver y vencidos. */
+  atrasado?: boolean;
   tipo?: LoanOrigin | string;
   type?: LoanOrigin | string;
   origen?: LoanOrigin | string;

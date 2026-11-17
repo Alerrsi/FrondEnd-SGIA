@@ -807,3 +807,16 @@
 - **Rutas nuevas:** `/compras/solicitudes[/:id]`, `/compras/ordenes[/:id/trazabilidad]`, `/compras/facturas`, `/compras/presupuestos`, `/compras/proveedores`, `/compras/cotizaciones`. Las anteriores (`/solicitudes-compra`, `/ingresos-factura`, `/presupuestos`, `/proveedores`, `/cotizaciones`, `/compras/:id/trazabilidad`) redirigen conservando la query. Sin cambios en la API.
 - **Permisos:** `rolesForRoute` ahora usa el prefijo más largo (antes el primero en orden), para que `/compras` no dé acceso a PAN-01 a las subpáginas de DIR-01/AD-01.
 - **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest en verde (un test de la cola de préstamos falla de forma intermitente con la suite completa y pasa aislado). Recorrido en Chrome contra la API local como DIR-01 y PAN-01: hub con contadores, desplegable, filtro por etapa y redirección de `/ingresos-factura?ingreso=1`.
+
+---
+
+## FEAT-045: Inicio con pendientes reales dentro del layout
+
+- **Fecha:** 2026-11-16
+- **Módulo:** `apps/web` (`features/inicio`, `components/ui/module-grid.tsx`, `features/compras`, `auth/types/roles.ts`, `layouts`), `packages/types`, `packages/api-client`
+- **Qué cambia respecto de FIX-043:** `/inicio` pasa a estar dentro del layout con sidebar y es a donde llega cada rol al iniciar sesión (`ROLE_DEFAULT_PATH`). En el menú, «Portada» se reemplaza por «Inicio» y el panel de `/` se llama «Analítica». Se quitan la cabecera propia, el carrusel, la recomendación fija, el panel diagonal y la tarjeta de presentación del rol (con la ilustración): la página parte con el saludo y los pendientes, con el estilo del sistema.
+- **«Lo que te toca hoy» con datos reales:** DIR-01 ve las 5 etapas de compras (`PurchaseFlowSteps`, compartido con el hub), stock crítico y préstamos atrasados; PAN-01 la cola por despachar, atrasados y stock crítico; AD-01 atrasados, stock crítico y la actividad reciente de la auditoría; PRO-01 sus solicitudes en revisión, listas para retirar y atrasadas. Cada tarjeta enlaza a la pantalla donde se atiende.
+- **Accesos:** grilla `ModuleGrid` (la misma de «Módulos» en Compras).
+- **Contrato:** `LoanParams.atrasado` envía `atrasado=1` a `GET /api/loans` (filtro ya existente en la API). La auditoría reconoce `purchase_request.*` (creada, cambio de estado, cotización elegida) y el tipo `purchase_request`, que el backend ya registraba.
+- **Verificación:** `pnpm typecheck`, `pnpm lint` y vitest (83 archivos, 479 tests) en verde. Recorrido en Chrome contra la API local con los cuatro roles: todos llegan a `/inicio` y ven sus contadores reales.
+- **Pendiente conocido (previo):** la campana de notificaciones pide `/alerts/critical-stock` también para PRO-01 y recibe `403`.

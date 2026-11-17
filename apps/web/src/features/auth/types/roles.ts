@@ -5,10 +5,10 @@ export type WebRoleCode = 'AD-01' | 'DIR-01' | 'PAN-01' | 'PRO-01';
 export const WEB_ROLES: readonly WebRoleCode[] = ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'] as const;
 
 export const ROLE_DEFAULT_PATH: Record<WebRoleCode, string> = {
-  'AD-01': '/usuarios',
-  'DIR-01': '/',
-  'PAN-01': '/inventario',
-  'PRO-01': '/profesor/solicitudes',
+  'AD-01': '/inicio',
+  'DIR-01': '/inicio',
+  'PAN-01': '/inicio',
+  'PRO-01': '/inicio',
 };
 
 export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {

@@ -65,13 +65,13 @@ const navLinkClass = (isActive: boolean) =>
 const navigation: NavItem[] = [
   {
     to: '/inicio',
-    label: 'Portada',
+    label: 'Inicio',
     icon: House,
     roles: ROUTE_PERMISSIONS['/inicio'] ?? [],
   },
   {
     to: '/',
-    label: 'Inicio',
+    label: 'Analítica',
     icon: BarChart3,
     end: true,
     roles: ROUTE_PERMISSIONS['/'] ?? [],

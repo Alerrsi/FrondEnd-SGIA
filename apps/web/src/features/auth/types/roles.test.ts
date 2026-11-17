@@ -14,11 +14,10 @@ describe('Role and Route Permissions', () => {
     expect(isWebRole('Docente')).toBe(false);
   });
 
-  it('defines default routes for each web role', () => {
-    expect(getRoleDefaultPath('AD-01')).toBe('/usuarios');
-    expect(getRoleDefaultPath('DIR-01')).toBe('/');
-    expect(getRoleDefaultPath('PAN-01')).toBe('/inventario');
-    expect(getRoleDefaultPath('PRO-01')).toBe('/profesor/solicitudes');
+  it('sends every web role to the start page after login', () => {
+    for (const role of ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'] as const) {
+      expect(getRoleDefaultPath(role)).toBe('/inicio');
+    }
   });
 
   describe('canAccessRoute', () => {

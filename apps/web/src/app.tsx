@@ -85,18 +85,6 @@ function AppContent() {
             }
           />
 
-          {/* Portada común a todos los roles, fuera del layout con sidebar */}
-          <Route
-            path="/inicio"
-            element={
-              <RequireAuth>
-                <RequireRole allowedRoles={rolesForRoute('/inicio') ?? []}>
-                  <InicioPage />
-                </RequireRole>
-              </RequireAuth>
-            }
-          />
-
           {/* Protected routes layout */}
           <Route
             element={
@@ -106,6 +94,16 @@ function AppContent() {
             }
           >
             <Route path="/" element={<RootRoute />} />
+
+            {/* Inicio de todos los roles: a dónde llega cada usuario al iniciar sesión. */}
+            <Route
+              path="/inicio"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/inicio') ?? []}>
+                  <InicioPage />
+                </RequireRole>
+              }
+            />
 
             <Route
               path="/dashboard"
