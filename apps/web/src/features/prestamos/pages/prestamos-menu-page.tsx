@@ -44,7 +44,7 @@ export default function PrestamosMenuPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* 1. Mostrador Presencial */}
         <Card
-          className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer group"
+          className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition cursor-pointer group"
           onClick={() => navigate('/prestamos/mostrador')}
         >
           <div className="flex flex-col gap-3">
@@ -70,13 +70,13 @@ export default function PrestamosMenuPage() {
 
           <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Ir al mostrador</span>
-            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-all" />
+            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition" />
           </div>
         </Card>
 
         {/* 2. Cola remota */}
         <Card
-          className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer group"
+          className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition cursor-pointer group"
           onClick={() => navigate('/prestamos/cola')}
         >
           <div className="flex flex-col gap-3">
@@ -106,13 +106,13 @@ export default function PrestamosMenuPage() {
 
           <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Ver cola de despacho</span>
-            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-all" />
+            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition" />
           </div>
         </Card>
 
         {/* 3. Historial y Auditoría */}
         <Card
-          className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer group"
+          className="flex flex-col justify-between p-5 hover:border-zinc-400 dark:hover:border-zinc-600 transition cursor-pointer group"
           onClick={() => navigate('/prestamos/historial')}
         >
           <div className="flex flex-col gap-3">
@@ -140,7 +140,7 @@ export default function PrestamosMenuPage() {
 
           <div className="mt-6 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3">
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Consultar historial</span>
-            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-all" />
+            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:translate-x-1 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition" />
           </div>
         </Card>
       </div>
