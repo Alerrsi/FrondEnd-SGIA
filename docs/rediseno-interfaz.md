@@ -1,6 +1,6 @@
 # Rediseño de la interfaz web «Trazo»
 
-**Estado: en implementación (19 nov 2026), fase 1 hecha.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
+**Estado: en implementación (19 nov 2026), fases 1 y 2 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
 
 Plan escrito con el skill `design-taste-frontend` (tasteskill 2.5). Ese skill está hecho para sitios de empresa; aquí se usan su sistema de tokens, tipografía, botones, formularios, movimiento, accesibilidad y presupuesto de rendimiento. Lo que es solo de páginas de marketing (fotografías, una sección por pantalla, «momentos», efectos de shader) no aplica a un panel de operación y queda fuera (ver «Fuera de alcance»).
 
@@ -204,7 +204,7 @@ Chart.js se queda (analítica, presupuestos, monitoreo). Nuevo `apps/web/src/lib
 | `CellGrid` / `Cell` (nuevos) | Grilla con bordes compartidos. 1 / 2 / 4 columnas (390 / 768 / 1280). Reemplaza `ModuleGrid` y las tarjetas sueltas de inicio. |
 | `Card` | Pasa a «panel»: `--surface`, borde `--line`, radio 8px, sin sombra. |
 | `Metric` (nuevo) | Cifra + rótulo + variación opcional. Reemplaza la cinta métrica hecha a mano en cada página. |
-| `DataTable` (nuevo, sobre TanStack) | Barra de herramientas integrada (búsqueda `/`, filtros como chips, acciones), cabecera fija, primera columna fija bajo 768px, `mobileRow` opcional, paginación y estados vacío / cargando / error en un solo lugar. |
+| Tabla (`TableFrame`, `TableToolbar`, `TableSearch`, `MobileRow`, `table-styles.ts`) | Piezas componibles en vez de un `DataTable` único: las 8 tablas son `<table>` propias con lógica distinta, así que adoptan el marco sin reescribirse. Barra integrada (búsqueda con `/`), cabecera fija con `maxHeight`, primera columna fija bajo 768px (`STICKY_COL_CLASS`) y vista de filas apiladas (`mobile`). |
 | Campos | Etiqueta visible arriba, ayuda debajo, error bajo su campo en `--danger`, foco con anillo burdeo de 2px. 36px / 44px táctil. Dos columnas desde 640px, una debajo. |
 | `Dialog` | Hoja inferior bajo 640px (decisión 10). Cabecera y pie fijos; se mantiene el estándar de `sgia-design` (tamaños `sm`–`2xl`, `DialogFooter`, confirmación si hay datos escritos). |
 | `Sheet` | Pantalla completa bajo 640px. |
@@ -232,11 +232,11 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 - [ ] Revisión visual en claro y oscuro de 3 pantallas (inventario, cola, solicitud de compra). Hecha solo en login (1440 claro, 390 oscuro): las pantallas internas necesitan la API con sesión.
 
 ### Fase 2 — Componentes base
-- [ ] `Button`, `Badge`, `Card`, campos y `Toggle` (sin `framer-motion`).
-- [ ] Nuevos: `Kbd`, `CellGrid`/`Cell`, `Metric`, `EmptyState`.
-- [ ] `Dialog` y `Sheet` responsivos (hoja inferior / pantalla completa).
-- [ ] `DataTable` con barra integrada, columna fija y `mobileRow`.
-- [ ] Tests de cada componente nuevo.
+- [x] `Button` (pastilla, 44px táctil, sube 1px y se hunde al pulsar), `Badge` (tonos con tokens, sin borde), `Card`, campos y `Toggle` (CSS, sin `framer-motion`; dependencia eliminada).
+- [x] Nuevos: `Kbd`, `CellGrid`/`Cell`, `Metric`, `EmptyState`, `PageHeader`. `ModuleGrid` pasa a celdas.
+- [x] `Dialog` y `Sheet` responsivos (hoja inferior / pantalla completa) con animación de apertura y cierre propia: las clases `animate-in` que usaban no existían en el proyecto.
+- [x] Piezas de tabla con barra integrada, columna fija y filas móviles (ver §9).
+- [x] Tests de cada componente nuevo (`components/ui/trazo-components.test.tsx`).
 
 ### Fase 3 — Layouts y navegación
 - [ ] `nav-config.ts` como fuente única (migrar `app-layout.tsx` e `inicio-content.ts`).

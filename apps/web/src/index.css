@@ -257,8 +257,8 @@
     border-radius: 9999px;
     width: var(--liq-thumb, 24px);
     height: var(--liq-thumb, 24px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
-    will-change: transform;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+    transition: transform var(--m-panel) var(--ease);
   }
 
   :root[data-theme='light'] .liq-thumb,
@@ -487,6 +487,79 @@
   html.dark .gnav-item[data-active="true"] {
     color: var(--ink);
   }
+}
+
+/*
+ * Capa de movimiento «Trazo» (tasteskill motion.md): solo transform y opacity, curva de salida única.
+ * Los overlays de Radix animan con data-state: Radix espera al final de la animación de cierre para desmontar.
+ */
+@keyframes ui-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ui-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes ui-pop-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes ui-pop-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(6px); } }
+@keyframes ui-drop-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes ui-up-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes ui-up-out { from { transform: none; } to { transform: translateY(100%); } }
+@keyframes ui-right-in { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes ui-right-out { from { transform: none; } to { transform: translateX(100%); } }
+@keyframes ui-left-in { from { transform: translateX(-100%); } to { transform: none; } }
+@keyframes ui-left-out { from { transform: none; } to { transform: translateX(-100%); } }
+@keyframes ui-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.ui-overlay[data-state='open'] { animation: ui-fade-in var(--m-panel) var(--ease); }
+.ui-overlay[data-state='closed'] { animation: ui-fade-out var(--m-close) var(--ease); }
+/* Modal: centrado desde 640px; debajo, hoja que sube desde el borde inferior. */
+.ui-dialog[data-state='open'] { animation: ui-up-in var(--m-panel) var(--ease); }
+.ui-dialog[data-state='closed'] { animation: ui-up-out var(--m-close) var(--ease); }
+@media (min-width: 640px) {
+  .ui-dialog[data-state='open'] { animation: ui-pop-in var(--m-panel) var(--ease); }
+  .ui-dialog[data-state='closed'] { animation: ui-pop-out var(--m-close) var(--ease); }
+}
+.ui-sheet-right[data-state='open'] { animation: ui-right-in var(--m-slide) var(--ease); }
+.ui-sheet-right[data-state='closed'] { animation: ui-right-out var(--m-close) var(--ease); }
+.ui-sheet-left[data-state='open'] { animation: ui-left-in var(--m-slide) var(--ease); }
+.ui-sheet-left[data-state='closed'] { animation: ui-left-out var(--m-close) var(--ease); }
+.ui-sheet-center[data-state='open'] { animation: ui-fade-in var(--m-panel) var(--ease); }
+.ui-sheet-center[data-state='closed'] { animation: ui-fade-out var(--m-close) var(--ease); }
+.ui-menu[data-state='open'] { animation: ui-drop-in var(--m-panel) var(--ease); }
+.ui-menu[data-state='closed'] { animation: ui-fade-out var(--m-close) var(--ease); }
+.ui-tip[data-state='delayed-open'],
+.ui-tip[data-state='instant-open'] { animation: ui-fade-in var(--m-in) var(--ease); }
+/* Entrada única de la página de inicio (300 ms en total, una vez al cargar). */
+.ui-enter { animation: ui-enter 260ms var(--ease-enter) both; }
+.ui-enter-2 { animation: ui-enter 260ms var(--ease-enter) 40ms both; }
+
+/* Botón: con puntero fino sube 1px al pasar; al pulsar baja y se encoge un poco. */
+.ui-press { transition: background-color var(--m-in) var(--ease), border-color var(--m-in) var(--ease), color var(--m-in) var(--ease), transform var(--m-in) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .ui-press:not(:disabled):hover { transform: translateY(-1px); }
+}
+.ui-press:not(:disabled):active { transform: translateY(1px) scale(0.985); transition-duration: var(--m-press); }
+
+/*
+ * Grilla de celdas con bordes compartidos (rediseño «Trazo»): marco de 1px y líneas entre celdas, sin
+ * espacio entre ellas. La línea derecha e inferior de cada celda es una sombra de 1px; la del borde exterior
+ * queda bajo el marco, así no se duplica. Una fila incompleta deja el resto en blanco, sin líneas sueltas.
+ */
+.cell-grid {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--surface);
+}
+.cell-grid > * {
+  box-shadow: 1px 0 0 0 var(--line), 0 1px 0 0 var(--line);
+}
+/* Separador discontinuo dentro de una celda: el único uso de línea discontinua. */
+.rule-dashed {
+  border: 0;
+  border-top: 1px dashed var(--line-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-press:not(:disabled):hover,
+  .ui-press:not(:disabled):active { transform: none; }
 }
 
 /*

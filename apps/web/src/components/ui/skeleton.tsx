@@ -4,7 +4,8 @@ interface SkeletonProps {
   label?: string;
 }
 
-const BLOCK = 'rounded-md bg-zinc-200/80 motion-safe:animate-pulse dark:bg-zinc-800';
+// Fondo fijo, sin brillo ni pulso animado (rediseño «Trazo»: nada se mueve sin un motivo).
+const BLOCK = 'rounded-md bg-zinc-100 dark:bg-zinc-800/70';
 
 /** Bloque que ocupa el lugar del contenido mientras el servidor responde (esquema de carga). */
 export function Skeleton({ className = '', label }: SkeletonProps) {

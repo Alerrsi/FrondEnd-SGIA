@@ -16,7 +16,7 @@ export const SheetOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/50 backdrop-blur-xs transition-opacity data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'ui-overlay fixed inset-0 z-50 bg-zinc-950/40',
       className,
     )}
     {...props}
@@ -37,19 +37,20 @@ export const SheetContent = React.forwardRef<
       ref={ref}
       className={cn(
         // El panel nunca se corta: si su contenido es más alto que la pantalla, hace scroll.
-        'fixed z-50 flex flex-col gap-4 overflow-y-auto overscroll-contain bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-6 shadow-xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out duration-200',
+        // Bajo 640px ocupa la pantalla completa; desde 640px, 512px de ancho.
+        'fixed z-50 flex flex-col gap-4 overflow-y-auto overscroll-contain bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_8px_24px_rgb(0_0_0/0.08)] focus:outline-none',
         side === 'right' &&
-          'inset-y-0 right-0 h-full w-full sm:max-w-lg border-l border-zinc-200 dark:border-zinc-800 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
+          'ui-sheet-right inset-y-0 right-0 h-dvh w-full sm:max-w-lg sm:border-l border-zinc-200 dark:border-zinc-800',
         side === 'left' &&
-          'inset-y-0 left-0 h-full w-full sm:max-w-lg border-r border-zinc-200 dark:border-zinc-800 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
+          'ui-sheet-left inset-y-0 left-0 h-dvh w-full sm:max-w-lg sm:border-r border-zinc-200 dark:border-zinc-800',
         side === 'center' &&
-          'inset-y-0 left-1/2 h-dvh w-[90vw] -translate-x-1/2 border-x border-zinc-200 dark:border-zinc-800 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+          'ui-sheet-center inset-0 h-dvh w-full sm:inset-y-0 sm:left-0 sm:right-0 sm:mx-auto sm:w-[90vw] sm:border-x border-zinc-200 dark:border-zinc-800',
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded p-1 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400">
+      <DialogPrimitive.Close className="absolute right-3 top-3 sm:right-4 sm:top-4 flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors pointer-coarse:h-11 pointer-coarse:w-11">
         <X aria-hidden="true" className="h-4 w-4" />
         <span className="sr-only">Cerrar</span>
       </DialogPrimitive.Close>
@@ -79,7 +80,7 @@ export const SheetTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      'flex items-center gap-2 text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100',
+      'flex items-center gap-2 pr-10 text-base font-medium tracking-[-0.01em] text-zinc-900 dark:text-zinc-100',
       className,
     )}
     {...props}
@@ -93,7 +94,7 @@ export const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-xs text-zinc-500 dark:text-zinc-400', className)}
+    className={cn('text-[13px] text-zinc-500 dark:text-zinc-400', className)}
     {...props}
   />
 ));

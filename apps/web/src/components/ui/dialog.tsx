@@ -120,54 +120,54 @@ export function Dialog({
         }}
       >
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-zinc-950/50 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-150" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <DialogPrimitive.Content
-              data-dialog-size={size}
-              className={cn(
-                // Nunca más alto que la pantalla: cabecera fija, cuerpo con scroll y pie fijo abajo.
-                'relative flex max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
-                SIZE_CLASSES[size],
-                className,
-              )}
-              onPointerDownOutside={(e) => {
-                if (checkHasChanges()) {
-                  e.preventDefault();
-                  setShowExitConfirm(true);
-                }
-              }}
-              onEscapeKeyDown={(e) => {
-                if (checkHasChanges()) {
-                  e.preventDefault();
-                  setShowExitConfirm(true);
-                }
-              }}
-            >
-              <div className="flex shrink-0 items-start justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 px-6 pt-5 pb-3">
-                <div className="min-w-0">
-                  <DialogPrimitive.Title className="text-base font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
-                    {title}
-                  </DialogPrimitive.Title>
-                  {description && (
-                    <DialogPrimitive.Description className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                      {description}
-                    </DialogPrimitive.Description>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAttemptClose}
-                  aria-label="Cerrar modal"
-                  className="-mr-1 shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 cursor-pointer"
-                >
-                  <X aria-hidden="true" className="h-4 w-4" />
-                </button>
+          <DialogPrimitive.Overlay className="ui-overlay fixed inset-0 z-50 bg-zinc-950/40" />
+          <DialogPrimitive.Content
+            data-dialog-size={size}
+            className={cn(
+              // Bajo 640px: hoja inferior a ancho completo. Desde 640px: centrado con margen (inset-0 + m-auto).
+              // Nunca más alto que la pantalla: cabecera fija, cuerpo con scroll y pie fijo abajo.
+              'ui-dialog fixed z-50 inset-x-0 bottom-0 flex max-h-[calc(100dvh-1rem)] w-full flex-col overflow-hidden rounded-t-lg border border-b-0 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-[0_8px_24px_rgb(0_0_0/0.08)] focus:outline-none',
+              'sm:inset-0 sm:m-auto sm:h-fit sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100%-2rem)] sm:rounded-lg sm:border-b',
+              SIZE_CLASSES[size],
+              className,
+            )}
+            onPointerDownOutside={(e) => {
+              if (checkHasChanges()) {
+                e.preventDefault();
+                setShowExitConfirm(true);
+              }
+            }}
+            onEscapeKeyDown={(e) => {
+              if (checkHasChanges()) {
+                e.preventDefault();
+                setShowExitConfirm(true);
+              }
+            }}
+          >
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 pt-4 sm:pt-5 pb-3">
+              <div className="min-w-0">
+                <DialogPrimitive.Title className="text-base font-medium tracking-[-0.01em] text-zinc-900 dark:text-zinc-100">
+                  {title}
+                </DialogPrimitive.Title>
+                {description && (
+                  <DialogPrimitive.Description className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">
+                    {description}
+                  </DialogPrimitive.Description>
+                )}
               </div>
-              <div data-dialog-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4">
-                {children}
-              </div>
-            </DialogPrimitive.Content>
-          </div>
+              <button
+                type="button"
+                onClick={handleAttemptClose}
+                aria-label="Cerrar modal"
+                className="-mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer pointer-coarse:h-11 pointer-coarse:w-11"
+              >
+                <X aria-hidden="true" className="h-4 w-4" />
+              </button>
+            </div>
+            <div data-dialog-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 py-4">
+              {children}
+            </div>
+          </DialogPrimitive.Content>
         </DialogPrimitive.Portal>
       </DialogPrimitive.Root>
 
@@ -179,27 +179,26 @@ export function Dialog({
         }}
       >
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-zinc-950/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-150" />
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <DialogPrimitive.Overlay className="ui-overlay fixed inset-0 z-[60] bg-zinc-950/50" />
             <DialogPrimitive.Content
-              className="relative w-full max-w-sm rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-lg animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100"
+              className="ui-dialog fixed z-[60] inset-x-0 bottom-0 w-full rounded-t-lg border border-b-0 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-[0_8px_24px_rgb(0_0_0/0.08)] focus:outline-none text-zinc-900 dark:text-zinc-100 sm:inset-0 sm:m-auto sm:h-fit sm:max-w-sm sm:w-[calc(100%-2rem)] sm:rounded-lg sm:border-b sm:pb-5"
               onPointerDownOutside={(e) => e.preventDefault()}
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-warn-bg text-warn">
                   <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0">
-                  <DialogPrimitive.Title className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+                  <DialogPrimitive.Title className="text-[15px] font-medium text-zinc-900 dark:text-zinc-100">
                     {confirmExitTitle}
                   </DialogPrimitive.Title>
-                  <DialogPrimitive.Description className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  <DialogPrimitive.Description className="text-[13px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
                     {confirmExitDescription}
                   </DialogPrimitive.Description>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3">
+              <div className="mt-4 flex flex-col-reverse gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-3 sm:flex-row sm:items-center sm:justify-end">
                 <Button
                   type="button"
                   variant="ghost"
@@ -218,7 +217,6 @@ export function Dialog({
                 </Button>
               </div>
             </DialogPrimitive.Content>
-          </div>
         </DialogPrimitive.Portal>
       </DialogPrimitive.Root>
     </DialogContext.Provider>
@@ -237,7 +235,8 @@ export function DialogFooter({ className, children }: { className?: string; chil
       data-dialog-footer
       className={cn(
         // sticky se ancla al borde del contenido del cuerpo (sin su padding): -bottom-4 compensa el py-4.
-        'sticky -bottom-4 z-10 -mx-6 -mb-4 mt-2 flex flex-wrap items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3',
+        // En la hoja inferior (móvil) los botones ocupan el ancho y respetan la zona segura del teléfono.
+        'sticky -bottom-4 z-10 -mx-4 sm:-mx-6 -mb-4 mt-2 flex flex-col-reverse items-stretch gap-2 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 sm:px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:pb-3',
         className,
       )}
     >

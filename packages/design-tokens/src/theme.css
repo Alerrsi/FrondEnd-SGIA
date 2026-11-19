@@ -15,6 +15,15 @@
   --color-warning: var(--warn);
   --color-danger: var(--danger);
   --color-border-strong: var(--line-strong);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent-ink: var(--brand-ink);
+  --color-info-bg: var(--info-bg);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-danger-bg: var(--danger-bg);
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, monospace;

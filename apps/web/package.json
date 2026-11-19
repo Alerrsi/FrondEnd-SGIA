@@ -18,7 +18,6 @@
     "@tanstack/react-query": "^5.66.0",
     "@tanstack/react-table": "^8.21.0",
     "chart.js": "^4.5.1",
-    "framer-motion": "^14.0.0",
     "lucide-react": "^0.475.0",
     "react": "^19.3.0",
     "react-chartjs-2": "^5.3.1",
