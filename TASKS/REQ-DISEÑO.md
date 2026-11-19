@@ -12,3 +12,16 @@
 - [x] El header debe ser del mismo color que el body, sin descrepansias
 - [x] Margen de respiración lateral en iconbars: Espacio de separación respecto a los bordes izquierdo y derecho del sidebar para evitar sensación de saturación o estar pegados a los límites (ancho del panel colapsado ajustado a 64px, con padding horizontal px-2 y centrado balanceado).
 - [x] Centrado vertical y horizontal permanente del iconbar de módulos/funciones: El bloque central de navegación permanece perfectamente centrado en el eje vertical y horizontal dentro del viewport, independientemente de la cantidad de enlaces.
+
+## Rediseño «Trazo» (rama `feat/rediseno-zed`)
+
+Plan completo: `docs/rediseno-interfaz.md` (estado: plan, sin implementar). Referencia visual: zed.dev.
+
+- [ ] Fase 1 — Tokens y tipografía (Geist + Geist Mono, neutros cálidos, burdeo único acento)
+- [ ] Fase 2 — Componentes base (`Button`, `Kbd`, `CellGrid`, `Metric`, `DataTable`, `Dialog`/`Sheet` responsivos)
+- [ ] Fase 3 — Layouts sidebar y header con `nav-config.ts` único, buscador `Ctrl K` y rutas diferidas
+- [ ] Fase 4 — Página de inicio por rol (PAN-01, DIR-01, AD-01, PRO-01)
+- [ ] Fase 5 — Migración de pantallas por módulo
+- [ ] Fase 6 — Tema de gráficos (Chart.js, datos por GraphQL)
+- [ ] Fase 7 — Responsivo (320–1440), rendimiento y accesibilidad
+- [ ] Fase 8 — Cierre: `sgia-design`, `CLAUDE.md`, changelog
