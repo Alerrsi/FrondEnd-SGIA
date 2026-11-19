@@ -121,6 +121,11 @@ export async function request<T>(
   return (await response.json()) as T;
 }
 
+/** Firefox fija la orientación según el tamaño de página y la impresora térmica la gira: pide la etiqueta ya en vertical. */
+export function labelQuery(): string {
+  return typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent ?? '') ? '?orientation=portrait' : '';
+}
+
 export async function getBlob(
   path: string,
   options?: RequestInit,

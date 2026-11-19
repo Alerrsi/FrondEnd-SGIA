@@ -248,7 +248,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     expect(screen.getByRole('dialog')).toBeDefined();
     expect(screen.getByText('Ajustes del sistema')).toBeDefined();
     expect(screen.getByText('Paleta de colores de interfaz')).toBeDefined();
-    expect(screen.getByText('Paleta Principal (Industrial INACAP)')).toBeDefined();
+    expect(screen.getByText('Pañol (burdeo y navy)')).toBeDefined();
     expect(screen.getByText('Paleta B1 (Azul Acero & Indigo)')).toBeDefined();
   });
 

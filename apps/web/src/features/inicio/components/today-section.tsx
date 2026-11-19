@@ -5,8 +5,8 @@ import { MyLoanRequestsTasks } from './my-loan-requests-tasks';
 import { OverdueLoansTask } from './overdue-loans-task';
 import { RecentActivity } from './recent-activity';
 
-const GRID = 'grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3';
-const SUBTITLE = 'text-[11px] font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400';
+const GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3';
+const SUBTITLE = 'text-xs font-semibold text-zinc-500 dark:text-zinc-400';
 
 /** «Lo que te toca hoy»: pendientes reales del rol, cada uno enlazado a la pantalla donde se atiende. */
 export function TodaySection({ role }: { role: string }) {

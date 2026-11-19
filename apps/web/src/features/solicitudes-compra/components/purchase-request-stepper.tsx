@@ -48,7 +48,7 @@ export function PurchaseRequestStepper({ status }: { status: PurchaseRequestStat
         );
       })}
       {cancelled && (
-        <li className="ml-auto font-mono font-semibold uppercase text-zinc-500">Cancelada</li>
+        <li className="ml-auto font-semibold text-zinc-500">Cancelada</li>
       )}
     </ol>
   );

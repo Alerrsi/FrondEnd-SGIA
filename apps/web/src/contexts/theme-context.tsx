@@ -10,7 +10,7 @@ import {
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type ResolvedTheme = 'light' | 'dark';
-export type ColorPalette = 'default' | 'b1' | 'sage' | 'lavender' | 'nordic' | 'peach' | 'chamomile';
+export type ColorPalette = 'default' | 'industrial' | 'b1' | 'sage' | 'lavender' | 'nordic' | 'peach' | 'chamomile';
 
 export interface ThemeContextValue {
   theme: ThemePreference;
@@ -27,6 +27,7 @@ const PALETTE_STORAGE_KEY = 'sgia-palette';
 
 export const VALID_PALETTES: ColorPalette[] = [
   'default',
+  'industrial',
   'b1',
   'sage',
   'lavender',

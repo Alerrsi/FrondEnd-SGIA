@@ -56,7 +56,7 @@ export function NotificationBell() {
         {/* Header del Centro de Alertas: título y total arriba; desglose por severidad debajo */}
         <div className="flex flex-col gap-2 border-b border-zinc-200 dark:border-zinc-800 px-3 py-2.5 bg-zinc-50/70 dark:bg-zinc-900/70">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+            <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
               Alertas de stock
             </span>
             <span className="shrink-0 whitespace-nowrap text-[11px] text-zinc-500 dark:text-zinc-400">

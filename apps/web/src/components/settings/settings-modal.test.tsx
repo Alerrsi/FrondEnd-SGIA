@@ -39,8 +39,8 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
     expect(screen.getByText('Ajustes del sistema')).toBeDefined();
     expect(screen.getByText('Paleta de colores de interfaz')).toBeDefined();
 
-    // Paleta Principal (Industrial INACAP)
-    expect(screen.getByText('Paleta Principal (Industrial INACAP)')).toBeDefined();
+    // Pañol (burdeo y navy)
+    expect(screen.getByText('Pañol (burdeo y navy)')).toBeDefined();
     expect(screen.getByText('Predeterminada')).toBeDefined();
 
     // Paleta B1 (Azul Acero & Indigo) de AGENTS.md / sgia-design
@@ -81,7 +81,7 @@ describe('SettingsModal Component (REQ-CONFIG)', () => {
 
     // Cambiar de vuelta a la paleta Principal
     const defaultOption = screen.getByRole('button', {
-      name: /Seleccionar Paleta Principal \(Industrial INACAP\)/i,
+      name: /Seleccionar Pañol \(burdeo y navy\)/i,
     });
     await user.click(defaultOption);
 

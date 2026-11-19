@@ -716,7 +716,7 @@ export default function HistorialPrestamosPage() {
 
               {/* Lista de Ítems */}
               <div className="flex flex-col gap-2">
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                <span className="text-xs font-semibold text-zinc-500">
                   Ítems Prestados ({selectedLoan.items?.length ?? 0})
                 </span>
                 <div className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
@@ -743,7 +743,7 @@ export default function HistorialPrestamosPage() {
 
               {/* Bitácora / Timeline de Eventos */}
               <div className="flex flex-col gap-2">
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                <span className="text-xs font-semibold text-zinc-500">
                   Bitácora y trazabilidad
                 </span>
 

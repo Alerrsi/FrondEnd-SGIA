@@ -115,7 +115,7 @@ export function WidgetPaletteDrawer({
         )}
       >
         <SheetHeader className="pb-3 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center gap-2 text-xs font-mono text-sky-600 dark:text-sky-500 font-semibold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs text-sky-600 dark:text-sky-500 font-semibold">
             <span>Catálogo</span>
             <span className="text-zinc-400">/</span>
             <span>Paleta de formas</span>

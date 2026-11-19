@@ -26,7 +26,7 @@ const inputClasses =
   FORM_CONTROL_CLASS;
 
 const legendClasses =
-  'px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono';
+  'px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5';
 
 const fieldsetClasses =
   'rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50';

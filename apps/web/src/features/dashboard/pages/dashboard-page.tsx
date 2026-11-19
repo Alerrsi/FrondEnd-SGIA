@@ -456,7 +456,7 @@ export default function DashboardPage() {
           <div className="pointer-events-none select-none flex flex-col items-center gap-3">
             <div className="flex items-center gap-2">
               <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500 animate-ping" />
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-300 bg-sky-950/90 border border-sky-500/60 px-3 py-1 rounded-full shadow-xs">
+              <span className="text-xs font-bold text-sky-300 bg-sky-950/90 border border-sky-500/60 px-3 py-1 rounded-full shadow-xs">
                 ★ Zona Principal de Soltado Destacada ★
               </span>
             </div>

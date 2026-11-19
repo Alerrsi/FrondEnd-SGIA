@@ -12,7 +12,7 @@ import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const inputClasses =
-  `${FORM_CONTROL_CLASS} uppercase placeholder:normal-case`;
+  `${FORM_CONTROL_CLASS} placeholder:normal-case`;
 
 interface PurchaseRequestCodeFieldProps {
   value: string;

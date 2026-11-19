@@ -80,7 +80,7 @@ export function OracleCategorySelect({
                 void submitNew();
               }
             }}
-            className={cn(FORM_CONTROL_CLASS, 'uppercase')}
+            className={cn(FORM_CONTROL_CLASS, '')}
           />
           <Button
             size="icon"

@@ -92,7 +92,7 @@ export function StoreroomFormDialog({
           <label htmlFor="sr-code" className={labelClasses}>
             Código
           </label>
-          <input id="sr-code" placeholder="PAN-TEMUCO" disabled={pending} aria-invalid={Boolean(errors.code) || undefined} className={`${inputClasses} mt-1.5 uppercase`} {...register('code')} />
+          <input id="sr-code" placeholder="PAN-TEMUCO" disabled={pending} aria-invalid={Boolean(errors.code) || undefined} className={`${inputClasses} mt-1.5`} {...register('code')} />
           {errors.code && <p className={errorClasses}>{errors.code.message}</p>}
         </div>
         <div>

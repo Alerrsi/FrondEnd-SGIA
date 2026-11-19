@@ -192,7 +192,7 @@ export function MaintenanceChecklistSheet({
             </div>
 
             <fieldset className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
-              <legend className="px-1 font-mono text-xs font-semibold uppercase tracking-wider text-zinc-500">
+              <legend className="px-1 text-xs font-semibold text-zinc-500">
                 Checklist
               </legend>
               {check('rev_a_approved', 'REV-A aprobada')}

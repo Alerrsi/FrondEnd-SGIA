@@ -237,25 +237,25 @@ export function EquipmentSpecSheet({
           {/* Desglose de Parámetros de Ciclo de Vida */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800 text-xs">
             <div className="flex flex-col">
-              <span className="text-[11px] uppercase font-semibold text-zinc-400">Adquisición</span>
+              <span className="text-[11px] font-semibold text-zinc-400">Adquisición</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.purchaseDateFormatted}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] uppercase font-semibold text-zinc-400">Vida proyectada</span>
+              <span className="text-[11px] font-semibold text-zinc-400">Vida proyectada</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.lifespanYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] uppercase font-semibold text-zinc-400">Antigüedad</span>
+              <span className="text-[11px] font-semibold text-zinc-400">Antigüedad</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.ageYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] uppercase font-semibold text-zinc-400">Restante</span>
+              <span className="text-[11px] font-semibold text-zinc-400">Restante</span>
               <span
                 className={`font-mono font-bold mt-0.5 ${
                   lifeCycle.isCritical

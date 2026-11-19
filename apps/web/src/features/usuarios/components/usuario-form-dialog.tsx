@@ -192,7 +192,7 @@ export function UsuarioFormDialog({
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación Personal */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
+          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
             <User className="h-3.5 w-3.5 text-zinc-400" />
             Identificación de usuario
           </legend>
@@ -273,7 +273,7 @@ export function UsuarioFormDialog({
 
         {/* Fieldset: Rol y Dependencia */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
+          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
             <Shield className="h-3.5 w-3.5 text-zinc-400" />
             Rol y dependencia institucional
           </legend>
@@ -326,7 +326,7 @@ export function UsuarioFormDialog({
           </div>
 
           <div>
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="mb-1 block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               Carreras asignadas
             </span>
             <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
@@ -350,7 +350,7 @@ export function UsuarioFormDialog({
 
         {/* Fieldset: Credenciales */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5 font-mono">
+          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
             <Lock className="h-3.5 w-3.5 text-zinc-400" />
             Credenciales de acceso
           </legend>

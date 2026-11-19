@@ -1,4 +1,4 @@
-import { House, LayoutGrid, ListChecks } from 'lucide-react';
+import { LayoutGrid, ListChecks } from 'lucide-react';
 import { ROLE_LABELS, type RoleCode } from '@sgia/types';
 
 import { ModuleGrid } from '@/components/ui/module-grid';
@@ -21,8 +21,8 @@ export default function InicioPage() {
   const today = date.charAt(0).toUpperCase() + date.slice(1);
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeading icon={House} title={`Hola, ${firstName}`}>
+    <div className="flex flex-col gap-6">
+      <PageHeading title={`Hola, ${firstName}`}>
         {today} · {roleLabel}
         {user.storeroom?.name ? ` · ${user.storeroom.name}` : ''}
       </PageHeading>

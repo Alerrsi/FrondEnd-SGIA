@@ -1,5 +1,4 @@
 import { PurchaseRequestStatus } from '@sgia/types';
-import { ChevronDown, ChevronRight } from 'lucide-react';
 
 import { PurchaseFlowStep, type PurchaseFlowStepProps } from '@/features/compras/components/purchase-flow-step';
 
@@ -41,21 +40,13 @@ const FLOW_STEPS: PurchaseFlowStepProps[] = [
   },
 ];
 
-/** Las 5 etapas del flujo de compras unidas por flechas (en móvil, en columna). */
+/** Las 5 etapas del flujo de compras como un solo tramo continuo (en móvil, en columna). */
 export function PurchaseFlowSteps() {
   return (
-    <ol className="flex flex-col gap-1 sm:flex-row sm:items-stretch">
-      {FLOW_STEPS.map((step, i) => (
-        <li key={step.status} className="flex flex-1 flex-col items-stretch gap-1 sm:flex-row sm:items-center">
-          <div className="flex-1 self-stretch">
-            <PurchaseFlowStep {...step} />
-          </div>
-          {i < FLOW_STEPS.length - 1 && (
-            <span aria-hidden className="flex shrink-0 justify-center text-zinc-400 dark:text-zinc-600">
-              <ChevronDown className="h-4 w-4 sm:hidden" />
-              <ChevronRight className="hidden h-4 w-4 sm:block" />
-            </span>
-          )}
+    <ol className="grid grid-cols-1 divide-y divide-zinc-200 overflow-hidden rounded-lg border border-zinc-200 bg-white sm:grid-cols-5 sm:divide-x sm:divide-y-0 dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+      {FLOW_STEPS.map((step) => (
+        <li key={step.status}>
+          <PurchaseFlowStep {...step} />
         </li>
       ))}
     </ol>

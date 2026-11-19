@@ -169,7 +169,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
               }
             }}
             placeholder={waiting ? 'Código del cajón (ej. L206-RACK-R1)' : 'Código de la unidad o del insumo'}
-            className={cn(FORM_CONTROL_CLASS, 'pl-8 uppercase', waiting && 'border-amber-400 dark:border-amber-600')}
+            className={cn(FORM_CONTROL_CLASS, 'pl-8', waiting && 'border-amber-400 dark:border-amber-600')}
           />
           {busy && <Loader2 className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-zinc-400" />}
         </div>
@@ -188,7 +188,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
 
       {/* Lo que falta devolver */}
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+        <span className="text-xs font-semibold text-zinc-400">
           Ítems por devolver ({entries.length} de {targets.length} registrados)
         </span>
         {targets.length === 0 ? (

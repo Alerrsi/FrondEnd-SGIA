@@ -73,7 +73,7 @@ describe('UbicacionesPage (REQ-05)', () => {
     expect(screen.getByText('PCENTRAL')).toBeDefined();
     expect(screen.getByText('L201')).toBeDefined();
     expect(screen.getByText('Gaveta A-1')).toBeDefined();
-    expect(screen.getByText('PCENTRAL-GAVETA-A-1').className).toContain('font-mono');
+    expect(screen.getByText('PCENTRAL-GAVETA-A-1').className).toContain('font-code');
   });
 
   it('sugiere el código de sala desde el nombre hasta que se edita a mano', async () => {
