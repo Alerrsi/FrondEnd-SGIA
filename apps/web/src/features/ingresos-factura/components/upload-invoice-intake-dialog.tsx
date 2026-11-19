@@ -151,14 +151,14 @@ export function UploadInvoiceIntakeDialog({
           />
           {pending ? (
             <div className="flex flex-col items-center gap-2 py-2">
-              <Loader2 className="h-7 w-7 animate-spin text-zinc-500" />
+              <Loader2 aria-hidden="true" className="h-7 w-7 animate-spin text-zinc-500" />
               <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 Leyendo la factura con OCR…
               </span>
             </div>
           ) : file ? (
             <div className="flex items-center gap-2 text-xs">
-              <FileText className="h-5 w-5 text-zinc-400" />
+              <FileText aria-hidden="true" className="h-5 w-5 text-zinc-400" />
               <span className="font-mono text-zinc-800 dark:text-zinc-200">{file.name}</span>
               <span className="text-zinc-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
               <button
@@ -170,12 +170,12 @@ export function UploadInvoiceIntakeDialog({
                 }}
                 className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
               >
-                <X className="h-3.5 w-3.5" />
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             </div>
           ) : (
             <>
-              <UploadCloud className="mb-2 h-6 w-6 text-zinc-400" />
+              <UploadCloud aria-hidden="true" className="mb-2 h-6 w-6 text-zinc-400" />
               <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
                 Arrastra la factura aquí
               </p>
@@ -188,7 +188,7 @@ export function UploadInvoiceIntakeDialog({
                 size="sm" className="mt-3"
                 onClick={() => fileRef.current?.click()}
               >
-                <FileUp className="h-3.5 w-3.5" />
+                <FileUp aria-hidden="true" className="h-3.5 w-3.5" />
                 Seleccionar archivo
               </Button>
             </>
@@ -209,7 +209,7 @@ export function UploadInvoiceIntakeDialog({
         <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={pending}>
-            {pending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {pending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Subir y leer factura
           </Button>
         </DialogFooter>

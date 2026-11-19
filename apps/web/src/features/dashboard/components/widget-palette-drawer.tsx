@@ -133,7 +133,7 @@ export function WidgetPaletteDrawer({
             data-testid="palette-max-capacity-warning"
             className="flex items-center gap-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-mono"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
             <span>Límite de {MAX_CHARTS} gráficos alcanzado. Retira un gráfico del panel para añadir nuevos.</span>
           </div>
         )}
@@ -208,7 +208,7 @@ export function WidgetPaletteDrawer({
                     }}
                     className="h-6 text-[11px] px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
                   >
-                    <Plus className="h-3 w-3" />
+                    <Plus aria-hidden="true" className="h-3 w-3" />
                     <span>Añadir</span>
                   </Button>
                 </div>

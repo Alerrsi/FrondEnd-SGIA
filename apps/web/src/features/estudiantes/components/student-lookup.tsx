@@ -88,7 +88,7 @@ export function StudentLookup({
 
       {isFetching && (
         <p className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-500">
-          <Loader2 className="h-3 w-3 animate-spin" /> Buscando estudiante…
+          <Loader2 aria-hidden="true" className="h-3 w-3 animate-spin" /> Buscando estudiante…
         </p>
       )}
       {isError && (
@@ -98,7 +98,7 @@ export function StudentLookup({
       )}
       {student && (
         <div className="flex items-center gap-2 rounded-md border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 p-2 text-xs">
-          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+          <CheckCircle2 aria-hidden="true" className="h-4 w-4 shrink-0 text-emerald-600" />
           <div className="min-w-0">
             <p className="truncate font-semibold">{student.full_name || 'Sin nombre'}</p>
             <p className="truncate font-mono text-[11px] text-zinc-500">
@@ -109,7 +109,7 @@ export function StudentLookup({
       )}
       {notFound && (
         <div className="flex flex-col gap-1.5 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/20 p-2">
-          <Badge tone="warning" icon={<UserPlus className="h-3 w-3" />}>
+          <Badge tone="warning" icon={<UserPlus aria-hidden="true" className="h-3 w-3" />}>
             No registrado: se creará al confirmar
           </Badge>
           <label htmlFor="student_name" className={FIELD_LABEL_CLASS}>

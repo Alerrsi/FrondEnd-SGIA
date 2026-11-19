@@ -142,7 +142,7 @@ export function PurchaseRequestFormDialog({
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         <fieldset className={fieldsetClasses}>
           <legend className={legendClasses}>
-            <Wallet className="h-3.5 w-3.5 text-zinc-400" />
+            <Wallet aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Presupuesto
           </legend>
           <Controller
@@ -170,11 +170,11 @@ export function PurchaseRequestFormDialog({
 
         <fieldset className={fieldsetClasses}>
           <legend className={legendClasses}>
-            <Package className="h-3.5 w-3.5 text-zinc-400" />
+            <Package aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Productos ({fields.length})
           </legend>
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+            <Search aria-hidden="true" className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
               aria-label="Buscar producto"
@@ -241,7 +241,7 @@ export function PurchaseRequestFormDialog({
                         disabled={isPending}
                         className="inline-flex h-7 w-7 items-center justify-center rounded text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
                       >
-                        <X className="h-3.5 w-3.5" />
+                        <X aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                     {qtyError && <p className={errorClasses}>{qtyError}</p>}
@@ -255,7 +255,7 @@ export function PurchaseRequestFormDialog({
 
         <fieldset className={fieldsetClasses}>
           <legend className={legendClasses}>
-            <FileText className="h-3.5 w-3.5 text-zinc-400" />
+            <FileText aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Notas
           </legend>
           <textarea
@@ -272,7 +272,7 @@ export function PurchaseRequestFormDialog({
         <DialogFooter>
           <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={isPending}>
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {isEdit ? 'Guardar cambios' : 'Crear solicitud'}
           </Button>
         </DialogFooter>

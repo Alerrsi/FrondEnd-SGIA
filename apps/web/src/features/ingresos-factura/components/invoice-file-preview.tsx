@@ -19,7 +19,7 @@ export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; ha
   if (!hasFile || isError) {
     return (
       <div className="flex h-full min-h-48 flex-col items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 text-xs text-zinc-400">
-        <FileX className="h-6 w-6" />
+        <FileX aria-hidden="true" className="h-6 w-6" />
         {isError ? 'No se pudo cargar el archivo.' : 'El ingreso no tiene archivo.'}
       </div>
     );
@@ -28,7 +28,7 @@ export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; ha
   if (isLoading || !url || !blob) {
     return (
       <div className="flex h-full min-h-48 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-400">
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" />
         Cargando factura…
       </div>
     );
@@ -50,7 +50,7 @@ export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; ha
         size="sm" className="self-start"
         onClick={() => window.open(url, '_blank', 'noopener')}
       >
-        <ExternalLink className="h-3.5 w-3.5" />
+        <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
         Abrir en otra pestaña
       </Button>
     </div>

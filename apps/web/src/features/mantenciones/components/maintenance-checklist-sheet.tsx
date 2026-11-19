@@ -177,7 +177,7 @@ export function MaintenanceChecklistSheet({
         </SheetHeader>
 
         {isLoading || !record || !form ? (
-          <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -289,7 +289,7 @@ export function MaintenanceChecklistSheet({
                   Dar de baja
                 </Button>
                 <Button disabled={busy} onClick={() => close('operativo')}>
-                  {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {busy && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
                   Marcar operativa
                 </Button>
               </div>

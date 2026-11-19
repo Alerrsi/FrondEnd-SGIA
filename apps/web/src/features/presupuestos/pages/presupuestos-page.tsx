@@ -78,7 +78,7 @@ export default function PresupuestosPage() {
           </PageHeading>
           {canManage && (
             <Button onClick={() => setCreateOpen(true)} className="text-xs">
-              <Plus className="h-4 w-4" />
+              <Plus aria-hidden="true" className="h-4 w-4" />
               Nuevo presupuesto
             </Button>
           )}
@@ -146,7 +146,7 @@ export default function PresupuestosPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             <span>No se pudieron cargar los presupuestos desde el servidor.</span>
           </div>
         ) : (

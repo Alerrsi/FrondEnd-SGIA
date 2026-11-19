@@ -28,7 +28,7 @@ export function ChartExpandButton({ title, description, children, disabled }: Ch
         title="Ampliar gráfico"
         aria-label="Ampliar gráfico"
       >
-        <Eye className="h-3.5 w-3.5" />
+        <Eye aria-hidden="true" className="h-3.5 w-3.5" />
       </Button>
       <Dialog
         open={open}

@@ -262,7 +262,7 @@ export default function MostradorPrestamosPage() {
               onClick={() => navigate('/prestamos/cola')}
               className="text-xs gap-1.5"
             >
-              <Clock className="h-3.5 w-3.5" />
+              <Clock aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Cola remota</span>
             </Button>
             <Button
@@ -272,7 +272,7 @@ export default function MostradorPrestamosPage() {
               onClick={() => navigate('/prestamos/historial')}
               className="text-xs gap-1.5"
             >
-              <History className="h-3.5 w-3.5" />
+              <History aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Historial auditoría</span>
             </Button>
           </div>
@@ -288,7 +288,7 @@ export default function MostradorPrestamosPage() {
           onClick={() => setActiveTab('checkout')}
           className="text-xs gap-1.5"
         >
-          <ArrowUpRight className="h-3.5 w-3.5" />
+          <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
           <span>Préstamo presencial directo (entrega)</span>
         </Button>
         <Button
@@ -298,7 +298,7 @@ export default function MostradorPrestamosPage() {
           onClick={() => setActiveTab('checkin')}
           className="text-xs gap-1.5"
         >
-          <ArrowDownLeft className="h-3.5 w-3.5" />
+          <ArrowDownLeft aria-hidden="true" className="h-3.5 w-3.5" />
           <span>Devolución y recepción (Check-in)</span>
         </Button>
 
@@ -315,7 +315,7 @@ export default function MostradorPrestamosPage() {
                 : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border-zinc-200 dark:border-zinc-700',
             )}
           >
-            <Volume2 className="h-3.5 w-3.5" />
+            <Volume2 aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Audio {soundEnabled ? 'ON' : 'OFF'}</span>
           </button>
         </div>
@@ -358,7 +358,7 @@ export default function MostradorPrestamosPage() {
                     RUN / credencial docente <span className="text-red-500">*</span>
                   </label>
                   <div className="relative mt-1">
-                    <User className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+                    <User aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
                     <input
                       id="docente_run"
                       type="text"
@@ -453,7 +453,7 @@ export default function MostradorPrestamosPage() {
               </p>
 
               <div className="relative mt-1">
-                <Barcode className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <Barcode aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                 <input
                   ref={barcodeInputRef}
                   type="text"
@@ -497,7 +497,7 @@ export default function MostradorPrestamosPage() {
 
               {scannedItems.length === 0 ? (
                 <div className={`p-12 flex flex-col items-center gap-2 ${STATE_TEXT_CLASS}`}>
-                  <Barcode className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+                  <Barcode aria-hidden="true" className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
                   <span>No hay ítems escaneados aún.</span>
                   <span className="text-[11px] text-zinc-400">
                     Apunta la pistola lectora a las etiquetas de los productos o ingresa su SKU en el campo de escaneo.
@@ -539,7 +539,7 @@ export default function MostradorPrestamosPage() {
                                 onClick={() => handleUpdateQty(item.producto.id, -1)}
                                 className="h-5 w-5 rounded flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-800"
                               >
-                                <Minus className="h-3 w-3 text-zinc-600 dark:text-zinc-400" />
+                                <Minus aria-hidden="true" className="h-3 w-3 text-zinc-600 dark:text-zinc-400" />
                               </button>
                               <span className="w-6 text-center tabular-nums font-semibold">
                                 {item.cantidad}
@@ -549,7 +549,7 @@ export default function MostradorPrestamosPage() {
                                 onClick={() => handleUpdateQty(item.producto.id, 1)}
                                 className="h-5 w-5 rounded flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-800"
                               >
-                                <Plus className="h-3 w-3 text-zinc-600 dark:text-zinc-400" />
+                                <Plus aria-hidden="true" className="h-3 w-3 text-zinc-600 dark:text-zinc-400" />
                               </button>
                             </div>
                           </td>
@@ -560,7 +560,7 @@ export default function MostradorPrestamosPage() {
                               className="text-zinc-400 hover:text-rose-600 p-1"
                               title="Quitar ítem"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                             </button>
                           </td>
                         </tr>
@@ -592,7 +592,7 @@ export default function MostradorPrestamosPage() {
                   }
                   className="gap-2"
                 >
-                  <CheckCircle2 className="h-4 w-4" />
+                  <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
                   <span>Registrar entrega de préstamo</span>
                 </Button>
               </div>
@@ -609,7 +609,7 @@ export default function MostradorPrestamosPage() {
                 Buscar préstamo activo
               </span>
               <div className="relative mt-2">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
                 <input
                   type="search"
                   value={checkinSearch}
@@ -664,7 +664,7 @@ export default function MostradorPrestamosPage() {
           <div className="flex flex-col gap-3 lg:col-span-2">
             {!selectedLoan ? (
               <div className="rounded-md border border-dashed border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 p-16 text-center text-xs font-mono text-zinc-400 flex flex-col items-center gap-2">
-                <ArrowDownLeft className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+                <ArrowDownLeft aria-hidden="true" className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
                 <span>Selecciona un préstamo activo del panel izquierdo para recepcionar insumos.</span>
               </div>
             ) : (

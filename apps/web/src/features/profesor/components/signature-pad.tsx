@@ -90,7 +90,7 @@ export function SignaturePad({ onChange, invalid }: SignaturePadProps) {
         variant="ghost" className="self-start"
         onClick={clear}
       >
-        <Eraser className="h-3.5 w-3.5" />
+        <Eraser aria-hidden="true" className="h-3.5 w-3.5" />
         Borrar firma
       </Button>
     </div>

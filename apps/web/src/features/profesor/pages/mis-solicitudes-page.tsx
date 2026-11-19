@@ -75,7 +75,7 @@ export default function MisSolicitudesPage() {
         <Button
           onClick={() => navigate("/profesor/catalogo")}
         >
-          <Plus className="h-4 w-4" />
+          <Plus aria-hidden="true" className="h-4 w-4" />
           Nueva solicitud
         </Button>
       </div>
@@ -100,7 +100,7 @@ export default function MisSolicitudesPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar tus solicitudes.
           </div>
         ) : (
@@ -165,7 +165,7 @@ export default function MisSolicitudesPage() {
                               setToCancel(loan);
                             }}
                           >
-                            <X className="h-3.5 w-3.5" />
+                            <X aria-hidden="true" className="h-3.5 w-3.5" />
                             Cancelar
                           </Button>
                         )}

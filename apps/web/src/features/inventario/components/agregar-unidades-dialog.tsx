@@ -121,7 +121,7 @@ export function AgregarUnidadesDialog({
             disabled={invalid || createUnits.isPending}
             onClick={handleSubmit}
           >
-            {createUnits.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {createUnits.isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Agregar
           </Button>
         </DialogFooter>

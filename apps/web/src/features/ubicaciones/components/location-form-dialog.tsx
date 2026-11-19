@@ -201,7 +201,7 @@ export function LocationFormDialog({
         <DialogFooter>
           <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={isPending}>
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Guardar ubicación
           </Button>
         </DialogFooter>

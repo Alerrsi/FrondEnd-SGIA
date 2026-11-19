@@ -48,9 +48,9 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
         {canManage && request.actions.can_resend && failed > 0 && (
           <Button size="sm" variant="outline" onClick={handleResend} disabled={resend.isPending}>
             {resend.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
             ) : (
-              <RotateCw className="h-3.5 w-3.5" />
+              <RotateCw aria-hidden="true" className="h-3.5 w-3.5" />
             )}
             Reenviar fallidos ({failed})
           </Button>

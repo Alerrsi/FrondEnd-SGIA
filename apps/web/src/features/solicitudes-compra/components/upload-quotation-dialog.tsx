@@ -247,7 +247,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
               disabled={pending || subtotal <= 0}
               onClick={() => setValue('total', subtotal, { shouldDirty: true, shouldValidate: true })}
             >
-              <Calculator className="h-3.5 w-3.5" />
+              <Calculator aria-hidden="true" className="h-3.5 w-3.5" />
               Usar suma ({formatCLP(subtotal)})
             </Button>
           </div>
@@ -261,7 +261,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
         <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={pending || candidates.length === 0}>
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            {pending ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Upload aria-hidden="true" className="h-4 w-4" />}
             Subir cotización
           </Button>
         </DialogFooter>

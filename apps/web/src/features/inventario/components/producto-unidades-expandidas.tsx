@@ -20,7 +20,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
   if (isLoading) {
     return (
       <div className="flex items-center gap-2 px-4 py-3 font-mono text-xs text-zinc-500">
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
         Cargando instancias…
       </div>
     );
@@ -69,7 +69,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
                 </td>
                 <td className="py-1.5 pr-3 font-mono text-zinc-600 dark:text-zinc-400">
                   <span className="inline-flex items-center gap-1">
-                    <MapPin className="h-3 w-3 shrink-0 text-zinc-400" />
+                    <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                     {sala ? `${sala} · ` : ''}
                     {unit.cajon?.codigo ?? 'Sin cajón'}
                   </span>

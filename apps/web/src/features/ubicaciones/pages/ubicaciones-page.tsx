@@ -147,7 +147,7 @@ export default function UbicacionesPage() {
               onClick={() => refetch()}
               className="text-xs gap-1.5"
             >
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Actualizar</span>
             </Button>
             <Button
@@ -156,7 +156,7 @@ export default function UbicacionesPage() {
               size="sm"
               onClick={handleOpenCreateLocation} className="gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Nueva sala / pañol</span>
             </Button>
           </div>
@@ -167,7 +167,7 @@ export default function UbicacionesPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
         <div className="flex flex-1 items-center gap-2 min-w-[240px]">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+            <Search aria-hidden="true" className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
             <input
               type="search"
               placeholder="Buscar por nombre o descripción…"
@@ -205,7 +205,7 @@ export default function UbicacionesPage() {
 
           {isLoading ? (
             <div className={`flex items-center justify-center p-8 gap-2 ${STATE_TEXT_CLASS}`}>
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
               <span>Cargando ubicaciones…</span>
             </div>
           ) : locations.length === 0 ? (
@@ -227,7 +227,7 @@ export default function UbicacionesPage() {
                     }`}
                   >
                     <div className="flex items-start gap-2.5 min-w-0">
-                      <Building2
+                      <Building2 aria-hidden="true"
                         className={`h-4 w-4 mt-0.5 shrink-0 ${
                           isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400'
                         }`}
@@ -260,7 +260,7 @@ export default function UbicacionesPage() {
                         className="h-6 w-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                         title="Editar ubicación"
                       >
-                        <Edit2 className="h-3 w-3" />
+                        <Edit2 aria-hidden="true" className="h-3 w-3" />
                       </Button>
                       <Button
                         type="button"
@@ -273,7 +273,7 @@ export default function UbicacionesPage() {
                         className="h-6 w-6 text-zinc-400 hover:text-rose-600"
                         title="Eliminar ubicación"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 aria-hidden="true" className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
@@ -289,7 +289,7 @@ export default function UbicacionesPage() {
             <>
               <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <FolderTree className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
+                  <FolderTree aria-hidden="true" className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
                   <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                     Cajones y Gavetas en "{activeLocation.nombre}" ({cajones.length})
                   </span>
@@ -300,14 +300,14 @@ export default function UbicacionesPage() {
                   size="sm"
                   onClick={handleOpenCreateCajon} className="gap-1.5"
                 >
-                  <Plus className="h-3 w-3" />
+                  <Plus aria-hidden="true" className="h-3 w-3" />
                   <span>Nuevo cajón</span>
                 </Button>
               </div>
 
               {isLoadingCajones ? (
                 <div className={`flex items-center justify-center p-8 gap-2 ${STATE_TEXT_CLASS}`}>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
                   <span>Cargando compartimientos…</span>
                 </div>
               ) : cajones.length === 0 ? (
@@ -322,7 +322,7 @@ export default function UbicacionesPage() {
                       className="flex items-start justify-between gap-2 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-xs"
                     >
                       <div className="flex items-start gap-2 min-w-0">
-                        <MapPin className="h-3.5 w-3.5 text-zinc-500 mt-0.5 shrink-0" />
+                        <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500 mt-0.5 shrink-0" />
                         <div className="flex flex-col items-start gap-1 min-w-0">
                           <span className="font-bold text-zinc-900 dark:text-zinc-100 truncate max-w-full">
                             {cajon.codigo}
@@ -348,9 +348,9 @@ export default function UbicacionesPage() {
                           aria-label={`Imprimir etiqueta de ${cajonCode(cajon)}`}
                         >
                           {labelMutation.isPending && labelMutation.variables === cajon.id ? (
-                            <Loader2 className="h-3 w-3 animate-spin" />
+                            <Loader2 aria-hidden="true" className="h-3 w-3 animate-spin" />
                           ) : (
-                            <Printer className="h-3 w-3" />
+                            <Printer aria-hidden="true" className="h-3 w-3" />
                           )}
                         </Button>
                         <Button
@@ -362,7 +362,7 @@ export default function UbicacionesPage() {
                           title="Eliminar cajón"
                           aria-label={`Eliminar cajón ${cajon.codigo}`}
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 aria-hidden="true" className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>

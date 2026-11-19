@@ -55,7 +55,7 @@ export function FileField({
       />
       {file ? (
         <>
-          <FileText className="h-4 w-4 shrink-0 text-zinc-400" />
+          <FileText aria-hidden="true" className="h-4 w-4 shrink-0 text-zinc-400" />
           <span className="flex-1 truncate font-mono text-zinc-800 dark:text-zinc-200">
             {file.name}
           </span>
@@ -67,7 +67,7 @@ export function FileField({
             disabled={disabled}
             className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
           >
-            <X className="h-3.5 w-3.5" />
+            <X aria-hidden="true" className="h-3.5 w-3.5" />
           </button>
         </>
       ) : (
@@ -82,7 +82,7 @@ export function FileField({
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
           >
-            <FileUp className="h-3.5 w-3.5" />
+            <FileUp aria-hidden="true" className="h-3.5 w-3.5" />
             Seleccionar archivo
           </Button>
         </>

@@ -22,7 +22,7 @@ export function LoanReviewUnitRow({ unit, changed }: LoanReviewUnitRowProps) {
         N/S: {unit.serial_number || '—'}
       </span>
       <span className="mt-0.5 flex items-center gap-1 text-[11px] text-zinc-700 dark:text-zinc-300">
-        <MapPin className="h-3 w-3 shrink-0 text-zinc-400" />
+        <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
         <span>
           {unit.location?.nombre ?? 'Sala sin registrar'} ·{' '}
           <span className="font-mono">{unit.cajon?.codigo ?? 'Cajón sin registrar'}</span>

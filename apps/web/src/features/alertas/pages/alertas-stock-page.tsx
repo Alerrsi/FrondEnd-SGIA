@@ -153,7 +153,7 @@ export default function AlertasStockPage() {
               onClick={() => navigate('/inventario')}
               className="text-xs gap-1.5"
             >
-              <Layers className="h-3.5 w-3.5" />
+              <Layers aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Ver inventario</span>
             </Button>
             {canRequest && selected.size > 0 && (
@@ -164,7 +164,7 @@ export default function AlertasStockPage() {
                 onClick={() => setRequestItems([...selected.values()].map(toRequestItem))}
                 className="text-xs gap-1.5"
               >
-                <ShoppingCart className="h-3.5 w-3.5" />
+                <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
                 <span>Crear solicitud de compra ({selected.size})</span>
               </Button>
             )}
@@ -175,7 +175,7 @@ export default function AlertasStockPage() {
               onClick={() => navigate('/compras/solicitudes')}
               className="text-xs gap-1.5"
             >
-              <ShoppingCart className="h-3.5 w-3.5" />
+              <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Ir a solicitudes de compra</span>
             </Button>
           </div>
@@ -208,7 +208,7 @@ export default function AlertasStockPage() {
         </div>
 
         <div className="flex items-center gap-2 pl-4">
-          <CheckCircle className="h-3 w-3 text-emerald-500" />
+          <CheckCircle aria-hidden="true" className="h-3 w-3 text-emerald-500" />
           <span className="text-zinc-400 dark:text-zinc-500">Atendidas / resueltas:</span>
           <strong className="text-zinc-700 dark:text-zinc-300 tabular-nums font-semibold">
             {totalResolved}

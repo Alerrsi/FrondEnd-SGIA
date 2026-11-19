@@ -83,7 +83,7 @@ export function CancelInvoiceIntakeDialog({
             role="alert"
             className="flex items-start gap-2 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-2.5 text-rose-800 dark:text-rose-300"
           >
-            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <AlertTriangle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {blockedReason}
           </p>
         )}
@@ -96,7 +96,7 @@ export function CancelInvoiceIntakeDialog({
             onClick={handleCancel}
             disabled={cancelIntake.isPending}
           >
-            {cancelIntake.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {cancelIntake.isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {confirmed ? 'Anular y revertir' : 'Anular borrador'}
           </Button>
         </DialogFooter>

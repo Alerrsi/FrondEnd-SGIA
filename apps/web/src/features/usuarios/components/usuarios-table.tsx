@@ -208,7 +208,7 @@ export function UsuariosTable({
                 title="Editar usuario"
                 className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
               <button
                 type="button"
@@ -237,7 +237,7 @@ export function UsuariosTable({
                       : 'text-zinc-400 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400',
                 )}
               >
-                <Power className="h-3.5 w-3.5" />
+                <Power aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
               {onDelete && (
                 <button
@@ -261,7 +261,7 @@ export function UsuariosTable({
                       : 'text-zinc-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400',
                   )}
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
@@ -293,7 +293,7 @@ export function UsuariosTable({
       <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
         <div className="flex flex-1 flex-wrap items-center gap-2">
           <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-72 sm:flex-none">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
             <input
               type="search"
               value={search}
@@ -309,7 +309,7 @@ export function UsuariosTable({
                 aria-label="Limpiar búsqueda"
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-300 focus-visible:outline-none"
               >
-                <X className="h-3.5 w-3.5" />
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             ) : (
               <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
@@ -386,7 +386,7 @@ export function UsuariosTable({
 
         {isFetching && (
           <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-            <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
             <span>Actualizando…</span>
           </div>
         )}
@@ -411,11 +411,11 @@ export function UsuariosTable({
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === 'asc' ? (
-                            <ChevronUp className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                            <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
                           ) : sorted === 'desc' ? (
-                            <ChevronDown className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                            <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
                           ) : (
-                            <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />
+                            <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
                           )}
                         </button>
                       ) : (
@@ -490,7 +490,7 @@ export function UsuariosTable({
               aria-label="Página anterior"
               className="h-7 w-7 p-0"
             >
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
             <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
               {totalPages === 0 ? 0 : currentPage} / {totalPages}
@@ -504,7 +504,7 @@ export function UsuariosTable({
               aria-label="Página siguiente"
               className="h-7 w-7 p-0"
             >
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>

@@ -59,18 +59,18 @@ export function PurchaseRequestCodeField({
         <p className="text-[11px] text-rose-600 dark:text-rose-400">{error}</p>
       ) : complete && isFetching && !match ? (
         <p className="flex items-center gap-1 text-[11px] text-zinc-500">
-          <Loader2 className="h-3 w-3 animate-spin" />
+          <Loader2 aria-hidden="true" className="h-3 w-3 animate-spin" />
           Buscando solicitud…
         </p>
       ) : complete && match && hasOrder ? (
         <p className="flex items-center gap-1 text-[11px] text-emerald-700 dark:text-emerald-400">
-          <CheckCircle2 className="h-3 w-3" />
+          <CheckCircle2 aria-hidden="true" className="h-3 w-3" />
           OC {match.order?.order_number ?? match.order?.code ?? ''} · reserva{' '}
           {formatCLP(match.order?.reserved_amount)}
         </p>
       ) : complete && !isFetching ? (
         <p className="flex items-center gap-1 text-[11px] text-amber-700 dark:text-amber-400">
-          <TriangleAlert className="h-3 w-3" />
+          <TriangleAlert aria-hidden="true" className="h-3 w-3" />
           {match
             ? 'La solicitud aún no tiene orden de compra subida.'
             : 'No se encontró una solicitud con ese código.'}

@@ -173,7 +173,7 @@ export function ProductoDetailDialog({
         <div className="flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-4">
           <div className="mb-2.5 flex items-center justify-between w-full">
             <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
-              <Barcode className="h-4 w-4 text-zinc-500" />
+              <Barcode aria-hidden="true" className="h-4 w-4 text-zinc-500" />
               Rotulado Code128 de pañol
             </span>
             <button
@@ -182,7 +182,7 @@ export function ProductoDetailDialog({
               className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
               title="Copiar código al portapapeles"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <Check aria-hidden="true" className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy aria-hidden="true" className="h-3.5 w-3.5" />}
               <span>{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
           </div>
@@ -194,7 +194,7 @@ export function ProductoDetailDialog({
           >
             {isBarcodeLoading ? (
               <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono">
-                <Loader2 className="h-4 w-4 animate-spin text-zinc-600" />
+                <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-600" />
                 <span>Generando código vectorial…</span>
               </div>
             ) : barcodeData?.svg ? (
@@ -205,7 +205,7 @@ export function ProductoDetailDialog({
               />
             ) : (
               <div className="flex flex-col items-center gap-1 text-zinc-400">
-                <Barcode className="h-8 w-8 opacity-40" />
+                <Barcode aria-hidden="true" className="h-8 w-8 opacity-40" />
                 <span className="text-[11px] font-mono">SVG no disponible</span>
               </div>
             )}
@@ -243,7 +243,7 @@ export function ProductoDetailDialog({
             </div>
             {isCritical && (
               <div className="mt-2.5 flex items-center gap-1.5 rounded bg-red-50 dark:bg-red-950/40 border border-red-200/60 dark:border-red-900/40 px-2 py-1 text-xs text-red-700 dark:text-red-400">
-                <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" />
+                <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" />
                 <span>Nivel de stock bajo umbral crítico</span>
               </div>
             )}
@@ -253,7 +253,7 @@ export function ProductoDetailDialog({
           <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
             <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
               <span className="font-mono">Ubicación en pañol</span>
-              <MapPin className="h-3.5 w-3.5 text-zinc-400" />
+              <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             </div>
             <div className="mt-2 flex items-center gap-2">
               <span className="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -282,7 +282,7 @@ export function ProductoDetailDialog({
         {/* Metadatos de Creación / Auditoría */}
         <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono border-t border-zinc-200 dark:border-zinc-800 pt-2.5">
           <div className="flex items-center gap-1.5">
-            <Calendar className="h-3.5 w-3.5 text-zinc-400" />
+            <Calendar aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             <span>
               Ingresado:{' '}
               {producto.createdAt
@@ -304,7 +304,7 @@ export function ProductoDetailDialog({
             size="sm"
             onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
           >
-            <Printer className="h-3.5 w-3.5 text-zinc-500" />
+            <Printer aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500" />
             <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
           </Button>
 
@@ -320,7 +320,7 @@ export function ProductoDetailDialog({
                   onReubicar(producto);
                 }}
               >
-                <ArrowRightLeft className="h-3.5 w-3.5" />
+                <ArrowRightLeft aria-hidden="true" className="h-3.5 w-3.5" />
                 <span>Reubicar</span>
               </Button>
             )}
@@ -334,7 +334,7 @@ export function ProductoDetailDialog({
                   onEdit(producto);
                 }}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                 <span>Editar producto</span>
               </Button>
             )}

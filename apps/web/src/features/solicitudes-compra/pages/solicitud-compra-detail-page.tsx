@@ -62,11 +62,11 @@ export default function SolicitudCompraDetailPage() {
     return (
       <div className="flex flex-col gap-3">
         <Link to="/compras/solicitudes" className="inline-flex items-center gap-1 text-xs text-zinc-500">
-          <ArrowLeft className="h-3.5 w-3.5" />
+          <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
           Volver a solicitudes
         </Link>
         <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/20 dark:text-red-400">
-          <AlertCircle className="h-5 w-5 shrink-0" />
+          <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
           No se encontró la solicitud de compra.
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function SolicitudCompraDetailPage() {
         to="/compras/solicitudes"
         className="inline-flex w-fit items-center gap-1 text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
       >
-        <ArrowLeft className="h-3.5 w-3.5" />
+        <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
         Solicitudes de compra
       </Link>
 
@@ -133,25 +133,25 @@ export default function SolicitudCompraDetailPage() {
           <div className="flex flex-wrap gap-2">
             {actions.can_edit && (
               <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                 Editar
               </Button>
             )}
             {actions.can_approve && (
               <Button size="sm" onClick={() => setConfirmApprove(true)} disabled={approve.isPending}>
-                <CheckCircle2 className="h-3.5 w-3.5" />
+                <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
                 Aprobar
               </Button>
             )}
             {actions.can_send && (
               <Button size="sm" onClick={() => setSendOpen(true)}>
-                <Send className="h-3.5 w-3.5" />
+                <Send aria-hidden="true" className="h-3.5 w-3.5" />
                 Enviar a proveedores
               </Button>
             )}
             {actions.can_cancel && (
               <Button variant="outline" size="sm" onClick={() => setConfirmCancel(true)}>
-                <Ban className="h-3.5 w-3.5" />
+                <Ban aria-hidden="true" className="h-3.5 w-3.5" />
                 Cancelar solicitud
               </Button>
             )}

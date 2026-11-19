@@ -180,19 +180,19 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
         {(onChangePassword || onViewSessions) && (
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-              <KeyRound className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
+              <KeyRound aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
               <SectionLabel>Cuenta y seguridad</SectionLabel>
             </div>
             <div className="flex flex-wrap gap-2">
               {onChangePassword && (
                 <Button variant="secondary" size="sm" onClick={onChangePassword}>
-                  <KeyRound className="h-3.5 w-3.5" />
+                  <KeyRound aria-hidden="true" className="h-3.5 w-3.5" />
                   Cambiar contraseña
                 </Button>
               )}
               {onViewSessions && (
                 <Button variant="secondary" size="sm" onClick={onViewSessions}>
-                  <Monitor className="h-3.5 w-3.5" />
+                  <Monitor aria-hidden="true" className="h-3.5 w-3.5" />
                   Sesiones activas
                 </Button>
               )}
@@ -203,7 +203,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
         {/* Apartado 1: Paleta de Colores */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-            <Palette className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
+            <Palette aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
             <SectionLabel>Paleta de colores de interfaz</SectionLabel>
           </div>
 
@@ -258,7 +258,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                         )}
                         aria-hidden="true"
                       >
-                        <Check className="h-3 w-3 stroke-[3]" />
+                        <Check aria-hidden="true" className="h-3 w-3 stroke-[3]" />
                       </div>
                     </div>
 
@@ -297,7 +297,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
         {/* Apartado 2: Tema (Claro, Oscuro, Sistema) */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-            <Sparkles className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
+            <Sparkles aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
             <SectionLabel>Modo de visualización</SectionLabel>
           </div>
 

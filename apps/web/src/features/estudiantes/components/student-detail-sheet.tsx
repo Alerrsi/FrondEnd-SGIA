@@ -41,7 +41,7 @@ export function StudentDetailSheet({
         </SheetHeader>
 
         {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
         ) : (
           student && (
             <dl className="grid grid-cols-2 gap-2 text-xs">

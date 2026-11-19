@@ -44,13 +44,13 @@ export function TodayTask({ to, icon: Icon, title, description, count, isLoading
         </span>
       ) : (
         <span className="flex h-7.5 items-center gap-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {count !== undefined && <Check className="h-3.5 w-3.5" />}
+          {count !== undefined && <Check aria-hidden="true" className="h-3.5 w-3.5" />}
           {isLoading ? '…' : count === undefined ? '—' : 'Al día'}
         </span>
       )}
       <span className="mt-auto flex items-end justify-between gap-2 text-xs leading-snug text-zinc-500 dark:text-zinc-400">
         {description}
-        <ArrowRight className="h-3.5 w-3.5 shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5" />
+        <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5" />
       </span>
     </Link>
   );

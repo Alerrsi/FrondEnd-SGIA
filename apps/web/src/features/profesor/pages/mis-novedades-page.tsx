@@ -34,7 +34,7 @@ export default function MisNovedadesPage() {
           Informes de fallas y faltantes que has reportado.
         </PageHeading>
         <Button onClick={() => setFormOpen(true)}>
-          <Plus className="h-4 w-4" />
+          <Plus aria-hidden="true" className="h-4 w-4" />
           Nuevo informe
         </Button>
       </div>
@@ -46,7 +46,7 @@ export default function MisNovedadesPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar tus informes.
           </div>
         ) : (
@@ -128,7 +128,7 @@ export default function MisNovedadesPage() {
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -137,7 +137,7 @@ export default function MisNovedadesPage() {
               disabled={page >= meta.lastPage}
               onClick={() => setPage((p) => p + 1)}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight aria-hidden="true" className="h-4 w-4" />
             </Button>
           </div>
         )}

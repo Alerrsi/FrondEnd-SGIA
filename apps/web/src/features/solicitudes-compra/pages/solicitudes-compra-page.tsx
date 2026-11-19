@@ -71,7 +71,7 @@ export default function SolicitudesCompraPage() {
         </PageHeading>
         {canManage && (
           <Button onClick={() => setFormOpen(true)} className="text-xs">
-            <Plus className="h-4 w-4" />
+            <Plus aria-hidden="true" className="h-4 w-4" />
             Nueva solicitud
           </Button>
         )}
@@ -96,7 +96,7 @@ export default function SolicitudesCompraPage() {
       <div className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
         <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 p-2.5 dark:border-zinc-800">
           <div className="relative min-w-[180px] flex-1 sm:max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+            <Search aria-hidden="true" className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
             <input
               type="search"
               aria-label="Buscar por código"
@@ -160,7 +160,7 @@ export default function SolicitudesCompraPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/20 dark:text-red-400">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             No se pudieron cargar las solicitudes de compra desde el servidor.
           </div>
         ) : (

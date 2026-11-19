@@ -15,7 +15,7 @@ export function RecentActivity() {
   return (
     <div className="flex h-full flex-col rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
       <p className="flex items-center gap-2 border-b border-zinc-100 px-3 py-2.5 text-xs font-semibold text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">
-        <ScrollText className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <ScrollText aria-hidden="true" className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
         Actividad reciente
       </p>
       {isLoading || isError || logs.length === 0 ? (
@@ -43,7 +43,7 @@ export function RecentActivity() {
         className="group mt-auto flex items-center justify-end gap-1 border-t border-zinc-100 px-3 py-2 text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
       >
         Ver la auditoría
-        <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+        <ArrowRight aria-hidden="true" className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
       </Link>
     </div>
   );

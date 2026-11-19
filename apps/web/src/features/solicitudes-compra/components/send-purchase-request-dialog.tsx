@@ -126,7 +126,7 @@ export function SendPurchaseRequestDialog({ open, onClose, request }: SendPurcha
         <DialogFooter>
           <DialogCloseButton disabled={pending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={pending || areas.length === 0}>
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {pending ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Send aria-hidden="true" className="h-4 w-4" />}
             Enviar correos
           </Button>
         </DialogFooter>

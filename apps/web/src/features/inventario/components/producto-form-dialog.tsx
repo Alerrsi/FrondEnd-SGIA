@@ -396,7 +396,7 @@ export function ProductoFormDialog({
                     }}
                     className="mb-1 flex items-center gap-1 text-[11px] font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                   >
-                    <Sparkles className="h-3 w-3 text-amber-500" />
+                    <Sparkles aria-hidden="true" className="h-3 w-3 text-amber-500" />
                     <span>{autoBarcode ? 'Manual' : 'Autogenerar'}</span>
                   </button>
                 )}
@@ -410,7 +410,7 @@ export function ProductoFormDialog({
                   className={cn(inputClasses, autoBarcode && 'opacity-60 text-zinc-400')}
                   {...register('barcode')}
                 />
-                <Barcode className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                <Barcode aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               </div>
               <FieldError message={errors.barcode?.message} />
             </div>
@@ -506,7 +506,7 @@ export function ProductoFormDialog({
         {/* Fieldset: Ubicación en pañol */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
           <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
-            <MapPin className="h-3 w-3 text-zinc-400" />
+            <MapPin aria-hidden="true" className="h-3 w-3 text-zinc-400" />
             <span>Ubicación en pañol</span>
           </legend>
 
@@ -583,7 +583,7 @@ export function ProductoFormDialog({
         <DialogFooter>
           <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={isPending}>
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Dar de alta'}
           </Button>
         </DialogFooter>

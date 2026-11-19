@@ -127,7 +127,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
         <div className="flex flex-col gap-3">
           {isLoading && (
             <div className="flex h-24 items-center justify-center text-xs text-zinc-500" role="status">
-              <RefreshCw className="mr-2 h-4 w-4 animate-spin text-zinc-400" />
+              <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4 animate-spin text-zinc-400" />
               <span>Buscando unidades disponibles…</span>
             </div>
           )}
@@ -149,7 +149,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
               role="alert"
               className="flex items-start gap-2 rounded border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/30 p-2.5 text-xs text-amber-800 dark:text-amber-300"
             >
-              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <AlertTriangle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>{approveNotice}</span>
             </div>
           )}
@@ -181,7 +181,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
                       aria-label={`Cambiar elementos de ${item.name}`}
                       className="h-7 gap-1 px-2 text-xs"
                     >
-                      <ScanLine className="h-3.5 w-3.5" />
+                      <ScanLine aria-hidden="true" className="h-3.5 w-3.5" />
                       <span>Cambiar elementos</span>
                     </Button>
                   )}
@@ -193,7 +193,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
                   role="alert"
                   className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-rose-600 dark:text-rose-400"
                 >
-                  <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+                  <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                   <span>
                     {item.has_units
                       ? `Faltan ${item.shortage} unidad(es) en este pañol.`
@@ -227,7 +227,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
                 </>
               ) : (
                 <p className="mt-1.5 flex items-center gap-1 text-[11px] text-zinc-700 dark:text-zinc-300">
-                  <MapPin className="h-3 w-3 shrink-0 text-zinc-400" />
+                  <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                   <span>
                     {item.location?.nombre ?? 'Sala sin registrar'} ·{' '}
                     <span className="font-mono">{item.cajon?.codigo ?? 'Cajón sin registrar'}</span>
@@ -247,7 +247,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
               onClick={() => loan && onReject(loan)}
               disabled={aprobarMutation.isPending}
             >
-              <Ban className="h-3.5 w-3.5" />
+              <Ban aria-hidden="true" className="h-3.5 w-3.5" />
               Rechazar
             </Button>
             <Button
@@ -257,7 +257,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
               onClick={() => review && setSelection(initialSelection(review))}
               disabled={!changed}
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
               Restablecer propuesta
             </Button>
           </div>
@@ -265,9 +265,9 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
             <DialogCloseButton disabled={aprobarMutation.isPending}>Cerrar</DialogCloseButton>
             <Button type="button" size="sm" onClick={handleApprove} disabled={!canApprove}>
               {aprobarMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
               ) : (
-                <Check className="h-3.5 w-3.5" />
+                <Check aria-hidden="true" className="h-3.5 w-3.5" />
               )}
               Aprobar
             </Button>

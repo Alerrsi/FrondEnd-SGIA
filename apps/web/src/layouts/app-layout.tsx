@@ -296,7 +296,7 @@ export default function AppLayout() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="gnav-item flex items-center justify-center text-zinc-900 dark:text-zinc-100 cursor-default">
-                      <Boxes size={20} strokeWidth={2.2} />
+                      <Boxes aria-hidden="true" size={20} strokeWidth={2.2} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -314,7 +314,7 @@ export default function AppLayout() {
                       aria-label="Expandir panel lateral"
                       className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
                     >
-                      <PanelLeftOpen size={18} strokeWidth={2} />
+                      <PanelLeftOpen aria-hidden="true" size={18} strokeWidth={2} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -372,7 +372,7 @@ export default function AppLayout() {
                       aria-label="Ajustes de usuario y apariencia"
                       className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
                     >
-                      <Settings size={18} strokeWidth={2} />
+                      <Settings aria-hidden="true" size={18} strokeWidth={2} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -391,13 +391,13 @@ export default function AppLayout() {
                       className="gnav-item flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 cursor-pointer"
                     >
                       {isLight ? (
-                        <Moon
+                        <Moon aria-hidden="true"
                           size={18}
                           strokeWidth={2}
                           className="text-zinc-600 dark:text-zinc-400"
                         />
                       ) : (
-                        <Sun size={18} strokeWidth={2} className="text-amber-400" />
+                        <Sun aria-hidden="true" size={18} strokeWidth={2} className="text-amber-400" />
                       )}
                     </button>
                   </TooltipTrigger>
@@ -418,7 +418,7 @@ export default function AppLayout() {
                       aria-label="Cerrar sesión"
                       className="gnav-item flex items-center justify-center text-zinc-500 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 cursor-pointer"
                     >
-                      <LogOut size={18} strokeWidth={2} />
+                      <LogOut aria-hidden="true" size={18} strokeWidth={2} />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">
@@ -435,7 +435,7 @@ export default function AppLayout() {
                 <div className="flex shrink-0 items-center justify-between px-1.5">
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-                      <Boxes className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
+                      <Boxes aria-hidden="true" className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
@@ -454,7 +454,7 @@ export default function AppLayout() {
                     aria-label="Encoger panel lateral"
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer"
                   >
-                    <PanelLeftClose className="h-3.5 w-3.5" />
+                    <PanelLeftClose aria-hidden="true" className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
@@ -520,7 +520,7 @@ export default function AppLayout() {
                         aria-label="Ajustes de usuario y apariencia"
                         className="p-1 shrink-0 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                       >
-                        <Settings className="h-3.5 w-3.5" />
+                        <Settings aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         type="button"
@@ -529,7 +529,7 @@ export default function AppLayout() {
                         aria-label="Cerrar sesión"
                         className="p-1 shrink-0 rounded text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
                       >
-                        <LogOut className="h-3.5 w-3.5" />
+                        <LogOut aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -540,7 +540,7 @@ export default function AppLayout() {
                       Tema {isLight ? 'Claro' : 'Oscuro'}
                     </span>
                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-2xs shrink-0">
-                      <Moon
+                      <Moon aria-hidden="true"
                         className={cn(
                           'h-3 w-3 transition-colors',
                           !isLight
@@ -558,7 +558,7 @@ export default function AppLayout() {
                             : 'Modo Oscuro activo, cambiar a Claro'
                         }
                       />
-                      <Sun
+                      <Sun aria-hidden="true"
                         className={cn(
                           'h-3 w-3 transition-colors',
                           isLight ? 'text-amber-500 font-bold' : 'text-zinc-400 dark:text-zinc-500',

@@ -147,12 +147,12 @@ export function AlertasTable({
           const isCritical = type === 'critical';
           return isCritical ? (
             <Badge tone="critical">
-              <AlertTriangle className="mr-1 h-3 w-3" />
+              <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
               Crítico
             </Badge>
           ) : (
             <Badge tone="warning">
-              <AlertCircle className="mr-1 h-3 w-3" />
+              <AlertCircle aria-hidden="true" className="mr-1 h-3 w-3" />
               Advertencia
             </Badge>
           );
@@ -183,7 +183,7 @@ export function AlertasTable({
               <div className="flex items-center gap-1.5 flex-wrap">
                 {sku && (
                   <span className={`inline-flex items-center gap-1 ${CODE_CHIP_CLASS}`}>
-                    <Barcode className="h-2.5 w-2.5 text-zinc-400" />
+                    <Barcode aria-hidden="true" className="h-2.5 w-2.5 text-zinc-400" />
                     <span>{sku}</span>
                   </span>
                 )}
@@ -300,7 +300,7 @@ export function AlertasTable({
                   aria-label={`Resolver alerta de ${alert.product_name ?? 'producto'}`}
                   className="h-7 px-2 text-xs gap-1 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
                 >
-                  <CheckCheck className="h-3.5 w-3.5" />
+                  <CheckCheck aria-hidden="true" className="h-3.5 w-3.5" />
                   <span>Resolver</span>
                 </Button>
               )}
@@ -315,7 +315,7 @@ export function AlertasTable({
                   aria-label={`Crear solicitud de compra para ${alert.product_name ?? 'producto'}`}
                   className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                 >
-                  <ShoppingCart className="h-3.5 w-3.5" />
+                  <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
 
@@ -344,7 +344,7 @@ export function AlertasTable({
                   aria-label={`Ver ficha de ${product.nombre}`}
                   className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                 >
-                  <Eye className="h-3.5 w-3.5" />
+                  <Eye aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
             </div>
@@ -387,7 +387,7 @@ export function AlertasTable({
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {/* Search box with / kbd */}
           <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-72 sm:flex-none">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
             <input
               type="search"
               value={search}
@@ -403,7 +403,7 @@ export function AlertasTable({
                 aria-label="Limpiar búsqueda"
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
               >
-                <X className="h-3.5 w-3.5" />
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             ) : (
               <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
@@ -439,7 +439,7 @@ export function AlertasTable({
 
         {isFetching && (
           <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-            <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
+            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
             <span>Actualizando…</span>
           </div>
         )}
@@ -464,11 +464,11 @@ export function AlertasTable({
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === 'asc' ? (
-                            <ChevronUp className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                            <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
                           ) : sorted === 'desc' ? (
-                            <ChevronDown className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                            <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
                           ) : (
-                            <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />
+                            <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
                           )}
                         </button>
                       ) : (
@@ -487,7 +487,7 @@ export function AlertasTable({
               <tr>
                 <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
                   <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
+                    <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
                     <span>Cargando registro de alertas de stock…</span>
                   </div>
                 </td>
@@ -549,7 +549,7 @@ export function AlertasTable({
               aria-label="Página anterior"
               className="h-7 w-7 p-0"
             >
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
             <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
               {totalPages === 0 ? 0 : currentPage} / {totalPages}
@@ -563,7 +563,7 @@ export function AlertasTable({
               aria-label="Página siguiente"
               className="h-7 w-7 p-0"
             >
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
