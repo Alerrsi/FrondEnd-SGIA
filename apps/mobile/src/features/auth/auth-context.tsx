@@ -18,6 +18,7 @@ import type { Usuario } from '@sgia/types';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { tokenStorage } from '@/config/api';
+import { unregisterPushDevice } from '@/features/notifications/push';
 
 interface AuthContextValue {
   user: Usuario | null;
@@ -79,6 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
+      // Antes de revocar el token: el dispositivo deja de recibir avisos de esta cuenta.
+      await unregisterPushDevice().catch(() => undefined);
       await apiLogout(tokenStorage);
     } finally {
       setToken(null);

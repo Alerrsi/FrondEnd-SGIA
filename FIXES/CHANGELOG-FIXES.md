@@ -830,3 +830,13 @@
 - **Qué cambia:** paleta burdeo `#490b1a` / navy `#142841` / slate `#798da6` / crema `#e5ded2`. La escala `zinc` de Tailwind se redefine en `@theme` como neutros fríos de slate a navy, así que las vistas se recolorean sin tocarlas. Menú lateral navy en ambos temas (`aside.dark`) con el ítem activo como etiqueta crema. CTA burdeo (rosa en oscuro). Schibsted Grotesk en toda la interfaz; `font-mono` pasa a ser la misma fuente con cifras tabulares y Geist Mono (`font-code`) queda solo en los chips de código, que se ven como etiqueta crema. Rótulos y cabeceras en tipo oración. Radios 12/8/6 px por jerarquía, tarjetas sin sombra. Gráficos con paleta propia.
 - **Fuera de alcance:** app móvil y `packages/design-tokens` (sin cambios), portada `/inicio`.
 - **Verificación:** typecheck, lint y vitest en verde; capturas en Chrome contra la API local (inventario, compras, dashboard, login) en claro y oscuro.
+
+## FEAT-043: Notificaciones push en la app móvil
+
+- **Fecha:** 2026-11-12
+- **Módulo:** `apps/mobile` (`features/notifications`), `packages/api-client` (`services/devices.ts`)
+- **Qué hace:** al iniciar sesión la app pide permiso, obtiene el token de Expo y lo registra con `POST /api/devices`; al cerrar sesión lo elimina con `DELETE /api/devices/{id}` antes de revocar el token. Con la app abierta el aviso también se muestra. Al tocar un aviso de préstamo (`loan_status`, vencimientos) abre "Mis Préstamos".
+- **Archivos:** `features/notifications/push.ts`, `use-push-notifications.ts`, `app/(app)/_layout.tsx`, `features/auth/auth-context.tsx`, `app.json` (plugin `expo-notifications`), `services/devices.ts`.
+- **Requisitos para probarlo en un teléfono:** `eas init` (escribe `extra.eas.projectId` en `app.json`; sin él la app avisa por consola y no registra nada), un **development build** (`eas build --profile development`; Expo Go en Android no entrega tokens de push) y, en Android, credenciales FCM cargadas en EAS. En el backend, `php artisan queue:work` si la cola no es `sync`.
+- **Límite conocido:** si la sesión se cierra sola (token vencido o revocado), el dispositivo sigue registrado hasta el próximo inicio de sesión en ese teléfono.
+- **Verificación:** `pnpm typecheck`, `pnpm lint`, vitest (`devices-api.test.ts`) y `expo export --platform android` en verde. **No probado en un dispositivo físico.**

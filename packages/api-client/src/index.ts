@@ -327,6 +327,7 @@ export {
 export { createSgiaQueryClient } from './query-client';
 
 export * as authApi from './services/auth';
+export * as devicesApi from './services/devices';
 export * as productsApi from './services/products';
 export * as loansApi from './services/loans';
 export * as quotationsApi from './services/quotations';
