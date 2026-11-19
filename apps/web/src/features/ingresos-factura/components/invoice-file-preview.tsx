@@ -40,7 +40,7 @@ export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; ha
     <div className="flex h-full flex-col gap-2">
       <div className="min-h-[55vh] flex-1 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
         {isImage ? (
-          <img src={url} alt="Factura escaneada" className="h-full w-full object-contain" />
+          <img src={url} alt="Factura escaneada" width={800} height={1100} className="h-full w-full object-contain" />
         ) : (
           <iframe src={url} title="Factura en PDF" className="h-full min-h-[55vh] w-full" />
         )}

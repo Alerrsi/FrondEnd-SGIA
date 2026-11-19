@@ -215,6 +215,9 @@ export function InvoiceReviewForm({
           <input
             id="ii-document"
             {...register('document_number')}
+            translate="no"
+            spellCheck={false}
+            autoComplete="off"
             aria-invalid={Boolean(errors.document_number) || undefined}
             disabled={pending}
             className={cn(inputClasses, 'max-w-xs')}

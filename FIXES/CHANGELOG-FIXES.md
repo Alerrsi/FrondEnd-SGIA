@@ -840,3 +840,11 @@
 - **Requisitos para probarlo en un teléfono:** `eas init` (escribe `extra.eas.projectId` en `app.json`; sin él la app avisa por consola y no registra nada), un **development build** (`eas build --profile development`; Expo Go en Android no entrega tokens de push) y, en Android, credenciales FCM cargadas en EAS. En el backend, `php artisan queue:work` si la cola no es `sync`.
 - **Límite conocido:** si la sesión se cierra sola (token vencido o revocado), el dispositivo sigue registrado hasta el próximo inicio de sesión en ese teléfono.
 - **Verificación:** `pnpm typecheck`, `pnpm lint`, vitest (`devices-api.test.ts`) y `expo export --platform android` en verde. **No probado en un dispositivo físico.**
+
+## FIX-044: Accesibilidad rescatada de `feature/reestilacion`
+
+- **Fecha:** 2026-11-18
+- **Módulo:** `apps/web`
+- **Qué cambia:** del rediseño anterior (rama `feature/reestilacion`, 05-11) se trae solo lo que no depende de la paleta: foco visible global, `prefers-reduced-motion`, enlace «Saltar al contenido», `theme-color` con los fondos «Pañol», `overscroll-behavior` en modales, `touch-action: manipulation`, sin `transition-all`, puntos suspensivos tipográficos, `aria-hidden` en 473 íconos de lucide, N° de factura sin corrector ni autocompletado y dimensiones en la vista previa de la factura.
+- **Descartado:** tokens y contraste de la paleta vieja (fases 2, 5a, 6 y el fix de sede: los reemplaza la paleta «Pañol»), pantallas del flujo de compras antiguo (fase 4), extracción de `LoanDetailSheet` (5b) y el encabezado `PageEyebrow`.
+- **Verificación:** typecheck, lint y vitest (481 tests) en verde.
