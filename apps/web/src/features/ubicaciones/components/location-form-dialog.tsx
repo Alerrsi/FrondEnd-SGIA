@@ -166,7 +166,7 @@ export function LocationFormDialog({
               />
             )}
           />
-          <span id="location-code-hint" className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <span id="location-code-hint" className="text-xs text-zinc-500 dark:text-zinc-400">
             {isEdit
               ? 'No se puede cambiar: las etiquetas de sus cajones dependen de él.'
               : 'Hasta 10 letras o números. Va en las etiquetas de sus cajones y no se puede cambiar después.'}

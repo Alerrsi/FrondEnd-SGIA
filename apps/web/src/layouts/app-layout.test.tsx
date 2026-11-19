@@ -247,9 +247,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     // Modal de ajustes abierto
     expect(screen.getByRole('dialog')).toBeDefined();
     expect(screen.getByText('Ajustes del sistema')).toBeDefined();
-    expect(screen.getByText('Paleta de colores de interfaz')).toBeDefined();
-    expect(screen.getByText('Pañol (burdeo y navy)')).toBeDefined();
-    expect(screen.getByText('Paleta B1 (Azul Acero & Indigo)')).toBeDefined();
+    expect(screen.getByText('Modo de visualización')).toBeDefined();
   });
 
   it('abre el modal de ajustes desde el sidebar en modo encogido', async () => {

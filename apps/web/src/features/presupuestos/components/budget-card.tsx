@@ -48,7 +48,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 {code}
               </span>
             )}
-            <span className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+            <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
               {budget.year}
             </span>
           </div>
@@ -88,7 +88,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
       </header>
 
       <div>
-        <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
+        <div className="text-xs text-zinc-500 dark:text-zinc-400">
           Libre (gastable)
         </div>
         <BudgetFreeAmount
@@ -114,7 +114,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
           ] as const
         ).map(([term, value]) => (
           <div key={term} className="min-w-0">
-            <dt className="text-[11px] text-zinc-500 dark:text-zinc-400">{term}</dt>
+            <dt className="text-xs text-zinc-500 dark:text-zinc-400">{term}</dt>
             <dd className="truncate font-mono tabular-nums text-zinc-700 dark:text-zinc-300">
               {formatCLP(value)}
             </dd>

@@ -100,7 +100,7 @@ export function LoanRequestDetailSheet({
                       <td className="py-1.5 text-zinc-800 dark:text-zinc-200">
                         {item.nombre ?? item.productoNombre}
                         {item.codigoBarras && (
-                          <span className="ml-1 font-mono text-[11px] text-zinc-400">
+                          <span className="ml-1 font-mono text-xs text-zinc-400">
                             {item.codigoBarras}
                           </span>
                         )}

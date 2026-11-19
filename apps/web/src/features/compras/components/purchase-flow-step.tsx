@@ -41,7 +41,7 @@ export function PurchaseFlowStep({ number, title, description, status, pendingLa
 
       {pending ? (
         <span className="flex items-baseline gap-1.5">
-          <span className="font-mono text-3xl font-bold leading-none tracking-tight text-zinc-900 dark:text-zinc-100">
+          <span className="font-mono text-3xl font-semibold leading-none tracking-tight text-zinc-900 dark:text-zinc-100">
             {total}
           </span>
           <span className="text-xs text-zinc-600 dark:text-zinc-300">{pendingLabel}</span>

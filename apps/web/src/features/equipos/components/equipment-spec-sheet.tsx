@@ -146,7 +146,7 @@ export function EquipmentSpecSheet({
               </span>
             )}
             {equipo.ubicacion && (
-              <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-600 dark:text-zinc-300">
+              <span className="flex items-center gap-1 font-mono text-xs text-zinc-600 dark:text-zinc-300">
                 <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                 <span>{equipo.ubicacion}</span>
               </span>
@@ -216,7 +216,7 @@ export function EquipmentSpecSheet({
           <div className="flex flex-col gap-1.5 pt-1">
             <div className="flex items-center justify-between text-xs">
               <span className="text-zinc-500 dark:text-zinc-400">Desgaste operativo:</span>
-              <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+              <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
                 {lifeCycle.percentUsed}%
               </span>
             </div>
@@ -237,27 +237,27 @@ export function EquipmentSpecSheet({
           {/* Desglose de Parámetros de Ciclo de Vida */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800 text-xs">
             <div className="flex flex-col">
-              <span className="text-[11px] font-semibold text-zinc-400">Adquisición</span>
+              <span className="text-xs font-semibold text-zinc-400">Adquisición</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.purchaseDateFormatted}
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] font-semibold text-zinc-400">Vida proyectada</span>
+              <span className="text-xs font-semibold text-zinc-400">Vida proyectada</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.lifespanYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] font-semibold text-zinc-400">Antigüedad</span>
+              <span className="text-xs font-semibold text-zinc-400">Antigüedad</span>
               <span className="font-mono text-zinc-800 dark:text-zinc-200 mt-0.5">
                 {lifeCycle.ageYears} años
               </span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] font-semibold text-zinc-400">Restante</span>
+              <span className="text-xs font-semibold text-zinc-400">Restante</span>
               <span
-                className={`font-mono font-bold mt-0.5 ${
+                className={`font-mono font-semibold mt-0.5 ${
                   lifeCycle.isCritical
                     ? 'text-rose-600 dark:text-rose-400'
                     : 'text-zinc-800 dark:text-zinc-200'

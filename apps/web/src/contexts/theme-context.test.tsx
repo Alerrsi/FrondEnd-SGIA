@@ -6,25 +6,17 @@ import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 function TestConsumer() {
-  const { theme, resolvedTheme, setTheme, toggleTheme, isSystem, palette, setPalette } = useTheme();
+  const { theme, resolvedTheme, setTheme, toggleTheme, isSystem } = useTheme();
 
   return (
     <div>
       <span data-testid="current-theme">{theme}</span>
       <span data-testid="resolved-theme">{resolvedTheme}</span>
       <span data-testid="is-system">{String(isSystem)}</span>
-      <span data-testid="current-palette">{palette}</span>
       <button onClick={() => setTheme('light')}>Set Light</button>
       <button onClick={() => setTheme('dark')}>Set Dark</button>
       <button onClick={() => setTheme('system')}>Set System</button>
       <button onClick={toggleTheme}>Toggle</button>
-      <button onClick={() => setPalette('b1')}>Set Palette B1</button>
-      <button onClick={() => setPalette('default')}>Set Palette Default</button>
-      <button onClick={() => setPalette('sage')}>Set Palette Sage</button>
-      <button onClick={() => setPalette('lavender')}>Set Palette Lavender</button>
-      <button onClick={() => setPalette('nordic')}>Set Palette Nordic</button>
-      <button onClick={() => setPalette('peach')}>Set Palette Peach</button>
-      <button onClick={() => setPalette('chamomile')}>Set Palette Chamomile</button>
       <ThemeToggle variant="segmented" />
     </div>
   );
@@ -178,8 +170,10 @@ describe('Theme System & Automatic Dark Mode (Dual Theme SGIA)', () => {
     expect(screen.getByTestId('is-system').textContent).toBe('true');
   });
 
-  it('administra la paleta cromática por defecto e intercambia a la paleta B1 y paletas pastel persistiendo la selección', async () => {
-    const user = userEvent.setup();
+  it('borra la paleta alternativa guardada antes del rediseño «Trazo»', () => {
+    localStorage.setItem('sgia-palette', 'lavender');
+    document.documentElement.setAttribute('data-palette', 'lavender');
+    document.documentElement.classList.add('palette-lavender');
 
     render(
       <TooltipProvider>
@@ -189,41 +183,8 @@ describe('Theme System & Automatic Dark Mode (Dual Theme SGIA)', () => {
       </TooltipProvider>,
     );
 
-    // Paleta por defecto
-    expect(screen.getByTestId('current-palette').textContent).toBe('default');
-    expect(document.documentElement.getAttribute('data-palette')).toBe('default');
-    expect(document.documentElement.classList.contains('palette-b1')).toBe(false);
-
-    // Activar paleta B1
-    await user.click(screen.getByText('Set Palette B1'));
-
-    expect(screen.getByTestId('current-palette').textContent).toBe('b1');
-    expect(document.documentElement.getAttribute('data-palette')).toBe('b1');
-    expect(document.documentElement.classList.contains('palette-b1')).toBe(true);
-    expect(localStorage.getItem('sgia-palette')).toBe('b1');
-
-    // Activar paleta Sage
-    await user.click(screen.getByText('Set Palette Sage'));
-    expect(screen.getByTestId('current-palette').textContent).toBe('sage');
-    expect(document.documentElement.getAttribute('data-palette')).toBe('sage');
-    expect(document.documentElement.classList.contains('palette-sage')).toBe(true);
-    expect(document.documentElement.classList.contains('palette-b1')).toBe(false);
-    expect(localStorage.getItem('sgia-palette')).toBe('sage');
-
-    // Activar paleta Lavender
-    await user.click(screen.getByText('Set Palette Lavender'));
-    expect(screen.getByTestId('current-palette').textContent).toBe('lavender');
-    expect(document.documentElement.getAttribute('data-palette')).toBe('lavender');
-    expect(document.documentElement.classList.contains('palette-lavender')).toBe(true);
-    expect(document.documentElement.classList.contains('palette-sage')).toBe(false);
-
-    // Regresar a paleta por defecto
-    await user.click(screen.getByText('Set Palette Default'));
-
-    expect(screen.getByTestId('current-palette').textContent).toBe('default');
-    expect(document.documentElement.getAttribute('data-palette')).toBe('default');
-    expect(document.documentElement.classList.contains('palette-b1')).toBe(false);
+    expect(localStorage.getItem('sgia-palette')).toBeNull();
+    expect(document.documentElement.hasAttribute('data-palette')).toBe(false);
     expect(document.documentElement.classList.contains('palette-lavender')).toBe(false);
-    expect(localStorage.getItem('sgia-palette')).toBe('default');
   });
 });

@@ -182,7 +182,7 @@ export default function HistorialPrestamosPage() {
                 {info.getValue()}
               </span>
               {loan.solicitanteRun && (
-                <span className="font-mono text-[11px] text-zinc-400 tabular-nums">
+                <span className="font-mono text-xs text-zinc-400 tabular-nums">
                   RUN: {loan.solicitanteRun}
                 </span>
               )}
@@ -196,7 +196,7 @@ export default function HistorialPrestamosPage() {
         cell: (info) => (
           <div className="flex flex-col font-sans text-xs">
             <span className="text-zinc-600 dark:text-zinc-300">{info.getValue()}</span>
-            <span className="text-[11px] text-zinc-400">
+            <span className="text-xs text-zinc-400">
               {loanCareer(info.row.original)}
             </span>
           </div>
@@ -208,7 +208,7 @@ export default function HistorialPrestamosPage() {
         cell: (info) => (
           <div className="flex flex-col text-xs">
             <span className="font-medium text-zinc-700 dark:text-zinc-300">{info.getValue()}</span>
-            <span className="text-[11px] text-zinc-400">{loanStoreroom(info.row.original)}</span>
+            <span className="text-xs text-zinc-400">{loanStoreroom(info.row.original)}</span>
           </div>
         ),
       }),
@@ -236,7 +236,7 @@ export default function HistorialPrestamosPage() {
             if (!raw || raw === '—') return '—';
             const formatted = raw.length >= 10 ? raw.slice(0, 10) : raw;
             return (
-              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">{formatted}</span>
+              <span className="font-mono text-xs text-zinc-500 tabular-nums">{formatted}</span>
             );
           },
         },
@@ -249,11 +249,11 @@ export default function HistorialPrestamosPage() {
           cell: (info) => {
             const raw = info.getValue();
             if (!raw || raw === '—') {
-              return <span className="font-mono text-[11px] text-zinc-400">Pendiente</span>;
+              return <span className="font-mono text-xs text-zinc-400">Pendiente</span>;
             }
             const formatted = raw.length >= 10 ? raw.slice(0, 10) : raw;
             return (
-              <span className="font-mono text-[11px] text-zinc-500 tabular-nums">{formatted}</span>
+              <span className="font-mono text-xs text-zinc-500 tabular-nums">{formatted}</span>
             );
           },
         },
@@ -269,7 +269,7 @@ export default function HistorialPrestamosPage() {
             <div className="flex items-center gap-2">
               <LoanStatusBadge estado={estado} />
               {isOverdue && loan.diasAtraso && (
-                <span className="font-mono text-[11px] text-rose-600 dark:text-rose-400 font-semibold tabular-nums">
+                <span className="font-mono text-xs text-rose-600 dark:text-rose-400 font-semibold tabular-nums">
                   ({loan.diasAtraso}d atraso)
                 </span>
               )}
@@ -641,7 +641,7 @@ export default function HistorialPrestamosPage() {
             <div className="flex flex-col gap-5 py-2">
               <SheetHeader className="text-left border-b border-zinc-200 dark:border-zinc-800 pb-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                  <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                     {selectedLoan.codigo ?? `#${selectedLoan.id}`}
                   </span>
                   <LoanStatusBadge estado={selectedLoan.estado} />
@@ -658,37 +658,37 @@ export default function HistorialPrestamosPage() {
               {/* Parámetros de la Clase */}
               <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-zinc-50 dark:bg-zinc-950 p-3 rounded border border-zinc-200 dark:border-zinc-800">
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Asignatura</span>
+                  <span className="text-zinc-400 text-xs">Asignatura</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {loanSubject(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Carrera</span>
+                  <span className="text-zinc-400 text-xs">Carrera</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {loanCareer(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Laboratorio</span>
+                  <span className="text-zinc-400 text-xs">Laboratorio</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {loanLaboratory(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Pañol</span>
+                  <span className="text-zinc-400 text-xs">Pañol</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {loanStoreroom(selectedLoan)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Fecha de actividad</span>
+                  <span className="text-zinc-400 text-xs">Fecha de actividad</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {selectedLoan.loan_date ? formatDateOnly(selectedLoan.loan_date) : '—'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Horario</span>
+                  <span className="text-zinc-400 text-xs">Horario</span>
                   <p className="font-medium text-zinc-800 dark:text-zinc-200">
                     {loanSchedule(selectedLoan) === '—'
                       ? 'No especificado'
@@ -696,11 +696,11 @@ export default function HistorialPrestamosPage() {
                   </p>
                 </div>
                 <div>
-                  <span className="text-zinc-400 text-[11px]">Días de atraso</span>
+                  <span className="text-zinc-400 text-xs">Días de atraso</span>
                   <p
                     className={cn(
                       'font-medium tabular-nums',
-                      selectedLoan.diasAtraso ? 'text-rose-600 font-bold' : 'text-zinc-600',
+                      selectedLoan.diasAtraso ? 'text-rose-600 font-semibold' : 'text-zinc-600',
                     )}
                   >
                     {selectedLoan.diasAtraso
@@ -725,7 +725,7 @@ export default function HistorialPrestamosPage() {
                         <span className="font-sans font-medium text-zinc-800 dark:text-zinc-200">
                           {item.productoNombre || item.nombre || `Producto #${item.productoId}`}
                         </span>
-                        <span className="text-[11px] text-zinc-400">
+                        <span className="text-xs text-zinc-400">
                           SKU: {item.codigoBarras || '—'}
                         </span>
                       </div>
@@ -753,17 +753,17 @@ export default function HistorialPrestamosPage() {
                           <span className="font-medium text-zinc-800 dark:text-zinc-200">
                             {evt.evento || evt.titulo}
                           </span>
-                          <span className="font-mono text-[11px] text-zinc-400">
+                          <span className="font-mono text-xs text-zinc-400">
                             {evt.fecha ? evt.fecha.slice(0, 16).replace('T', ' ') : ''}
                           </span>
                         </div>
                         {evt.usuario && (
-                          <span className="font-mono text-[11px] text-zinc-500">
+                          <span className="font-mono text-xs text-zinc-500">
                             Operador: {evt.usuario}
                           </span>
                         )}
                         {evt.descripcion && (
-                          <p className="text-[11px] text-zinc-500 italic">{evt.descripcion}</p>
+                          <p className="text-xs text-zinc-500 italic">{evt.descripcion}</p>
                         )}
                       </div>
                     ))}

@@ -1,7 +1,7 @@
-import { Check, KeyRound, Laptop, Monitor, Moon, Palette, Sparkles, Sun } from 'lucide-react';
+import { KeyRound, Laptop, Monitor, Moon, Sparkles, Sun } from 'lucide-react';
 import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useTheme, type ColorPalette, type ThemePreference } from '@/contexts/theme-context';
+import { useTheme, type ThemePreference } from '@/contexts/theme-context';
 import { cn } from '@/lib/cn';
 import { SectionLabel } from '@/components/ui/section-label';
 
@@ -12,153 +12,6 @@ export interface SettingsModalProps {
   onViewSessions?: () => void;
 }
 
-interface PaletteOption {
-  id: ColorPalette;
-  name: string;
-  badge: string;
-  description: string;
-  swatches: Array<{ name: string; hex: string; role?: string }>;
-}
-
-const PALETTE_OPTIONS: PaletteOption[] = [
-  {
-    id: 'default',
-    name: 'Pañol (burdeo y navy)',
-    badge: 'Predeterminada',
-    description:
-      'Marco navy, acento burdeo y etiquetas crema para los códigos, sobre neutros fríos derivados del slate.',
-    swatches: [
-      { name: 'Canvas', hex: '#EFF2F6', role: 'Fondo' },
-      { name: 'Superficie', hex: '#ffffff', role: 'Panel' },
-      { name: 'Burdeo', hex: '#490B1A', role: 'Acento' },
-      { name: 'Navy', hex: '#142841', role: 'Texto / menú' },
-      { name: 'Slate', hex: '#798DA6', role: 'Neutros' },
-      { name: 'Crema', hex: '#E5DED2', role: 'Etiquetas' },
-      { name: 'Disponible / activo', hex: '#10b981', role: 'Óptimo' },
-      { name: 'Stock crítico', hex: '#f43f5e', role: 'Alerta' },
-    ],
-  },
-  {
-    id: 'industrial',
-    name: 'Industrial INACAP (diseño anterior)',
-    badge: 'Clásica',
-    description:
-      'El estilo previo al rediseño Pañol: escala neutra Zinc, menú lateral claro, botones monocromos y tipografía IBM Plex.',
-    swatches: [
-      { name: 'Canvas Zinc', hex: '#f4f4f5', role: 'Fondo' },
-      { name: 'Superficie', hex: '#ffffff', role: 'Panel' },
-      { name: 'Acento INACAP', hex: '#dc2626', role: 'Institucional' },
-      { name: 'Disponible / activo', hex: '#10b981', role: 'Óptimo' },
-      { name: 'En préstamo', hex: '#3b82f6', role: 'Asignado' },
-      { name: 'Stock crítico', hex: '#f43f5e', role: 'Alerta' },
-      { name: 'Mantención', hex: '#f59e0b', role: 'Taller' },
-      { name: 'Zinc Oscuro', hex: '#18181b', role: 'Texto/Canvas' },
-    ],
-  },
-  {
-    id: 'b1',
-    name: 'Paleta B1 (Azul Acero & Indigo)',
-    badge: 'Alternativa B1',
-    description:
-      'Esquema cromático de alta concentración basado en tonos aeroespaciales e industriales de AGENTS.md (Smart Blue, Steel Azure, Prussian Blue y Cool Steel).',
-    swatches: [
-      { name: 'Smart Blue', hex: '#0466c8', role: 'Acento Principal' },
-      { name: 'Steel Azure', hex: '#0353a4', role: 'Acción Secundaria' },
-      { name: 'Regal Navy', hex: '#023e7d', role: 'Superficie Profunda' },
-      { name: 'Prussian Blue', hex: '#002855', role: 'Base Nocturna' },
-      { name: 'Twilight Indigo', hex: '#33415c', role: 'Bordes / Divisores' },
-      { name: 'Blue Slate', hex: '#5c677d', role: 'Metadatos' },
-      { name: 'Slate Grey', hex: '#7d8597', role: 'Neutro Frío' },
-      { name: 'Cool Steel', hex: '#979dac', role: 'Detalle Técnico' },
-    ],
-  },
-  {
-    id: 'sage',
-    name: 'Sage Mint (Menta Salvia Suave)',
-    badge: 'Pastel Técnico',
-    description:
-      'Tono sereno, orgánico y técnico de baja fatiga visual, óptimo para gestión de laboratorio y lectura sostenida.',
-    swatches: [
-      { name: 'Salvia Suave', hex: '#62929e', role: 'Acento / Botón' },
-      { name: 'Salvia Profundo', hex: '#4d7c8a', role: 'Hover / Primario' },
-      { name: 'Menta Suave', hex: '#83c5be', role: 'Modo Oscuro' },
-      { name: 'Salvia Bosque', hex: '#284b40', role: 'Texto Activo' },
-      { name: 'Borde Menta', hex: '#b2c9ab', role: 'Borde Técnico' },
-      { name: 'Disponible / activo', hex: '#52b788', role: 'Óptimo' },
-      { name: 'En préstamo', hex: '#62929e', role: 'Asignado' },
-      { name: 'Stock crítico', hex: '#e07a5f', role: 'Alerta' },
-    ],
-  },
-  {
-    id: 'lavender',
-    name: 'Lavender Mist (Lavanda Empolvado)',
-    badge: 'Pastel Analítico',
-    description:
-      'Atmósfera analítica, reflexiva y de alta concentración para módulos de auditoría, trazabilidad y reportes.',
-    swatches: [
-      { name: 'Lavanda Iris', hex: '#7c69d8', role: 'Acento / Botón' },
-      { name: 'Púrpura Pizarra', hex: '#6855c4', role: 'Hover / Primario' },
-      { name: 'Lavanda Suave', hex: '#9b87f5', role: 'Modo Oscuro' },
-      { name: 'Púrpura Profundo', hex: '#3c3169', role: 'Texto Activo' },
-      { name: 'Anillo Foco', hex: '#c8b6ff', role: 'Foco / Borde' },
-      { name: 'Disponible / activo', hex: '#8f80c7', role: 'Óptimo' },
-      { name: 'En préstamo', hex: '#6b7280', role: 'Asignado' },
-      { name: 'Stock crítico', hex: '#f472b6', role: 'Alerta' },
-    ],
-  },
-  {
-    id: 'nordic',
-    name: 'Nordic Ice (Celeste Glaciar)',
-    badge: 'Pastel Redes / Telecom',
-    description:
-      'Estilo telecomunicaciones e infraestructura de redes: frío, ultra limpio, equilibrado y de alta precisión.',
-    swatches: [
-      { name: 'Hielo Glaciar', hex: '#4682b4', role: 'Acento / Botón' },
-      { name: 'Azul Glaciar Fuerte', hex: '#36648b', role: 'Hover / Primario' },
-      { name: 'Hielo Claro', hex: '#64b5f6', role: 'Modo Oscuro' },
-      { name: 'Azul Ártico', hex: '#1d4e89', role: 'Texto Activo' },
-      { name: 'Borde Glaciar', hex: '#a2d2ff', role: 'Borde Técnico' },
-      { name: 'Disponible / activo', hex: '#38bdf8', role: 'Óptimo' },
-      { name: 'En préstamo', hex: '#0284c7', role: 'Asignado' },
-      { name: 'Stock crítico', hex: '#fb7185', role: 'Alerta' },
-    ],
-  },
-  {
-    id: 'peach',
-    name: 'Peach & Sand (Melocotón Pastel)',
-    badge: 'Pastel Cálido',
-    description:
-      'Calidez sutil y visualmente relajada para logística de inventario rápido sin estridencias ni saturación.',
-    swatches: [
-      { name: 'Terracota Suave', hex: '#d97757', role: 'Acento / Botón' },
-      { name: 'Terracota Fuerte', hex: '#be6143', role: 'Hover / Primario' },
-      { name: 'Melocotón Claro', hex: '#f4978e', role: 'Modo Oscuro' },
-      { name: 'Marrón Arcilla', hex: '#6b3a2e', role: 'Texto Activo' },
-      { name: 'Foco Melocotón', hex: '#ffc6a5', role: 'Foco / Borde' },
-      { name: 'Disponible / activo', hex: '#e07a5f', role: 'Óptimo' },
-      { name: 'En préstamo', hex: '#f4978e', role: 'Asignado' },
-      { name: 'Stock crítico', hex: '#e63946', role: 'Alerta' },
-    ],
-  },
-  {
-    id: 'chamomile',
-    name: 'Chamomile Honey (Manzanilla Suave)',
-    badge: 'Pastel Descanso',
-    description:
-      'Gama suave de bajísimo contraste fotópico, diseñada para turnos vespertinos y control de activos bajo luz tenue.',
-    swatches: [
-      { name: 'Ámbar Mate', hex: '#b5832b', role: 'Acento / Botón' },
-      { name: 'Ámbar Profundo', hex: '#9c6d1f', role: 'Hover / Primario' },
-      { name: 'Miel Clara', hex: '#e2b866', role: 'Modo Oscuro' },
-      { name: 'Ocre Mineral', hex: '#5c4015', role: 'Texto Activo' },
-      { name: 'Borde Manzanilla', hex: '#f6df9d', role: 'Borde Técnico' },
-      { name: 'Disponible / activo', hex: '#d4a34b', role: 'Óptimo' },
-      { name: 'En préstamo', hex: '#a8a29e', role: 'Asignado' },
-      { name: 'Stock crítico', hex: '#f87171', role: 'Alerta' },
-    ],
-  },
-];
-
 const THEME_OPTIONS: Array<{ id: ThemePreference; label: string; icon: typeof Sun }> = [
   { id: 'light', label: 'Claro', icon: Sun },
   { id: 'dark', label: 'Oscuro', icon: Moon },
@@ -166,15 +19,15 @@ const THEME_OPTIONS: Array<{ id: ThemePreference; label: string; icon: typeof Su
 ];
 
 export function SettingsModal({ open, onClose, onChangePassword, onViewSessions }: SettingsModalProps) {
-  const { palette, setPalette, theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
       title="Ajustes del sistema"
-      description="Personaliza las preferencias cromáticas y la apariencia visual de la consola SGIA."
-      size="xl"
+      description="Tu cuenta y cómo se ve SGIA en este navegador."
+      size="md"
     >
       <div className="flex flex-col gap-4">
         {(onChangePassword || onViewSessions) && (
@@ -200,101 +53,7 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
           </div>
         )}
 
-        {/* Apartado 1: Paleta de Colores */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
-            <Palette aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
-            <SectionLabel>Paleta de colores de interfaz</SectionLabel>
-          </div>
-
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Selecciona la identidad cromática del sistema. Todas las configuraciones preservan los fondos neutros
-            y cumplen con normas de ergonomía visual para jornadas de alta densidad operativa.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
-            {PALETTE_OPTIONS.map((opt) => {
-              const isSelected = palette === opt.id;
-              return (
-                <div
-                  key={opt.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setPalette(opt.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setPalette(opt.id);
-                    }
-                  }}
-                  className={cn(
-                    'group relative flex flex-col justify-between rounded-lg border p-3.5 text-left transition cursor-pointer select-none',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100',
-                    isSelected
-                      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-50/80 dark:bg-zinc-900/90 shadow-xs ring-1 ring-zinc-900/10 dark:ring-zinc-100/20'
-                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50/40 dark:hover:bg-zinc-900/40',
-                  )}
-                  aria-pressed={isSelected}
-                  aria-label={`Seleccionar ${opt.name}`}
-                >
-                  <div className="flex flex-col gap-2 min-w-0">
-                    {/* Header de la Tarjeta */}
-                    <div className="flex items-start justify-between gap-2 min-w-0">
-                      <div className="flex flex-col min-w-0 flex-1">
-                        <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
-                          {opt.name}
-                        </span>
-                        <span className="inline-block mt-0.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
-                          {opt.badge}
-                        </span>
-                      </div>
-
-                      <div
-                        className={cn(
-                          'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors',
-                          isSelected
-                            ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                            : 'border-zinc-300 dark:border-zinc-700 bg-transparent text-transparent group-hover:border-zinc-400',
-                        )}
-                        aria-hidden="true"
-                      >
-                        <Check aria-hidden="true" className="h-3 w-3 stroke-[3]" />
-                      </div>
-                    </div>
-
-                    {/* Descripción de la paleta */}
-                    <p className="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400 line-clamp-2">
-                      {opt.description}
-                    </p>
-                  </div>
-
-                  {/* Muestrario de Chips Cromáticos (Swatches) */}
-                  <div className="mt-3 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/80">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 dark:text-zinc-500 mb-1.5 font-mono">
-                      <span>Muestrario de tonos</span>
-                      <span className="tabular-nums">{opt.swatches.length} tonos</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 flex-wrap" role="list">
-                      {opt.swatches.map((swatch) => (
-                        <div
-                          key={swatch.hex + swatch.name}
-                          role="listitem"
-                          title={`${swatch.name} (${swatch.hex})${swatch.role ? ` - ${swatch.role}` : ''}`}
-                          className="h-5 w-5 rounded shrink-0 border border-black/10 dark:border-white/10 shadow-2xs transition-transform group-hover:scale-105"
-                          style={{ backgroundColor: swatch.hex }}
-                          aria-label={`${swatch.name}: ${swatch.hex}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Apartado 2: Tema (Claro, Oscuro, Sistema) */}
+        {/* Tema: claro, oscuro o el del sistema */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
             <Sparkles aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
@@ -312,10 +71,10 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                   onClick={() => setTheme(item.id)}
                   aria-pressed={active}
                   className={cn(
-                    'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition cursor-pointer',
+                    'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition-colors cursor-pointer',
                     active
-                      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold shadow-xs'
-                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/80',
+                      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700',
                   )}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />

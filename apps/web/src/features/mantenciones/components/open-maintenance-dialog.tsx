@@ -17,7 +17,7 @@ import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 const controlClasses =
   FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-rose-600 dark:text-rose-400';
 
 /** "Enviar a mantención": abre una mantención `en_curso` (la unidad pasa a `en_reparacion`). */
 export function OpenMaintenanceDialog({

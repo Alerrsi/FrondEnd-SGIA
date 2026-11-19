@@ -199,14 +199,14 @@ export function Toggle({
             size={size === "sm" ? 10 : 13}
             className={cn(
               "text-zinc-400 dark:text-zinc-500 pointer-events-none transition-colors ml-0.5",
-              !on && "text-indigo-400 dark:text-indigo-300 font-bold",
+              !on && "text-indigo-400 dark:text-indigo-300 font-semibold",
             )}
           />
           <Sun aria-hidden="true"
             size={size === "sm" ? 10 : 13}
             className={cn(
               "text-zinc-400 dark:text-zinc-500 pointer-events-none transition-colors mr-0.5",
-              on && "text-amber-500 dark:text-amber-400 font-bold",
+              on && "text-amber-500 dark:text-amber-400 font-semibold",
             )}
           />
           <motion.span

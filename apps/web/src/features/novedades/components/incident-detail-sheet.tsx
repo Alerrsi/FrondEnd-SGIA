@@ -112,7 +112,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     {report.description}
                   </p>
                   {report.request_type && (
-                    <p className="font-mono text-[11px] text-zinc-500">
+                    <p className="font-mono text-xs text-zinc-500">
                       Tipo: {report.request_type}
                     </p>
                   )}
@@ -123,13 +123,13 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                     <h3 className={headingClasses}>Datos</h3>
                     <dl className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <dt className="text-[11px] text-zinc-400">Laboratorio o pañol</dt>
+                        <dt className="text-xs text-zinc-400">Laboratorio o pañol</dt>
                         <dd className="text-zinc-800 dark:text-zinc-200">
                           {report.location?.nombre ?? '—'}
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-[11px] text-zinc-400">Fecha</dt>
+                        <dt className="text-xs text-zinc-400">Fecha</dt>
                         <dd className="font-mono text-zinc-800 dark:text-zinc-200">
                           {formatDateOnly(report.report_date)}
                         </dd>
@@ -171,7 +171,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
                         className="max-h-24 rounded border border-zinc-200 dark:border-zinc-800 bg-white"
                       />
                       {report.signed_at && (
-                        <p className="font-mono text-[11px] text-zinc-400">
+                        <p className="font-mono text-xs text-zinc-400">
                           Firmado {formatDate(report.signed_at)}
                         </p>
                       )}
@@ -192,7 +192,7 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
               )}
 
               {(report.equipment_unit || report.product_id) && (
-                <p className="font-mono text-[11px] text-zinc-500">
+                <p className="font-mono text-xs text-zinc-500">
                   Equipo asociado:{' '}
                   {report.equipment_unit?.code ?? `producto #${report.product_id}`}
                 </p>

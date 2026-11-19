@@ -108,7 +108,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           <div className="text-zinc-600 dark:text-zinc-300">
             {info.getValue() ?? '—'}
             {(info.row.original.user?.nombre ?? info.row.original.user?.name) && (
-              <div className="text-[11px] text-zinc-400">
+              <div className="text-xs text-zinc-400">
                 {info.row.original.user?.nombre ?? info.row.original.user?.name}
               </div>
             )}
@@ -243,7 +243,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           </Button>
         </div>
       )}
-      <p className="text-[11px] text-zinc-400">
+      <p className="text-xs text-zinc-400">
         Los ajustes muestran la diferencia absoluta; el detalle indica el monto anterior y el nuevo.
       </p>
     </div>

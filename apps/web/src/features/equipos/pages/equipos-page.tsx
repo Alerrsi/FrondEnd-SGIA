@@ -178,7 +178,7 @@ export default function EquiposPage() {
                 {item.nombre}
               </span>
               {(item.marca || item.modelo) && (
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
+                <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
                   {[item.marca, item.modelo].filter(Boolean).join(' · ')}
                 </span>
               )}
@@ -198,10 +198,10 @@ export default function EquiposPage() {
                   {item.categoria}
                 </span>
               ) : (
-                <span className="text-[11px] text-zinc-400">Sin categoría</span>
+                <span className="text-xs text-zinc-400">Sin categoría</span>
               )}
               {item.ubicacion && (
-                <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+                <span className="flex items-center gap-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
                   <MapPin aria-hidden="true" className="h-2.5 w-2.5 shrink-0" />
                   <span className="truncate max-w-[130px]">{item.ubicacion}</span>
                 </span>
@@ -249,11 +249,11 @@ export default function EquiposPage() {
 
           return (
             <div className="flex flex-col gap-1 w-32">
-              <div className="flex items-center justify-between text-[11px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="font-mono text-zinc-500 dark:text-zinc-400">
                   {remainingYears}a rest.
                 </span>
-                <span className="font-mono font-bold text-zinc-700 dark:text-zinc-300">
+                <span className="font-mono font-semibold text-zinc-700 dark:text-zinc-300">
                   {percentUsed}%
                 </span>
               </div>
@@ -281,7 +281,7 @@ export default function EquiposPage() {
           const manualUrl = item.user_manual_url ?? item.specs?.user_manual_url;
           if (!manualUrl) {
             return (
-              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 italic">
+              <span className="text-xs text-zinc-400 dark:text-zinc-500 italic">
                 Pendiente
               </span>
             );
@@ -292,7 +292,7 @@ export default function EquiposPage() {
               target="_blank"
               rel="noopener noreferrer"
               title="Abrir manual en AWS S3"
-              className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:underline"
+              className="inline-flex items-center gap-1 font-mono text-xs text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:underline"
             >
               <FileText aria-hidden="true" className="h-3 w-3 text-red-600" />
               <span>PDF S3</span>
@@ -466,7 +466,7 @@ export default function EquiposPage() {
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-4 py-2.5 font-medium text-[11px] text-zinc-500 dark:text-zinc-400 select-none"
+                      className="px-4 py-2.5 font-medium text-xs text-zinc-500 dark:text-zinc-400 select-none"
                     >
                       {header.isPlaceholder
                         ? null

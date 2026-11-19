@@ -211,7 +211,7 @@ export function InventarioTable({
             <div className="flex flex-col gap-0.5 max-w-xs">
               <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug">{prod.nombre}</span>
               {prod.description && (
-                <span className="line-clamp-1 text-[11px] text-zinc-500 dark:text-zinc-400">{prod.description}</span>
+                <span className="line-clamp-1 text-xs text-zinc-500 dark:text-zinc-400">{prod.description}</span>
               )}
             </div>
           );
@@ -436,7 +436,7 @@ export function InventarioTable({
                 <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
+              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-xs text-zinc-400">
                 /
               </kbd>
             )}
@@ -551,7 +551,7 @@ export function InventarioTable({
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === 'asc' ? (

@@ -3,7 +3,7 @@ name: sgia-design
 description: Diseño visual de la UI de SGIA (web). Usar al crear o modificar componentes, pantallas, tablas, formularios o badges en apps/web.
 ---
 
-> Paletas alternativas (solo seleccionables por usuario en ajustes): `references/paletas.md`. Cargar solo si la tarea toca temas.
+> **Rediseño «Trazo» en curso** (rama `feat/rediseno-zed`, plan en `docs/rediseno-interfaz.md`). Donde este archivo hable de navy, Schibsted Grotesk, paletas alternativas, `text-[11px]` o `font-bold`, manda el plan: neutros cálidos, menú lateral neutro, Geist + Geist Mono, sin paletas alternativas, nada bajo 12px, pesos 400/500. Este archivo se reescribe en la fase 8.
 
 # Sistema de Gestión de Inventario y Activos (SGIA) - Global UI Specification (Dual Theme: Light & Dark)
 

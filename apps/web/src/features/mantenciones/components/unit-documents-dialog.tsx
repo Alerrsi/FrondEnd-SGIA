@@ -223,7 +223,7 @@ export function UnitDocumentsDialog({
               onChange={(e) => setTitle(e.target.value)}
               className={controlClasses}
             />
-            {errors.title && <p className="text-[11px] text-rose-600">{errors.title}</p>}
+            {errors.title && <p className="text-xs text-rose-600">{errors.title}</p>}
             <div className="flex flex-wrap items-center gap-2">
               <input
                 ref={fileRef}
@@ -243,7 +243,7 @@ export function UnitDocumentsDialog({
               </Button>
             </div>
             {(errors.file || errors.valid_until || errors.document_type) && (
-              <p role="alert" className="text-[11px] text-rose-600">
+              <p role="alert" className="text-xs text-rose-600">
                 {errors.file ?? errors.valid_until ?? errors.document_type}
               </p>
             )}

@@ -10,7 +10,6 @@ import {
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type ResolvedTheme = 'light' | 'dark';
-export type ColorPalette = 'default' | 'industrial' | 'b1' | 'sage' | 'lavender' | 'nordic' | 'peach' | 'chamomile';
 
 export interface ThemeContextValue {
   theme: ThemePreference;
@@ -18,23 +17,11 @@ export interface ThemeContextValue {
   setTheme: (theme: ThemePreference) => void;
   toggleTheme: () => void;
   isSystem: boolean;
-  palette: ColorPalette;
-  setPalette: (palette: ColorPalette) => void;
 }
 
 const STORAGE_KEY = 'sgia-theme';
-const PALETTE_STORAGE_KEY = 'sgia-palette';
-
-export const VALID_PALETTES: ColorPalette[] = [
-  'default',
-  'industrial',
-  'b1',
-  'sage',
-  'lavender',
-  'nordic',
-  'peach',
-  'chamomile',
-];
+/** Clave de las paletas alternativas, eliminadas en el rediseño «Trazo»: se borra al cargar. */
+const LEGACY_PALETTE_STORAGE_KEY = 'sgia-palette';
 
 const defaultThemeValue: ThemeContextValue = {
   theme: 'system',
@@ -42,8 +29,6 @@ const defaultThemeValue: ThemeContextValue = {
   setTheme: () => {},
   toggleTheme: () => {},
   isSystem: true,
-  palette: 'default',
-  setPalette: () => {},
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -57,15 +42,6 @@ function getInitialPreference(): ThemePreference {
   return 'system';
 }
 
-function getInitialPalette(): ColorPalette {
-  if (typeof window === 'undefined') return 'default';
-  const saved = localStorage.getItem(PALETTE_STORAGE_KEY) as ColorPalette | null;
-  if (saved && VALID_PALETTES.includes(saved)) {
-    return saved;
-  }
-  return 'default';
-}
-
 function getSystemMediaMatches(): boolean {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -73,7 +49,6 @@ function getSystemMediaMatches(): boolean {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemePreference>(getInitialPreference);
-  const [palette, setPaletteState] = useState<ColorPalette>(getInitialPalette);
   const [systemIsDark, setSystemIsDark] = useState<boolean>(getSystemMediaMatches);
 
   // Escuchar en tiempo real los cambios del sistema operativo
@@ -114,34 +89,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.colorScheme = resolvedTheme;
   }, [resolvedTheme]);
 
-  // Aplicar atributos y clases para la paleta de colores activa
+  // Limpia lo que dejaron las paletas alternativas (rediseño «Trazo»: una sola paleta).
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const root = document.documentElement;
-    root.setAttribute('data-palette', palette);
-
-    VALID_PALETTES.forEach((p) => {
-      if (p !== 'default') {
-        root.classList.remove(`palette-${p}`);
-      }
+    root.removeAttribute('data-palette');
+    root.classList.forEach((c) => {
+      if (c.startsWith('palette-')) root.classList.remove(c);
     });
-
-    if (palette !== 'default') {
-      root.classList.add(`palette-${palette}`);
+    try {
+      localStorage.removeItem(LEGACY_PALETTE_STORAGE_KEY);
+    } catch {
+      // Almacenamiento bloqueado: no hay nada que limpiar.
     }
-  }, [palette]);
+  }, []);
 
   const setTheme = useCallback((newTheme: ThemePreference) => {
     setThemeState(newTheme);
     if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, newTheme);
-    }
-  }, []);
-
-  const setPalette = useCallback((newPalette: ColorPalette) => {
-    setPaletteState(newPalette);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(PALETTE_STORAGE_KEY, newPalette);
     }
   }, []);
 
@@ -171,10 +137,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setTheme,
       toggleTheme,
       isSystem: theme === 'system',
-      palette,
-      setPalette,
     }),
-    [theme, resolvedTheme, setTheme, toggleTheme, palette, setPalette],
+    [theme, resolvedTheme, setTheme, toggleTheme],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

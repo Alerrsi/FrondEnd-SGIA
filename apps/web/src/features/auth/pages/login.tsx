@@ -90,17 +90,17 @@ export default function LoginPage() {
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
             <Boxes aria-hidden="true" className="h-6 w-6 text-zinc-800 dark:text-zinc-200" />
           </div>
-          <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent-soft px-2 py-0.5 text-[11px] font-mono font-medium text-accent mb-2">
+          <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent-soft px-2 py-0.5 text-xs font-mono font-medium text-accent mb-2">
             <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
             SEDE TEMUCO · PAÑOL TI
           </div>
-          <h1 className="font-display text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
             SGIA
           </h1>
           <p className="mt-0.5 text-xs font-medium text-zinc-600 dark:text-zinc-400">
             Sistema de Gestión de Inventario y Activos
           </p>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-mono">
+          <p className="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
             Área Informática y Ciberseguridad · INACAP
           </p>
         </div>
@@ -221,7 +221,7 @@ export default function LoginPage() {
 
           {/* Quick fill test accounts */}
           {quickLoginPassword && (
-            <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-[11px] text-zinc-500 dark:text-zinc-400">
+            <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-xs text-zinc-500 dark:text-zinc-400">
               <div className="flex items-center gap-1.5 mb-2 font-medium text-zinc-700 dark:text-zinc-300">
                 <KeyRound aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                 <span>Accesos rápidos de prueba:</span>
@@ -230,28 +230,28 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => handleQuickFill('admin@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
                 >
                   AD-01 (admin)
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickFill('director@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
                 >
                   DIR-01 (director)
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickFill('panol@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
                 >
                   PAN-01 (pañol)
                 </button>
                 <button
                   type="button"
                   onClick={() => handleQuickFill('docente@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
+                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
                 >
                   PRO-01 (profesor)
                 </button>
@@ -261,19 +261,19 @@ export default function LoginPage() {
 
           {/* Role access guidance */}
           <div className="mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500 dark:text-zinc-400 mb-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-zinc-500 dark:text-zinc-400 mb-2">
               <span>Roles autorizados en web:</span>
               <div className="flex gap-1.5 font-mono">
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   AD-01
                 </span>
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   DIR-01
                 </span>
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   PAN-01
                 </span>
-                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                <span className="whitespace-nowrap rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
                   PRO-01
                 </span>
               </div>

@@ -60,7 +60,7 @@ export function CatalogPanel({
     >
       <SectionTitle>Catálogo</SectionTitle>
       {!hasStoreroom && (
-        <p className="text-[11px] text-zinc-500">
+        <p className="text-xs text-zinc-500">
           Elige un pañol para ver sus existencias.
         </p>
       )}
@@ -105,7 +105,7 @@ export function CatalogPanel({
                   <p className="truncate text-xs text-zinc-800 dark:text-zinc-200">
                     {name}
                   </p>
-                  <p className="font-mono text-[11px] text-zinc-400">
+                  <p className="font-mono text-xs text-zinc-400">
                     {p.barcode ?? "—"} ·{" "}
                     {!hasStoreroom
                       ? "Elige un pañol"

@@ -31,7 +31,7 @@ import { FORM_CONTROL_CLASS } from "@/components/ui/form-control";
 const inputClasses =
   FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = "mt-1 text-[11px] text-rose-600 dark:text-rose-400";
+const errorClasses = "mt-1 text-xs text-rose-600 dark:text-rose-400";
 const toId = (v: unknown) => (v === "" || v == null ? Number.NaN : Number(v));
 
 /** Nueva solicitud remota de préstamo: datos de la actividad, pañol, laboratorio e insumos. */
@@ -226,7 +226,7 @@ export function LoanRequestForm() {
             {errors.due_date ? (
               <p className={errorClasses}>{errors.due_date.message}</p>
             ) : (
-              <p className="mt-1 text-[11px] text-zinc-400">
+              <p className="mt-1 text-xs text-zinc-400">
                 Si lo dejas vacío, el mismo día.
               </p>
             )}
@@ -344,7 +344,7 @@ export function LoanRequestForm() {
                     <tr key={field.id} className="align-top">
                       <td className="py-1.5 pr-2 text-zinc-800 dark:text-zinc-200">
                         {field.name}
-                        <span className="ml-1 font-mono text-[11px] text-zinc-400">
+                        <span className="ml-1 font-mono text-xs text-zinc-400">
                           ({field.available} disp.)
                         </span>
                       </td>
@@ -386,7 +386,7 @@ export function LoanRequestForm() {
           {shortages.length > 0 && (
             <p
               role="alert"
-              className="text-[11px] text-amber-600 dark:text-amber-400"
+              className="text-xs text-amber-600 dark:text-amber-400"
             >
               Con este pañol ya no alcanzan: {shortages.join(", ")}. Ajusta las
               cantidades.

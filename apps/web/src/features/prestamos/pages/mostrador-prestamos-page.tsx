@@ -430,13 +430,13 @@ export default function MostradorPrestamosPage() {
             {/* Captura de Escáner Code128 */}
             <Card className="flex flex-col gap-2 p-4 border-2 border-red-500/30 bg-red-500/5 dark:bg-red-500/10 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-red-600 dark:text-red-400">
+                <span className="text-xs font-semibold text-red-600 dark:text-red-400">
                   2. Entrada Lector Code128
                 </span>
                 <Badge tone="accent" mono dot>Auto-foco</Badge>
               </div>
 
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Pistola lectora opera como teclado estándar USB/Bluetooth terminado en [Enter].
               </p>
 
@@ -487,7 +487,7 @@ export default function MostradorPrestamosPage() {
                 <div className={`p-12 flex flex-col items-center gap-2 ${STATE_TEXT_CLASS}`}>
                   <Barcode aria-hidden="true" className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
                   <span>No hay ítems escaneados aún.</span>
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="text-xs text-zinc-400">
                     Apunta la pistola lectora a las etiquetas de los productos o ingresa su SKU en el campo de escaneo.
                   </span>
                 </div>
@@ -515,7 +515,7 @@ export default function MostradorPrestamosPage() {
                           <td className="px-4 py-2.5 font-sans font-medium text-zinc-800 dark:text-zinc-200">
                             {item.producto.nombre}
                           </td>
-                          <td className="px-4 py-2.5 text-zinc-500 text-[11px]">
+                          <td className="px-4 py-2.5 text-zinc-500 text-xs">
                             {item.producto.ubicacion
                               ? `${item.producto.ubicacion.sala} · ${item.producto.ubicacion.cajon}`
                               : 'Pañol'}
@@ -629,7 +629,7 @@ export default function MostradorPrestamosPage() {
                       )}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                        <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                           {loan.codigo ?? `#${loan.id}`}
                         </span>
                         <LoanStatusBadge estado={loan.estado} />
@@ -637,7 +637,7 @@ export default function MostradorPrestamosPage() {
                       <p className="mt-1 font-sans text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">
                         {loan.solicitanteNombre}
                       </p>
-                      <div className="mt-2 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                      <div className="mt-2 flex items-center justify-between text-xs font-mono text-zinc-400">
                         <span>{loan.items.length} ítems</span>
                         <span>{loan.sala || 'Mesón'}</span>
                       </div>

@@ -86,7 +86,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
         </tbody>
       </table>
       {total > units.length && (
-        <p className="pt-1 font-mono text-[11px] text-zinc-500">
+        <p className="pt-1 font-mono text-xs text-zinc-500">
           Mostrando {units.length} de {total}. Abre el detalle para ver todas.
         </p>
       )}

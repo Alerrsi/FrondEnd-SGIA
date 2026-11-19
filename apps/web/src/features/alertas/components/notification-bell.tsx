@@ -44,7 +44,7 @@ export function NotificationBell() {
           {totalUnresolved > 0 && (
             <span
               data-testid="notification-badge"
-              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[11px] font-bold text-white shadow-xs animate-pulse"
+              className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 font-mono text-xs font-semibold text-white shadow-xs animate-pulse"
             >
               {totalUnresolved > 9 ? '9+' : totalUnresolved}
             </span>
@@ -59,7 +59,7 @@ export function NotificationBell() {
             <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
               Alertas de stock
             </span>
-            <span className="shrink-0 whitespace-nowrap text-[11px] text-zinc-500 dark:text-zinc-400">
+            <span className="shrink-0 whitespace-nowrap text-xs text-zinc-500 dark:text-zinc-400">
               {totalUnresolved > 0 ? `${totalUnresolved} activas` : 'Sin alertas'}
             </span>
           </div>
@@ -87,7 +87,7 @@ export function NotificationBell() {
               <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
                 Niveles de stock óptimos
               </p>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5">
+              <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
                 No hay quiebres ni advertencias de stock activas.
               </p>
             </div>
@@ -120,7 +120,7 @@ export function NotificationBell() {
                       {isCritical ? 'Crítico' : 'Bajo'}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 dark:text-zinc-400">
                     {isCritical ? (
                       <AlertTriangle aria-hidden="true" className="h-3 w-3 text-rose-500 shrink-0" />
                     ) : (

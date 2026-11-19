@@ -23,7 +23,7 @@ const CARD_CLASS =
 function StatCard({ label, value, accent }: { label: string; value: number; accent?: string }) {
   return (
     <div className={CARD_CLASS}>
-      <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+      <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
         {label}
       </p>
       <p className={cn('mt-1 font-mono text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100', accent)}>
@@ -121,7 +121,7 @@ export function MaintenanceCareerSummary() {
         </div>
 
         {empty.length > 0 && (
-          <p className="border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-[11px] text-zinc-400">
+          <p className="border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs text-zinc-400">
             Sin registros: {empty.map((c) => c.code ?? c.name).join(', ')}
           </p>
         )}

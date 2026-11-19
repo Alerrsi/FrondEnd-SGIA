@@ -62,7 +62,7 @@ export function LoanReviewScanPanel({
       </div>
 
       {scanned.length > 0 && (
-        <ul className="flex flex-col gap-1 text-[11px]">
+        <ul className="flex flex-col gap-1 text-xs">
           {scanned.map((unit) => (
             <li key={unit.id} className="flex flex-wrap items-center gap-x-2 text-zinc-700 dark:text-zinc-300">
               <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">{unit.code}</span>

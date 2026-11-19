@@ -28,7 +28,7 @@ const inputClasses =
 
 const labelClasses = FIELD_LABEL_CLASS;
 
-const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-rose-600 dark:text-rose-400';
 
 interface UploadQuotationDialogProps {
   open: boolean;
@@ -141,7 +141,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
             ))}
           </select>
           {candidates.length === 0 && (
-            <p className="text-[11px] text-zinc-500">
+            <p className="text-xs text-zinc-500">
               Todos los proveedores contactados ya tienen cotización subida.
             </p>
           )}
@@ -184,7 +184,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
           {errors.received_at && <p className={errorClasses}>{errors.received_at.message}</p>}
         </div>
 
-        <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
           Indica el precio unitario de <strong>cada</strong> producto de la solicitud.
         </p>
         <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
@@ -252,7 +252,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
             </Button>
           </div>
           {errors.total && <p className={errorClasses}>{errors.total.message}</p>}
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Este total es lo que se reserva del presupuesto si eliges esta cotización (puede incluir
             despacho o impuestos).
           </p>

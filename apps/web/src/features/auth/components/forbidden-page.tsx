@@ -26,7 +26,7 @@ export function ForbiddenPage() {
         <Badge tone="critical">Acceso restringido</Badge>
       </div>
 
-      <h1 className="mb-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+      <h1 className="mb-2 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
         No tienes permisos para ver esta sección
       </h1>
 

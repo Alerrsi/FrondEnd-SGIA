@@ -189,7 +189,7 @@ export function AlertasTable({
                   </span>
                 )}
                 {area && (
-                  <span className="font-mono text-[11px] text-zinc-400 dark:text-zinc-500">
+                  <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">
                     · {area}
                   </span>
                 )}
@@ -407,7 +407,7 @@ export function AlertasTable({
                 <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
+              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-xs text-zinc-400">
                 /
               </kbd>
             )}
@@ -461,7 +461,7 @@ export function AlertasTable({
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === 'asc' ? (

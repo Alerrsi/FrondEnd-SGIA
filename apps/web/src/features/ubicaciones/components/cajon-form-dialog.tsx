@@ -114,7 +114,7 @@ export function CajonFormDialog({
           />
           <div id="cajon-codigo-preview" className="flex flex-col gap-1" aria-live="polite">
             {normalized !== '' && (
-              <span className="flex flex-wrap items-center gap-1.5 text-[11px] text-zinc-500 dark:text-zinc-400">
+              <span className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                 Código:
                 <span className={CODE_CHIP_CLASS} data-testid="cajon-code-preview">
                   {cajonFullCode(location.code, codigo)}

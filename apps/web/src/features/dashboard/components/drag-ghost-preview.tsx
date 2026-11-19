@@ -156,15 +156,15 @@ export function DragGhostPreview({
             <Icon className="h-4 w-4 text-sky-500" />
           </div>
           <div>
-            <div className="text-xs font-bold text-zinc-100 leading-tight">
+            <div className="text-xs font-semibold text-zinc-100 leading-tight">
               {config.title}
             </div>
-            <div className="text-[11px] text-zinc-400 font-mono leading-none">
+            <div className="text-xs text-zinc-400 font-mono leading-none">
               {config.subtitle}
             </div>
           </div>
         </div>
-        <Badge tone="danger" className="text-[11px] font-mono px-1.5 py-0.5">
+        <Badge tone="danger" className="text-xs font-mono px-1.5 py-0.5">
           {config.badge}
         </Badge>
       </div>
@@ -174,12 +174,12 @@ export function DragGhostPreview({
         {config.renderMiniVisual()}
       </div>
 
-      <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-zinc-800">
+      <div className="flex items-center justify-between text-xs font-mono pt-1.5 border-t border-zinc-800">
         <span className="flex items-center gap-1.5 text-sky-400 font-semibold" data-testid="drag-ghost-status">
           <span className="h-2 w-2 rounded-full bg-sky-500 animate-ping" />
           Arrastrando gráfico…
         </span>
-        <span className="text-zinc-500 text-[11px]">Suelta en una zona</span>
+        <span className="text-zinc-500 text-xs">Suelta en una zona</span>
       </div>
     </div>
   );

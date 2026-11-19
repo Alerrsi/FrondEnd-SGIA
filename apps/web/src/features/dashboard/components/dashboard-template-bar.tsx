@@ -93,7 +93,7 @@ export function DashboardTemplateBar({ selectedId, onSelect }: DashboardTemplate
           className={cn(TAB_BASE, t.id === selectedId ? TAB_ACTIVE : TAB_IDLE)}
         >
           {t.name}
-          <span className="font-mono text-[10px] opacity-70">
+          <span className="font-mono text-xs opacity-70">
             {t.charts_count}/{t.max_charts}
           </span>
         </button>

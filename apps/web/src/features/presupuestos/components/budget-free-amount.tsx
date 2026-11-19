@@ -21,7 +21,7 @@ export function BudgetFreeAmount({ amount, className }: BudgetFreeAmountProps) {
     >
       {formatCLP(amount)}
       {negative && (
-        <span className="ml-1.5 inline-flex items-center gap-1 font-sans text-[11px] font-normal">
+        <span className="ml-1.5 inline-flex items-center gap-1 font-sans text-xs font-normal">
           <AlertTriangle className="h-3 w-3" aria-hidden="true" />
           Sobre el presupuesto (exceso autorizado)
         </span>

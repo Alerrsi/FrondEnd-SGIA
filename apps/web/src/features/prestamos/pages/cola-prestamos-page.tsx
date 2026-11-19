@@ -162,10 +162,10 @@ export default function ColaPrestamosPage() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-amber-500">
           <div>
-            <span className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               Solicitudes por preparar
             </span>
-            <span className="mt-0.5 text-xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
+            <span className="mt-0.5 text-xl font-semibold font-mono text-zinc-900 dark:text-zinc-100">
               {pendingLoans.length}
             </span>
           </div>
@@ -174,10 +174,10 @@ export default function ColaPrestamosPage() {
 
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-blue-500">
           <div>
-            <span className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               Total solicitudes en cola
             </span>
-            <span className="mt-0.5 text-xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
+            <span className="mt-0.5 text-xl font-semibold font-mono text-zinc-900 dark:text-zinc-100">
               {rawLoans.length}
             </span>
           </div>
@@ -186,10 +186,10 @@ export default function ColaPrestamosPage() {
 
         <Card className="flex items-center justify-between p-3 border-l-4 border-l-rose-500">
           <div>
-            <span className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               Vencidos / fuera de plazo
             </span>
-            <span className="mt-0.5 text-xl font-bold font-mono text-rose-600 dark:text-rose-400">
+            <span className="mt-0.5 text-xl font-semibold font-mono text-rose-600 dark:text-rose-400">
               {rawLoans.filter((l) => (l.estado || '').toLowerCase() === 'vencido').length}
             </span>
           </div>
@@ -264,10 +264,10 @@ export default function ColaPrestamosPage() {
                   {/* Top Bar: Código + Estado */}
                   <div className="flex items-start justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
                     <div>
-                      <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                      <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                         {loan.codigo || `#${loan.id}`}
                       </span>
-                      <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                      <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                         <Calendar aria-hidden="true" className="h-3 w-3" />
                         <span>{fechaStr}</span>
                       </div>
@@ -282,17 +282,17 @@ export default function ColaPrestamosPage() {
                       <span className="block truncate text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                         {docenteName}
                       </span>
-                      <span className="block font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+                      <span className="block font-mono text-xs text-zinc-500 dark:text-zinc-400">
                         RUN: {docenteRun}
                       </span>
-                      <span className="block text-[11px] text-zinc-500 dark:text-zinc-400">
+                      <span className="block text-xs text-zinc-500 dark:text-zinc-400">
                         Asignatura: {loanSubject(loan)} · Carrera: {loanCareer(loan)}
                       </span>
                     </div>
                   </div>
 
                   {/* Actividad: fecha y horario, laboratorio y pañol que la prepara */}
-                  <dl className="mt-2 grid grid-cols-1 gap-1 text-[11px] text-zinc-600 dark:text-zinc-400">
+                  <dl className="mt-2 grid grid-cols-1 gap-1 text-xs text-zinc-600 dark:text-zinc-400">
                     <div className="flex items-center gap-1.5">
                       <Clock aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                       <dt className="sr-only">Actividad</dt>
@@ -314,7 +314,7 @@ export default function ColaPrestamosPage() {
 
                   {/* Insumos solicitados con micro-inspección de ubicación */}
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">
+                    <div className="flex items-center justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">
                       <span>Insumos solicitados</span>
                       <span className="font-mono text-zinc-600 dark:text-zinc-400">
                         ({itemsCount} {itemsCount === 1 ? 'ítem' : 'ítems'})
@@ -339,13 +339,13 @@ export default function ColaPrestamosPage() {
                                 {prodName}
                               </span>
                               {ubicacionStr && (
-                                <span className="flex items-center gap-1 text-[11px] text-zinc-600 dark:text-zinc-400">
+                                <span className="flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
                                   <MapPin aria-hidden="true" className="h-2.5 w-2.5" />
                                   <span>{ubicacionStr}</span>
                                 </span>
                               )}
                             </div>
-                            <span className="shrink-0 rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[11px] font-bold text-zinc-700 dark:text-zinc-300">
+                            <span className="shrink-0 rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                               x{it.cantidad}
                             </span>
                           </div>
@@ -356,7 +356,7 @@ export default function ColaPrestamosPage() {
 
                   {/* Observaciones del docente si existen */}
                   {loan.observaciones && (
-                    <div className="mt-3 rounded border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/30 p-2 text-[11px] text-amber-800 dark:text-amber-300">
+                    <div className="mt-3 rounded border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/30 p-2 text-xs text-amber-800 dark:text-amber-300">
                       <strong>Nota del docente:</strong> {loan.observaciones}
                     </div>
                   )}

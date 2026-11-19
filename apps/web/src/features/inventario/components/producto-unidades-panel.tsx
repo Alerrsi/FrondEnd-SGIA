@@ -271,7 +271,7 @@ export function ProductoUnidadesPanel({
                       <div className="flex flex-col gap-0.5">
                         <UnidadStatusBadge status={unit.status} />
                         {unit.active_loan?.code && (
-                          <span className="font-mono text-[11px] text-zinc-500">
+                          <span className="font-mono text-xs text-zinc-500">
                             {unit.active_loan.code}
                           </span>
                         )}

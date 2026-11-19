@@ -56,27 +56,27 @@ export function PurchaseRequestCodeField({
         className={cn(inputClasses, 'max-w-xs')}
       />
       {error ? (
-        <p className="text-[11px] text-rose-600 dark:text-rose-400">{error}</p>
+        <p className="text-xs text-rose-600 dark:text-rose-400">{error}</p>
       ) : complete && isFetching && !match ? (
-        <p className="flex items-center gap-1 text-[11px] text-zinc-500">
+        <p className="flex items-center gap-1 text-xs text-zinc-500">
           <Loader2 aria-hidden="true" className="h-3 w-3 animate-spin" />
           Buscando solicitud…
         </p>
       ) : complete && match && hasOrder ? (
-        <p className="flex items-center gap-1 text-[11px] text-emerald-700 dark:text-emerald-400">
+        <p className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400">
           <CheckCircle2 aria-hidden="true" className="h-3 w-3" />
           OC {match.order?.order_number ?? match.order?.code ?? ''} · reserva{' '}
           {formatCLP(match.order?.reserved_amount)}
         </p>
       ) : complete && !isFetching ? (
-        <p className="flex items-center gap-1 text-[11px] text-amber-700 dark:text-amber-400">
+        <p className="flex items-center gap-1 text-xs text-amber-700 dark:text-amber-400">
           <TriangleAlert aria-hidden="true" className="h-3 w-3" />
           {match
             ? 'La solicitud aún no tiene orden de compra subida.'
             : 'No se encontró una solicitud con ese código.'}
         </p>
       ) : (
-        <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
           Si la compra viene de una solicitud, la factura se liga a su OC.
         </p>
       )}

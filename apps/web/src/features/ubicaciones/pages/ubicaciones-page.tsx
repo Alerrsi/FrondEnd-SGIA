@@ -237,7 +237,7 @@ export default function UbicacionesPage() {
                             {loc.nombre}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 dark:text-zinc-400">
+                        <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 dark:text-zinc-400">
                           <span className="px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
                             {loc.tipo}
                           </span>
@@ -319,12 +319,12 @@ export default function UbicacionesPage() {
                       <div className="flex items-start gap-2 min-w-0">
                         <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500 mt-0.5 shrink-0" />
                         <div className="flex flex-col items-start gap-1 min-w-0">
-                          <span className="font-bold text-zinc-900 dark:text-zinc-100 truncate max-w-full">
+                          <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate max-w-full">
                             {cajon.codigo}
                           </span>
                           <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
                           {cajon.descripcion && (
-                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate max-w-full">
+                            <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate max-w-full">
                               {cajon.descripcion}
                             </span>
                           )}

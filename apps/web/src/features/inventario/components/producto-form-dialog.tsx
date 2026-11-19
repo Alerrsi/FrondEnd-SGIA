@@ -285,7 +285,7 @@ export function ProductoFormDialog({
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación de hardware */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
+          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
             Identificación de hardware
           </legend>
 
@@ -394,7 +394,7 @@ export function ProductoFormDialog({
                       setValue('auto_barcode', next);
                       if (next) setValue('barcode', '');
                     }}
-                    className="mb-1 flex items-center gap-1 text-[11px] font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    className="mb-1 flex items-center gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                   >
                     <Sparkles aria-hidden="true" className="h-3 w-3 text-amber-500" />
                     <span>{autoBarcode ? 'Manual' : 'Autogenerar'}</span>
@@ -419,7 +419,7 @@ export function ProductoFormDialog({
 
         {/* Fieldset: Maestro de artículos de Oracle (opcional) */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
+          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
             Maestro Oracle (opcional)
           </legend>
 
@@ -454,7 +454,7 @@ export function ProductoFormDialog({
 
         {/* Fieldset: Parámetros de Stock */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
+          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
             Parámetros de stock y alertas
           </legend>
 
@@ -473,12 +473,12 @@ export function ProductoFormDialog({
                 {...register('quantity', { setValueAs: toNumber })}
               />
               {quantityReadOnly ? (
-                <span className="mt-1 block text-[11px] text-zinc-500 dark:text-zinc-400">
+                <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">
                   Se calcula desde las unidades del equipo.
                 </span>
               ) : (
                 unitTracked && (
-                  <span className="mt-1 block text-[11px] text-zinc-500 dark:text-zinc-400">
+                  <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">
                     Cada unidad recibe su código; requiere carrera y cajón.
                   </span>
                 )
@@ -505,7 +505,7 @@ export function ProductoFormDialog({
 
         {/* Fieldset: Ubicación en pañol */}
         <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
+          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
             <MapPin aria-hidden="true" className="h-3 w-3 text-zinc-400" />
             <span>Ubicación en pañol</span>
           </legend>

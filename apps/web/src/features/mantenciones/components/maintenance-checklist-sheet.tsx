@@ -223,7 +223,7 @@ export function MaintenanceChecklistSheet({
               {check('requires_additional_maintenance', 'Requiere mantención adicional')}
               {check('applies_recf', 'Aplica RECF')}
               {checklistError && (
-                <p role="alert" className="text-[11px] text-rose-600 dark:text-rose-400">
+                <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">
                   {checklistError}
                 </p>
               )}

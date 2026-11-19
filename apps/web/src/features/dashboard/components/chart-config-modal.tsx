@@ -184,7 +184,7 @@ export function ChartConfigModal({
                   key={preset.title}
                   type="button"
                   onClick={() => applyPreset(preset)}
-                  className="rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 px-2 py-1 text-[11px] text-zinc-600 dark:text-zinc-400 hover:border-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  className="rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 px-2 py-1 text-xs text-zinc-600 dark:text-zinc-400 hover:border-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                 >
                   {preset.title}
                 </button>
@@ -299,7 +299,7 @@ export function ChartConfigModal({
                 />
               </div>
               {(missingDateFrom || invalidRange) && (
-                <p role="alert" className="sm:col-span-2 text-[11px] text-amber-700 dark:text-amber-400">
+                <p role="alert" className="sm:col-span-2 text-xs text-amber-700 dark:text-amber-400">
                   {missingDateFrom
                     ? 'El rango personalizado requiere una fecha de inicio.'
                     : 'La fecha final no puede ser anterior a la inicial.'}
@@ -330,7 +330,7 @@ export function ChartConfigModal({
               className={cn(FIELD_CLASS, 'disabled:opacity-50')}
             />
             {invalidLimit && (
-              <span role="alert" className="text-[11px] text-amber-700 dark:text-amber-400">
+              <span role="alert" className="text-xs text-amber-700 dark:text-amber-400">
                 Ingresa un entero entre 1 y 50.
               </span>
             )}
@@ -351,13 +351,13 @@ export function ChartConfigModal({
         </div>
 
         {isPieLike(chartType) && timeSeries && (
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Las series en el tiempo se leen mejor en barras o línea; agrupa los datos para usar {CHART_TYPE_LABELS[chartType].toLowerCase()}.
           </p>
         )}
 
         <DialogFooter className="sm:justify-between">
-          <span className="text-[11px] text-zinc-400">
+          <span className="text-xs text-zinc-400">
             Cupo tras añadir: {usedSlots + 1} de {MAX_CHARTS}
           </span>
           <div className="flex flex-wrap items-center gap-2">

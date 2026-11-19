@@ -49,7 +49,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
         </span>
       </div>
       {groupBy === 'supplier' && (
-        <p className="text-[11px] text-zinc-400">
+        <p className="text-xs text-zinc-400">
           Solo incluye facturas ligadas a una orden de compra.
         </p>
       )}

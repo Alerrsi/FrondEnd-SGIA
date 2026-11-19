@@ -112,7 +112,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                                     `Producto #${item.product_id}`}
                                 </div>
                                 {item.detected_name && (
-                                  <div className="text-[11px] text-zinc-400">
+                                  <div className="text-xs text-zinc-400">
                                     OCR: {item.detected_name}
                                   </div>
                                 )}

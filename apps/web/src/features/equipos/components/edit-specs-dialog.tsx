@@ -175,7 +175,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                   href={manualUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 underline"
+                  className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 underline"
                 >
                   <ExternalLink aria-hidden="true" className="h-3 w-3" /> Probar enlace
                 </a>

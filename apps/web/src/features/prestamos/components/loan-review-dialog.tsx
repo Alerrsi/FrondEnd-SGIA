@@ -114,7 +114,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
     >
       <div className="flex flex-col gap-4">
         {loan && (
-          <dl className="grid grid-cols-1 gap-x-4 gap-y-1 rounded-md bg-zinc-50 dark:bg-zinc-950/60 p-2.5 text-[11px] text-zinc-600 dark:text-zinc-400 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-x-4 gap-y-1 rounded-md bg-zinc-50 dark:bg-zinc-950/60 p-2.5 text-xs text-zinc-600 dark:text-zinc-400 sm:grid-cols-2">
             {facts.map(({ label, value, mono }) => (
               <div key={label} className="flex min-w-0 gap-1.5">
                 <dt className="shrink-0 font-semibold text-zinc-700 dark:text-zinc-300">{label}:</dt>
@@ -163,7 +163,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
               <header className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">{item.name}</h3>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
+                  <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
                     Solicitado: {item.quantity} · Disponible: {item.available_quantity}
                   </span>
                   {item.has_units && scanningItemId !== item.item_id && (
@@ -226,7 +226,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
                   </ul>
                 </>
               ) : (
-                <p className="mt-1.5 flex items-center gap-1 text-[11px] text-zinc-700 dark:text-zinc-300">
+                <p className="mt-1.5 flex items-center gap-1 text-xs text-zinc-700 dark:text-zinc-300">
                   <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                   <span>
                     {item.location?.nombre ?? 'Sala sin registrar'} ·{' '}

@@ -37,7 +37,7 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
         <div>
           <SectionTitle icon={Mail}>Proveedores contactados ({request.suppliers.length})</SectionTitle>
-          <p className="text-[11px] text-zinc-500">
+          <p className="text-xs text-zinc-500">
             Áreas:{' '}
             {request.areas.length
               ? request.areas.map((a) => SUPPLIER_AREA_LABELS[a]).join(', ')

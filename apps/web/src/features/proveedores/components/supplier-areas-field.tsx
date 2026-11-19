@@ -72,7 +72,7 @@ export function SupplierAreasField({
               {checked && <Check aria-hidden="true" className="h-3 w-3" />}
             </span>
             <span className="flex-1 font-medium">{SUPPLIER_AREA_LABELS[area]}</span>
-            {detail && <span className="font-mono text-[11px] opacity-70">{detail}</span>}
+            {detail && <span className="font-mono text-xs opacity-70">{detail}</span>}
           </label>
         );
       })}

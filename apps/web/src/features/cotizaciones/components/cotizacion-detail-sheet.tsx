@@ -93,7 +93,7 @@ export function CotizacionDetailSheet({
                     <span className="text-zinc-700 dark:text-zinc-300 font-medium">
                       {supplier.name}
                     </span>
-                    <span className="font-mono text-zinc-400 text-[11px]">{supplier.email}</span>
+                    <span className="font-mono text-zinc-400 text-xs">{supplier.email}</span>
                   </div>
                 ))}
               </div>

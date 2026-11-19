@@ -386,7 +386,7 @@ export default function DashboardPage() {
               <strong>Zonas de inserción enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
           </div>
-          <span className="text-[11px] text-sky-400">
+          <span className="text-xs text-sky-400">
             {panel.canAdd ? `Espacio disponible (${panel.total}/${MAX_CHARTS})` : `Límite de ${MAX_CHARTS} alcanzado`}
           </span>
         </div>
@@ -431,7 +431,7 @@ export default function DashboardPage() {
               );
             })}
           {panel.templates.every((t) => t.entity === null) && (
-            <span className="font-mono text-[11px] text-zinc-400">
+            <span className="font-mono text-xs text-zinc-400">
               {panel.isLoading ? 'Cargando plantillas…' : 'Sin plantillas con consulta predefinida.'}
             </span>
           )}
@@ -456,7 +456,7 @@ export default function DashboardPage() {
           <div className="pointer-events-none select-none flex flex-col items-center gap-3">
             <div className="flex items-center gap-2">
               <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500 animate-ping" />
-              <span className="text-xs font-bold text-sky-300 bg-sky-950/90 border border-sky-500/60 px-3 py-1 rounded-full shadow-xs">
+              <span className="text-xs font-semibold text-sky-300 bg-sky-950/90 border border-sky-500/60 px-3 py-1 rounded-full shadow-xs">
                 ★ Zona Principal de Soltado Destacada ★
               </span>
             </div>

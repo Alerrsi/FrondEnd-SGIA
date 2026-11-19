@@ -72,7 +72,7 @@ export function FileField({
         </>
       ) : (
         <>
-          <span className="flex-1 font-mono text-[11px] text-zinc-500">
+          <span className="flex-1 font-mono text-xs text-zinc-500">
             {hint}
           </span>
           <Button

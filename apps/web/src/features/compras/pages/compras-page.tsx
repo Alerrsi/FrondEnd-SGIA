@@ -121,7 +121,7 @@ export default function ComprasPage() {
                   onKeyDown={(e) => e.key === 'Enter' && setSelectedId(p.id)}
                   className="cursor-pointer border-t border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 focus:outline-none focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
                 >
-                  <td className="px-3 py-2 font-mono font-bold text-zinc-900 dark:text-zinc-100">
+                  <td className="px-3 py-2 font-mono font-semibold text-zinc-900 dark:text-zinc-100">
                     {p.code ?? `#${p.id}`}
                   </td>
                   <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">

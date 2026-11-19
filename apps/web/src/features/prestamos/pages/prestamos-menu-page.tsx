@@ -87,7 +87,7 @@ export default function PrestamosMenuPage() {
               {pendingCount > 0 ? (
                 <Badge tone="warning" mono>{pendingCount} Pendientes</Badge>
               ) : (
-                <span className="font-mono text-[11px] text-zinc-400">Al día</span>
+                <span className="font-mono text-xs text-zinc-400">Al día</span>
               )}
             </div>
 

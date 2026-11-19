@@ -49,7 +49,7 @@ export function ThemeToggle({ variant = 'compact', className }: ThemeToggleProps
                 </button>
               </TooltipTrigger>
               <TooltipContent side="top">
-                <span className="text-[11px] font-medium">{opt.label}</span>
+                <span className="text-xs font-medium">{opt.label}</span>
               </TooltipContent>
             </Tooltip>
           );

@@ -81,19 +81,19 @@ export function StudentLookup({
           className={`${inputClasses} mt-1`}
         />
         {invalid && (
-          <p role="alert" className="mt-1 text-[11px] text-rose-600 dark:text-rose-400">
+          <p role="alert" className="mt-1 text-xs text-rose-600 dark:text-rose-400">
             RUT inválido: revisa el dígito verificador.
           </p>
         )}
       </div>
 
       {isFetching && (
-        <p className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-500">
+        <p className="flex items-center gap-1.5 font-mono text-xs text-zinc-500">
           <Loader2 aria-hidden="true" className="h-3 w-3 animate-spin" /> Buscando estudiante…
         </p>
       )}
       {isError && (
-        <p role="alert" className="text-[11px] text-rose-600 dark:text-rose-400">
+        <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">
           {apiErrorToMessage(error)}
         </p>
       )}
@@ -107,7 +107,7 @@ export function StudentLookup({
           <CheckCircle2 aria-hidden="true" className="h-4 w-4 shrink-0 text-emerald-600" />
           <div className="min-w-0">
             <p className="truncate font-semibold">{student.full_name || 'Sin nombre'}</p>
-            <p className="truncate font-mono text-[11px] text-zinc-500">
+            <p className="truncate font-mono text-xs text-zinc-500">
               {student.career?.name ?? 'Sin carrera'}
             </p>
           </div>

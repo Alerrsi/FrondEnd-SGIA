@@ -173,7 +173,7 @@ export function WidgetPaletteDrawer({
                       </div>
                     </div>
                   </div>
-                  <Badge tone="neutral" className="text-[11px] font-mono">
+                  <Badge tone="neutral" className="text-xs font-mono">
                     {shape.type}
                   </Badge>
                 </div>
@@ -194,7 +194,7 @@ export function WidgetPaletteDrawer({
                 </div>
 
                 <div className="flex items-center justify-between gap-2 mt-1 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
-                  <span className="text-[11px] text-zinc-400 font-mono">
+                  <span className="text-xs text-zinc-400 font-mono">
                     Arrastra o pulsa Añadir
                   </span>
                   <Button
@@ -206,7 +206,7 @@ export function WidgetPaletteDrawer({
                       e.stopPropagation();
                       onSelectWidget?.(shape.type);
                     }}
-                    className="h-6 text-[11px] px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
+                    className="h-6 text-xs px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
                   >
                     <Plus aria-hidden="true" className="h-3 w-3" />
                     <span>Añadir</span>

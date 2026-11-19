@@ -33,7 +33,7 @@ type ProductType = NonNullable<Producto['type']>;
 
 const inputClasses =
   FORM_CONTROL_CLASS;
-const errorClasses = 'mt-0.5 text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-0.5 text-xs text-rose-600 dark:text-rose-400';
 
 const toNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? Number.NaN : Number(v);
@@ -253,7 +253,7 @@ export function InvoiceReviewForm({
             ))}
           </select>
           {purchaseError && <p className={errorClasses}>{purchaseError}</p>}
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Si la factura se asocia a una orden de compra, la orden quedará completa y se descontará
             del presupuesto el total de la factura.
           </p>
@@ -280,7 +280,7 @@ export function InvoiceReviewForm({
             />
             {budgetError && <p className={errorClasses}>{budgetError}</p>}
             {pickedBudget && (
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 Inicial <span className="font-mono">{formatCLP(pickedBudget.initial_amount)}</span>
                 {' · '}reservado{' '}
                 <span className="font-mono">{formatCLP(pickedBudget.reserved_amount)}</span>
@@ -289,7 +289,7 @@ export function InvoiceReviewForm({
                 {' · '}libre <BudgetFreeAmount amount={pickedBudget.free_amount} />
               </p>
             )}
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               La factura no tiene orden de compra asociada: elige la carrera y el año a los que se
               consume el monto.
             </p>
@@ -320,7 +320,7 @@ export function InvoiceReviewForm({
                     <td className="p-2">
                       {item?.detected_name && (
                         <div
-                          className="mb-1 truncate text-[11px] text-zinc-400"
+                          className="mb-1 truncate text-xs text-zinc-400"
                           title={item.detected_name}
                         >
                           OCR: {item.detected_name}
@@ -455,7 +455,7 @@ export function InvoiceReviewForm({
                           )}
                         </>
                       ) : (
-                        <span className="text-[11px] text-zinc-400">
+                        <span className="text-xs text-zinc-400">
                           {type === 'insumo' ? 'Suma al stock' : '—'}
                         </span>
                       )}

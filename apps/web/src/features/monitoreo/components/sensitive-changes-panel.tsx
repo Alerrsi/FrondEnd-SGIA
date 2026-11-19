@@ -37,14 +37,14 @@ export function SensitiveChangesPanel() {
                   {log.user?.nombre ?? log.user?.name ?? 'Sistema'}
                 </span>
               </span>
-              <span className="shrink-0 font-mono text-[11px] text-zinc-400">{timeAgo(log.created_at)}</span>
+              <span className="shrink-0 font-mono text-xs text-zinc-400">{timeAgo(log.created_at)}</span>
             </li>
           ))}
         </ul>
       )}
       <Link
         to="/auditoria"
-        className="group mt-auto flex items-center justify-end gap-1 border-t border-zinc-100 px-4 py-2 text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
+        className="group mt-auto flex items-center justify-end gap-1 border-t border-zinc-100 px-4 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100"
       >
         Ver la auditoría completa
         <ArrowRight aria-hidden="true" className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />

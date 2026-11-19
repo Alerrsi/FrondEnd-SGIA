@@ -95,11 +95,11 @@ export default function CotizacionesPage() {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <FileText aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
-                <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                   {cotizacion.code ?? `#${cotizacion.id}`}
                 </span>
                 {cotizacion.purchase_code && (
-                  <span className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+                  <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
                     → OC {cotizacion.purchase_code}
                   </span>
                 )}
@@ -108,7 +108,7 @@ export default function CotizacionesPage() {
                 {cotizacion.proveedor ?? 'Múltiples proveedores'} · {cotizacion.items.length} ítems
               </span>
               {cotizacion.createdAt && (
-                <span className="text-[11px] font-mono text-zinc-400">
+                <span className="text-xs font-mono text-zinc-400">
                   {new Date(cotizacion.createdAt).toLocaleDateString('es-CL')}
                 </span>
               )}

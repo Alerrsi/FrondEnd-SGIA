@@ -38,7 +38,7 @@ export function UnidadBarcodeDialog({
           ) : (
             <div className="flex flex-col items-center gap-1 text-zinc-400">
               <Barcode aria-hidden="true" className="h-8 w-8 opacity-40" />
-              <span className="text-[11px] font-mono">SVG no disponible</span>
+              <span className="text-xs font-mono">SVG no disponible</span>
             </div>
           )}
           <span className="mt-1 font-mono text-xs font-semibold tracking-widest">{unit.code}</span>

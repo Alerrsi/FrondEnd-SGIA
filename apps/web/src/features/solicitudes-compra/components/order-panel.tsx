@@ -26,7 +26,7 @@ import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 const inputClasses =
   FORM_CONTROL_CLASS;
 
-const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-rose-600 dark:text-rose-400';
 
 interface OrderPanelProps {
   request: PurchaseRequest;
@@ -90,7 +90,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
     <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
       <header className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
         <SectionTitle icon={ShoppingCart}>Orden de compra y factura</SectionTitle>
-        <p className="text-[11px] text-zinc-500">
+        <p className="text-xs text-zinc-500">
           La OC se emite fuera del sistema; aquí se sube su archivo ligado a {request.code}.
         </p>
       </header>
@@ -227,7 +227,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
         )}
 
         {request.status === PurchaseRequestStatus.FACTURADA && (
-          <p className="text-[11px] text-zinc-500">
+          <p className="text-xs text-zinc-500">
             Si se anula la factura, la solicitud vuelve a «Con OC» y se puede registrar otra.
           </p>
         )}

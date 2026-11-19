@@ -206,7 +206,7 @@ export function ProductoDetailDialog({
             ) : (
               <div className="flex flex-col items-center gap-1 text-zinc-400">
                 <Barcode aria-hidden="true" className="h-8 w-8 opacity-40" />
-                <span className="text-[11px] font-mono">SVG no disponible</span>
+                <span className="text-xs font-mono">SVG no disponible</span>
               </div>
             )}
             <span className="mt-1 font-mono text-xs font-semibold tracking-widest text-black">
@@ -214,7 +214,7 @@ export function ProductoDetailDialog({
             </span>
           </div>
 
-          <p className="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500 font-mono text-center">
+          <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500 font-mono text-center">
             Lectura continua soportada con escáner USB / Bluetooth en mesón.
           </p>
         </div>
@@ -230,7 +230,7 @@ export function ProductoDetailDialog({
               </Badge>
             </div>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-bold text-zinc-900 dark:text-zinc-100 tabular-nums">
+              <span className="font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
                 {producto.stock}
               </span>
               <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">unidades en pañol</span>
@@ -267,7 +267,7 @@ export function ProductoDetailDialog({
               </span>
             </div>
             {producto.ubicacion?.descripcion && (
-              <p className="mt-2 text-[11px] text-zinc-500 dark:text-zinc-400 font-mono line-clamp-2">
+              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 font-mono line-clamp-2">
                 {producto.ubicacion.descripcion}
               </p>
             )}

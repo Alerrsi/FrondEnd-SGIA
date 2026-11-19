@@ -55,20 +55,14 @@ interface NavItem {
   group?: boolean;
 }
 
-const navLinkClass = (isActive: boolean, industrial = false) =>
-  industrial
-    ? cn(
-        // Paleta «Industrial INACAP» (diseño previo al rediseño Pañol): menú claro con barra lateral
-        'relative flex shrink-0 items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
-        isActive
-          ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-zinc-900 dark:before:bg-zinc-100'
-          : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
-      )
-    : cn(
-        'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
-        // Menú navy: el activo es una etiqueta crema con tinta burdeo (el icono hereda el color)
-        isActive ? 'bg-tag text-tag-ink font-semibold' : 'text-zinc-300 hover:bg-white/8 hover:text-white',
-      );
+const navLinkClass = (isActive: boolean) =>
+  cn(
+    // Sistema «Trazo»: menú neutro; el activo es la superficie con una barra burdeo de 2px.
+    'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
+    isActive
+      ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-r before:bg-accent'
+      : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
+  );
 
 const navigation: NavItem[] = [
   {
@@ -192,8 +186,7 @@ const navigation: NavItem[] = [
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
-  const { resolvedTheme, setTheme, palette } = useTheme();
-  const industrial = palette === 'industrial';
+  const { resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -282,17 +275,12 @@ export default function AppLayout() {
         <aside
           style={{ width: isCollapsed ? 64 : sidebarWidth }}
           className={cn(
-            // `dark` fija el menú en navy también en modo claro: sus hijos usan las variantes dark:
-            'relative flex flex-col justify-between select-none overflow-hidden z-20',
-            !industrial && 'dark bg-zinc-900 text-zinc-100',
+            'app-sidebar relative flex flex-col justify-between select-none overflow-hidden z-20',
+            'bg-zinc-100 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800',
             isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
             isCollapsed
               ? 'rail-collapsed gap-2 py-3 px-2 items-center'
               : 'gap-3 p-3',
-            industrial &&
-              (isCollapsed
-                ? 'bg-transparent border-none shadow-none'
-                : 'bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800'),
           )}
         >
           {isCollapsed ? (
@@ -308,7 +296,7 @@ export default function AppLayout() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">SGIA · Pañol</p>
-                    <p className="text-[11px] sede-text text-zinc-400">INACAP Sede Temuco</p>
+                    <p className="text-xs sede-text text-zinc-400">INACAP Sede Temuco</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -356,7 +344,7 @@ export default function AppLayout() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div
-                      className="gnav-item flex items-center justify-center font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200 cursor-default"
+                      className="gnav-item flex items-center justify-center font-mono text-xs font-semibold text-zinc-800 dark:text-zinc-200 cursor-default"
                       title={user?.nombre ?? 'Usuario'}
                       aria-label={`Usuario: ${user?.nombre ?? 'Usuario'}`}
                     >
@@ -365,7 +353,7 @@ export default function AppLayout() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-semibold text-xs">{user?.nombre ?? 'Usuario'}</p>
-                    <p className="text-[11px] text-zinc-400 font-mono">{roleLabel}</p>
+                    <p className="text-xs text-zinc-400 font-mono">{roleLabel}</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -445,10 +433,10 @@ export default function AppLayout() {
                       <Boxes aria-hidden="true" className="h-4 w-4 text-zinc-900 dark:text-zinc-100" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                      <span className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
                         SGIA Pañol
                       </span>
-                      <span className="truncate text-[11px] sede-text text-zinc-400 dark:text-zinc-500">
+                      <span className="truncate text-xs sede-text text-zinc-400 dark:text-zinc-500">
                         INACAP Sede Temuco
                       </span>
                     </div>
@@ -479,7 +467,7 @@ export default function AppLayout() {
                         label={label}
                         icon={Icon}
                         links={purchaseLinksFor(userRole)}
-                        linkClassName={(isActive) => navLinkClass(isActive, industrial)}
+                        linkClassName={(isActive) => navLinkClass(isActive)}
                       />
                     ) : (
                       <NavLink
@@ -487,7 +475,7 @@ export default function AppLayout() {
                         to={to}
                         end={end}
                         aria-label={label}
-                        className={({ isActive }) => navLinkClass(isActive, industrial)}
+                        className={({ isActive }) => navLinkClass(isActive)}
                       >
                         <Icon className="h-4 w-4 shrink-0" />
                         <span className="truncate">{label}</span>
@@ -506,14 +494,14 @@ export default function AppLayout() {
                   {/* Fila Superior: Perfil del Usuario + Botón de Ajustes + Botón Logout */}
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-mono text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 shadow-xs">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-mono text-xs font-semibold text-zinc-700 dark:text-zinc-300 shadow-xs">
                         {userInitials}
                       </div>
                       <div className="flex flex-col min-w-0 flex-1 pr-1">
                         <span className="truncate text-xs font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
                           {user?.nombre ?? 'Usuario'}
                         </span>
-                        <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500 truncate">
+                        <span className="text-xs font-mono text-zinc-400 dark:text-zinc-500 truncate">
                           {roleLabel}
                         </span>
                       </div>
@@ -543,7 +531,7 @@ export default function AppLayout() {
 
                   {/* Fila Inferior: Toggle de Modo Oscuro con etiqueta e iconografía */}
                   <div className="flex items-center justify-between border-t border-zinc-200/60 dark:border-zinc-800/80 pt-2">
-                    <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 select-none">
+                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 select-none">
                       Tema {isLight ? 'Claro' : 'Oscuro'}
                     </span>
                     <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-2xs shrink-0">
@@ -551,7 +539,7 @@ export default function AppLayout() {
                         className={cn(
                           'h-3 w-3 transition-colors',
                           !isLight
-                            ? 'text-indigo-400 font-bold'
+                            ? 'text-indigo-400 font-semibold'
                             : 'text-zinc-400 dark:text-zinc-500',
                         )}
                       />
@@ -568,7 +556,7 @@ export default function AppLayout() {
                       <Sun aria-hidden="true"
                         className={cn(
                           'h-3 w-3 transition-colors',
-                          isLight ? 'text-amber-500 font-bold' : 'text-zinc-400 dark:text-zinc-500',
+                          isLight ? 'text-amber-500 font-semibold' : 'text-zinc-400 dark:text-zinc-500',
                         )}
                       />
                     </div>

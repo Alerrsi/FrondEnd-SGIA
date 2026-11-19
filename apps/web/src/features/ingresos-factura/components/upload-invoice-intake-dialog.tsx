@@ -17,7 +17,7 @@ import { toast } from '@/lib/toast';
 const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPTED = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
 
-const errorClasses = 'mt-1 text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-rose-600 dark:text-rose-400';
 
 interface UploadInvoiceIntakeDialogProps {
   open: boolean;
@@ -179,7 +179,7 @@ export function UploadInvoiceIntakeDialog({
               <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
                 Arrastra la factura aquí
               </p>
-              <p className="mt-0.5 font-mono text-[11px] text-zinc-500">
+              <p className="mt-0.5 font-mono text-xs text-zinc-500">
                 PDF, PNG, JPG o WEBP · máx. 10 MB
               </p>
               <Button

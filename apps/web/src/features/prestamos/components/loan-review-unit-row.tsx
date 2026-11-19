@@ -18,10 +18,10 @@ export function LoanReviewUnitRow({ unit, changed }: LoanReviewUnitRowProps) {
         <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">{unit.code}</span>
         {changed && <Badge tone="warning">Cambiada</Badge>}
       </div>
-      <span className="block font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+      <span className="block font-mono text-xs text-zinc-500 dark:text-zinc-400">
         N/S: {unit.serial_number || '—'}
       </span>
-      <span className="mt-0.5 flex items-center gap-1 text-[11px] text-zinc-700 dark:text-zinc-300">
+      <span className="mt-0.5 flex items-center gap-1 text-xs text-zinc-700 dark:text-zinc-300">
         <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
         <span>
           {unit.location?.nombre ?? 'Sala sin registrar'} ·{' '}

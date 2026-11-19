@@ -1,6 +1,6 @@
 # Rediseño de la interfaz web «Trazo»
 
-**Estado: plan, sin implementar (19 nov 2026).** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
+**Estado: en implementación (19 nov 2026), fase 1 hecha.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
 
 Plan escrito con el skill `design-taste-frontend` (tasteskill 2.5). Ese skill está hecho para sitios de empresa; aquí se usan su sistema de tokens, tipografía, botones, formularios, movimiento, accesibilidad y presupuesto de rendimiento. Lo que es solo de páginas de marketing (fotografías, una sección por pantalla, «momentos», efectos de shader) no aplica a un panel de operación y queda fuera (ver «Fuera de alcance»).
 
@@ -224,12 +224,12 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 - [x] Respuestas a las preguntas abiertas (sección 12).
 
 ### Fase 1 — Tokens y tipografía
-- [ ] Geist y Geist Mono alojadas en el proyecto; fuera Schibsted Grotesk.
-- [ ] Reescribir `@theme` y `:root` / `.dark` de `index.css` y `packages/design-tokens` (sección 4).
-- [ ] Quitar las paletas alternativas de `index.css`, `theme-context.tsx` y `settings-modal.tsx` (si se confirma la decisión 7).
-- [ ] Escala tipográfica en `typography.ts`; eliminar `text-[11px]`.
-- [ ] Tokens de movimiento y foco.
-- [ ] Revisión visual en claro y oscuro de 3 pantallas (inventario, cola, solicitud de compra).
+- [x] Geist y Geist Mono alojadas en el proyecto (`@fontsource-variable`, solo se descarga el subconjunto latino, ~60 KB); fuera Schibsted Grotesk, IBM Plex y Sora.
+- [x] Reescribir `@theme` y `:root` / `.dark` de `index.css` y `packages/design-tokens` (sección 4). Sidebar neutro adelantado de la fase 3 (sin navy no quedaba coherente).
+- [x] Quitar las paletas alternativas de `index.css`, `theme-context.tsx` y `settings-modal.tsx`; la clave `sgia-palette` guardada se borra al cargar.
+- [x] Escala tipográfica en `typography.ts`; `text-[11px]`/`text-[10px]` → `text-xs` y `font-bold` → `font-semibold` en toda la app.
+- [x] Tokens de movimiento y foco (anillo burdeo; IconBar y toggle sin vidrio ni rebote).
+- [ ] Revisión visual en claro y oscuro de 3 pantallas (inventario, cola, solicitud de compra). Hecha solo en login (1440 claro, 390 oscuro): las pantallas internas necesitan la API con sesión.
 
 ### Fase 2 — Componentes base
 - [ ] `Button`, `Badge`, `Card`, campos y `Toggle` (sin `framer-motion`).

@@ -137,7 +137,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
     <div className="flex flex-col gap-4 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
         <div className="flex min-w-0 flex-col">
-          <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
+          <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
             Recepcionando préstamo {loan.codigo ?? `#${loan.id}`}
           </span>
           <span className="text-xs text-zinc-500">
@@ -205,7 +205,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex min-w-0 flex-col">
                       <span className="font-medium text-zinc-800 dark:text-zinc-200">{target.name}</span>
-                      <span className="font-mono text-[11px] text-zinc-500">
+                      <span className="font-mono text-xs text-zinc-500">
                         {target.code || '—'}
                         {target.kind === 'supply' && ` · Cantidad: ${target.quantity}`}
                         {target.kind === 'supply' && target.registeredCajonCode && ` · Cajón: ${target.registeredCajonCode}`}

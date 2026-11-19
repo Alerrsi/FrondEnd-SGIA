@@ -99,11 +99,11 @@ export function SendPurchaseRequestDialog({ open, onClose, request }: SendPurcha
           )}
         />
         {errors.areas && (
-          <p className="text-[11px] text-rose-600 dark:text-rose-400">{errors.areas.message}</p>
+          <p className="text-xs text-rose-600 dark:text-rose-400">{errors.areas.message}</p>
         )}
 
         <div className="rounded-md border border-zinc-200 bg-zinc-50/60 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-950/40">
-          <p className="text-[11px] text-zinc-500">
+          <p className="text-xs text-zinc-500">
             Destinatarios estimados: {recipients.length}
           </p>
           {areas.length > 0 && recipients.length === 0 && (

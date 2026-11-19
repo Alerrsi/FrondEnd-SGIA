@@ -65,7 +65,7 @@ export default function MantencionesPage() {
           <span className={CODE_CHIP_CLASS}>
             {r.equipment_unit?.code ?? `#${r.equipment_unit_id}`}
           </span>
-          <p className="text-[11px] text-zinc-500">{r.equipment_unit?.product?.name}</p>
+          <p className="text-xs text-zinc-500">{r.equipment_unit?.product?.name}</p>
         </td>
         <td className="px-4 py-2.5">{MAINTENANCE_TYPE_LABELS[r.maintenance_type]}</td>
         <td className="px-4 py-2.5 text-zinc-600">
@@ -104,7 +104,7 @@ export default function MantencionesPage() {
               </span>
             ))}
           </p>
-          <p className="mt-1 text-[11px] text-zinc-500">
+          <p className="mt-1 text-xs text-zinc-500">
             Envíalas a mantención desde Inventario → unidades del producto.
           </p>
         </section>

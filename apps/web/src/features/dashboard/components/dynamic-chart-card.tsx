@@ -154,7 +154,7 @@ export function DynamicChartCard({
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+              <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                 {title}
               </span>
               {isEditMode && (
@@ -163,7 +163,7 @@ export function DynamicChartCard({
                 </span>
               )}
             </div>
-            <span className="font-mono text-[11px] text-zinc-400">
+            <span className="font-mono text-xs text-zinc-400">
               {describeRange(input)} · {CHART_TYPE_LABELS[input.chartType]}
             </span>
           </div>
@@ -176,7 +176,7 @@ export function DynamicChartCard({
         >
           {data && visualization === 'kpi' ? (
             <div className="flex h-full flex-col items-center justify-center gap-2">
-              <span className="font-mono text-7xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+              <span className="font-mono text-7xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
                 {formatKpiValue(data.points, input.metric)}
               </span>
               <span className="font-mono text-sm text-zinc-500">{title}</span>
@@ -243,10 +243,10 @@ export function DynamicChartCard({
             data-testid={`chart-kpi-${index}`}
             className="flex h-full flex-col items-center justify-center gap-1"
           >
-            <span className="font-mono text-4xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+            <span className="font-mono text-4xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
               {formatKpiValue(data.points, input.metric)}
             </span>
-            <span className="font-mono text-[11px] text-zinc-500">{title}</span>
+            <span className="font-mono text-xs text-zinc-500">{title}</span>
           </div>
         ) : (
           <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />
@@ -254,7 +254,7 @@ export function DynamicChartCard({
       </div>
 
       {legend.length > 0 && (
-        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
           {legend.map((item) => (
             <li key={item.label} className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
@@ -267,7 +267,7 @@ export function DynamicChartCard({
       {data?.summary && (
         <p
           title={data.summary}
-          className="mt-2 truncate border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono text-[11px] text-zinc-400"
+          className="mt-2 truncate border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono text-xs text-zinc-400"
         >
           {data.summary}
         </p>

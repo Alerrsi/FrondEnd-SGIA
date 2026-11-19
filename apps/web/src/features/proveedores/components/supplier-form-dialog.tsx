@@ -200,7 +200,7 @@ export function SupplierFormDialog({
               )}
             />
             <FieldError message={errors.areas?.message} />
-            <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
               Al enviar una solicitud de compra se contacta a todos los proveedores activos de las
               áreas elegidas.
             </p>

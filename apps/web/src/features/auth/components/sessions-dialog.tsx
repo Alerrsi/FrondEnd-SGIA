@@ -42,11 +42,11 @@ export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () =
                 <Icon className="h-4 w-4 shrink-0 text-zinc-400" aria-hidden />
                 <div className="min-w-0 flex-1">
                   <div className="font-medium capitalize">{token.device_name ?? token.name}</div>
-                  <div className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+                  <div className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
                     Último uso {formatDate(token.last_used_at)}
                   </div>
                 </div>
-                <div className="text-right font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
+                <div className="text-right font-mono text-xs text-zinc-500 dark:text-zinc-400">
                   Vence {formatDate(token.expires_at)}
                 </div>
               </li>

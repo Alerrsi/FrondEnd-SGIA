@@ -1,11 +1,10 @@
-/* Puente de tokens para Tailwind/NativeWind (web y mobile).
-   Mantener los valores en sincronía con src/tokens.json. */
+/* Puente de tokens para Tailwind (sistema «Trazo», docs/rediseno-interfaz.md).
+   Mantener los valores en sincronía con src/tokens.json; los valores reales están en apps/web/src/index.css. */
 @theme {
   --color-background: var(--bg);
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-alt);
   --color-border: var(--line);
-  --color-border-strong: var(--line);
   --color-text: var(--ink);
   --color-text-muted: var(--ink-muted);
   --color-accent: var(--brand);
@@ -15,9 +14,11 @@
   --color-success: var(--ok);
   --color-warning: var(--warn);
   --color-danger: var(--danger);
-  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
-  --font-display: 'Sora', 'IBM Plex Sans', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --color-border-strong: var(--line-strong);
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
 }

@@ -1,38 +1,43 @@
 @import 'sileo/styles.css';
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 @import '@sgia/design-tokens/theme.css';
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"] *, [data-theme="dark"]));
 
 /*
- * Sistema «Pañol» (feature/rediseno-paleta). Paleta: burdeo #490b1a, navy #142841, slate #798da6, crema #e5ded2.
- * La app usa zinc-* en casi todas las vistas: redefinir la escala aquí la convierte en neutros fríos derivados
- * del slate y el navy sin tocar componentes. 500 (claro) y 400 (oscuro) cumplen AA como texto secundario.
+ * Sistema «Trazo» (rama feat/rediseno-zed, plan en docs/rediseno-interfaz.md).
+ * Neutros cálidos papel/grafito, líneas de 1px como estructura y el burdeo institucional como único acento.
+ * La app usa zinc-* en casi todas las vistas: la escala se redefine aquí con los neutros cálidos, así la
+ * migración va por tokens antes que por componentes. 500 (claro) y 400 (oscuro) cumplen AA como texto secundario;
+ * en claro, 400 es solo decorativo.
  */
 @theme {
-  --color-zinc-50: #EFF2F6;
-  --color-zinc-100: #E6EBF1;
-  --color-zinc-200: #D8DFE8;
-  --color-zinc-300: #B9C4D2;
-  --color-zinc-400: #8E9BAE;
-  --color-zinc-500: #55677E;
-  --color-zinc-600: #45566C;
-  --color-zinc-700: #2F4058;
-  --color-zinc-800: #1E3350;
-  --color-zinc-900: #142841;
-  --color-zinc-950: #0A1626;
-  /* Etiqueta de inventario: crema con tinta burdeo (chips de código, ítem activo del menú) */
-  --color-tag: #E5DED2;
-  --color-tag-ink: #490B1A;
-  --font-sans: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
-  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
-  /* `font-mono` se usa en ~400 lugares como «estilo técnico»: apunta a la fuente de interfaz con cifras
-     tabulares (ver regla al final). La monoespaciada real queda solo en `font-code` (chips de código). */
-  --font-mono: 'Schibsted Grotesk', system-ui, sans-serif;
-  --font-code: 'Geist Mono', ui-monospace, monospace;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --color-zinc-50: #F6F5F2;
+  --color-zinc-100: #EFEDE8;
+  --color-zinc-200: #E2DFD8;
+  --color-zinc-300: #CBC7BE;
+  --color-zinc-400: #A19C92;
+  --color-zinc-500: #5F5B53;
+  --color-zinc-600: #4A463F;
+  --color-zinc-700: #3D3A35;
+  --color-zinc-800: #2E2C28;
+  --color-zinc-900: #1B1A17;
+  --color-zinc-950: #131210;
+  /* Chip de código (SKU, OC, Code128): etiqueta crema con tinta burdeo. Solo ahí. */
+  --color-tag: #ECE6DA;
+  --color-tag-ink: #6B1729;
+  /* Una familia en dos cortes: Geist para la interfaz, Geist Mono para datos técnicos. */
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-code: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Radio «sharp»: chip, control, contenedor. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /*
@@ -46,28 +51,28 @@
 }
 
 @layer base {
-  /* Modo claro por defecto (Neutros cálidos institucionales INACAP) */
   :root,
   html.light,
   :root[data-theme='light'] {
     color-scheme: light;
-    /* Marca */
-    --brand: #490B1A;
-    --brand-strong: #6B1729;
+    /* Acento único: burdeo institucional */
+    --brand: #6B1729;
+    --brand-strong: #561222;
     --brand-soft: #F3E4E3;
+    --brand-ink: #F6F5F2;
 
-    /* Neutros fríos (slate) y tinta navy */
-    --ink: #142841;
-    --ink-muted: #55677E;
-    --bg: #EFF2F6;
+    /* Neutros cálidos y tinta */
+    --ink: #1B1A17;
+    --ink-muted: #5F5B53;
+    --bg: #F6F5F2;
     --surface: #FFFFFF;
-    --surface-alt: #E6EBF1;
-    --line: #D8DFE8;
+    --surface-alt: #EFEDE8;
+    --line: #E2DFD8;
+    --line-strong: #CBC7BE;
 
-    /* Información y foco */
-    --info: #3E5A7E;
-
-    /* Estados de stock */
+    /* Estados */
+    --info: #2F5C8A;
+    --info-bg: #E3ECF5;
     --ok: #1E6B47;
     --ok-bg: #E3EFE6;
     --warn: #8A5300;
@@ -75,12 +80,22 @@
     --danger: #A3202E;
     --danger-bg: #F7E1DF;
 
+    /* Movimiento (tasteskill motion.md): solo transform, opacity y colores */
+    --m-in: 150ms;
+    --m-out: 120ms;
+    --m-press: 90ms;
+    --m-panel: 200ms;
+    --m-close: 120ms;
+    --m-slide: 240ms;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+
     /* Aliases para compatibilidad */
     --color-background: var(--bg);
     --color-surface: var(--surface);
     --color-surface-raised: var(--surface-alt);
     --color-border: var(--line);
-    --color-border-strong: var(--line);
+    --color-border-strong: var(--line-strong);
     --color-text: var(--ink);
     --color-text-muted: var(--ink-muted);
     --color-accent: var(--brand);
@@ -90,41 +105,38 @@
     --color-danger: var(--danger);
   }
 
-  /* Modo oscuro cálido institucional (descanso visual en jornadas largas) */
   html.dark,
   :root[data-theme='dark'],
   .dark {
     color-scheme: dark;
-    /* Marca: el burdeo no se ve sobre navy, en oscuro pasa a rosa */
+    /* El burdeo no contrasta sobre grafito: en oscuro pasa a rosa con texto oscuro */
     --brand: #E8A3B1;
     --brand-strong: #F2C2CB;
-    --brand-soft: rgba(232, 163, 177, 0.14);
+    --brand-soft: #3A1E24;
+    --brand-ink: #1B1A17;
 
-    /* Neutros navy */
-    --ink: #EFEADF;
-    --ink-muted: #8E9BAE;
-    --bg: #0A1626;
-    --surface: #142841;
-    --surface-alt: #1E3350;
-    --line: rgba(185, 196, 210, 0.14);
+    --ink: #F2F0EB;
+    --ink-muted: #A19C92;
+    --bg: #131210;
+    --surface: #1B1A17;
+    --surface-alt: #22211E;
+    --line: #2E2C28;
+    --line-strong: #3D3A35;
 
-    /* Información y foco */
-    --info: #A9BBD3;
+    --info: #9DBEE0;
+    --info-bg: #1C2633;
+    --ok: #7FCBA2;
+    --ok-bg: #1C2E24;
+    --warn: #E6B565;
+    --warn-bg: #33281A;
+    --danger: #F09A9F;
+    --danger-bg: #36191C;
 
-    /* Estados de stock */
-    --ok: #6CC18F;
-    --ok-bg: rgba(108, 193, 143, 0.14);
-    --warn: #E8B860;
-    --warn-bg: rgba(232, 184, 96, 0.14);
-    --danger: #F08A8F;
-    --danger-bg: rgba(240, 138, 143, 0.14);
-
-    /* Aliases para compatibilidad */
     --color-background: var(--bg);
     --color-surface: var(--surface);
     --color-surface-raised: var(--surface-alt);
     --color-border: var(--line);
-    --color-border-strong: var(--line);
+    --color-border-strong: var(--line-strong);
     --color-text: var(--ink);
     --color-text-muted: var(--ink-muted);
     --color-accent: var(--brand);
@@ -132,1191 +144,18 @@
     --color-success: var(--ok);
     --color-warning: var(--warn);
     --color-danger: var(--danger);
-  }
-
-  /* ==========================================================================
-     Paleta «Industrial INACAP»: el diseño anterior al rediseño Pañol (main antes de 423b05f).
-     Devuelve la escala zinc original de Tailwind, neutros cálidos, CTA monocromo e IBM Plex.
-     ========================================================================== */
-  :root[data-palette='industrial'] {
-    --color-zinc-50: oklch(98.5% 0 0);
-    --color-zinc-100: oklch(96.7% 0.001 286.375);
-    --color-zinc-200: oklch(92% 0.004 286.32);
-    --color-zinc-300: oklch(87.1% 0.006 286.286);
-    --color-zinc-400: oklch(70.5% 0.015 286.067);
-    --color-zinc-500: oklch(55.2% 0.016 285.938);
-    --color-zinc-600: oklch(44.2% 0.017 285.786);
-    --color-zinc-700: oklch(37% 0.013 285.805);
-    --color-zinc-800: oklch(27.4% 0.006 286.033);
-    --color-zinc-900: oklch(21% 0.006 285.885);
-    --color-zinc-950: oklch(14.1% 0.005 285.823);
-    --color-tag: var(--color-zinc-100);
-    --color-tag-ink: var(--color-zinc-900);
-    --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
-    --font-display: 'Sora', 'IBM Plex Sans', sans-serif;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-    --font-code: 'IBM Plex Mono', ui-monospace, monospace;
-    --radius-sm: 0.25rem;
-    --radius-md: 0.375rem;
-    --radius-lg: 0.5rem;
-
-    --brand: #E1060D;
-    --brand-strong: #B8050A;
-    --brand-soft: #FDEEEE;
-    --ink: #202124;
-    --ink-muted: #5F6368;
-    --bg: #FAF8F5;
-    --surface: #FFFFFF;
-    --surface-alt: #F3F0EB;
-    --line: #E4E1DC;
-    --info: #1A73E8;
-    --ok: #1E7B4F;
-    --ok-bg: #E6F4EC;
-    --warn: #A15C00;
-    --warn-bg: #FFF3D9;
-    --danger: #B42318;
-    --danger-bg: #FEE4E2;
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    /* El CTA era monocromo (zinc-900 / zinc-100 en oscuro), no del color de marca */
-    --color-accent: var(--color-zinc-900);
-    --color-accent-muted: var(--color-zinc-800);
-  }
-
-  html.dark[data-palette='industrial'],
-  :root[data-theme='dark'][data-palette='industrial'] {
-    --brand: #E1060D;
-    --brand-strong: #FF3B42;
-    --brand-soft: rgba(225, 6, 13, 0.15);
-    --ink: #F1F2F4;
-    --ink-muted: #9AA0A6;
-    --bg: #141517;
-    --surface: #1E2023;
-    --surface-alt: #26292D;
-    --line: rgba(255, 255, 255, 0.1);
-    --info: #8AB4F8;
-    --ok: #34A853;
-    --ok-bg: rgba(52, 168, 83, 0.15);
-    --warn: #FBBC04;
-    --warn-bg: rgba(251, 188, 4, 0.15);
-    --danger: #EA4335;
-    --danger-bg: rgba(234, 67, 53, 0.15);
-    --color-accent: var(--color-zinc-100);
-    --color-accent-muted: #FFFFFF;
-  }
-
-  /* ==========================================================================
-     Paleta B1 Alternativa (Azul Acero & Indigo Industrial)
-     NOTA AGENTS.md (L100): Se deben mantener como colores de fondo ya sea el
-     blanco y negro (variación sutil permitida según la paleta elegida).
-     Los colores se reflejan en los tonos de botones, letras específicas y
-     estados de entidades sin perder la estética y densidad principal.
-     Smart Blue #0466c8 | Steel Azure #0353a4 | Regal Navy #023e7d
-     Prussian Blue #002855 / #001845 / #001233 | Twilight Indigo #33415c
-     Blue Slate #5c677d | Slate Grey #7d8597 | Cool Steel #979dac
-     ========================================================================== */
-  :root[data-palette='b1'],
-  html.light[data-palette='b1'],
-  :root[data-theme='light'][data-palette='b1'] {
-    /* Fondos neutros blanco/claro con descanso visual */
-    --bg: #F8FAFC;
-    --surface: #FFFFFF;
-    --surface-alt: #EDF2F7;
-    --line: #CBD5E1;
-
-    /* Botones y acentos técnicos de la paleta B1 */
-    --brand: #0466c8; /* Smart Blue para botones principales y CTA */
-    --brand-strong: #0353a4; /* Steel Azure */
-    --brand-soft: rgba(4, 102, 200, 0.12);
-    --info: #0466c8;
-
-    /* Tipografía y letras específicas */
-    --ink: #0F172A;
-    --ink-muted: #5c677d; /* Blue Slate */
-
-    /* Estados de entidades adaptados con balance técnico */
-    --ok: #059669;
-    --ok-bg: #ECFDF5;
-    --warn: #D97706;
-    --warn-bg: #FFFBEB;
-    --danger: #DC2626;
-    --danger-bg: #FEF2F2;
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  html.dark[data-palette='b1'],
-  :root[data-theme='dark'][data-palette='b1'] {
-    /* Fondos neutros negro/carbón (variación técnica oscura sutil) */
-    --bg: #0B0F17;
-    --surface: #121824;
-    --surface-alt: #1A2234;
-    --line: rgba(151, 157, 172, 0.22); /* Cool Steel border */
-
-    /* Botones y acentos técnicos B1 */
-    --brand: #0466c8; /* Smart Blue */
-    --brand-strong: #0353a4; /* Steel Azure */
-    --brand-soft: rgba(4, 102, 200, 0.25);
-    --info: #38BDF8;
-
-    /* Letras específicas y metadatos */
-    --ink: #F8FAFC;
-    --ink-muted: #979dac; /* Cool Steel */
-
-    /* Estados de entidades técnicos */
-    --ok: #10B981;
-    --ok-bg: rgba(16, 185, 129, 0.15);
-    --warn: #F59E0B;
-    --warn-bg: rgba(245, 158, 11, 0.15);
-    --danger: #EF4444;
-    --danger-bg: rgba(239, 68, 68, 0.15);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  /* ==========================================================================
-     Paleta Pastel: Sage Mint (Menta Salvia Suave) — palette-sage
-     ========================================================================== */
-  :root[data-palette='sage'],
-  html.light[data-palette='sage'],
-  :root[data-theme='light'][data-palette='sage'] {
-    --bg: #F9FAF9;
-    --surface: #FFFFFF;
-    --surface-alt: #EFF3EF;
-    --line: #DCE4DC;
-
-    --brand: #62929e;
-    --brand-strong: #4d7c8a;
-    --brand-soft: rgba(98, 146, 158, 0.12);
-    --info: #62929e;
-
-    --ink: #1B2B27;
-    --ink-muted: #62929e;
-
-    --ok: #284b40;
-    --ok-bg: rgba(82, 183, 136, 0.12);
-    --warn: #d4a373;
-    --warn-bg: rgba(212, 163, 115, 0.15);
-    --danger: #e07a5f;
-    --danger-bg: rgba(224, 122, 95, 0.15);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  html.dark[data-palette='sage'],
-  :root[data-theme='dark'][data-palette='sage'] {
-    --bg: #0D1211;
-    --surface: #151C1A;
-    --surface-alt: #1D2624;
-    --line: rgba(131, 197, 190, 0.2);
-
-    --brand: #83c5be;
-    --brand-strong: #62929e;
-    --brand-soft: rgba(131, 197, 190, 0.25);
-    --info: #83c5be;
-
-    --ink: #F2F7F5;
-    --ink-muted: #A7C4BC;
-
-    --ok: #83c5be;
-    --ok-bg: rgba(131, 197, 190, 0.18);
-    --warn: #d4a373;
-    --warn-bg: rgba(212, 163, 115, 0.2);
-    --danger: #e07a5f;
-    --danger-bg: rgba(224, 122, 95, 0.2);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  /* ==========================================================================
-     Paleta Pastel: Lavender Mist (Lavanda / Violeta Empolvado) — palette-lavender
-     ========================================================================== */
-  :root[data-palette='lavender'],
-  html.light[data-palette='lavender'],
-  :root[data-theme='light'][data-palette='lavender'] {
-    --bg: #FAF9FC;
-    --surface: #FFFFFF;
-    --surface-alt: #F2F0F7;
-    --line: #E2DFEC;
-
-    --brand: #7c69d8;
-    --brand-strong: #6855c4;
-    --brand-soft: rgba(124, 105, 216, 0.12);
-    --info: #7c69d8;
-
-    --ink: #1F1B2C;
-    --ink-muted: #6F6688;
-
-    --ok: #5e4bb5;
-    --ok-bg: rgba(143, 128, 199, 0.14);
-    --warn: #c084fc;
-    --warn-bg: rgba(192, 132, 252, 0.15);
-    --danger: #f472b6;
-    --danger-bg: rgba(244, 114, 182, 0.15);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  html.dark[data-palette='lavender'],
-  :root[data-theme='dark'][data-palette='lavender'] {
-    --bg: #0F0E17;
-    --surface: #171524;
-    --surface-alt: #201D32;
-    --line: rgba(155, 135, 245, 0.22);
-
-    --brand: #9b87f5;
-    --brand-strong: #7c69d8;
-    --brand-soft: rgba(155, 135, 245, 0.25);
-    --info: #c8b6ff;
-
-    --ink: #F7F6FA;
-    --ink-muted: #C8B6FF;
-
-    --ok: #c8b6ff;
-    --ok-bg: rgba(155, 135, 245, 0.2);
-    --warn: #c084fc;
-    --warn-bg: rgba(192, 132, 252, 0.2);
-    --danger: #f472b6;
-    --danger-bg: rgba(244, 114, 182, 0.2);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  /* ==========================================================================
-     Paleta Pastel: Nordic Ice (Celeste Glaciar / Sky Pastel) — palette-nordic
-     ========================================================================== */
-  :root[data-palette='nordic'],
-  html.light[data-palette='nordic'],
-  :root[data-theme='light'][data-palette='nordic'] {
-    --bg: #F8FAFB;
-    --surface: #FFFFFF;
-    --surface-alt: #EEF3F6;
-    --line: #D7E2E8;
-
-    --brand: #4682b4;
-    --brand-strong: #36648b;
-    --brand-soft: rgba(70, 130, 180, 0.12);
-    --info: #4682b4;
-
-    --ink: #121E28;
-    --ink-muted: #566E7E;
-
-    --ok: #1d4e89;
-    --ok-bg: rgba(56, 189, 248, 0.14);
-    --warn: #93c5fd;
-    --warn-bg: rgba(147, 197, 253, 0.18);
-    --danger: #fb7185;
-    --danger-bg: rgba(251, 113, 133, 0.15);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  html.dark[data-palette='nordic'],
-  :root[data-theme='dark'][data-palette='nordic'] {
-    --bg: #0C1217;
-    --surface: #131C24;
-    --surface-alt: #1A2631;
-    --line: rgba(100, 181, 246, 0.22);
-
-    --brand: #64b5f6;
-    --brand-strong: #4682b4;
-    --brand-soft: rgba(100, 181, 246, 0.25);
-    --info: #90caf9;
-
-    --ink: #F2F7FA;
-    --ink-muted: #90CAF9;
-
-    --ok: #64b5f6;
-    --ok-bg: rgba(100, 181, 246, 0.2);
-    --warn: #93c5fd;
-    --warn-bg: rgba(147, 197, 253, 0.2);
-    --danger: #fb7185;
-    --danger-bg: rgba(251, 113, 133, 0.2);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  /* ==========================================================================
-     Paleta Pastel: Peach & Sand (Melocotón / Arcilla Suave) — palette-peach
-     ========================================================================== */
-  :root[data-palette='peach'],
-  html.light[data-palette='peach'],
-  :root[data-theme='light'][data-palette='peach'] {
-    --bg: #FAF8F6;
-    --surface: #FFFFFF;
-    --surface-alt: #F6EFEA;
-    --line: #E8DCD4;
-
-    --brand: #d97757;
-    --brand-strong: #be6143;
-    --brand-soft: rgba(217, 119, 87, 0.12);
-    --info: #d97757;
-
-    --ink: #291A16;
-    --ink-muted: #785A52;
-
-    --ok: #6b3a2e;
-    --ok-bg: rgba(224, 122, 95, 0.14);
-    --warn: #f6bd60;
-    --warn-bg: rgba(246, 189, 96, 0.18);
-    --danger: #e63946;
-    --danger-bg: rgba(230, 57, 70, 0.15);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  html.dark[data-palette='peach'],
-  :root[data-theme='dark'][data-palette='peach'] {
-    --bg: #140E0C;
-    --surface: #1D1512;
-    --surface-alt: #281D1A;
-    --line: rgba(244, 151, 142, 0.22);
-
-    --brand: #f4978e;
-    --brand-strong: #d97757;
-    --brand-soft: rgba(244, 151, 142, 0.25);
-    --info: #f8ad9d;
-
-    --ink: #FAF4F2;
-    --ink-muted: #F8AD9D;
-
-    --ok: #f4978e;
-    --ok-bg: rgba(244, 151, 142, 0.2);
-    --warn: #f6bd60;
-    --warn-bg: rgba(246, 189, 96, 0.2);
-    --danger: #e63946;
-    --danger-bg: rgba(230, 57, 70, 0.2);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  /* ==========================================================================
-     Paleta Pastel: Chamomile Honey (Manzanilla / Ocre Suave) — palette-chamomile
-     ========================================================================== */
-  :root[data-palette='chamomile'],
-  html.light[data-palette='chamomile'],
-  :root[data-theme='light'][data-palette='chamomile'] {
-    --bg: #FAF9F5;
-    --surface: #FFFFFF;
-    --surface-alt: #F4F1E6;
-    --line: #E5DFCF;
-
-    --brand: #b5832b;
-    --brand-strong: #9c6d1f;
-    --brand-soft: rgba(181, 131, 43, 0.12);
-    --info: #b5832b;
-
-    --ink: #261F12;
-    --ink-muted: #6E614A;
-
-    --ok: #5c4015;
-    --ok-bg: rgba(212, 163, 75, 0.14);
-    --warn: #facc15;
-    --warn-bg: rgba(250, 204, 21, 0.18);
-    --danger: #f87171;
-    --danger-bg: rgba(248, 113, 113, 0.15);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
-  }
-
-  html.dark[data-palette='chamomile'],
-  :root[data-theme='dark'][data-palette='chamomile'] {
-    --bg: #14110A;
-    --surface: #1E1A11;
-    --surface-alt: #292419;
-    --line: rgba(226, 184, 102, 0.22);
-
-    --brand: #e2b866;
-    --brand-strong: #b5832b;
-    --brand-soft: rgba(226, 184, 102, 0.25);
-    --info: #f6df9d;
-
-    --ink: #FAF7F0;
-    --ink-muted: #F6DF9D;
-
-    --ok: #e2b866;
-    --ok-bg: rgba(226, 184, 102, 0.2);
-    --warn: #facc15;
-    --warn-bg: rgba(250, 204, 21, 0.2);
-    --danger: #f87171;
-    --danger-bg: rgba(248, 113, 113, 0.2);
-
-    --color-background: var(--bg);
-    --color-surface: var(--surface);
-    --color-surface-raised: var(--surface-alt);
-    --color-border: var(--line);
-    --color-border-strong: var(--line);
-    --color-text: var(--ink);
-    --color-text-muted: var(--ink-muted);
-    --color-accent: var(--brand);
-    --color-accent-muted: var(--brand-strong);
   }
 
   body {
     background-color: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
+    font-feature-settings: 'ss01' 0;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     min-height: 100vh;
   }
-}
-
-/* ==========================================================================
-   Reflejo de Paleta B1 en Botones, Letras Específicas y Estados (AGENTS.md L100)
-   ========================================================================== */
-[data-palette='b1'] .btn-primary,
-[data-palette='b1'] button[data-variant='primary'] {
-  background-color: #0466c8;
-  color: #ffffff;
-}
-
-[data-palette='b1'] .btn-primary:hover,
-[data-palette='b1'] button[data-variant='primary']:hover {
-  background-color: #0353a4;
-}
-
-/* Letras específicas e indicadores de navegación activos */
-[data-palette='b1'] nav a[aria-current='page'],
-[data-palette='b1'] nav a.active {
-  color: #0466c8;
-}
-
-html.dark[data-palette='b1'] nav a[aria-current='page'],
-html.dark[data-palette='b1'] nav a.active {
-  color: #38bdf8;
-}
-
-[data-palette='b1'] nav a[aria-current='page']::before,
-[data-palette='b1'] nav a.active::before {
-  background-color: #0466c8 !important;
-}
-
-/* Micro-línea de acento superior */
-[data-palette='b1'] .accent-top-line {
-  border-top-color: #0466c8;
-}
-
-/* Micro-etiquetas Institucionales de la Sede (SEDE TEMUCO · ...) */
-[data-palette='b1'] [data-sede-badge],
-[data-palette='b1'] .sede-badge {
-  background-color: rgba(4, 102, 200, 0.08) !important;
-  color: #0466c8 !important;
-  border-color: rgba(4, 102, 200, 0.28) !important;
-}
-
-html.dark[data-palette='b1'] [data-sede-badge],
-html.dark[data-palette='b1'] .sede-badge,
-:root[data-theme='dark'][data-palette='b1'] [data-sede-badge],
-:root[data-theme='dark'][data-palette='b1'] .sede-badge {
-  background-color: rgba(4, 102, 200, 0.18) !important;
-  color: #38bdf8 !important;
-  border-color: rgba(4, 102, 200, 0.38) !important;
-}
-
-[data-palette='b1'] [data-sede-badge] span:first-child,
-[data-palette='b1'] .sede-badge-dot {
-  background-color: #0466c8 !important;
-}
-
-html.dark[data-palette='b1'] [data-sede-badge] span:first-child,
-html.dark[data-palette='b1'] .sede-badge-dot {
-  background-color: #38bdf8 !important;
-}
-
-[data-palette='b1'] .sede-text {
-  color: #0466c8 !important;
-}
-
-html.dark[data-palette='b1'] .sede-text,
-:root[data-theme='dark'][data-palette='b1'] .sede-text {
-  color: #38bdf8 !important;
-}
-
-[data-palette='b1'] [data-status='activo'],
-[data-palette='b1'] [data-tone='available'],
-[data-palette='b1'] span.badge-status-activo {
-  background-color: rgba(4, 102, 200, 0.08) !important;
-  color: #0466c8 !important;
-  border-color: rgba(4, 102, 200, 0.28) !important;
-}
-
-html.dark[data-palette='b1'] [data-status='activo'],
-html.dark[data-palette='b1'] [data-tone='available'],
-html.dark[data-palette='b1'] span.badge-status-activo,
-:root[data-theme='dark'][data-palette='b1'] [data-status='activo'],
-:root[data-theme='dark'][data-palette='b1'] [data-tone='available'] {
-  background-color: rgba(4, 102, 200, 0.18) !important;
-  color: #38bdf8 !important;
-  border-color: rgba(4, 102, 200, 0.38) !important;
-}
-
-[data-palette='b1'] [data-status='activo'] span[aria-hidden='true'],
-[data-palette='b1'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #0466c8 !important;
-}
-
-html.dark[data-palette='b1'] [data-status='activo'] span[aria-hidden='true'],
-html.dark[data-palette='b1'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #38bdf8 !important;
-}
-
-/* ==========================================================================
-   Reflejo de Paleta Pastel: Sage Mint (palette-sage)
-   ========================================================================== */
-[data-palette='sage'] .btn-primary,
-[data-palette='sage'] button[data-variant='primary'] {
-  background-color: #62929e;
-  color: #ffffff;
-}
-
-[data-palette='sage'] .btn-primary:hover,
-[data-palette='sage'] button[data-variant='primary']:hover {
-  background-color: #4d7c8a;
-}
-
-html.dark[data-palette='sage'] .btn-primary,
-html.dark[data-palette='sage'] button[data-variant='primary'] {
-  background-color: #83c5be;
-  color: #0D1211;
-}
-
-html.dark[data-palette='sage'] .btn-primary:hover,
-html.dark[data-palette='sage'] button[data-variant='primary']:hover {
-  background-color: #62929e;
-  color: #ffffff;
-}
-
-[data-palette='sage'] nav a[aria-current='page'],
-[data-palette='sage'] nav a.active {
-  color: #284b40;
-}
-
-html.dark[data-palette='sage'] nav a[aria-current='page'],
-html.dark[data-palette='sage'] nav a.active {
-  color: #83c5be;
-}
-
-[data-palette='sage'] nav a[aria-current='page']::before,
-[data-palette='sage'] nav a.active::before {
-  background-color: #62929e !important;
-}
-
-html.dark[data-palette='sage'] nav a[aria-current='page']::before,
-html.dark[data-palette='sage'] nav a.active::before {
-  background-color: #83c5be !important;
-}
-
-[data-palette='sage'] .accent-top-line {
-  border-top-color: #62929e;
-}
-
-[data-palette='sage'] [data-sede-badge],
-[data-palette='sage'] .sede-badge {
-  background-color: rgba(98, 146, 158, 0.1) !important;
-  color: #4d7c8a !important;
-  border-color: rgba(98, 146, 158, 0.28) !important;
-}
-
-html.dark[data-palette='sage'] [data-sede-badge],
-html.dark[data-palette='sage'] .sede-badge,
-:root[data-theme='dark'][data-palette='sage'] [data-sede-badge],
-:root[data-theme='dark'][data-palette='sage'] .sede-badge {
-  background-color: rgba(131, 197, 190, 0.18) !important;
-  color: #83c5be !important;
-  border-color: rgba(131, 197, 190, 0.38) !important;
-}
-
-[data-palette='sage'] [data-sede-badge] span:first-child,
-[data-palette='sage'] .sede-badge-dot {
-  background-color: #62929e !important;
-}
-
-html.dark[data-palette='sage'] [data-sede-badge] span:first-child,
-html.dark[data-palette='sage'] .sede-badge-dot {
-  background-color: #83c5be !important;
-}
-
-[data-palette='sage'] .sede-text {
-  color: #4d7c8a !important;
-}
-
-html.dark[data-palette='sage'] .sede-text,
-:root[data-theme='dark'][data-palette='sage'] .sede-text {
-  color: #83c5be !important;
-}
-
-[data-palette='sage'] [data-status='activo'],
-[data-palette='sage'] [data-tone='available'],
-[data-palette='sage'] span.badge-status-activo {
-  background-color: rgba(82, 183, 136, 0.12) !important;
-  color: #284b40 !important;
-  border-color: rgba(82, 183, 136, 0.35) !important;
-}
-
-html.dark[data-palette='sage'] [data-status='activo'],
-html.dark[data-palette='sage'] [data-tone='available'],
-html.dark[data-palette='sage'] span.badge-status-activo,
-:root[data-theme='dark'][data-palette='sage'] [data-status='activo'],
-:root[data-theme='dark'][data-palette='sage'] [data-tone='available'] {
-  background-color: rgba(131, 197, 190, 0.18) !important;
-  color: #a7c4bc !important;
-  border-color: rgba(131, 197, 190, 0.38) !important;
-}
-
-[data-palette='sage'] [data-status='activo'] span[aria-hidden='true'],
-[data-palette='sage'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #52b788 !important;
-}
-
-html.dark[data-palette='sage'] [data-status='activo'] span[aria-hidden='true'],
-html.dark[data-palette='sage'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #83c5be !important;
-}
-
-/* ==========================================================================
-   Reflejo de Paleta Pastel: Lavender Mist (palette-lavender)
-   ========================================================================== */
-[data-palette='lavender'] .btn-primary,
-[data-palette='lavender'] button[data-variant='primary'] {
-  background-color: #7c69d8;
-  color: #ffffff;
-}
-
-[data-palette='lavender'] .btn-primary:hover,
-[data-palette='lavender'] button[data-variant='primary']:hover {
-  background-color: #6855c4;
-}
-
-html.dark[data-palette='lavender'] .btn-primary,
-html.dark[data-palette='lavender'] button[data-variant='primary'] {
-  background-color: #9b87f5;
-  color: #0F0E17;
-}
-
-html.dark[data-palette='lavender'] .btn-primary:hover,
-html.dark[data-palette='lavender'] button[data-variant='primary']:hover {
-  background-color: #7c69d8;
-  color: #ffffff;
-}
-
-[data-palette='lavender'] nav a[aria-current='page'],
-[data-palette='lavender'] nav a.active {
-  color: #3c3169;
-}
-
-html.dark[data-palette='lavender'] nav a[aria-current='page'],
-html.dark[data-palette='lavender'] nav a.active {
-  color: #c8b6ff;
-}
-
-[data-palette='lavender'] nav a[aria-current='page']::before,
-[data-palette='lavender'] nav a.active::before {
-  background-color: #7c69d8 !important;
-}
-
-html.dark[data-palette='lavender'] nav a[aria-current='page']::before,
-html.dark[data-palette='lavender'] nav a.active::before {
-  background-color: #9b87f5 !important;
-}
-
-[data-palette='lavender'] .accent-top-line {
-  border-top-color: #7c69d8;
-}
-
-[data-palette='lavender'] [data-sede-badge],
-[data-palette='lavender'] .sede-badge {
-  background-color: rgba(124, 105, 216, 0.1) !important;
-  color: #7c69d8 !important;
-  border-color: rgba(124, 105, 216, 0.28) !important;
-}
-
-html.dark[data-palette='lavender'] [data-sede-badge],
-html.dark[data-palette='lavender'] .sede-badge,
-:root[data-theme='dark'][data-palette='lavender'] [data-sede-badge],
-:root[data-theme='dark'][data-palette='lavender'] .sede-badge {
-  background-color: rgba(155, 135, 245, 0.2) !important;
-  color: #9b87f5 !important;
-  border-color: rgba(155, 135, 245, 0.4) !important;
-}
-
-[data-palette='lavender'] [data-sede-badge] span:first-child,
-[data-palette='lavender'] .sede-badge-dot {
-  background-color: #7c69d8 !important;
-}
-
-html.dark[data-palette='lavender'] [data-sede-badge] span:first-child,
-html.dark[data-palette='lavender'] .sede-badge-dot {
-  background-color: #9b87f5 !important;
-}
-
-[data-palette='lavender'] .sede-text {
-  color: #7c69d8 !important;
-}
-
-html.dark[data-palette='lavender'] .sede-text,
-:root[data-theme='dark'][data-palette='lavender'] .sede-text {
-  color: #9b87f5 !important;
-}
-
-[data-palette='lavender'] [data-status='activo'],
-[data-palette='lavender'] [data-tone='available'],
-[data-palette='lavender'] span.badge-status-activo {
-  background-color: rgba(143, 128, 199, 0.14) !important;
-  color: #3c3169 !important;
-  border-color: rgba(143, 128, 199, 0.35) !important;
-}
-
-html.dark[data-palette='lavender'] [data-status='activo'],
-html.dark[data-palette='lavender'] [data-tone='available'],
-html.dark[data-palette='lavender'] span.badge-status-activo,
-:root[data-theme='dark'][data-palette='lavender'] [data-status='activo'],
-:root[data-theme='dark'][data-palette='lavender'] [data-tone='available'] {
-  background-color: rgba(155, 135, 245, 0.2) !important;
-  color: #c8b6ff !important;
-  border-color: rgba(155, 135, 245, 0.4) !important;
-}
-
-[data-palette='lavender'] [data-status='activo'] span[aria-hidden='true'],
-[data-palette='lavender'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #8f80c7 !important;
-}
-
-html.dark[data-palette='lavender'] [data-status='activo'] span[aria-hidden='true'],
-html.dark[data-palette='lavender'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #9b87f5 !important;
-}
-
-/* ==========================================================================
-   Reflejo de Paleta Pastel: Nordic Ice (palette-nordic)
-   ========================================================================== */
-[data-palette='nordic'] .btn-primary,
-[data-palette='nordic'] button[data-variant='primary'] {
-  background-color: #4682b4;
-  color: #ffffff;
-}
-
-[data-palette='nordic'] .btn-primary:hover,
-[data-palette='nordic'] button[data-variant='primary']:hover {
-  background-color: #36648b;
-}
-
-html.dark[data-palette='nordic'] .btn-primary,
-html.dark[data-palette='nordic'] button[data-variant='primary'] {
-  background-color: #64b5f6;
-  color: #0C1217;
-}
-
-html.dark[data-palette='nordic'] .btn-primary:hover,
-html.dark[data-palette='nordic'] button[data-variant='primary']:hover {
-  background-color: #4682b4;
-  color: #ffffff;
-}
-
-[data-palette='nordic'] nav a[aria-current='page'],
-[data-palette='nordic'] nav a.active {
-  color: #1d4e89;
-}
-
-html.dark[data-palette='nordic'] nav a[aria-current='page'],
-html.dark[data-palette='nordic'] nav a.active {
-  color: #90caf9;
-}
-
-[data-palette='nordic'] nav a[aria-current='page']::before,
-[data-palette='nordic'] nav a.active::before {
-  background-color: #4682b4 !important;
-}
-
-html.dark[data-palette='nordic'] nav a[aria-current='page']::before,
-html.dark[data-palette='nordic'] nav a.active::before {
-  background-color: #64b5f6 !important;
-}
-
-[data-palette='nordic'] .accent-top-line {
-  border-top-color: #4682b4;
-}
-
-[data-palette='nordic'] [data-sede-badge],
-[data-palette='nordic'] .sede-badge {
-  background-color: rgba(70, 130, 180, 0.1) !important;
-  color: #1d4e89 !important;
-  border-color: rgba(70, 130, 180, 0.28) !important;
-}
-
-html.dark[data-palette='nordic'] [data-sede-badge],
-html.dark[data-palette='nordic'] .sede-badge,
-:root[data-theme='dark'][data-palette='nordic'] [data-sede-badge],
-:root[data-theme='dark'][data-palette='nordic'] .sede-badge {
-  background-color: rgba(100, 181, 246, 0.18) !important;
-  color: #64b5f6 !important;
-  border-color: rgba(100, 181, 246, 0.38) !important;
-}
-
-[data-palette='nordic'] [data-sede-badge] span:first-child,
-[data-palette='nordic'] .sede-badge-dot {
-  background-color: #4682b4 !important;
-}
-
-html.dark[data-palette='nordic'] [data-sede-badge] span:first-child,
-html.dark[data-palette='nordic'] .sede-badge-dot {
-  background-color: #64b5f6 !important;
-}
-
-[data-palette='nordic'] .sede-text {
-  color: #1d4e89 !important;
-}
-
-html.dark[data-palette='nordic'] .sede-text,
-:root[data-theme='dark'][data-palette='nordic'] .sede-text {
-  color: #64b5f6 !important;
-}
-
-[data-palette='nordic'] [data-status='activo'],
-[data-palette='nordic'] [data-tone='available'],
-[data-palette='nordic'] span.badge-status-activo {
-  background-color: rgba(56, 189, 248, 0.14) !important;
-  color: #0c4a6e !important;
-  border-color: rgba(56, 189, 248, 0.35) !important;
-}
-
-html.dark[data-palette='nordic'] [data-status='activo'],
-html.dark[data-palette='nordic'] [data-tone='available'],
-html.dark[data-palette='nordic'] span.badge-status-activo,
-:root[data-theme='dark'][data-palette='nordic'] [data-status='activo'],
-:root[data-theme='dark'][data-palette='nordic'] [data-tone='available'] {
-  background-color: rgba(56, 189, 248, 0.2) !important;
-  color: #bae6fd !important;
-  border-color: rgba(56, 189, 248, 0.4) !important;
-}
-
-[data-palette='nordic'] [data-status='activo'] span[aria-hidden='true'],
-[data-palette='nordic'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #38bdf8 !important;
-}
-
-html.dark[data-palette='nordic'] [data-status='activo'] span[aria-hidden='true'],
-html.dark[data-palette='nordic'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #38bdf8 !important;
-}
-
-/* ==========================================================================
-   Reflejo de Paleta Pastel: Peach & Sand (palette-peach)
-   ========================================================================== */
-[data-palette='peach'] .btn-primary,
-[data-palette='peach'] button[data-variant='primary'] {
-  background-color: #d97757;
-  color: #ffffff;
-}
-
-[data-palette='peach'] .btn-primary:hover,
-[data-palette='peach'] button[data-variant='primary']:hover {
-  background-color: #be6143;
-}
-
-html.dark[data-palette='peach'] .btn-primary,
-html.dark[data-palette='peach'] button[data-variant='primary'] {
-  background-color: #f4978e;
-  color: #140E0C;
-}
-
-html.dark[data-palette='peach'] .btn-primary:hover,
-html.dark[data-palette='peach'] button[data-variant='primary']:hover {
-  background-color: #d97757;
-  color: #ffffff;
-}
-
-[data-palette='peach'] nav a[aria-current='page'],
-[data-palette='peach'] nav a.active {
-  color: #6b3a2e;
-}
-
-html.dark[data-palette='peach'] nav a[aria-current='page'],
-html.dark[data-palette='peach'] nav a.active {
-  color: #f8ad9d;
-}
-
-[data-palette='peach'] nav a[aria-current='page']::before,
-[data-palette='peach'] nav a.active::before {
-  background-color: #d97757 !important;
-}
-
-html.dark[data-palette='peach'] nav a[aria-current='page']::before,
-html.dark[data-palette='peach'] nav a.active::before {
-  background-color: #f4978e !important;
-}
-
-[data-palette='peach'] .accent-top-line {
-  border-top-color: #d97757;
-}
-
-[data-palette='peach'] [data-sede-badge],
-[data-palette='peach'] .sede-badge {
-  background-color: rgba(217, 119, 87, 0.1) !important;
-  color: #6b3a2e !important;
-  border-color: rgba(217, 119, 87, 0.28) !important;
-}
-
-html.dark[data-palette='peach'] [data-sede-badge],
-html.dark[data-palette='peach'] .sede-badge,
-:root[data-theme='dark'][data-palette='peach'] [data-sede-badge],
-:root[data-theme='dark'][data-palette='peach'] .sede-badge {
-  background-color: rgba(244, 151, 142, 0.2) !important;
-  color: #f4978e !important;
-  border-color: rgba(244, 151, 142, 0.4) !important;
-}
-
-[data-palette='peach'] [data-sede-badge] span:first-child,
-[data-palette='peach'] .sede-badge-dot {
-  background-color: #d97757 !important;
-}
-
-html.dark[data-palette='peach'] [data-sede-badge] span:first-child,
-html.dark[data-palette='peach'] .sede-badge-dot {
-  background-color: #f4978e !important;
-}
-
-[data-palette='peach'] .sede-text {
-  color: #6b3a2e !important;
-}
-
-html.dark[data-palette='peach'] .sede-text,
-:root[data-theme='dark'][data-palette='peach'] .sede-text {
-  color: #f4978e !important;
-}
-
-[data-palette='peach'] [data-status='activo'],
-[data-palette='peach'] [data-tone='available'],
-[data-palette='peach'] span.badge-status-activo {
-  background-color: rgba(224, 122, 95, 0.14) !important;
-  color: #7c2d12 !important;
-  border-color: rgba(224, 122, 95, 0.35) !important;
-}
-
-html.dark[data-palette='peach'] [data-status='activo'],
-html.dark[data-palette='peach'] [data-tone='available'],
-html.dark[data-palette='peach'] span.badge-status-activo,
-:root[data-theme='dark'][data-palette='peach'] [data-status='activo'],
-:root[data-theme='dark'][data-palette='peach'] [data-tone='available'] {
-  background-color: rgba(244, 151, 142, 0.2) !important;
-  color: #fed7aa !important;
-  border-color: rgba(244, 151, 142, 0.4) !important;
-}
-
-[data-palette='peach'] [data-status='activo'] span[aria-hidden='true'],
-[data-palette='peach'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #e07a5f !important;
-}
-
-html.dark[data-palette='peach'] [data-status='activo'] span[aria-hidden='true'],
-html.dark[data-palette='peach'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #f4978e !important;
-}
-
-/* ==========================================================================
-   Reflejo de Paleta Pastel: Chamomile Honey (palette-chamomile)
-   ========================================================================== */
-[data-palette='chamomile'] .btn-primary,
-[data-palette='chamomile'] button[data-variant='primary'] {
-  background-color: #b5832b;
-  color: #ffffff;
-}
-
-[data-palette='chamomile'] .btn-primary:hover,
-[data-palette='chamomile'] button[data-variant='primary']:hover {
-  background-color: #9c6d1f;
-}
-
-html.dark[data-palette='chamomile'] .btn-primary,
-html.dark[data-palette='chamomile'] button[data-variant='primary'] {
-  background-color: #e2b866;
-  color: #14110A;
-}
-
-html.dark[data-palette='chamomile'] .btn-primary:hover,
-html.dark[data-palette='chamomile'] button[data-variant='primary']:hover {
-  background-color: #b5832b;
-  color: #ffffff;
-}
-
-[data-palette='chamomile'] nav a[aria-current='page'],
-[data-palette='chamomile'] nav a.active {
-  color: #5c4015;
-}
-
-html.dark[data-palette='chamomile'] nav a[aria-current='page'],
-html.dark[data-palette='chamomile'] nav a.active {
-  color: #f6df9d;
-}
-
-[data-palette='chamomile'] nav a[aria-current='page']::before,
-[data-palette='chamomile'] nav a.active::before {
-  background-color: #b5832b !important;
-}
-
-html.dark[data-palette='chamomile'] nav a[aria-current='page']::before,
-html.dark[data-palette='chamomile'] nav a.active::before {
-  background-color: #e2b866 !important;
-}
-
-[data-palette='chamomile'] .accent-top-line {
-  border-top-color: #b5832b;
-}
-
-[data-palette='chamomile'] [data-sede-badge],
-[data-palette='chamomile'] .sede-badge {
-  background-color: rgba(181, 131, 43, 0.1) !important;
-  color: #5c4015 !important;
-  border-color: rgba(181, 131, 43, 0.28) !important;
-}
-
-html.dark[data-palette='chamomile'] [data-sede-badge],
-html.dark[data-palette='chamomile'] .sede-badge,
-:root[data-theme='dark'][data-palette='chamomile'] [data-sede-badge],
-:root[data-theme='dark'][data-palette='chamomile'] .sede-badge {
-  background-color: rgba(226, 184, 102, 0.2) !important;
-  color: #e2b866 !important;
-  border-color: rgba(226, 184, 102, 0.4) !important;
-}
-
-[data-palette='chamomile'] [data-sede-badge] span:first-child,
-[data-palette='chamomile'] .sede-badge-dot {
-  background-color: #b5832b !important;
-}
-
-html.dark[data-palette='chamomile'] [data-sede-badge] span:first-child,
-html.dark[data-palette='chamomile'] .sede-badge-dot {
-  background-color: #e2b866 !important;
-}
-
-[data-palette='chamomile'] .sede-text {
-  color: #5c4015 !important;
-}
-
-html.dark[data-palette='chamomile'] .sede-text,
-:root[data-theme='dark'][data-palette='chamomile'] .sede-text {
-  color: #e2b866 !important;
-}
-
-[data-palette='chamomile'] [data-status='activo'],
-[data-palette='chamomile'] [data-tone='available'],
-[data-palette='chamomile'] span.badge-status-activo {
-  background-color: rgba(212, 163, 75, 0.14) !important;
-  color: #713f12 !important;
-  border-color: rgba(212, 163, 75, 0.35) !important;
-}
-
-html.dark[data-palette='chamomile'] [data-status='activo'],
-html.dark[data-palette='chamomile'] [data-tone='available'],
-html.dark[data-palette='chamomile'] span.badge-status-activo,
-:root[data-theme='dark'][data-palette='chamomile'] [data-status='activo'],
-:root[data-theme='dark'][data-palette='chamomile'] [data-tone='available'] {
-  background-color: rgba(226, 184, 102, 0.2) !important;
-  color: #fef08a !important;
-  border-color: rgba(226, 184, 102, 0.4) !important;
-}
-
-[data-palette='chamomile'] [data-status='activo'] span[aria-hidden='true'],
-[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #d4a34b !important;
-}
-
-html.dark[data-palette='chamomile'] [data-status='activo'] span[aria-hidden='true'],
-html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='true'] {
-  background-color: #facc15 !important;
 }
 
 @layer components {
@@ -1368,9 +207,8 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
     background-color: var(--surface-alt);
     outline: none;
     touch-action: pan-y;
-    transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background-color var(--m-panel) var(--ease),
+                border-color var(--m-panel) var(--ease);
   }
 
   .liq-sw:focus-visible {
@@ -1382,28 +220,28 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
   :root[data-theme='light'] .liq-sw,
   html.light .liq-sw,
   :root:not(.dark):not([data-theme='dark']) .liq-sw {
-    background-color: #E4E1DC;
-    border-color: #D1CDCD;
+    background-color: var(--surface-alt);
+    border-color: var(--line-strong);
   }
 
   :root[data-theme='light'] .liq-sw[data-on="true"],
   html.light .liq-sw[data-on="true"],
   :root:not(.dark):not([data-theme='dark']) .liq-sw[data-on="true"] {
-    background-color: #18181B;
-    border-color: #18181B;
+    background-color: var(--ink);
+    border-color: var(--ink);
   }
 
   /* Dark mode state */
   :root[data-theme='dark'] .liq-sw,
   html.dark .liq-sw {
-    background-color: #27272A;
-    border-color: #3F3F46;
+    background-color: var(--surface-alt);
+    border-color: var(--line-strong);
   }
 
   :root[data-theme='dark'] .liq-sw[data-on="true"],
   html.dark .liq-sw[data-on="true"] {
-    background-color: #3F3F46;
-    border-color: #52525B;
+    background-color: var(--line-strong);
+    border-color: var(--line-strong);
   }
 
   .liq-sw-blobs {
@@ -1431,7 +269,7 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
 
   :root[data-theme='dark'] .liq-thumb,
   html.dark .liq-thumb {
-    background-color: #FAFAFA;
+    background-color: var(--ink);
   }
 
   /* ==========================================================================
@@ -1444,11 +282,8 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
     position: relative;
     border-radius: var(--gnav-r, 16px);
     padding: 2px;
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(228, 225, 220, 0.9);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background-color: var(--surface);
+    border: 1px solid var(--line);
     max-width: 100%;
   }
 
@@ -1459,9 +294,8 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
 
   :root[data-theme='dark'] .bar-well,
   html.dark .bar-well {
-    background-color: rgba(24, 24, 27, 0.75);
-    border-color: rgba(63, 63, 70, 0.6);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    background-color: var(--surface);
+    border-color: var(--line);
   }
 
   .gnav {
@@ -1506,31 +340,29 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
   }
 
   .gnav-ind[data-phase="stretch"] {
-    transition: transform var(--ind-stretch, 190ms) var(--ind-move, cubic-bezier(0.28, 1.28, 0.36, 1)),
-                width var(--ind-stretch, 190ms) var(--ind-size, cubic-bezier(0.24, 1.34, 0.38, 1)),
-                height var(--ind-stretch, 190ms) var(--ind-size, cubic-bezier(0.24, 1.34, 0.38, 1));
+    transition: transform var(--ind-stretch, 190ms) var(--ind-move, var(--ease)),
+                width var(--ind-stretch, 190ms) var(--ind-size, var(--ease)),
+                height var(--ind-stretch, 190ms) var(--ind-size, var(--ease));
   }
 
   .gnav-ind[data-phase="settle"] {
-    transition: transform var(--ind-settle, 420ms) var(--ind-move, cubic-bezier(0.28, 1.28, 0.36, 1)),
-                width var(--ind-settle, 420ms) var(--ind-size, cubic-bezier(0.24, 1.34, 0.38, 1)),
-                height var(--ind-settle, 420ms) var(--ind-size, cubic-bezier(0.24, 1.34, 0.38, 1));
+    transition: transform var(--ind-settle, 420ms) var(--ind-move, var(--ease)),
+                width var(--ind-settle, 420ms) var(--ind-size, var(--ease)),
+                height var(--ind-settle, 420ms) var(--ind-size, var(--ease));
   }
 
   /* Indicator Dual-Theme Styling */
   :root[data-theme='light'] .gnav-ind,
   html.light .gnav-ind,
   :root:not(.dark):not([data-theme='dark']) .gnav-ind {
-    background-color: #FFFFFF;
-    border: 1px solid rgba(228, 225, 220, 0.85);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+    background-color: var(--surface-alt);
+    border: 1px solid var(--line);
   }
 
   :root[data-theme='dark'] .gnav-ind,
   html.dark .gnav-ind {
-    background-color: rgba(63, 63, 70, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    background-color: var(--surface-alt);
+    border: 1px solid var(--line-strong);
   }
 
   .gnav-item {
@@ -1543,7 +375,7 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
     background: transparent;
     border: none;
     cursor: pointer;
-    transition: color 0.15s ease, opacity 0.15s ease;
+    transition: color var(--m-in) var(--ease), opacity var(--m-in) var(--ease);
     user-select: none;
   }
 
@@ -1597,7 +429,7 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
 
   .sidebar-scroll {
     scrollbar-width: thin;
-    scrollbar-color: rgb(161 161 170 / 0.5) transparent;
+    scrollbar-color: var(--line-strong) transparent;
   }
 
   .rail-collapsed .bar-well > .gnav {
@@ -1634,67 +466,58 @@ html.dark[data-palette='chamomile'] [data-tone='available'] span[aria-hidden='tr
   :root[data-theme='light'] .gnav-item,
   html.light .gnav-item,
   :root:not(.dark):not([data-theme='dark']) .gnav-item {
-    color: #71717A;
+    color: var(--ink-muted);
   }
   :root[data-theme='light'] .gnav-item:hover,
   html.light .gnav-item:hover,
-  :root:not(.dark):not([data-theme='dark']) .gnav-item:hover {
-    color: #18181B;
-  }
+  :root:not(.dark):not([data-theme='dark']) .gnav-item:hover,
   :root[data-theme='light'] .gnav-item[data-active="true"],
   html.light .gnav-item[data-active="true"],
   :root:not(.dark):not([data-theme='dark']) .gnav-item[data-active="true"] {
-    color: #18181B;
+    color: var(--ink);
   }
 
   :root[data-theme='dark'] .gnav-item,
   html.dark .gnav-item {
-    color: #A1A1AA;
+    color: var(--ink-muted);
   }
   :root[data-theme='dark'] .gnav-item:hover,
-  html.dark .gnav-item:hover {
-    color: #FAFAFA;
-  }
+  html.dark .gnav-item:hover,
   :root[data-theme='dark'] .gnav-item[data-active="true"],
   html.dark .gnav-item[data-active="true"] {
-    color: #FAFAFA;
+    color: var(--ink);
   }
 }
 
 /*
- * Menú lateral navy (sistema «Pañol»). Va fuera de @layer para ganarle a los estilos claros
- * del IconBar, que se basan en el tema de la raíz y no en el `.dark` del aside.
+ * Menú lateral neutro (sistema «Trazo»): fondo surface-alt, así el indicador del IconBar pasa a la superficie.
+ * Fuera de @layer para ganarle a los estilos del IconBar.
  */
-aside.dark .bar-well {
-  background-color: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
+.app-sidebar .gnav-ind {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
   box-shadow: none;
 }
 
-aside.dark .gnav-ind {
-  background-color: var(--color-tag);
-  border: none;
-  box-shadow: none;
+.app-sidebar .gnav-item[data-active='true'] {
+  color: var(--brand);
 }
 
-aside.dark .gnav-item[data-active='true'] {
-  color: var(--color-tag-ink);
-}
-
-.font-mono {
+.font-mono,
+.font-code {
   font-variant-numeric: tabular-nums;
 }
 
 /* Fuera de @layer para ganarle a `focus:outline-none`: el select no muestra cursor y sin esto el foco por teclado casi no se ve. */
 select:focus-visible {
-  outline: 2px solid var(--info);
+  outline: 2px solid var(--brand);
   outline-offset: 1px;
 }
 
-/* Fase 1: foco visible, movimiento reducido, scroll en modales */
+/* Foco visible (anillo burdeo de 2px, sin transición), movimiento reducido y scroll en modales */
 @layer base {
   :focus-visible {
-    outline: 2px solid var(--info);
+    outline: 2px solid var(--brand);
     outline-offset: 2px;
   }
   [role='dialog'],

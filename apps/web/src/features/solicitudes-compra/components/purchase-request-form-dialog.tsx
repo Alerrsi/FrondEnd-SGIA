@@ -31,7 +31,7 @@ const legendClasses =
 const fieldsetClasses =
   'rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50';
 
-const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-rose-600 dark:text-rose-400';
 
 interface PurchaseRequestFormDialogProps {
   open: boolean;
@@ -163,7 +163,7 @@ export function PurchaseRequestFormDialog({
           {errors.annual_budget_id && (
             <p className={errorClasses}>{errors.annual_budget_id.message}</p>
           )}
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             La disponibilidad se valida al subir la orden de compra, no antes.
           </p>
         </fieldset>
@@ -199,7 +199,7 @@ export function PurchaseRequestFormDialog({
                       <span className="font-medium text-zinc-900 dark:text-zinc-100">
                         {productName(p)}
                       </span>
-                      <span className="font-mono text-[11px] text-zinc-400">
+                      <span className="font-mono text-xs text-zinc-400">
                         Stock {p.stock ?? p.quantity ?? 0}
                       </span>
                     </button>

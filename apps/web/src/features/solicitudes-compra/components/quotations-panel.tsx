@@ -95,7 +95,7 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
             {count}/{min}
             </span>
           </SectionTitle>
-          <p className="text-[11px] text-zinc-500">
+          <p className="text-xs text-zinc-500">
             {enoughToSelect
               ? 'Elige libremente con cuál quedarte; no tiene que ser la más barata.'
               : `Faltan ${min - count} para poder elegir.`}
@@ -155,7 +155,7 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
                           style={{ width: `${ratio}%` }}
                         />
                       </div>
-                      <span className="font-mono text-[11px] text-zinc-500">
+                      <span className="font-mono text-xs text-zinc-500">
                         {diff === 0 ? 'menor' : `+${formatCLP(diff)}`}
                       </span>
                     </div>

@@ -121,7 +121,7 @@ export default function SolicitudesCompraPage() {
               </option>
             ))}
           </select>
-          <label className="flex items-center gap-1 text-[11px] text-zinc-500">
+          <label className="flex items-center gap-1 text-xs text-zinc-500">
             Desde
             <input
               type="date"
@@ -135,7 +135,7 @@ export default function SolicitudesCompraPage() {
               className={inputClasses}
             />
           </label>
-          <label className="flex items-center gap-1 text-[11px] text-zinc-500">
+          <label className="flex items-center gap-1 text-xs text-zinc-500">
             Hasta
             <input
               type="date"
