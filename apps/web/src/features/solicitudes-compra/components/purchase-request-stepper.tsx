@@ -34,7 +34,7 @@ export function PurchaseRequestStepper({ status }: { status: PurchaseRequestStat
                 !done && !active && 'border-zinc-300 text-zinc-400 dark:border-zinc-700',
               )}
             >
-              {done ? <Check className="h-2.5 w-2.5" /> : i + 1}
+              {done ? <Check aria-hidden="true" className="h-2.5 w-2.5" /> : i + 1}
             </span>
             <span
               className={cn(

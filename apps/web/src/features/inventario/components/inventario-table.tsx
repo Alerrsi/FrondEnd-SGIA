@@ -186,7 +186,7 @@ export function InventarioTable({
               title={expanded ? 'Ocultar instancias' : 'Ver instancias'}
               className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             >
-              <ChevronRight
+              <ChevronRight aria-hidden="true"
                 className={cn('h-4 w-4 transition-transform', expanded && 'rotate-90')}
               />
             </button>
@@ -197,7 +197,7 @@ export function InventarioTable({
         header: 'SKU / Code128',
         cell: (info) => (
           <span className={`inline-flex items-center gap-1 ${CODE_CHIP_CLASS}`}>
-            <Barcode className="h-3 w-3 text-zinc-400 dark:text-zinc-500" />
+            <Barcode aria-hidden="true" className="h-3 w-3 text-zinc-400 dark:text-zinc-500" />
             <span>{info.getValue() || '—'}</span>
           </span>
         ),
@@ -241,7 +241,7 @@ export function InventarioTable({
           if (typeof loc === 'string') {
             return (
               <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
+                <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                 <span>{loc}</span>
               </div>
             );
@@ -250,7 +250,7 @@ export function InventarioTable({
           const cajonStr = labelOf(loc.cajon, 'codigo', 'nombre');
           return (
             <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
-              <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
+              <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
               <span>
                 {salaStr || 'Sala —'} · {cajonStr || 'Cajón —'}
               </span>
@@ -272,7 +272,7 @@ export function InventarioTable({
               <div className="w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden shrink-0">
                 <div
                   className={cn(
-                    'h-full transition-all duration-300',
+                    'h-full transition-[width] duration-300',
                     isCritical ? 'bg-rose-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500',
                   )}
                   style={{ width: `${Math.max(ratio, 8)}%` }}
@@ -281,12 +281,12 @@ export function InventarioTable({
 
               {isCritical ? (
                 <Badge tone="critical">
-                  <AlertTriangle className="mr-1 h-3 w-3" />
+                  <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
                   Stock crítico ({prod.stock} / {prod.stockCritico} mín)
                 </Badge>
               ) : isWarning ? (
                 <Badge tone="warning">
-                  <AlertTriangle className="mr-1 h-3 w-3" />
+                  <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
                   Stock bajo ({prod.stock} / {prod.stockCritico} mín)
                 </Badge>
               ) : (
@@ -324,7 +324,7 @@ export function InventarioTable({
                   aria-label={`Ver detalles de ${prod.nombre}`}
                   onClick={() => onViewDetail(prod)}
                 >
-                  <Eye className="h-3.5 w-3.5" />
+                  <Eye aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
 
@@ -338,7 +338,7 @@ export function InventarioTable({
                   aria-label={`Reubicar ${prod.nombre}`}
                   onClick={() => onReubicar(prod)}
                 >
-                  <ArrowRightLeft className="h-3.5 w-3.5" />
+                  <ArrowRightLeft aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
 
@@ -352,7 +352,7 @@ export function InventarioTable({
                   aria-label={`Editar ${prod.nombre}`}
                   onClick={() => onEdit(prod)}
                 >
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
 
@@ -366,7 +366,7 @@ export function InventarioTable({
                   aria-label={`${prod.activo ? 'Desactivar' : 'Activar'} ${prod.nombre}`}
                   onClick={() => onToggleActivo(prod)}
                 >
-                  <Power className="h-3.5 w-3.5" />
+                  <Power aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
 
@@ -380,7 +380,7 @@ export function InventarioTable({
                   aria-label={`Eliminar ${prod.nombre}`}
                   onClick={() => onDelete(prod)}
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                 </Button>
               )}
             </div>
@@ -416,7 +416,7 @@ export function InventarioTable({
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {/* Search box with / kbd shortcut */}
           <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-72 sm:flex-none">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
             <input
               type="search"
               value={search}
@@ -432,7 +432,7 @@ export function InventarioTable({
                 aria-label="Limpiar búsqueda"
                 className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
               >
-                <X className="h-3.5 w-3.5" />
+                <X aria-hidden="true" className="h-3.5 w-3.5" />
               </button>
             ) : (
               <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-[11px] text-zinc-400">
@@ -529,8 +529,8 @@ export function InventarioTable({
             aria-label="Cargando productos en pañol"
             className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono"
           >
-            <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
-            <span>Buscando...</span>
+            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
+            <span>Buscando…</span>
           </div>
         )}
       </div>
@@ -554,11 +554,11 @@ export function InventarioTable({
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === 'asc' ? (
-                            <ChevronUp className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                            <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
                           ) : sorted === 'desc' ? (
-                            <ChevronDown className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                            <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
                           ) : (
-                            <ChevronsUpDown className="h-3.5 w-3.5 opacity-40" />
+                            <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
                           )}
                         </button>
                       ) : (
@@ -581,7 +581,7 @@ export function InventarioTable({
                     aria-label="Cargando productos en pañol"
                     className="flex items-center justify-center gap-2"
                   >
-                    <Loader2 className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
+                    <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
                     <span>Buscando y cargando productos en pañol…</span>
                   </div>
                 </td>
@@ -649,7 +649,7 @@ export function InventarioTable({
               aria-label="Página anterior"
               className="h-7 w-7 p-0"
             >
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
             <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
               {totalPages === 0 ? 0 : currentPage} / {totalPages}
@@ -663,7 +663,7 @@ export function InventarioTable({
               aria-label="Página siguiente"
               className="h-7 w-7 p-0"
             >
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>

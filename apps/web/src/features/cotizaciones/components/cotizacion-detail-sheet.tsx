@@ -32,7 +32,7 @@ export function CotizacionDetailSheet({
       <SheetContent className="w-full sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>
-            <FileText className="h-4 w-4 text-zinc-500" />
+            <FileText aria-hidden="true" className="h-4 w-4 text-zinc-500" />
             <span className="font-mono">Cotización {cotizacion.code ?? `#${cotizacion.id}`}</span>
           </SheetTitle>
           <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -45,7 +45,7 @@ export function CotizacionDetailSheet({
           <div className="flex items-center justify-between">
             <QuotationStatusBadge estado={cotizacion.estado} />
             <span className="inline-flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 font-mono">
-              <Calendar className="h-3 w-3" />
+              <Calendar aria-hidden="true" className="h-3 w-3" />
               {cotizacion.createdAt
                 ? new Date(cotizacion.createdAt).toLocaleDateString('es-CL')
                 : '—'}

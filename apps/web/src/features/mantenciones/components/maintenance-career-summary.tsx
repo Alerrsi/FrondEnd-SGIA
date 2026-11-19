@@ -40,7 +40,7 @@ export function MaintenanceCareerSummary() {
   if (isError) {
     return (
       <p className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
-        <AlertCircle className="h-4 w-4 shrink-0" />
+        <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0" />
         No se pudo cargar el resumen por carrera.
       </p>
     );

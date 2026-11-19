@@ -104,7 +104,7 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
         <DialogFooter>
           <DialogCloseButton disabled={changePassword.isPending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={changePassword.isPending}>
-            {changePassword.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {changePassword.isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Cambiar contraseña
           </Button>
         </DialogFooter>

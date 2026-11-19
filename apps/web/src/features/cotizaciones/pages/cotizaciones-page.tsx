@@ -42,7 +42,7 @@ export default function CotizacionesPage() {
       <LegacyQuotationsNotice />
 
       <div className="relative sm:w-80">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+        <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
         <input
           type="search"
           value={search}
@@ -58,7 +58,7 @@ export default function CotizacionesPage() {
             aria-label="Limpiar búsqueda"
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
           >
-            <X className="h-3.5 w-3.5" />
+            <X aria-hidden="true" className="h-3.5 w-3.5" />
           </button>
         )}
       </div>
@@ -72,7 +72,7 @@ export default function CotizacionesPage() {
         )}
         {isError && (
           <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-            <AlertCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
             <span>No se pudo cargar el historial de cotizaciones desde el servidor.</span>
           </div>
         )}
@@ -91,7 +91,7 @@ export default function CotizacionesPage() {
           >
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <FileText className="h-3.5 w-3.5 text-zinc-400" />
+                <FileText aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                 <span className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
                   {cotizacion.code ?? `#${cotizacion.id}`}
                 </span>

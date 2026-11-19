@@ -113,7 +113,7 @@ export default function ProveedoresPage() {
   if (isError || !data) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-        <AlertCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+        <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
         <span>No se pudo cargar el catálogo de proveedores desde el servidor.</span>
       </div>
     );
@@ -129,7 +129,7 @@ export default function ProveedoresPage() {
             Gestión de empresas proveedoras para cotizaciones y adquisiciones de insumos.
           </PageHeading>
           <Button variant="primary" onClick={handleOpenCreate}>
-            <Plus className="h-4 w-4" />
+            <Plus aria-hidden="true" className="h-4 w-4" />
             Nuevo proveedor
           </Button>
         </div>

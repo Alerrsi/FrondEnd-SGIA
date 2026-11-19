@@ -25,7 +25,7 @@ export function ModuleGrid({ links }: { links: ModuleGridLink[] }) {
               <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{label}</span>
               <span className="truncate text-xs text-zinc-500 dark:text-zinc-400">{description}</span>
             </span>
-            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </li>
       ))}

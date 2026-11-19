@@ -46,7 +46,7 @@ export function SidebarNavGroup({ to, label, icon: Icon, links, linkClassName }:
           aria-label={open ? `Contraer ${label}` : `Desplegar ${label}`}
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-100 cursor-pointer"
         >
-          <ChevronDown className={cn('h-3.5 w-3.5 transition-transform duration-150', open && 'rotate-180')} />
+          <ChevronDown aria-hidden="true" className={cn('h-3.5 w-3.5 transition-transform duration-150', open && 'rotate-180')} />
         </button>
       </div>
 

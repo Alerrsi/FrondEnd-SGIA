@@ -53,7 +53,7 @@ export function LoanReviewScanPanel({
     <div className="mt-2 flex flex-col gap-2 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60 p-2.5">
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
         <span className="flex items-center gap-1.5 font-medium text-zinc-800 dark:text-zinc-200">
-          <ScanLine className="h-3.5 w-3.5 text-zinc-400" />
+          <ScanLine aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
           Escanea las {item.quantity} unidades que se entregan
         </span>
         <span aria-live="polite" className="font-mono tabular-nums text-zinc-600 dark:text-zinc-400">
@@ -67,7 +67,7 @@ export function LoanReviewScanPanel({
             <li key={unit.id} className="flex flex-wrap items-center gap-x-2 text-zinc-700 dark:text-zinc-300">
               <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">{unit.code}</span>
               <span className="flex items-center gap-1">
-                <MapPin className="h-3 w-3 shrink-0 text-zinc-400" />
+                <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                 {unit.location?.nombre ?? 'Sala sin registrar'} ·{' '}
                 <span className="font-mono">{unit.cajon?.codigo ?? 'Cajón sin registrar'}</span>
               </span>

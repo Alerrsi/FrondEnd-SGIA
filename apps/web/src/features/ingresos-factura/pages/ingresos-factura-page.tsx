@@ -80,7 +80,7 @@ export default function IngresosFacturaPage() {
             ingresar stock.
           </PageHeading>
           <Button onClick={() => setUploadOpen(true)} className="text-xs">
-            <Upload className="h-4 w-4" />
+            <Upload aria-hidden="true" className="h-4 w-4" />
             Subir factura
           </Button>
         </div>
@@ -141,7 +141,7 @@ export default function IngresosFacturaPage() {
           </div>
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-            <AlertCircle className="h-5 w-5 shrink-0" />
+            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
             <span>No se pudieron cargar los ingresos de factura desde el servidor.</span>
           </div>
         ) : (
@@ -163,7 +163,7 @@ export default function IngresosFacturaPage() {
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
             <Button
               size="icon"
@@ -172,7 +172,7 @@ export default function IngresosFacturaPage() {
               disabled={page >= meta.lastPage}
               onClick={() => setPage((p) => p + 1)}
             >
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Button>
           </div>
         )}

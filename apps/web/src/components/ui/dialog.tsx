@@ -126,7 +126,7 @@ export function Dialog({
               data-dialog-size={size}
               className={cn(
                 // Nunca más alto que la pantalla: cabecera fija, cuerpo con scroll y pie fijo abajo.
-                'relative flex max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md transition-all animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
+                'relative flex max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100',
                 SIZE_CLASSES[size],
                 className,
               )}
@@ -160,7 +160,7 @@ export function Dialog({
                   aria-label="Cerrar modal"
                   className="-mr-1 shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 cursor-pointer"
                 >
-                  <X className="h-4 w-4" />
+                  <X aria-hidden="true" className="h-4 w-4" />
                 </button>
               </div>
               <div data-dialog-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4">
@@ -182,12 +182,12 @@ export function Dialog({
           <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-zinc-950/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-150" />
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
             <DialogPrimitive.Content
-              className="relative w-full max-w-sm rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-lg transition-all animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100"
+              className="relative w-full max-w-sm rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-lg animate-in fade-in zoom-in-95 duration-150 focus:outline-none text-zinc-900 dark:text-zinc-100"
               onPointerDownOutside={(e) => e.preventDefault()}
             >
               <div className="flex items-start gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
-                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0">
                   <DialogPrimitive.Title className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">

@@ -153,7 +153,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
           {prompt}
         </label>
         <div className="relative">
-          <ScanLine className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+          <ScanLine aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
           <input
             id="checkin-scan"
             ref={inputRef}
@@ -171,7 +171,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
             placeholder={waiting ? 'Código del cajón (ej. L206-RACK-R1)' : 'Código de la unidad o del insumo'}
             className={cn(FORM_CONTROL_CLASS, 'pl-8', waiting && 'border-amber-400 dark:border-amber-600')}
           />
-          {busy && <Loader2 className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-zinc-400" />}
+          {busy && <Loader2 aria-hidden="true" className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-zinc-400" />}
         </div>
         {feedback && (
           <p
@@ -227,7 +227,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
                           aria-pressed={entry.condition === 'dañado'}
                           onClick={() => updateEntry(target.key, { condition: entry.condition === 'dañado' ? 'bueno' : 'dañado' })}
                         >
-                          <Wrench className="h-3.5 w-3.5" />
+                          <Wrench aria-hidden="true" className="h-3.5 w-3.5" />
                           Dañado
                         </Button>
                       )}
@@ -238,7 +238,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
                           onClick={() => markLost(target)}
                           aria-label={`Marcar ${target.code || target.name} como extraviado`}
                         >
-                          <PackageX className="h-3.5 w-3.5" />
+                          <PackageX aria-hidden="true" className="h-3.5 w-3.5" />
                           Extraviado
                         </Button>
                       )}
@@ -250,7 +250,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
                           aria-label={`Deshacer ${target.code || target.name}`}
                           title="Deshacer"
                         >
-                          <Undo2 className="h-3.5 w-3.5" />
+                          <Undo2 aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                       )}
                     </div>
@@ -299,7 +299,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
             Cancelar
           </Button>
           <Button size="sm" onClick={() => void submit()} disabled={!canSubmit}>
-            {checkin.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+            {checkin.isPending ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <CheckCircle2 aria-hidden="true" className="h-4 w-4" />}
             Registrar devolución ({entries.length})
           </Button>
         </div>

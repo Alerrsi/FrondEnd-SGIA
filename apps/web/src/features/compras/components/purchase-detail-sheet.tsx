@@ -181,7 +181,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             <div className="flex items-center justify-between">
               <PurchaseStatusBadge status={purchase.status} />
               <span className="inline-flex items-center gap-1 text-xs font-mono text-zinc-400">
-                <Calendar className="h-3 w-3" />
+                <Calendar aria-hidden="true" className="h-3 w-3" />
                 {formatDate(purchase.created_at)}
               </span>
             </div>
@@ -269,7 +269,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
 
             {purchase.arrival_document_url && (
               <Button variant="outline" onClick={handleDownload}>
-                <FileDown className="h-4 w-4" />
+                <FileDown aria-hidden="true" className="h-4 w-4" />
                 Ver documento de llegada
               </Button>
             )}
@@ -284,16 +284,16 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                     className="text-xs"
                   >
                     {updateStatus.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Truck className="h-4 w-4" />
+                      <Truck aria-hidden="true" className="h-4 w-4" />
                     )}
                     Marcar en camino
                   </Button>
                 )}
                 {canReceive && (
                   <Button onClick={() => setConfirmReceive(true)} className="text-xs">
-                    <PackageCheck className="h-4 w-4" />
+                    <PackageCheck aria-hidden="true" className="h-4 w-4" />
                     Confirmar llegada / marcar completa
                   </Button>
                 )}
@@ -337,7 +337,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                   type="submit"
                   disabled={!hasScanInput || scanArrival.isPending}
                 >
-                  {scanArrival.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {scanArrival.isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
                   Registrar y completar
                 </Button>
               </form>
@@ -345,7 +345,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
 
             {canRegisterInvoice && (
               <Button variant="outline" onClick={goToInvoice}>
-                <ReceiptText className="h-4 w-4" />
+                <ReceiptText aria-hidden="true" className="h-4 w-4" />
                 Registrar factura e ingresar stock
               </Button>
             )}
@@ -366,7 +366,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 onClick={() => setConfirmCancel(true)}
                 className="text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
               >
-                <Ban className="h-4 w-4" />
+                <Ban aria-hidden="true" className="h-4 w-4" />
                 Cancelar compra
               </Button>
             )}

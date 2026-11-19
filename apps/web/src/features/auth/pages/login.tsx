@@ -94,7 +94,7 @@ export default function LoginPage() {
         {/* Header / Logo */}
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
-            <Boxes className="h-6 w-6 text-zinc-800 dark:text-zinc-200" />
+            <Boxes aria-hidden="true" className="h-6 w-6 text-zinc-800 dark:text-zinc-200" />
           </div>
           <div data-sede-badge="true" className="sede-badge inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent-soft px-2 py-0.5 text-[11px] font-mono font-medium text-accent mb-2">
             <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
@@ -125,7 +125,7 @@ export default function LoginPage() {
               role="alert"
               className="mb-4 flex items-start gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-2.5 text-xs text-red-700 dark:text-red-400"
             >
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
+              <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
               <span>{authError}</span>
             </div>
           )}
@@ -137,7 +137,7 @@ export default function LoginPage() {
                 htmlFor="email-input"
                 className={`mb-1 flex items-center gap-1.5 ${FIELD_LABEL_CLASS}`}
               >
-                <Mail className="h-3 w-3 text-zinc-400" />
+                <Mail aria-hidden="true" className="h-3 w-3 text-zinc-400" />
                 <span>Correo institucional</span>
               </label>
               <input
@@ -172,7 +172,7 @@ export default function LoginPage() {
                 htmlFor="password-input"
                 className={`mb-1 flex items-center gap-1.5 ${FIELD_LABEL_CLASS}`}
               >
-                <Lock className="h-3 w-3 text-zinc-400" />
+                <Lock aria-hidden="true" className="h-3 w-3 text-zinc-400" />
                 <span>Contraseña</span>
               </label>
               <div className="relative">
@@ -195,9 +195,9 @@ export default function LoginPage() {
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors focus:outline-none"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff aria-hidden="true" className="h-4 w-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye aria-hidden="true" className="h-4 w-4" />
                   )}
                 </button>
               </div>
@@ -216,7 +216,7 @@ export default function LoginPage() {
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
                   <span>Iniciando sesión…</span>
                 </>
               ) : (
@@ -229,7 +229,7 @@ export default function LoginPage() {
           {quickLoginPassword && (
             <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-[11px] text-zinc-500 dark:text-zinc-400">
               <div className="flex items-center gap-1.5 mb-2 font-medium text-zinc-700 dark:text-zinc-300">
-                <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
+                <KeyRound aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                 <span>Accesos rápidos de prueba:</span>
               </div>
               <div className="flex flex-wrap gap-1.5 font-mono">

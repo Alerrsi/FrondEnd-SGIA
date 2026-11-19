@@ -195,14 +195,14 @@ export function Toggle({
         }}
       >
         <span className="liq-sw-blobs flex items-center justify-between px-1" aria-hidden="true">
-          <Moon
+          <Moon aria-hidden="true"
             size={size === "sm" ? 10 : 13}
             className={cn(
               "text-zinc-400 dark:text-zinc-500 pointer-events-none transition-colors ml-0.5",
               !on && "text-indigo-400 dark:text-indigo-300 font-bold",
             )}
           />
-          <Sun
+          <Sun aria-hidden="true"
             size={size === "sm" ? 10 : 13}
             className={cn(
               "text-zinc-400 dark:text-zinc-500 pointer-events-none transition-colors mr-0.5",

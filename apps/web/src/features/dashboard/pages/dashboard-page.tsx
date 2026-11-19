@@ -319,7 +319,7 @@ export default function DashboardPage() {
               onClick={handleOpenWidgetCatalog}
               disabled={!panel.canAdd} className="gap-1.5"
             >
-              <Palette className="h-3.5 w-3.5" />
+              <Palette aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Abrir catálogo de widgets ({panel.total}/{MAX_CHARTS})</span>
             </Button>
 
@@ -333,12 +333,12 @@ export default function DashboardPage() {
             >
               {isEditMode ? (
                 <>
-                  <Check className="h-3.5 w-3.5" />
+                  <Check aria-hidden="true" className="h-3.5 w-3.5" />
                   <span>Guardar y salir</span>
                 </>
               ) : (
                 <>
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                   <span>Modo edición</span>
                 </>
               )}
@@ -354,7 +354,7 @@ export default function DashboardPage() {
           className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg border border-sky-200 dark:border-sky-900/50 bg-sky-50/50 dark:bg-sky-950/20 text-xs font-mono text-sky-700 dark:text-sky-400"
         >
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
+            <SlidersHorizontal aria-hidden="true" className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
             <span>
               <strong>Modo edición activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
               Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo {MAX_CHARTS} gráficos simultáneos.
@@ -368,7 +368,7 @@ export default function DashboardPage() {
             onClick={() => setPaletteOpen(true)}
             className="text-xs h-7 gap-1 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300"
           >
-            <Palette className="h-3 w-3" />
+            <Palette aria-hidden="true" className="h-3 w-3" />
             <span>Ver catálogo</span>
           </Button>
         </div>
@@ -381,7 +381,7 @@ export default function DashboardPage() {
           className="flex items-center justify-between gap-3 p-3.5 rounded-lg bg-sky-950/40 border-2 border-sky-500/80 text-xs font-mono text-sky-300 shadow-md animate-pulse"
         >
           <div className="flex items-center gap-2">
-            <Target className="h-4 w-4 text-sky-400 animate-spin" />
+            <Target aria-hidden="true" className="h-4 w-4 text-sky-400 animate-spin" />
             <span>
               <strong>Zonas de inserción enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
@@ -401,7 +401,7 @@ export default function DashboardPage() {
       {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 9 por plantilla) */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
-          <LayoutGrid className="h-4 w-4" />
+          <LayoutGrid aria-hidden="true" className="h-4 w-4" />
           <span>Plantillas de análisis:</span>
         </div>
 
@@ -425,7 +425,7 @@ export default function DashboardPage() {
                   }
                   className="text-xs gap-1.5 text-zinc-600 dark:text-zinc-400"
                 >
-                  {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                  {added ? <Check aria-hidden="true" className="h-3 w-3" /> : <Plus aria-hidden="true" className="h-3 w-3" />}
                   <span>{tmpl.name}</span>
                 </Button>
               );
@@ -447,7 +447,7 @@ export default function DashboardPage() {
           onDragLeave={handleProminentDragLeave}
           onDrop={handleProminentDrop}
           className={cn(
-            'relative flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl border-2 border-dashed transition-all duration-200 select-none shadow-xl cursor-copy',
+            'relative flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl border-2 border-dashed transition duration-200 select-none shadow-xl cursor-copy',
             isProminentOver
               ? 'border-emerald-400 bg-emerald-950/60 text-emerald-100 shadow-emerald-500/30 scale-[1.01]'
               : 'border-sky-500 bg-gradient-to-r from-sky-950/50 via-zinc-900/90 to-sky-950/50 text-zinc-100 shadow-sky-500/25 animate-pulse',
@@ -463,7 +463,7 @@ export default function DashboardPage() {
 
             <div className="flex items-center gap-3 text-center sm:text-left">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-600/20 border border-sky-500/40 text-sky-400 shrink-0">
-                <Target className="h-6 w-6 animate-spin" />
+                <Target aria-hidden="true" className="h-6 w-6 animate-spin" />
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-zinc-100">
@@ -492,7 +492,7 @@ export default function DashboardPage() {
         </div>
       ) : panelCharts.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-center font-mono text-xs text-zinc-400 gap-3">
-          <BarChart3 className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+          <BarChart3 aria-hidden="true" className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
           <p>Tu panel no tiene gráficos visibles. Añade una plantilla o abre el Catálogo de Widgets.</p>
           <div className="flex flex-col items-center gap-3 w-full max-w-md">
             <Button
@@ -501,7 +501,7 @@ export default function DashboardPage() {
               size="sm"
               onClick={handleOpenWidgetCatalog} className="gap-1.5"
             >
-              <Palette className="h-3.5 w-3.5" />
+              <Palette aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Abrir catálogo de widgets</span>
             </Button>
             {isEditMode && (
@@ -591,7 +591,7 @@ export default function DashboardPage() {
                     variant="outline" className="gap-1"
                     onClick={() => void run(() => panel.show(hiddenChart.id), 'Gráfico visible de nuevo')}
                   >
-                    <Eye className="h-3 w-3" />
+                    <Eye aria-hidden="true" className="h-3 w-3" />
                     Mostrar
                   </Button>
                   <Button

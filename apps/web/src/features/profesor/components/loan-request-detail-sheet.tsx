@@ -128,7 +128,7 @@ export function LoanRequestDetailSheet({
                 variant="ghost" className="self-start text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
                 onClick={() => onCancelRequest(loan)}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 aria-hidden="true" className="h-4 w-4" />
                 Cancelar solicitud
               </Button>
             )}

@@ -103,7 +103,7 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
         </div>
         {canUpload && (
           <Button size="sm" onClick={() => setUploadOpen(true)}>
-            <Plus className="h-3.5 w-3.5" />
+            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             Subir cotización
           </Button>
         )}
@@ -138,7 +138,7 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
                     <div className="flex items-center gap-1.5 font-medium text-zinc-800 dark:text-zinc-200">
                       {supplierName(q)}
                       {selected && (
-                        <Badge tone="success" icon={<CheckCircle2 className="h-3 w-3" />}>
+                        <Badge tone="success" icon={<CheckCircle2 aria-hidden="true" className="h-3 w-3" />}>
                           Elegida
                         </Badge>
                       )}
@@ -176,7 +176,7 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
                           aria-label={`Ver archivo de ${supplierName(q)}`}
                           onClick={() => handleDownload(q)}
                         >
-                          <FileDown className="h-3.5 w-3.5" />
+                          <FileDown aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                       )}
                       {canSelect && !selected && (
@@ -203,7 +203,7 @@ export function QuotationsPanel({ request, canManage }: QuotationsPanelProps) {
                           onClick={() => setToDelete(q)}
                           className="text-zinc-400 hover:text-rose-600"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                         </Button>
                       )}
                     </div>

@@ -53,7 +53,7 @@ export default function ComprasPage() {
               className="inline-flex h-8.5 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               Nueva compra desde una solicitud
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Link>
           )}
         </div>
@@ -89,7 +89,7 @@ export default function ComprasPage() {
         </div>
       ) : isError || !data ? (
         <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-          <AlertCircle className="h-5 w-5 shrink-0" />
+          <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
           <span>No se pudieron cargar las órdenes de compra desde el servidor.</span>
         </div>
       ) : (

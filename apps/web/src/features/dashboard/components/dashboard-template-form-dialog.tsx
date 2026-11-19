@@ -61,7 +61,7 @@ export function DashboardTemplateFormDialog({
         <DialogFooter>
           <DialogCloseButton disabled={loading}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={!trimmed || loading}>
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+            {loading && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {isRename ? 'Guardar' : 'Crear plantilla'}
           </Button>
         </DialogFooter>

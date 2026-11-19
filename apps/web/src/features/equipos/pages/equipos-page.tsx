@@ -197,7 +197,7 @@ export default function EquiposPage() {
               )}
               {item.ubicacion && (
                 <span className="flex items-center gap-1 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
-                  <MapPin className="h-2.5 w-2.5 shrink-0" />
+                  <MapPin aria-hidden="true" className="h-2.5 w-2.5 shrink-0" />
                   <span className="truncate max-w-[130px]">{item.ubicacion}</span>
                 </span>
               )}
@@ -254,7 +254,7 @@ export default function EquiposPage() {
               </div>
               <div className="h-1.5 w-full rounded-full bg-zinc-200/70 dark:bg-zinc-800 overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all ${
+                  className={`h-full rounded-full transition-[width] ${
                     statusTone === 'critical'
                       ? 'bg-rose-500'
                       : statusTone === 'warning'
@@ -289,9 +289,9 @@ export default function EquiposPage() {
               title="Abrir manual en AWS S3"
               className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:underline"
             >
-              <FileText className="h-3 w-3 text-red-600" />
+              <FileText aria-hidden="true" className="h-3 w-3 text-red-600" />
               <span>PDF S3</span>
-              <ExternalLink className="h-2.5 w-2.5" />
+              <ExternalLink aria-hidden="true" className="h-2.5 w-2.5" />
             </a>
           );
         },
@@ -323,23 +323,23 @@ export default function EquiposPage() {
                     className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                     aria-label={`Opciones para ${item.nombre}`}
                   >
-                    <MoreHorizontal className="h-4 w-4" />
+                    <MoreHorizontal aria-hidden="true" className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => handleOpenSheet(item)}>
-                    <Cpu className="h-3.5 w-3.5 text-zinc-400" />
+                    <Cpu aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                     <span>Ver ficha y ciclo de vida</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleQuickDownloadPdf(item)}>
-                    <Download className="h-3.5 w-3.5 text-zinc-400" />
+                    <Download aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                     <span>Descargar ficha técnica (PDF)</span>
                   </DropdownMenuItem>
                   {canEdit && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleOpenEdit(item)}>
-                        <Edit className="h-3.5 w-3.5 text-zinc-400" />
+                        <Edit aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                         <span>Editar especificaciones</span>
                       </DropdownMenuItem>
                     </>
@@ -385,7 +385,7 @@ export default function EquiposPage() {
             className="h-8 gap-1.5 text-xs"
             aria-label="Actualizar catálogo de equipos"
           >
-            <RefreshCw className="h-3.5 w-3.5" />
+            <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
             <span>Actualizar</span>
           </Button>
         </div>
@@ -400,10 +400,10 @@ export default function EquiposPage() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 p-3 sm:px-4 bg-zinc-50/60 dark:bg-zinc-950/40">
           <div className="flex flex-1 items-center gap-2.5">
             <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-400" />
+              <Search aria-hidden="true" className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-400" />
               <input
                 type="text"
-                placeholder="Buscar por serial, modelo, marca o ubicación..."
+                placeholder="Buscar por serial, modelo, marca o ubicación…"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
@@ -479,8 +479,8 @@ export default function EquiposPage() {
                 <tr>
                   <td colSpan={columns.length} className={`py-12 ${STATE_TEXT_CLASS}`}>
                     <div className="flex flex-col items-center gap-2">
-                      <RefreshCw className="h-5 w-5 animate-spin text-zinc-400" />
-                      <span>Cargando catálogo de equipamiento técnico...</span>
+                      <RefreshCw aria-hidden="true" className="h-5 w-5 animate-spin text-zinc-400" />
+                      <span>Cargando catálogo de equipamiento técnico…</span>
                     </div>
                   </td>
                 </tr>

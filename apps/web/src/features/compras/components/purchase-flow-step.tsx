@@ -48,7 +48,7 @@ export function PurchaseFlowStep({ number, title, description, status, pendingLa
         </span>
       ) : (
         <span className="flex h-7.5 items-center gap-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {known && <Check className="h-3.5 w-3.5" />}
+          {known && <Check aria-hidden="true" className="h-3.5 w-3.5" />}
           {isLoading ? '…' : known ? 'Al día' : '—'}
         </span>
       )}

@@ -135,7 +135,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
             <div className="col-span-2 flex flex-wrap items-center gap-2 sm:col-span-4">
               {order.has_order_file && (
                 <Button size="sm" variant="outline" onClick={handleDownload}>
-                  <FileDown className="h-3.5 w-3.5" />
+                  <FileDown aria-hidden="true" className="h-3.5 w-3.5" />
                   Ver archivo de la OC
                 </Button>
               )}
@@ -184,9 +184,9 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
             <div>
               <Button type="submit" size="sm" disabled={pending}>
                 {pending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Upload className="h-3.5 w-3.5" />
+                  <Upload aria-hidden="true" className="h-3.5 w-3.5" />
                 )}
                 Subir OC y reservar presupuesto
               </Button>
@@ -204,7 +204,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
           <ul className="flex flex-col gap-1 border-t border-zinc-100 pt-2 dark:border-zinc-800">
             {request.invoices.map((inv) => (
               <li key={inv.id} className="flex items-center gap-2">
-                <ReceiptText className="h-3.5 w-3.5 text-zinc-400" />
+                <ReceiptText aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
                 <span className="font-mono">Factura {inv.document_number ?? `#${inv.id}`}</span>
                 <Badge
                   tone={
@@ -238,7 +238,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
               to={`/compras/facturas?solicitud=${encodeURIComponent(request.code)}`}
               className="inline-flex h-8 items-center gap-1.5 rounded-md bg-zinc-900 px-3 text-xs font-medium text-white shadow-xs hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
             >
-              <ReceiptText className="h-3.5 w-3.5" />
+              <ReceiptText aria-hidden="true" className="h-3.5 w-3.5" />
               Registrar factura
             </Link>
           </div>

@@ -193,7 +193,7 @@ export function UsuarioFormDialog({
         {/* Fieldset: Identificación Personal */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
-            <User className="h-3.5 w-3.5 text-zinc-400" />
+            <User aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Identificación de usuario
           </legend>
 
@@ -274,7 +274,7 @@ export function UsuarioFormDialog({
         {/* Fieldset: Rol y Dependencia */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
-            <Shield className="h-3.5 w-3.5 text-zinc-400" />
+            <Shield aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Rol y dependencia institucional
           </legend>
 
@@ -351,7 +351,7 @@ export function UsuarioFormDialog({
         {/* Fieldset: Credenciales */}
         <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
-            <Lock className="h-3.5 w-3.5 text-zinc-400" />
+            <Lock aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Credenciales de acceso
           </legend>
 
@@ -398,7 +398,7 @@ export function UsuarioFormDialog({
         <DialogFooter>
           <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={isPending}>
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {esEdicion ? 'Guardar cambios' : 'Crear usuario'}
           </Button>
         </DialogFooter>

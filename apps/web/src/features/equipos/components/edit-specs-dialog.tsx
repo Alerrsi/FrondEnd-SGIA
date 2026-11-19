@@ -177,7 +177,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[11px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 underline"
                 >
-                  <ExternalLink className="h-3 w-3" /> Probar enlace
+                  <ExternalLink aria-hidden="true" className="h-3 w-3" /> Probar enlace
                 </a>
               )}
             </div>
@@ -205,7 +205,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
               size="sm"
               onClick={handleAddRow} className="gap-1"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Agregar parámetro</span>
             </Button>
           </div>
@@ -241,7 +241,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     aria-label={`Eliminar parámetro ${row.key || idx + 1}`}
                     className="p-1.5 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))
@@ -253,9 +253,9 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
           <DialogCloseButton disabled={updateSpecsMutation.isPending}>Cancelar</DialogCloseButton>
           <Button type="submit" size="sm" disabled={updateSpecsMutation.isPending}>
             {updateSpecsMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
             ) : (
-              <Save className="h-4 w-4" />
+              <Save aria-hidden="true" className="h-4 w-4" />
             )}
             Guardar ficha técnica
           </Button>

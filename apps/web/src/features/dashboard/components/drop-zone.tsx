@@ -71,7 +71,7 @@ export function DropZone({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`relative flex items-center justify-center rounded-lg border-2 border-dashed transition-all duration-150 py-3 px-4 font-mono text-xs ${
+      className={`relative flex items-center justify-center rounded-lg border-2 border-dashed transition duration-150 py-3 px-4 font-mono text-xs ${
         disabled
           ? 'border-zinc-200 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-900/20 text-zinc-400 cursor-not-allowed opacity-60'
           : isOver
@@ -83,9 +83,9 @@ export function DropZone({
     >
       <div className="flex items-center gap-2 pointer-events-none select-none">
         {isFocused ? (
-          <Target className="h-4 w-4 text-sky-500 animate-spin-slow" />
+          <Target aria-hidden="true" className="h-4 w-4 text-sky-500 animate-spin-slow" />
         ) : (
-          <PlusCircle className={`h-4 w-4 ${isOver ? 'text-sky-500 animate-pulse' : 'text-zinc-400'}`} />
+          <PlusCircle aria-hidden="true" className={`h-4 w-4 ${isOver ? 'text-sky-500 animate-pulse' : 'text-zinc-400'}`} />
         )}
 
         <span>

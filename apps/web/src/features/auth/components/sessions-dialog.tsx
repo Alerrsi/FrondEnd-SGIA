@@ -61,7 +61,7 @@ export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () =
             disabled={revokeOthers.isPending || tokens.length < 2}
             onClick={handleRevokeOthers}
           >
-            {revokeOthers.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {revokeOthers.isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             Cerrar otras sesiones
           </Button>
         </DialogFooter>
