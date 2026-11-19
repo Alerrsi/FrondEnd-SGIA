@@ -9,7 +9,7 @@ import type {
   UpdateCajonPayload,
   UpdateLocationPayload,
 } from '@sgia/types';
-import { del, get, getBlob, patch, post } from '../http';
+import { del, get, getBlob, labelQuery, patch, post } from '../http';
 
 function normalizeLocation(raw: any): LocationEntity {
   if (!raw) return raw;
@@ -138,7 +138,7 @@ export async function fetchCajonByCode(code: string): Promise<CajonEntity> {
 
 /** PDF de la etiqueta 50x30 mm del cajón (código de barras + código). */
 export async function downloadCajonLabel(id: number): Promise<Blob> {
-  return getBlob(`/cajones/${id}/label`);
+  return getBlob(`/cajones/${id}/label${labelQuery()}`);
 }
 
 export async function createCajon(payload: CreateCajonPayload): Promise<CajonEntity> {

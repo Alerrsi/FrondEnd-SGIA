@@ -11,7 +11,7 @@ import type {
   UpdateCareerPayload,
   UpdateEquipmentUnitPayload,
 } from '@sgia/types';
-import { del, get, getBlob, patch, post } from '../http';
+import { del, get, getBlob, labelQuery, patch, post } from '../http';
 
 function buildQuery(params?: object): string {
   const query = new URLSearchParams();
@@ -112,11 +112,11 @@ export async function fetchEquipmentUnitTechnicalSheet(id: number): Promise<Blob
 }
 
 export async function fetchEquipmentUnitLabel(id: number): Promise<Blob> {
-  return getBlob(`/equipment-units/${id}/label`);
+  return getBlob(`/equipment-units/${id}/label${labelQuery()}`);
 }
 
 export async function fetchProductLabel(id: number): Promise<Blob> {
-  return getBlob(`/products/${id}/label`);
+  return getBlob(`/products/${id}/label${labelQuery()}`);
 }
 
 export async function downloadEquipmentUnitReports(id: number): Promise<Blob> {
