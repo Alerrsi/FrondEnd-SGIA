@@ -403,3 +403,28 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     expect(screen.getByLabelText(/usuario: admin rodrigo/i)).toBeDefined();
   });
 });
+
+describe('AppLayout: campana de alertas por rol', () => {
+  const renderAs = (role: string) => {
+    mockUserRole = role;
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Contenido</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+  };
+
+  it('PRO-01 no ve la campana (no puede leer /alerts)', () => {
+    renderAs('PRO-01');
+    expect(screen.queryByLabelText(/Centro de notificaciones/)).toBeNull();
+  });
+
+  it('DIR-01 sí la ve', () => {
+    renderAs('DIR-01');
+    expect(screen.getByLabelText(/Centro de notificaciones/)).toBeDefined();
+  });
+});

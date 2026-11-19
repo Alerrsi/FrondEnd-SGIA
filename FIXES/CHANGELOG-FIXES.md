@@ -848,3 +848,15 @@
 - **Qué cambia:** del rediseño anterior (rama `feature/reestilacion`, 05-11) se trae solo lo que no depende de la paleta: foco visible global, `prefers-reduced-motion`, enlace «Saltar al contenido», `theme-color` con los fondos «Pañol», `overscroll-behavior` en modales, `touch-action: manipulation`, sin `transition-all`, puntos suspensivos tipográficos, `aria-hidden` en 473 íconos de lucide, N° de factura sin corrector ni autocompletado y dimensiones en la vista previa de la factura.
 - **Descartado:** tokens y contraste de la paleta vieja (fases 2, 5a, 6 y el fix de sede: los reemplaza la paleta «Pañol»), pantallas del flujo de compras antiguo (fase 4), extracción de `LoanDetailSheet` (5b) y el encabezado `PageEyebrow`.
 - **Verificación:** typecheck, lint y vitest (481 tests) en verde.
+
+## FIX-045: Fallos vistos en el recorrido por navegador (préstamos, mostrador, campana, inventario, foco)
+
+- **Fecha:** 2026-11-18
+- **Módulo:** `packages/api-client` (`services/loans.ts`), `apps/web` (préstamos, layout, inventario, `index.css`)
+- **Qué cambia:**
+  - Estados de préstamo: el web pedía `status=activo|atrasado|devuelto`, que el backend no acepta (422; contadores en 0). `setLoanStatusQuery()` los traduce a los filtros reales (`activo` → `status=procesado&devuelto=0`, `devuelto` → `devuelto=1`, `atrasado` → `atrasado=1`) y corrige los alias `preparado`, `procesada`, `entregado` y `rechazada`. Vale para el historial, el menú de préstamos y la exportación.
+  - Mostrador: se quita `useUsers({ role: 'PRO-01' })` (403 para PAN-01, y los usuarios no traen RUN, así que el autocompletado nunca funcionó).
+  - La campana de alertas solo se monta para los roles con acceso a `/alertas` (PRO-01 recibía 403).
+  - Inventario: «bajo mínimo» usa el total del servidor (`critical_only`), no solo la página cargada.
+  - `select:focus-visible` con contorno fuera de `@layer` (lo anulaba `focus:outline-none`).
+- **Verificación:** typecheck, lint y vitest (484) en verde; recorrido en Chromium como PAN-01 y PRO-01 sin errores de API.

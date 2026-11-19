@@ -34,7 +34,7 @@ import { GlassIconBar } from '@/components/ui/iconbar';
 import { useTheme } from '@/contexts/theme-context';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/features/auth/context/auth-context';
-import { ROUTE_PERMISSIONS, type WebRoleCode } from '@/features/auth/types/roles';
+import { canAccessRoute, ROUTE_PERMISSIONS, type WebRoleCode } from '@/features/auth/types/roles';
 import { toast } from '@/lib/toast';
 import { NotificationBell } from '@/features/alertas/components/notification-bell';
 import { SettingsModal } from '@/components/settings/settings-modal';
@@ -602,7 +602,7 @@ export default function AppLayout() {
             </div>
 
             <div className="flex items-center gap-3">
-              <NotificationBell />
+              {canAccessRoute(userRole, '/alertas') && <NotificationBell />}
             </div>
           </header>
 

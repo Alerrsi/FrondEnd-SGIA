@@ -19,7 +19,6 @@ import {
   useCheckoutLoan,
   useLoans,
   useProducts,
-  useUsers,
 } from '@sgia/api-client';
 import type { Prestamo, Producto } from '@sgia/types';
 
@@ -70,9 +69,6 @@ export default function MostradorPrestamosPage() {
   // Queries
   const { data: productsData } = useProducts({ per_page: 100 });
   const products = productsData?.data ?? [];
-
-  const { data: usersData } = useUsers({ role: 'PRO-01' });
-  const teachers = usersData?.data ?? [];
 
   const checkoutMutation = useCheckoutLoan();
 
@@ -363,15 +359,7 @@ export default function MostradorPrestamosPage() {
                       id="docente_run"
                       type="text"
                       value={docenteRun}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setDocenteRun(val);
-                        // Autocompletar nombre si coincide con docente en lista
-                        const matched = teachers.find(
-                          (t) => t.run === val,
-                        );
-                        if (matched) setDocenteName(matched.nombre);
-                      }}
+                      onChange={(e) => setDocenteRun(e.target.value)}
                       placeholder="12.345.678-9 o escanear credencial"
                       className="h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 px-2.5 pl-8 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
                     />

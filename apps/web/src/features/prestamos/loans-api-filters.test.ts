@@ -41,6 +41,22 @@ describe('Préstamos: filtros de pañol, laboratorio y fecha (cliente API)', () 
     expect(url.searchParams.get('loan_date')).toBe('2026-11-12');
   });
 
+  it('traduce activo, devuelto, atrasado y los alias a los filtros del backend', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(jsonResponse(empty));
+    const params = async (estado: string) => {
+      spy.mockClear();
+      await fetchLoans({ estado } as never);
+      return Object.fromEntries(new URL(calledUrl(spy), 'http://x').searchParams);
+    };
+    expect(await params('activo')).toEqual({ status: 'procesado', devuelto: '0' });
+    expect(await params('devuelto')).toEqual({ devuelto: '1' });
+    expect(await params('atrasado')).toEqual({ atrasado: '1' });
+    expect(await params('preparado')).toEqual({ status: 'en_proceso' });
+    expect(await params('rechazada')).toEqual({ status: 'rechazado' });
+    expect(await params('pendiente')).toEqual({ status: 'pendiente' });
+    expect(await params('todos')).toEqual({});
+  });
+
   it('la exportación lleva los mismos filtros', async () => {
     const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(jsonResponse({}));
     await exportLoans({

@@ -146,10 +146,42 @@ function normalizePaginatedLoans(res: any): PaginatedResponse<Prestamo> {
   return { data, meta };
 }
 
+// El backend solo tiene los estados pendiente, en_proceso, procesado y rechazado;
+// «activo», «devuelto» y «atrasado» son filtros aparte (devuelto / atrasado).
+export function setLoanStatusQuery(query: URLSearchParams, status?: string): void {
+  switch (status) {
+    case undefined:
+    case '':
+    case 'todos':
+      return;
+    case 'activo':
+      query.set('status', 'procesado');
+      query.set('devuelto', '0');
+      return;
+    case 'devuelto':
+      query.set('devuelto', '1');
+      return;
+    case 'atrasado':
+      query.set('atrasado', '1');
+      return;
+    case 'preparado':
+      query.set('status', 'en_proceso');
+      return;
+    case 'procesada':
+    case 'entregado':
+      query.set('status', 'procesado');
+      return;
+    case 'rechazada':
+      query.set('status', 'rechazado');
+      return;
+    default:
+      query.set('status', status);
+  }
+}
+
 export async function fetchLoans(params?: PrestamoParams): Promise<PaginatedResponse<Prestamo>> {
   const query = new URLSearchParams();
-  const status = params?.status ?? params?.estado;
-  if (status) query.set('status', status);
+  setLoanStatusQuery(query, params?.status ?? params?.estado);
   if (params?.devuelto !== undefined) query.set('devuelto', params.devuelto ? '1' : '0');
   if (params?.atrasado) query.set('atrasado', '1');
 
@@ -388,7 +420,7 @@ export async function exportLoans(
   const endDate = params?.end_date ?? (params as any)?.to_date ?? (params as any)?.fecha_hasta;
   if (startDate) query.set('from_date', startDate);
   if (endDate) query.set('to_date', endDate);
-  if (params?.status) query.set('status', params.status);
+  setLoanStatusQuery(query, params?.status);
   if (params?.career_id) query.set('career_id', String(params.career_id));
   if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
   if (params?.location_id) query.set('location_id', String(params.location_id));

@@ -1685,6 +1685,12 @@ aside.dark .gnav-item[data-active='true'] {
   font-variant-numeric: tabular-nums;
 }
 
+/* Fuera de @layer para ganarle a `focus:outline-none`: el select no muestra cursor y sin esto el foco por teclado casi no se ve. */
+select:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 1px;
+}
+
 /* Fase 1: foco visible, movimiento reducido, scroll en modales */
 @layer base {
   :focus-visible {

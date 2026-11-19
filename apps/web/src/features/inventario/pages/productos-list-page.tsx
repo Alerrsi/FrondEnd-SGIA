@@ -137,9 +137,9 @@ export default function ProductosListPage() {
   const productosList = Array.isArray(data?.data)
     ? data.data.filter((p): p is Producto => Boolean(p && typeof p === "object"))
     : [];
-  const criticalItemsCount = productosList.filter(
-    (p) => Number(p.stock ?? 0) <= Number(p.stockCritico ?? 0),
-  ).length;
+  // Total del servidor: contar en la página cargada daba solo los de esa página.
+  const { data: criticalData } = useProducts({ page: 1, perPage: 1, critical_only: true });
+  const criticalItemsCount = criticalData?.meta?.total ?? 0;
 
   const handleOpenCreate = () => {
     setEditingProduct(null);

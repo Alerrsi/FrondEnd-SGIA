@@ -79,9 +79,6 @@ vi.mock('@sgia/api-client', () => ({
     isLoading: false,
     refetch: mockRefetchLoans,
   }),
-  useUsers: () => ({
-    data: { data: [] },
-  }),
   useCareers: () => ({
     data: { data: [{ id: 5, name: 'Ingeniería en Informática', code: 'II', level: 'profesional' }] },
     isLoading: false,
