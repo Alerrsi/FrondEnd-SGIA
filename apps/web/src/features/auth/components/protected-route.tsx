@@ -1,9 +1,9 @@
 import { Boxes, Loader2 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
 import { useAuth } from '../context/auth-context';
-import { canAccessRoute, getRoleDefaultPath, type WebRoleCode } from '../types/roles';
+import { getRoleDefaultPath, type WebRoleCode } from '../types/roles';
 import { ForbiddenPage } from './forbidden-page';
 
 export function LoadingScreen() {
@@ -25,14 +25,13 @@ export function LoadingScreen() {
 
 export function RequireAuth({ children }: { children?: ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
-  const location = useLocation();
 
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children ? <>{children}</> : <Outlet />;
@@ -56,20 +55,13 @@ export function RequireRole({
 
 export function PublicOnlyRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
-  const location = useLocation();
 
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   if (isAuthenticated && user) {
-    const fromPath = (location.state as { from?: { pathname?: string } })?.from?.pathname;
-    const destination =
-      fromPath && fromPath !== '/login' && canAccessRoute(user.rol, fromPath)
-        ? fromPath
-        : getRoleDefaultPath(user.rol);
-
-    return <Navigate to={destination} replace />;
+    return <Navigate to={getRoleDefaultPath(user.rol)} replace />;
   }
 
   return <>{children}</>;

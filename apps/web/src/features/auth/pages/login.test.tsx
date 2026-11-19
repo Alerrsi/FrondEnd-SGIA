@@ -110,7 +110,7 @@ describe('LoginPage', () => {
                 <MemoryRouter initialEntries={['/login']}>
                   <Routes>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/inicio" element={<div>Pantalla inicio</div>} />
+                    <Route path="/" element={<div>Pantalla inicio</div>} />
                   </Routes>
                 </MemoryRouter>
               </TooltipProvider>

@@ -16,23 +16,23 @@ describe('Role and Route Permissions', () => {
 
   it('sends every web role to the start page after login', () => {
     for (const role of ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'] as const) {
-      expect(getRoleDefaultPath(role)).toBe('/inicio');
+      expect(getRoleDefaultPath(role)).toBe('/');
     }
   });
 
   describe('canAccessRoute', () => {
     it('limits AD-01 to system administration and monitoring', () => {
-      for (const route of ['/inicio', '/usuarios', '/panoles', '/auditoria', '/monitoreo']) {
+      for (const route of ['/', '/usuarios', '/panoles', '/auditoria', '/monitoreo']) {
         expect(canAccessRoute('AD-01', route)).toBe(true);
       }
-      for (const route of ['/', '/dashboard', '/inventario', '/prestamos/cola', '/estudiantes', '/compras/cotizaciones', '/compras/presupuestos', '/mantenciones', '/alertas']) {
+      for (const route of ['/analitica', '/inventario', '/prestamos/cola', '/estudiantes', '/compras/cotizaciones', '/compras/presupuestos', '/mantenciones', '/alertas']) {
         expect(canAccessRoute('AD-01', route)).toBe(false);
       }
       expect(canAccessRoute('DIR-01', '/monitoreo')).toBe(false);
     });
 
     it('allows DIR-01 to access dashboard, quotations, and inventory', () => {
-      expect(canAccessRoute('DIR-01', '/')).toBe(true);
+      expect(canAccessRoute('DIR-01', '/analitica')).toBe(true);
       expect(canAccessRoute('DIR-01', '/compras/cotizaciones')).toBe(true);
       expect(canAccessRoute('DIR-01', '/inventario')).toBe(true);
       expect(canAccessRoute('DIR-01', '/usuarios')).toBe(false);
@@ -42,7 +42,7 @@ describe('Role and Route Permissions', () => {
     it('allows PAN-01 to access inventory and loan queue', () => {
       expect(canAccessRoute('PAN-01', '/inventario')).toBe(true);
       expect(canAccessRoute('PAN-01', '/prestamos/cola')).toBe(true);
-      expect(canAccessRoute('PAN-01', '/')).toBe(false);
+      expect(canAccessRoute('PAN-01', '/analitica')).toBe(false);
       expect(canAccessRoute('PAN-01', '/compras/cotizaciones')).toBe(false);
       expect(canAccessRoute('PAN-01', '/usuarios')).toBe(false);
     });
@@ -51,7 +51,7 @@ describe('Role and Route Permissions', () => {
       expect(canAccessRoute('PRO-01', '/profesor/catalogo')).toBe(true);
       expect(canAccessRoute('PRO-01', '/profesor/solicitudes')).toBe(true);
       expect(canAccessRoute('PRO-01', '/profesor/novedades')).toBe(true);
-      expect(canAccessRoute('PRO-01', '/')).toBe(false);
+      expect(canAccessRoute('PRO-01', '/analitica')).toBe(false);
       expect(canAccessRoute('PRO-01', '/inventario')).toBe(false);
       expect(canAccessRoute('PRO-01', '/novedades')).toBe(false);
       expect(canAccessRoute('PRO-01', '/prestamos/cola')).toBe(false);

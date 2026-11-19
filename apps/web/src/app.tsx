@@ -27,7 +27,7 @@ import ProveedoresPage from '@/features/proveedores/pages/proveedores-page';
 import UsuariosPage from '@/features/usuarios/pages/usuarios-page';
 import AppLayout from '@/layouts/app-layout';
 import LoginPage from '@/features/auth/pages/login';
-import { AuthProvider, useAuth } from '@/features/auth/context/auth-context';
+import { AuthProvider } from '@/features/auth/context/auth-context';
 import { ThemeProvider, useTheme } from '@/contexts/theme-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import {
@@ -39,7 +39,7 @@ import CatalogoPage from '@/features/profesor/pages/catalogo-page';
 import MisSolicitudesPage from '@/features/profesor/pages/mis-solicitudes-page';
 import NovedadesPage from '@/features/novedades/pages/novedades-page';
 import MisNovedadesPage from '@/features/profesor/pages/mis-novedades-page';
-import { getRoleDefaultPath, rolesForRoute } from '@/features/auth/types/roles';
+import { rolesForRoute } from '@/features/auth/types/roles';
 import InicioPage from '@/features/inicio/pages/inicio-page';
 
 
@@ -55,17 +55,6 @@ const LEGACY_PURCHASE_PATHS: Array<[string, string]> = [
 function LegacyRedirect({ from, to }: { from: string; to: string }) {
   const { pathname, search } = useLocation();
   return <Navigate to={to + pathname.slice(from.length) + search} replace />;
-}
-
-function RootRoute() {
-  const { user } = useAuth();
-  if (!user) return null;
-
-  if (user.rol === 'DIR-01') {
-    return <DashboardPage />;
-  }
-
-  return <Navigate to={getRoleDefaultPath(user.rol)} replace />;
 }
 
 function AppContent() {
@@ -94,22 +83,23 @@ function AppContent() {
               </RequireAuth>
             }
           >
-            <Route path="/" element={<RootRoute />} />
-
             {/* Inicio de todos los roles: a dónde llega cada usuario al iniciar sesión. */}
             <Route
-              path="/inicio"
+              path="/"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/inicio') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/') ?? []}>
                   <InicioPage />
                 </RequireRole>
               }
             />
+            {/* Rutas antiguas, por marcadores guardados. */}
+            <Route path="/inicio" element={<Navigate to="/" replace />} />
+            <Route path="/dashboard" element={<Navigate to="/analitica" replace />} />
 
             <Route
-              path="/dashboard"
+              path="/analitica"
               element={
-                <RequireRole allowedRoles={rolesForRoute('/dashboard') ?? []}>
+                <RequireRole allowedRoles={rolesForRoute('/analitica') ?? []}>
                   <DashboardPage />
                 </RequireRole>
               }

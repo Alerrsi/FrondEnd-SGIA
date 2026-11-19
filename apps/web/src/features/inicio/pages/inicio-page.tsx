@@ -10,7 +10,7 @@ import { getInicioModules } from '../lib/inicio-content';
 
 const dateFormat = new Intl.DateTimeFormat('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
 
-/** Página de inicio de todos los roles (`/inicio`): a dónde llega cada usuario al iniciar sesión. */
+/** Página de inicio de todos los roles (`/`): a dónde llega cada usuario al iniciar sesión. */
 export default function InicioPage() {
   const { user } = useAuth();
   if (!user) return null;

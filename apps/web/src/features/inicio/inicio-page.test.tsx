@@ -55,7 +55,7 @@ vi.mock('@sgia/api-client', () => ({
 
 function renderInicio() {
   return render(
-    <MemoryRouter initialEntries={['/inicio']}>
+    <MemoryRouter initialEntries={['/']}>
       <InicioPage />
     </MemoryRouter>,
   );
@@ -66,11 +66,11 @@ const todayLinks = () =>
     .getAllByRole('link')
     .map((a) => [a.getAttribute('aria-label'), a.getAttribute('href')]);
 
-describe('Inicio (/inicio)', () => {
+describe('Inicio (/)', () => {
   it('es la página de llegada de los cuatro roles web', () => {
     for (const role of ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'] as const) {
-      expect(canAccessRoute(role, '/inicio')).toBe(true);
-      expect(getRoleDefaultPath(role)).toBe('/inicio');
+      expect(canAccessRoute(role, '/')).toBe(true);
+      expect(getRoleDefaultPath(role)).toBe('/');
     }
   });
 

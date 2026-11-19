@@ -32,7 +32,7 @@ export interface InicioModule {
 }
 
 const MODULES: InicioModule[] = [
-  { to: '/dashboard', label: 'Panel de analítica', description: 'Métricas y gráficos', icon: LayoutDashboard },
+  { to: '/analitica', label: 'Panel de analítica', description: 'Métricas y gráficos', icon: LayoutDashboard },
   { to: '/inventario', label: 'Inventario', description: 'Productos y stock', icon: Boxes },
   { to: '/prestamos', label: 'Préstamos', description: 'Cola y mostrador', icon: CalendarClock },
   { to: '/ubicaciones', label: 'Ubicaciones', description: 'Salas y cajones', icon: Layers },

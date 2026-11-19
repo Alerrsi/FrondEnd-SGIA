@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
   Boxes,
@@ -17,7 +17,7 @@ import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { canAccessRoute, getRoleDefaultPath } from '../types/roles';
+import { getRoleDefaultPath } from '../types/roles';
 import { SectionTitle } from '@/components/ui/section-title';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
@@ -33,7 +33,6 @@ const inputClasses =
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -60,13 +59,8 @@ export default function LoginPage() {
       });
       toast.success(`Bienvenido/a, ${usuario.nombre}`);
 
-      const stateFrom = (location.state as { from?: { pathname?: string } })?.from?.pathname;
-      const destination =
-        stateFrom && stateFrom !== '/login' && canAccessRoute(usuario.rol, stateFrom)
-          ? stateFrom
-          : getRoleDefaultPath(usuario.rol);
-
-      navigate(destination, { replace: true });
+      // Siempre a Inicio al entrar, sin volver a la página previa.
+      navigate(getRoleDefaultPath(usuario.rol), { replace: true });
     } catch (error) {
       const message = apiErrorToMessage(error);
       setAuthError(message);
