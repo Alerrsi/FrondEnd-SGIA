@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   useDeleteProducto,
@@ -42,7 +43,9 @@ export default function ProductosListPage() {
   // Server-side query filters & pagination
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [search, setSearch] = useState('');
+  // `?q=` llega desde el escaneo de Inicio (rediseño «Trazo», fase 4).
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('q') ?? '');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [areaFilter, setAreaFilter] = useState('');
   const [salaFilter, setSalaFilter] = useState('');

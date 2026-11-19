@@ -1,6 +1,6 @@
 # Rediseño de la interfaz web «Trazo»
 
-**Estado: en implementación (19 nov 2026), fases 1 a 3 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
+**Estado: en implementación (19 nov 2026), fases 1 a 4 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
 
 Plan escrito con el skill `design-taste-frontend` (tasteskill 2.5). Ese skill está hecho para sitios de empresa; aquí se usan su sistema de tokens, tipografía, botones, formularios, movimiento, accesibilidad y presupuesto de rendimiento. Lo que es solo de páginas de marketing (fotografías, una sección por pantalla, «momentos», efectos de shader) no aplica a un panel de operación y queda fuera (ver «Fuera de alcance»).
 
@@ -157,14 +157,14 @@ Estructura común: **banda de saludo** (nombre, fecha, pañol, una acción princ
 
 | Rol | Acción principal | «Lo que te toca hoy» | Bloque propio |
 |---|---|---|---|
-| **PAN-01 Pañolero** | Abrir mostrador (`M`) | Solicitudes en cola · Préstamos vencidos · Devoluciones de hoy · Stock crítico | Lista de las 5 próximas solicitudes de la cola con «Revisar» por fila, y campo de escaneo listo (Code128) que lleva al producto o al préstamo. |
-| **DIR-01 Director** | Nueva solicitud de compra (`N`) | Compras por aprobar · Cotizaciones pendientes · Stock crítico · Préstamos vencidos | Etapas de compras en curso (`PurchaseFlowSteps`) y saldo de presupuesto por área (barras, GraphQL). |
-| **AD-01 Administrador** | Crear usuario (`U`) | Estado del sistema · Accesos fallidos (24 h) · Cuentas inactivas · Pañoles | Actividad reciente de auditoría (tabla de 8 filas) y gráfico de accesos por hora (GraphQL). |
-| **PRO-01 Profesor** | Solicitar equipo (`N`) | Solicitudes en revisión · Aprobadas para retirar · Devoluciones pendientes · Informes abiertos | Buscador del catálogo como bloque principal («¿Qué necesitas para tu clase?») y estado de sus últimas solicitudes en una línea de tiempo. |
+| **PAN-01 Pañolero** | Abrir mostrador (`M`) | Cola de solicitudes · Préstamos atrasados · Stock crítico | Escaneo Code128 en la bienvenida (lleva a `/inventario?q=`) y las 5 próximas solicitudes de la cola. |
+| **DIR-01 Director** | Nueva solicitud de compra (`N`) | Las 5 etapas de compras en curso · Stock crítico · Préstamos atrasados | Cifras de los últimos 30 días por GraphQL (`executiveKpis`): préstamos activos hoy, tasa de atrasos, alertas críticas, activos disponibles. |
+| **AD-01 Administrador** | Crear usuario (`U`) | Estado del sistema · Accesos rechazados (24 h) | Actividad reciente de la auditoría (8 filas). |
+| **PRO-01 Profesor** | Solicitar equipo (`N`) | En revisión · Listas para retirar · Atrasadas | Búsqueda del catálogo en la bienvenida («¿Qué necesitas para tu clase?», lleva a `/profesor/catalogo?q=`). |
 
-Datos: los conteos usan los hooks que ya existen (`usePendingLoans`, `useLoans`, `useCriticalStockAlerts`, `useMyLoanRequests`, `useAuditLogs`, `useSystemHealth`, `useLoginActivity`). Lo que no exista todavía («Devoluciones de hoy», «Cuentas inactivas», saldo por área para inicio) se pide como **campo GraphQL** y se agrega a la tabla «Endpoints pendientes» de `ENDPOINTS.md` en la fase 4, antes de programarlo. Una celda sin datos muestra «Sin pendientes», nunca un cero sin contexto ni un esqueleto eterno.
+Datos: `POST /api/metrics` (GraphQL) solo admite `DIR-01` (`routes/api.php`), así que las cifras nuevas del director van por GraphQL y los conteos operativos de los demás roles siguen con los hooks REST que ya existían (`usePendingLoans`, `useLoans`, `useCriticalStockAlerts`, `useMyLoanRequests`, `useAuditLogs`, `useSystemHealth`, `useLoginActivity`). Se descartaron «Devoluciones de hoy», «Cuentas inactivas», el saldo por área y el gráfico de accesos por hora: necesitaban campos que no existen o GraphQL para roles que no lo tienen, y no se agregó contrato nuevo en este rediseño. Una celda sin pendientes muestra «Al día»; sin datos, «—».
 
-Implementación: `features/inicio/pages/inicio-page.tsx` elige `PanolHome`, `DirectorHome`, `AdminHome` o `ProfesorHome` por rol; cada uno en su archivo bajo `features/inicio/components/`.
+Implementación: `features/inicio/pages/inicio-page.tsx` arma la bienvenida y elige el bloque propio por rol; cada pieza en su archivo bajo `features/inicio/components/`.
 
 ## 7. Movimiento
 
@@ -249,9 +249,9 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 - [x] Actualizar `app-layout.test.tsx` y sumar tests del header y del buscador (`layout-shell.test.tsx`).
 
 ### Fase 4 — Páginas de inicio por rol
-- [ ] Registrar en `ENDPOINTS.md` (ambos repos) los campos GraphQL que falten para inicio.
-- [ ] `PanolHome`, `DirectorHome`, `AdminHome`, `ProfesorHome`.
-- [ ] Test por rol: muestra su acción principal y solo enlaces que el rol puede abrir.
+- [x] Campos GraphQL para inicio: no hizo falta ninguno nuevo (ver §6); `ENDPOINTS.md` sin cambios.
+- [x] Inicio por rol: `HomeHero` (acción principal con tecla), «Lo que te toca hoy» en `CellGrid`, bloque propio (`QueuePreview` + `ScanBox`, `ExecutiveKpis`, `RecentActivity`, `CatalogSearch`) y accesos desde `nav-config.ts`.
+- [x] Test por rol: muestra su acción principal y solo enlaces que el rol puede abrir (`inicio-page.test.tsx`).
 
 ### Fase 5 — Pantallas por módulo
 Cada pantalla: `PageHeading` + acciones, `Metric` en vez de cinta hecha a mano, `DataTable`, modales con el estándar nuevo.

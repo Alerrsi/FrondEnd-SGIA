@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useProducts } from "@sgia/api-client";
 import type { Producto } from "@sgia/types";
@@ -26,7 +27,9 @@ export function CatalogPanel({
   storeroomId,
   onAvailability,
 }: CatalogPanelProps) {
-  const [search, setSearch] = useState("");
+  // `?q=` llega desde la búsqueda del catálogo en Inicio (rediseño «Trazo», fase 4).
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const [debounced, setDebounced] = useState("");
 
   useEffect(() => {

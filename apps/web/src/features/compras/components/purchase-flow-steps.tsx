@@ -43,7 +43,7 @@ const FLOW_STEPS: PurchaseFlowStepProps[] = [
 /** Las 5 etapas del flujo de compras como un solo tramo continuo (en móvil, en columna). */
 export function PurchaseFlowSteps() {
   return (
-    <ol className="grid grid-cols-1 divide-y divide-zinc-200 overflow-hidden rounded-lg border border-zinc-200 bg-white sm:grid-cols-5 sm:divide-x sm:divide-y-0 dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+    <ol className="cell-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
       {FLOW_STEPS.map((step) => (
         <li key={step.status}>
           <PurchaseFlowStep {...step} />

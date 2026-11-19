@@ -539,20 +539,41 @@
 .ui-press:not(:disabled):active { transform: translateY(1px) scale(0.985); transition-duration: var(--m-press); }
 
 /*
- * Grilla de celdas con bordes compartidos (rediseño «Trazo»): marco de 1px y líneas entre celdas, sin
- * espacio entre ellas. La línea derecha e inferior de cada celda es una sombra de 1px; la del borde exterior
- * queda bajo el marco, así no se duplica. Una fila incompleta deja el resto en blanco, sin líneas sueltas.
+ * Grilla de celdas con bordes compartidos (rediseño «Trazo»): un marco de 1px y líneas entre celdas, sin
+ * espacio entre ellas. Cada celda dibuja su línea derecha e inferior por dentro (sombra inset, así la celda
+ * vecina no la tapa) y el marco es un ::after encima: en el borde exterior coincide con la línea de la celda
+ * y se ve una sola. Una fila incompleta queda cerrada por el marco.
  */
 .cell-grid {
+  position: relative;
   display: grid;
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background-color: var(--surface);
 }
-.cell-grid > * {
-  box-shadow: 1px 0 0 0 var(--line), 0 1px 0 0 var(--line);
+.cell-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid var(--line);
+  border-radius: inherit;
+  pointer-events: none;
 }
+.cell-grid > *,
+.cell-grid > li > * {
+  box-shadow: inset -1px 0 0 0 var(--line), inset 0 -1px 0 0 var(--line);
+}
+/* En una lista (`as="ul"`/`<ol>`) la línea la dibuja la celda dentro del <li>, que tiene fondo propio. */
+.cell-grid > li {
+  display: flex;
+  box-shadow: none;
+}
+.cell-grid > li > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* Densidad compacta (Ajustes): filas de tabla más bajas en toda la app. */
 [data-density='compacta'] tbody td {
   padding-top: 0.375rem;

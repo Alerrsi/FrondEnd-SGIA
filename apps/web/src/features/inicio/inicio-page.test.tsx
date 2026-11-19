@@ -22,7 +22,28 @@ const mockUseLoans = vi.fn((params: unknown) => {
 });
 
 vi.mock('@sgia/api-client', () => ({
-  usePendingLoans: () => page(4),
+  usePendingLoans: () => ({
+    data: {
+      data: [{ id: 41, items: [{ id: 1 }, { id: 2 }], user: { nombre: 'Pedro Soto' } }],
+      meta: { total: 4 },
+    },
+    isLoading: false,
+    isError: false,
+  }),
+  useApiClientExecutiveKpis: () => ({
+    data: {
+      activosDisponibles: 120,
+      activosEnPrestamo: 18,
+      activosEnTaller: 2,
+      activosDeBaja: 1,
+      prestamosActivosHoy: 7,
+      tasaAtrasosPct: 12.5,
+      alertasCriticasNoResueltas: 3,
+      tasaRotacionMensualPct: 4,
+    },
+    isLoading: false,
+    isError: false,
+  }),
   useLoans: (params: unknown) => mockUseLoans(params),
   useCriticalStockAlerts: () => page(0),
   usePurchaseRequests: ({ status }: { status: string }) => page(status === 'borrador' ? 2 : 0),
@@ -111,6 +132,36 @@ describe('Inicio (/)', () => {
     const items = screen.getAllByRole('listitem').map((li) => li.textContent ?? '');
     expect(items.some((text) => text.includes(' · Admin'))).toBe(true);
     expect(screen.getByRole('link', { name: /Ver la auditoría/ }).getAttribute('href')).toBe('/auditoria');
+  });
+
+  it('cada rol tiene su acción principal en la bienvenida', () => {
+    const expected: Record<string, [string, string]> = {
+      'PAN-01': ['Abrir mostrador', '/prestamos/mostrador'],
+      'DIR-01': ['Nueva solicitud de compra', '/compras/solicitudes'],
+      'AD-01': ['Crear usuario', '/usuarios'],
+      'PRO-01': ['Solicitar equipo', '/profesor/catalogo'],
+    };
+    for (const [role, [label, href]] of Object.entries(expected)) {
+      mockRole = role;
+      const { unmount } = renderInicio();
+      const hero = screen.getByRole('region', { name: 'Bienvenida' });
+      expect(within(hero).getByRole('link', { name: new RegExp(label) }).getAttribute('href')).toBe(href);
+      unmount();
+    }
+  });
+
+  it('el director ve las cifras del pañol por GraphQL y el pañolero la cola y el escaneo', () => {
+    mockRole = 'DIR-01';
+    const { unmount } = renderInicio();
+    const kpis = screen.getByLabelText('Cifras de los últimos 30 días');
+    expect(within(kpis).getByText('12,5 %')).toBeDefined();
+    expect(within(kpis).getByText('3').className).toContain('text-danger');
+    unmount();
+
+    mockRole = 'PAN-01';
+    renderInicio();
+    expect(within(screen.getByRole('region', { name: 'Próximas solicitudes' })).getByText('2 ítems')).toBeDefined();
+    expect(screen.getByLabelText('Buscar un producto por código')).toBeDefined();
   });
 
   it('cuenta las solicitudes del profesor por estado', () => {
