@@ -351,7 +351,7 @@ export {
   fetchStudent,
   createStudent,
   updateStudent,
-  deleteStudent,
+  updateStudentStatus,
   fetchStudentLoans,
   normalizeStudent,
 } from './services/students';
@@ -363,7 +363,7 @@ export {
   useStudentLoans,
   useCreateStudent,
   useUpdateStudent,
-  useDeleteStudent,
+  useUpdateStudentStatus,
 } from './hooks/students';
 
 // Mantenciones (REQ-18) y documentos de mantenimiento (REQ-19)
@@ -455,3 +455,19 @@ export {
   useRoles,
   useAuditLogs,
 } from './hooks/storerooms';
+
+export {
+  fetchLoginActivity,
+  fetchFailedLogins,
+  fetchActiveSessions,
+  revokeSession,
+  fetchSystemHealth,
+} from './services/monitoring';
+export {
+  monitoringKeys,
+  useLoginActivity,
+  useFailedLogins,
+  useActiveSessions,
+  useRevokeSession,
+  useSystemHealth,
+} from './hooks/monitoring';

@@ -32,6 +32,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 export type AlertTypeFilter = 'all' | 'critical' | 'warning';
 export type AlertStatusFilter = 'all' | 'active' | 'resolved';
@@ -484,14 +485,7 @@ export function AlertasTable({
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {isLoading ? (
-              <tr>
-                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
-                  <div className="flex items-center justify-center gap-2">
-                    <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
-                    <span>Cargando registro de alertas de stock…</span>
-                  </div>
-                </td>
-              </tr>
+              <SkeletonRows columns={columns.length} label="Cargando registro de alertas de stock…" />
             ) : alerts.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>

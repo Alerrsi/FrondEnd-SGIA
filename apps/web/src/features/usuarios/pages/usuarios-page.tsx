@@ -22,7 +22,8 @@ import { toast } from '@/lib/toast';
 import { UsuarioFormDialog } from '@/features/usuarios/components/usuario-form-dialog';
 import { UsuariosTable, type EstadoFilter } from '@/features/usuarios/components/usuarios-table';
 import { PageHeading } from '@/components/ui/page-heading';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function UsuariosPage() {
   const { user: currentUser } = useAuth();
@@ -143,8 +144,11 @@ export default function UsuariosPage() {
 
   if (isLoading) {
     return (
-      <div className={`flex items-center gap-2 py-12 justify-center ${STATE_TEXT_CLASS}`}>
-        <span>Cargando directorio de usuarios…</span>
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-8 w-56" />
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <SkeletonList label="Cargando directorio de usuarios…" rows={8} columns={5} />
+        </div>
       </div>
     );
   }

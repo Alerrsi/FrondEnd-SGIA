@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   PackageSearch,
   ScrollText,
+  ShieldCheck,
   ShoppingCart,
   Users,
   Wallet,
@@ -50,6 +51,7 @@ const MODULES: InicioModule[] = [
   { to: '/usuarios', label: 'Usuarios', description: 'Cuentas y roles', icon: Users },
   { to: '/panoles', label: 'Pañoles', description: 'Sedes y bodegas', icon: Warehouse },
   { to: '/auditoria', label: 'Auditoría', description: 'Registro de cambios', icon: ScrollText },
+  { to: '/monitoreo', label: 'Monitoreo', description: 'Accesos y estado del sistema', icon: ShieldCheck },
 ];
 
 /** Módulos que el rol puede abrir, en el orden del menú. */

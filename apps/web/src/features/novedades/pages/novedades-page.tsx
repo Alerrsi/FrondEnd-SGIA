@@ -14,6 +14,7 @@ import { NewIncidentDialog } from '@/features/profesor/components/new-incident-d
 import { PageHeading } from '@/components/ui/page-heading';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const controlClasses =
   FILTER_CONTROL_CLASS;
@@ -24,14 +25,14 @@ function summary(report: IncidentReport): string {
   return (report.problems ?? []).map((p) => p.label ?? p.type).join(' · ') || '—';
 }
 
-/** Bandeja de informes de novedades para `PAN-01`, `AD-01` y `DIR-01`. */
+/** Bandeja de informes de novedades para `PAN-01` y `DIR-01`. */
 export default function NovedadesPage() {
   const [status, setStatus] = useState<IncidentStatus | ''>('reportado');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<number | null>(null);
   const [formOpen, setFormOpen] = useState(false);
-  // En esta bandeja solo `PAN-01` puede crear informes; `AD-01` y `DIR-01` los atienden.
+  // En esta bandeja solo `PAN-01` puede crear informes; `DIR-01` los atiende.
   const canCreate = useOptionalAuth()?.user?.rol === 'PAN-01';
 
   const { data, isLoading, isError } = useIncidentReports({
@@ -92,9 +93,7 @@ export default function NovedadesPage() {
         </div>
 
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
-            Cargando informes…
-          </div>
+          <SkeletonList label="Cargando informes…" columns={5} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />

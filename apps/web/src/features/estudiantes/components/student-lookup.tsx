@@ -43,7 +43,8 @@ export function StudentLookup({
   const notFound = submitted !== undefined && !isFetching && !isError && student === null;
 
   useEffect(() => {
-    if (submitted === undefined || isFetching || isError || student === undefined) {
+    // Un estudiante desactivado no recibe préstamos: no se puede elegir.
+    if (submitted === undefined || isFetching || isError || student === undefined || student?.is_active === false) {
       onChange(null);
     } else if (student) {
       onChange({ kind: 'existing', student });
@@ -96,7 +97,12 @@ export function StudentLookup({
           {apiErrorToMessage(error)}
         </p>
       )}
-      {student && (
+      {student && !student.is_active && (
+        <p role="alert" className="rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/20 p-2 text-xs text-rose-700 dark:text-rose-400">
+          {student.full_name || 'El estudiante'} está desactivado y no puede recibir préstamos. Reactívalo en Estudiantes.
+        </p>
+      )}
+      {student?.is_active && (
         <div className="flex items-center gap-2 rounded-md border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 p-2 text-xs">
           <CheckCircle2 aria-hidden="true" className="h-4 w-4 shrink-0 text-emerald-600" />
           <div className="min-w-0">

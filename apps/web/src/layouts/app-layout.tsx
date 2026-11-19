@@ -18,6 +18,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ScrollText,
+  ShieldCheck,
   Settings,
   Sun,
   Users,
@@ -180,6 +181,12 @@ const navigation: NavItem[] = [
     label: 'Auditoría',
     icon: ScrollText,
     roles: ROUTE_PERMISSIONS['/auditoria'] ?? [],
+  },
+  {
+    to: '/monitoreo',
+    label: 'Monitoreo',
+    icon: ShieldCheck,
+    roles: ROUTE_PERMISSIONS['/monitoreo'] ?? [],
   },
 ];
 

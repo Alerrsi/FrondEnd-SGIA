@@ -34,7 +34,8 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { SectionTitle } from '@/components/ui/section-title';
-import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SolicitudCompraDetailPage() {
   const params = useParams<{ id: string }>();
@@ -54,7 +55,15 @@ export default function SolicitudCompraDetailPage() {
 
   if (isLoading) {
     return (
-      <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando solicitud…</div>
+      <div role="status" className="flex flex-col gap-4">
+        <span className="sr-only">Cargando solicitud…</span>
+        <Skeleton className="h-8 w-72" />
+        <Skeleton className="h-16 w-full" />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <Skeleton className="h-64 lg:col-span-2" />
+          <Skeleton className="h-64" />
+        </div>
+      </div>
     );
   }
 

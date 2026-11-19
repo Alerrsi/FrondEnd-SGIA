@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import type { LoanRequestItem } from "@/features/profesor/lib/loan-request-schema";
 import { SectionTitle } from '@/components/ui/section-title';
 import { STATE_TEXT_CLASS } from "@/components/ui/typography";
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 interface CatalogPanelProps {
   /** Ids ya agregados a la solicitud. */
@@ -76,9 +77,7 @@ export function CatalogPanel({
       </div>
 
       {isLoading ? (
-        <p className={`py-6 ${STATE_TEXT_CLASS}`}>
-          Cargando catálogo…
-        </p>
+        <SkeletonList label="Cargando catálogo…" rows={5} columns={3} />
       ) : isError ? (
         <p
           role="alert"

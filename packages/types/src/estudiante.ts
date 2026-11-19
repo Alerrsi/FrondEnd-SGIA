@@ -12,6 +12,8 @@ export interface Student {
   career_id?: number | null;
   career?: Career | null;
   loans_count?: number;
+  /** Los estudiantes no se borran: se desactivan (auditoría). Uno desactivado no recibe préstamos. */
+  is_active: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -20,6 +22,7 @@ export interface StudentQueryParams {
   /** RUT (con o sin puntos) o nombre. */
   search?: string;
   career_id?: number;
+  is_active?: boolean;
   per_page?: number;
   page?: number;
 }

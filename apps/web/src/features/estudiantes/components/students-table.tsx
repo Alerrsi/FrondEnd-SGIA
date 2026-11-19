@@ -3,6 +3,7 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '
 import type { Student } from '@sgia/types';
 import { MoreHorizontal } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,13 +18,13 @@ const columnHelper = createColumnHelper<Student>();
 
 interface StudentsTableProps {
   rows: Student[];
-  canDelete: boolean;
   onOpen: (student: Student) => void;
   onEdit: (student: Student) => void;
-  onDelete: (student: Student) => void;
+  /** Activa o desactiva (los estudiantes no se borran). */
+  onToggleStatus: (student: Student) => void;
 }
 
-export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: StudentsTableProps) {
+export function StudentsTable({ rows, onOpen, onEdit, onToggleStatus }: StudentsTableProps) {
   const columns = useMemo(
     () => [
       columnHelper.accessor('rut', {
@@ -37,8 +38,9 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
       columnHelper.accessor('full_name', {
         header: 'Nombre',
         cell: (i) => (
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+          <span className="flex items-center gap-2 font-medium text-zinc-900 dark:text-zinc-100">
             {i.getValue() || <span className="text-zinc-400">Sin nombre</span>}
+            {!i.row.original.is_active && <Badge tone="retired">Desactivado</Badge>}
           </span>
         ),
       }),
@@ -71,21 +73,19 @@ export function StudentsTable({ rows, canDelete, onOpen, onEdit, onDelete }: Stu
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onSelect={() => onEdit(row.original)}>Editar</DropdownMenuItem>
-                {canDelete && (
-                  <DropdownMenuItem
-                    className="text-rose-600 dark:text-rose-400"
-                    onSelect={() => onDelete(row.original)}
-                  >
-                    Eliminar
-                  </DropdownMenuItem>
-                )}
+                <DropdownMenuItem
+                  className={row.original.is_active ? 'text-rose-600 dark:text-rose-400' : undefined}
+                  onSelect={() => onToggleStatus(row.original)}
+                >
+                  {row.original.is_active ? 'Desactivar' : 'Activar'}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         ),
       }),
     ],
-    [canDelete, onOpen, onEdit, onDelete],
+    [onOpen, onEdit, onToggleStatus],
   );
 
   const table = useReactTable({ data: rows, columns, getCoreRowModel: getCoreRowModel() });

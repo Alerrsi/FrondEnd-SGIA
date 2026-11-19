@@ -11,7 +11,7 @@ interface BudgetSelectProps extends Omit<
 > {
   value: number | undefined;
   onChange: (budgetId: number | undefined, budget: AnnualBudget | undefined) => void;
-  /** Por defecto se listan todos los años; AD-01 y DIR-01 ven todas las carreras. */
+  /** Por defecto se listan todos los años; DIR-01 ve todas las carreras. */
   year?: number;
   invalid?: boolean;
 }

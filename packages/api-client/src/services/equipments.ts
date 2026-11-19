@@ -2,6 +2,7 @@ import type {
   EquipmentQueryParams,
   EquipmentReportQueryParams,
   EquipmentSpecs,
+  EquipmentStatus,
   Equipo,
   UpdateEquipmentSpecsPayload,
 } from '@sgia/types';
@@ -54,20 +55,55 @@ export async function downloadEquipmentReports(
   return fetchEquipmentReports(productId, { ...params, format: 'pdf' });
 }
 
-export async function fetchEquipos(params?: EquipmentQueryParams): Promise<Equipo[]> {
-  const query = new URLSearchParams();
-  if (params?.search) query.set('search', params.search);
-  if (params?.status && params.status !== 'todos') query.set('status', params.status);
-  if (params?.category) query.set('category', params.category);
-  if (params?.page) query.set('page', String(params.page));
-  if (params?.per_page) query.set('per_page', String(params.per_page));
+interface RawEquipmentProduct {
+  id: number;
+  name: string;
+  barcode: string | null;
+  master_code: string | null;
+  estado: string;
+  oracle_category?: { name: string } | null;
+  location?: { sala?: string; nombre?: string } | null;
+  cajon?: { codigo?: string } | null;
+  created_at: string;
+  updated_at: string;
+}
 
-  const qs = query.toString();
-  const response = await get<any>(`/equipment${qs ? `?${qs}` : ''}`);
-  return Array.isArray(response) ? response : (response?.data ?? []);
+// `estado` operativo del producto (ProductResource) → estado de la ficha.
+const EQUIPMENT_STATUS: Record<string, EquipmentStatus> = {
+  disponible: 'operativo',
+  en_reparacion: 'en_mantencion',
+  dado_de_baja: 'baja',
+  sin_stock: 'en_prestamo', // equipo sin unidades disponibles ni en taller: todas prestadas
+};
+
+function toEquipo(raw: RawEquipmentProduct): Equipo {
+  const ubicacion = [raw.location?.sala ?? raw.location?.nombre, raw.cajon?.codigo]
+    .filter(Boolean)
+    .join(' · ');
+  return {
+    id: raw.id,
+    nombre: raw.name,
+    codigo: raw.master_code ?? raw.barcode ?? undefined,
+    categoria: raw.oracle_category?.name ?? undefined,
+    ubicacion: ubicacion || undefined,
+    estado: EQUIPMENT_STATUS[raw.estado] ?? 'operativo',
+    createdAt: raw.created_at,
+    updatedAt: raw.updated_at,
+  };
+}
+
+// Las fichas se arman con los productos `equipo` (la API no tiene `GET /equipment`).
+// shortcut: una sola página de 100; paginar en el servidor si hay más de 100 equipos.
+export async function fetchEquipos(params?: EquipmentQueryParams): Promise<Equipo[]> {
+  const query = new URLSearchParams({ type: 'equipo', per_page: String(params?.per_page ?? 100) });
+  if (params?.search) query.set('search', params.search);
+  if (params?.page) query.set('page', String(params.page));
+
+  const response = await get<{ data: RawEquipmentProduct[] }>(`/products?${query.toString()}`);
+  return (response?.data ?? []).map(toEquipo);
 }
 
 export async function fetchEquipo(id: number): Promise<Equipo> {
-  const response = await get<any>(`/equipment/${id}/specs`);
-  return response?.data ?? response;
+  const response = await get<{ data: RawEquipmentProduct }>(`/products/${id}`);
+  return toEquipo(response.data);
 }

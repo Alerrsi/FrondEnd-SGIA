@@ -16,14 +16,14 @@ import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR + 1, CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2];
 
 export default function PresupuestosPage() {
   const { user } = useAuth();
-  // AD-01 y DIR-01 (director del Área de Informática) administran todas las carreras.
+  // DIR-01 (director del Área de Informática) administra todas las carreras.
   const canManage = canDo(user?.rol, 'manageBudgets');
 
   const [year, setYear] = useState<number>(CURRENT_YEAR);
@@ -141,9 +141,7 @@ export default function PresupuestosPage() {
         </div>
 
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
-            Cargando presupuestos…
-          </div>
+          <SkeletonList label="Cargando presupuestos…" rows={4} columns={5} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />

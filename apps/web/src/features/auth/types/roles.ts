@@ -12,47 +12,49 @@ export const ROLE_DEFAULT_PATH: Record<WebRoleCode, string> = {
 };
 
 export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
-  '/': ['DIR-01', 'AD-01'],
+  '/': ['DIR-01'],
   '/inicio': ['AD-01', 'DIR-01', 'PAN-01', 'PRO-01'],
-  '/dashboard': ['DIR-01', 'AD-01'],
-  '/inventario': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/prestamos': ['PAN-01', 'AD-01'],
+  '/dashboard': ['DIR-01'],
+  '/inventario': ['PAN-01', 'DIR-01'],
+  '/prestamos': ['PAN-01'],
   '/prestamos/cola': ['PAN-01'],
   '/prestamos/mostrador': ['PAN-01'],
-  '/prestamos/historial': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/ubicaciones': ['PAN-01', 'AD-01'],
-  '/historial': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/equipos': ['AD-01', 'DIR-01', 'PAN-01'],
-  '/alertas': ['AD-01', 'DIR-01', 'PAN-01'],
+  '/prestamos/historial': ['PAN-01', 'DIR-01'],
+  '/ubicaciones': ['PAN-01'],
+  '/historial': ['PAN-01', 'DIR-01'],
+  '/equipos': ['DIR-01', 'PAN-01'],
+  '/alertas': ['DIR-01', 'PAN-01'],
   // Módulo Compras: el hub lo ve quien vea al menos una de sus páginas.
-  '/compras': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/compras/solicitudes': ['DIR-01', 'AD-01', 'PAN-01'],
-  '/compras/ordenes': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/compras/facturas': ['DIR-01', 'AD-01'],
-  '/compras/presupuestos': ['DIR-01', 'AD-01'],
-  '/compras/proveedores': ['DIR-01', 'AD-01'],
-  '/compras/cotizaciones': ['DIR-01', 'AD-01'],
-  '/novedades': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/mantenciones': ['PAN-01', 'DIR-01', 'AD-01'],
-  '/estudiantes': ['PAN-01', 'AD-01'],
+  '/compras': ['PAN-01', 'DIR-01'],
+  '/compras/solicitudes': ['DIR-01', 'PAN-01'],
+  '/compras/ordenes': ['PAN-01', 'DIR-01'],
+  '/compras/facturas': ['DIR-01'],
+  '/compras/presupuestos': ['DIR-01'],
+  '/compras/proveedores': ['DIR-01'],
+  '/compras/cotizaciones': ['DIR-01'],
+  '/novedades': ['PAN-01', 'DIR-01'],
+  '/mantenciones': ['PAN-01', 'DIR-01'],
+  '/estudiantes': ['PAN-01'],
   '/profesor': ['PRO-01'],
   '/profesor/catalogo': ['PRO-01'],
   '/profesor/solicitudes': ['PRO-01'],
   '/profesor/novedades': ['PRO-01'],
+  // AD-01 administra el sistema (usuarios, pañoles, auditoría, monitoreo); no opera el negocio.
   '/usuarios': ['AD-01'],
   '/panoles': ['AD-01'],
   '/auditoria': ['AD-01'],
+  '/monitoreo': ['AD-01'],
 };
 
 /** Acciones (botones) por rol; espejo de `routes/api.php` y las policies del backend. */
 export const ACTION_ROLES = {
   /** Crear, aprobar, enviar, subir cotizaciones/OC y cancelar solicitudes de compra. */
   managePurchaseRequests: ['DIR-01'],
-  cancelPurchase: ['DIR-01', 'AD-01'],
-  manageBudgets: ['DIR-01', 'AD-01'],
+  cancelPurchase: ['DIR-01'],
+  manageBudgets: ['DIR-01'],
   authorizeOverBudget: ['DIR-01'],
-  scanInvoice: ['DIR-01', 'AD-01'],
-  deleteProduct: ['DIR-01', 'AD-01'],
+  scanInvoice: ['DIR-01'],
+  deleteProduct: ['DIR-01'],
 } as const satisfies Record<string, readonly WebRoleCode[]>;
 
 export function canDo(role: string | undefined, action: keyof typeof ACTION_ROLES): boolean {

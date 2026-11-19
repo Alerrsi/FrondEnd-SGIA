@@ -12,7 +12,7 @@ import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
 import { isPurchaseRequestCode } from '@/features/solicitudes-compra/lib/purchase-request-code';
 import { PageHeading } from '@/components/ui/page-heading';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const STATUS_FILTERS: Array<{
   value: InvoiceIntakeStatus | '';
@@ -136,9 +136,7 @@ export default function IngresosFacturaPage() {
         </div>
 
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
-            Cargando ingresos de factura…
-          </div>
+          <SkeletonList label="Cargando ingresos de factura…" columns={5} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />

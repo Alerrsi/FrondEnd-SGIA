@@ -6,6 +6,7 @@ import { cn } from '@/lib/cn';
 import { MAINTENANCE_STATUS_META } from '@/features/mantenciones/lib/maintenance-labels';
 import { SectionTitle } from '@/components/ui/section-title';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const nf = new Intl.NumberFormat('es-CL');
 const STATUSES = Object.keys(MAINTENANCE_STATUS_META) as MaintenanceStatus[];
@@ -36,7 +37,7 @@ function StatCard({ label, value, accent }: { label: string; value: number; acce
 export function MaintenanceCareerSummary() {
   const { data, isLoading, isError } = useMaintenanceSummary();
 
-  if (isLoading) return <p className={`py-6 ${STATE_TEXT_CLASS}`}>Cargando resumen…</p>;
+  if (isLoading) return <Skeleton label="Cargando resumen…" className="h-40 w-full" />;
   if (isError) {
     return (
       <p className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">

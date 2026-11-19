@@ -16,6 +16,7 @@ import { formatCLP } from '@/features/compras/lib/format';
 import { MOVEMENT_TYPES, movementMeta } from '@/features/presupuestos/lib/movement-labels';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 const columnHelper = createColumnHelper<BudgetMovement>();
 
@@ -192,11 +193,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
             {isLoading && (
-              <tr>
-                <td colSpan={columns.length} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
-                  Cargando movimientos…
-                </td>
-              </tr>
+              <SkeletonRows columns={columns.length} rows={5} label="Cargando movimientos…" cellClassName="px-3 py-2" />
             )}
             {!isLoading && table.getRowModel().rows.length === 0 && (
               <tr>

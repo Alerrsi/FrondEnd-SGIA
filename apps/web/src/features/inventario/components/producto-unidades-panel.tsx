@@ -24,6 +24,7 @@ import { AgregarUnidadesDialog } from './agregar-unidades-dialog';
 import { UnidadBarcodeDialog } from './unidad-barcode-dialog';
 import { UNIT_STATUS_LABELS, UnidadStatusBadge } from './unidad-status-badge';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const STATUS_FILTERS: Array<EquipmentUnitStatus | ''> = [
   '',
@@ -109,7 +110,7 @@ export function ProductoUnidadesPanel({
   producto: Producto;
   canWrite?: boolean;
   canDelete?: boolean;
-  /** Mantenciones y documentos: escritura solo AD-01 y PAN-01. */
+  /** Mantenciones y documentos: escritura solo PAN-01. */
   canMaintain?: boolean;
 }) {
   const [maintenanceUnit, setMaintenanceUnit] = useState<EquipmentUnit | null>(null);
@@ -122,7 +123,7 @@ export function ProductoUnidadesPanel({
   const [barcodeUnit, setBarcodeUnit] = useState<EquipmentUnit | null>(null);
   const [deleteUnit, setDeleteUnit] = useState<EquipmentUnit | null>(null);
   const role = useOptionalAuth()?.user?.rol;
-  const canPrintLabel = role === undefined || role === 'AD-01' || role === 'DIR-01' || role === 'PAN-01';
+  const canPrintLabel = role === undefined || role === 'DIR-01' || role === 'PAN-01';
   const [sheetLoadingId, setSheetLoadingId] = useState<number | null>(null);
 
   const { data, isLoading, isError, error } = useProductUnits(producto.id, {
@@ -230,10 +231,7 @@ export function ProductoUnidadesPanel({
       </div>
 
       {isLoading ? (
-        <div className={`flex items-center justify-center gap-2 p-6 ${STATE_TEXT_CLASS}`}>
-          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-          Cargando unidades…
-        </div>
+        <SkeletonList label="Cargando unidades…" rows={4} columns={4} />
       ) : isError ? (
         <p role="alert" className="p-4 text-xs text-rose-600 dark:text-rose-400">
           {apiErrorToMessage(error)}

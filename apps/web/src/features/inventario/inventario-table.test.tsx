@@ -231,8 +231,8 @@ describe('InventarioTable', () => {
       />,
     );
 
-    expect(screen.getByText(/Buscando y cargando productos en pañol/i)).toBeDefined();
-    expect(screen.getByRole('progressbar', { name: /Cargando productos/i })).toBeDefined();
+    // Esquema de carga: filas grises con el texto para lectores de pantalla.
+    expect(screen.getByRole('status').textContent).toMatch(/Buscando y cargando productos en pañol/i);
 
     // When fetching while keeping existing products in table
     rerender(

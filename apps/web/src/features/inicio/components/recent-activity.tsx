@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 import { auditActionLabel } from '@/features/administracion/lib/audit-labels';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const timeFormat = new Intl.DateTimeFormat('es-CL', { dateStyle: 'short', timeStyle: 'short' });
 
@@ -18,9 +19,11 @@ export function RecentActivity() {
         <ScrollText aria-hidden="true" className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
         Actividad reciente
       </p>
-      {isLoading || isError || logs.length === 0 ? (
+      {isLoading ? (
+        <SkeletonList label="Cargando actividad…" rows={5} columns={2} />
+      ) : isError || logs.length === 0 ? (
         <p className={`${STATE_TEXT_CLASS} py-4`}>
-          {isLoading ? 'Cargando…' : isError ? 'No se pudo cargar la actividad.' : 'Sin actividad registrada.'}
+          {isError ? 'No se pudo cargar la actividad.' : 'Sin actividad registrada.'}
         </p>
       ) : (
         <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">

@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useCareers, useDeleteStudent, useStudents } from '@sgia/api-client';
+import { useCareers, useStudents, useUpdateStudentStatus } from '@sgia/api-client';
 import type { Student } from '@sgia/types';
 import { AlertCircle, ChevronLeft, ChevronRight, GraduationCap, Plus, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { useAuth } from '@/features/auth/context/auth-context';
 import { StudentDetailSheet } from '@/features/estudiantes/components/student-detail-sheet';
 import { StudentFormDialog } from '@/features/estudiantes/components/student-form-dialog';
 import { StudentsTable } from '@/features/estudiantes/components/students-table';
@@ -13,22 +12,22 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const controlClasses =
   FILTER_CONTROL_CLASS;
 
 export default function EstudiantesPage() {
-  const { user } = useAuth();
-  const canDelete = user?.rol === 'AD-01';
   const [search, setSearch] = useState('');
   const [debounced, setDebounced] = useState('');
   const [careerId, setCareerId] = useState<number | undefined>();
+  // Por defecto solo activos: los desactivados se conservan por auditoría.
+  const [status, setStatus] = useState<'activos' | 'desactivados' | 'todos'>('activos');
   const [page, setPage] = useState(1);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Student | null>(null);
   const [detailId, setDetailId] = useState<number | null>(null);
-  const [toDelete, setToDelete] = useState<Student | null>(null);
+  const [toDeactivate, setToDeactivate] = useState<Student | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -41,11 +40,12 @@ export default function EstudiantesPage() {
   const { data, isLoading, isError } = useStudents({
     search: debounced || undefined,
     career_id: careerId,
+    is_active: status === 'todos' ? undefined : status === 'activos',
     page,
     per_page: 20,
   });
   const { data: careers } = useCareers({ per_page: 100 });
-  const remove = useDeleteStudent();
+  const { mutateAsync: setStudentActive, isPending: savingStatus } = useUpdateStudentStatus();
 
   const openEdit = useCallback((s: Student) => {
     setEditing(s);
@@ -53,18 +53,25 @@ export default function EstudiantesPage() {
   }, []);
   const openDetail = useCallback((s: Student) => setDetailId(s.id), []);
 
-  const confirmDelete = async () => {
-    if (!toDelete) return;
-    try {
-      await remove.mutateAsync(toDelete.id);
-      toast.success('Estudiante eliminado');
-    } catch (error) {
-      // 422 (errors.student): tiene préstamos.
-      toast.error(apiErrorToMessage(error));
-    } finally {
-      setToDelete(null);
-    }
-  };
+  const changeStatus = useCallback(
+    async (student: Student, isActive: boolean) => {
+      try {
+        await setStudentActive({ id: student.id, isActive });
+        toast.success(isActive ? 'Estudiante activado' : 'Estudiante desactivado');
+      } catch (error) {
+        toast.error(apiErrorToMessage(error));
+      } finally {
+        setToDeactivate(null);
+      }
+    },
+    [setStudentActive],
+  );
+
+  // Desactivar pide confirmación; reactivar es inmediato.
+  const toggleStatus = useCallback(
+    (s: Student) => (s.is_active ? setToDeactivate(s) : void changeStatus(s, true)),
+    [changeStatus],
+  );
 
   const meta = data?.meta;
 
@@ -114,10 +121,23 @@ export default function EstudiantesPage() {
               </option>
             ))}
           </select>
+          <select
+            aria-label="Filtrar por estado"
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value as typeof status);
+              setPage(1);
+            }}
+            className={controlClasses}
+          >
+            <option value="activos">Activos</option>
+            <option value="desactivados">Desactivados</option>
+            <option value="todos">Todos</option>
+          </select>
         </div>
 
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando estudiantes…</div>
+          <SkeletonList label="Cargando estudiantes…" columns={4} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -126,10 +146,9 @@ export default function EstudiantesPage() {
         ) : (
           <StudentsTable
             rows={data?.data ?? []}
-            canDelete={canDelete}
             onOpen={openDetail}
             onEdit={openEdit}
-            onDelete={setToDelete}
+            onToggleStatus={toggleStatus}
           />
         )}
 
@@ -158,14 +177,14 @@ export default function EstudiantesPage() {
       />
       <StudentDetailSheet studentId={detailId} onClose={() => setDetailId(null)} />
       <ConfirmDialog
-        open={toDelete !== null}
-        title="Eliminar estudiante"
-        description={`Se eliminará a ${toDelete?.full_name || toDelete?.rut || ''}. No se puede si tiene préstamos.`}
-        confirmLabel="Eliminar"
+        open={toDeactivate !== null}
+        title="Desactivar estudiante"
+        description={`${toDeactivate?.full_name || toDeactivate?.rut || ''} no podrá recibir préstamos. Su historial se conserva y puedes reactivarlo cuando quieras.`}
+        confirmLabel="Desactivar"
         variant="danger"
-        loading={remove.isPending}
-        onConfirm={confirmDelete}
-        onCancel={() => setToDelete(null)}
+        loading={savingStatus}
+        onConfirm={() => toDeactivate && changeStatus(toDeactivate, false)}
+        onCancel={() => setToDeactivate(null)}
       />
     </div>
   );

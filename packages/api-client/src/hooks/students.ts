@@ -7,12 +7,12 @@ import type {
 } from '@sgia/types';
 import {
   createStudent,
-  deleteStudent,
   fetchStudent,
   fetchStudentByRut,
   fetchStudentLoans,
   fetchStudents,
   updateStudent,
+  updateStudentStatus,
 } from '../services/students';
 
 export const studentKeys = {
@@ -82,10 +82,10 @@ export function useUpdateStudent() {
   });
 }
 
-export function useDeleteStudent() {
+export function useUpdateStudentStatus() {
   const queryClient = useQueryClient();
-  return useMutation<void, Error, number>({
-    mutationFn: deleteStudent,
+  return useMutation<Student, Error, { id: number; isActive: boolean }>({
+    mutationFn: ({ id, isActive }) => updateStudentStatus(id, isActive),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: studentKeys.all }),
   });
 }

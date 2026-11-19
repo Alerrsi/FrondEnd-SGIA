@@ -19,12 +19,10 @@ import {
   User,
 } from 'lucide-react';
 
-import { StoreroomSelect } from '@/components/shared/storeroom-select';
 import { LoanStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
-import { useAuth } from '@/features/auth/context/auth-context';
 import { LoanReviewDialog } from '@/features/prestamos/components/loan-review-dialog';
 import { formatDateOnly } from '@/features/compras/lib/format';
 import {
@@ -40,13 +38,10 @@ import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { SectionTitle } from '@/components/ui/section-title';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ColaPrestamosPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  // PAN-01 ve solo su pañol (lo aplica el backend); AD-01 ve todos y puede filtrar.
-  const isAdmin = user?.rol === 'AD-01';
-  const [storeroomFilter, setStoreroomFilter] = useState<number | undefined>(undefined);
   const [search, setSearch] = useState('');
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(null);
@@ -59,7 +54,7 @@ export default function ColaPrestamosPage() {
     data: pendingLoansResponse,
     isLoading,
     refetch,
-  } = usePendingLoans(isAdmin && storeroomFilter ? { storeroom_id: storeroomFilter } : undefined);
+  } = usePendingLoans(); // PAN-01 ve solo su pañol: lo aplica el backend.
 
   const rechazarMutation = useRechazarPrestamo();
 
@@ -132,9 +127,7 @@ export default function ColaPrestamosPage() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <PageHeading icon={ClipboardCheck} title="Cola de despacho de solicitudes remotas">
-          {isAdmin
-            ? 'Solicitudes remotas de todos los pañoles; filtra por pañol para revisar una cola.'
-            : 'Solicitudes remotas de tu pañol enviadas por los docentes.'}
+          Solicitudes remotas de tu pañol enviadas por los docentes.
         </PageHeading>
 
         <div className="flex items-center gap-2">
@@ -204,16 +197,8 @@ export default function ColaPrestamosPage() {
         </Card>
       </div>
 
-      {/* Buscador reactivo y, para el administrador, filtro por pañol */}
+      {/* Buscador reactivo */}
       <div className="flex flex-col gap-2 sm:flex-row">
-        {isAdmin && (
-          <StoreroomSelect
-            value={storeroomFilter}
-            onChange={setStoreroomFilter}
-            aria-label="Filtro de pañol"
-            className="h-8.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2.5 text-xs text-zinc-900 dark:text-zinc-100 sm:w-56"
-          />
-        )}
         <div className="relative flex-1">
           <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
           <input
@@ -228,9 +213,11 @@ export default function ColaPrestamosPage() {
 
       {/* Listado tipo Tarjetas Técnicas / Cola */}
       {isLoading ? (
-        <div className="flex h-48 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-zinc-500 text-xs">
-          <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4 animate-spin text-zinc-400" />
-          <span>Cargando cola de solicitudes desde la API…</span>
+        <div role="status" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <span className="sr-only">Cargando cola de solicitudes…</span>
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-44" />
+          ))}
         </div>
       ) : filteredLoans.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center shadow-xs">

@@ -33,7 +33,7 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { SectionLabel } from '@/components/ui/section-label';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
   const {
@@ -482,7 +482,12 @@ export default function DashboardPage() {
 
       {/* Grid de Gráficos y Zonas de Soltado (Drag & Drop Canvas) */}
       {panel.isLoading ? (
-        <div className={`p-12 ${STATE_TEXT_CLASS}`}>Cargando tu panel…</div>
+        <div role="status" className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <span className="sr-only">Cargando tu panel…</span>
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-80" />
+          ))}
+        </div>
       ) : panel.error ? (
         <div
           role="alert"

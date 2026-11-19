@@ -18,6 +18,7 @@ import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components
 import { InvoiceReviewForm } from '@/features/ingresos-factura/components/invoice-review-form';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface InvoiceIntakeReviewSheetProps {
   intakeId: number | null;
@@ -44,9 +45,14 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
         <SheetContent side="center" className="inset-y-auto top-1/2 h-[85dvh] -translate-y-1/2 rounded-lg border-y">
           {isLoading || !intake ? (
-            <div className={`flex items-center justify-center py-16 ${STATE_TEXT_CLASS}`}>
-              <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" />
-              Cargando ingreso…
+            <div role="status" className="grid h-full grid-cols-1 gap-4 p-1 lg:grid-cols-2">
+              <span className="sr-only">Cargando ingreso…</span>
+              <Skeleton className="h-full min-h-64" />
+              <div className="flex flex-col gap-3">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-48 w-full" />
+              </div>
             </div>
           ) : (
             <>

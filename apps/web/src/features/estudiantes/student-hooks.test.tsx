@@ -8,6 +8,7 @@ import {
   useCreateStudent,
   useStudentByRut,
   useStudents,
+  useUpdateStudentStatus,
 } from '@sgia/api-client';
 
 const jsonResponse = (body: unknown, status = 200) =>
@@ -36,6 +37,29 @@ describe('Estudiantes (REQ-20): cliente API', () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
+
+  it('useUpdateStudentStatus desactiva con PATCH /status y un estudiante sin is_active se lee activo', async () => {
+    const mockFetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(jsonResponse({ data: { ...rawStudent, is_active: false } }));
+
+    const { result } = renderHook(() => useUpdateStudentStatus(), { wrapper });
+    const updated = await result.current.mutateAsync({ id: 7, isActive: false });
+
+    const [url, init] = mockFetch.mock.calls[0] ?? [];
+    expect(String(url)).toContain('/students/7/status');
+    expect(init?.method).toBe('PATCH');
+    expect(JSON.parse(String(init?.body))).toEqual({ is_active: false });
+    expect(updated.is_active).toBe(false);
+
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ data: [rawStudent], meta: { current_page: 1, last_page: 1, per_page: 20, total: 1 } }),
+    );
+    const list = renderHook(() => useStudents({ is_active: true }), { wrapper });
+    await waitFor(() => expect(list.result.current.isSuccess).toBe(true));
+    expect(String(mockFetch.mock.calls[1]?.[0])).toContain('is_active=1');
+    expect(list.result.current.data?.data[0]?.is_active).toBe(true);
+  });
 
   it('useStudents arma el query string y convierte la meta de Laravel', async () => {
     const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(

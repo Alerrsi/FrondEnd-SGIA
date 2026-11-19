@@ -23,6 +23,7 @@ import {
 } from '../types/metrics';
 import { MetricChart } from './metric-chart';
 import { CODE_CHIP_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DynamicChartCardProps {
   input: MetricQueryInput;
@@ -212,9 +213,7 @@ export function DynamicChartCard({
 
       <div className="relative h-64 w-full">
         {isLoading ? (
-          <div className="flex h-full items-center justify-center font-mono text-xs text-zinc-400">
-            Cargando datos…
-          </div>
+          <Skeleton label="Cargando datos…" className="h-full w-full" />
         ) : isForbidden ? (
           <div
             role="alert"

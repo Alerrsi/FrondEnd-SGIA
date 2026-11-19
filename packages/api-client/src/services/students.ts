@@ -7,11 +7,11 @@ import type {
   StudentQueryParams,
   UpdateStudentPayload,
 } from '@sgia/types';
-import { ApiRequestError, del, get, patch, post } from '../http';
+import { ApiRequestError, get, patch, post } from '../http';
 import { normalizePrestamo } from './loans';
 import { buildQuery, toPaginated, unwrap, type RawPaginated } from './shared';
 
-// Estudiantes (FU-04 / REQ-20). Lectura y escritura: PAN-01 y AD-01; borrado solo AD-01.
+// Estudiantes (FU-04 / REQ-20). Lectura y escritura: PAN-01. No se borran: se desactivan.
 
 export interface RawStudent {
   id: number;
@@ -21,6 +21,7 @@ export interface RawStudent {
   career_id?: number | null;
   career?: Career | null;
   loans_count?: number | string | null;
+  is_active?: boolean | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -37,6 +38,7 @@ export function normalizeStudent(raw: RawStudent): Student {
       raw.loans_count === undefined || raw.loans_count === null
         ? undefined
         : Number(raw.loans_count),
+    is_active: raw.is_active ?? true,
     created_at: raw.created_at,
     updated_at: raw.updated_at,
   };
@@ -88,9 +90,16 @@ export async function updateStudent(id: number, payload: UpdateStudentPayload): 
   );
 }
 
-/** `422` (`errors.student`) si el estudiante tiene préstamos. */
-export async function deleteStudent(id: number): Promise<void> {
-  await del<void>(`/students/${id}`);
+/** Activa o desactiva; su historial de préstamos se conserva. */
+export async function updateStudentStatus(id: number, isActive: boolean): Promise<Student> {
+  return normalizeStudent(
+    unwrap(
+      await patch<{ is_active: boolean }, { data?: RawStudent } | RawStudent>(
+        `/students/${id}/status`,
+        { is_active: isActive },
+      ),
+    ),
+  );
 }
 
 /** Historial de préstamos del estudiante (paginado, más reciente primero; mismo formato que `GET /api/loans`). */

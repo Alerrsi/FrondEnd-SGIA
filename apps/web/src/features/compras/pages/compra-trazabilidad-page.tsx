@@ -1,6 +1,6 @@
 import { usePurchaseTrace } from '@sgia/api-client';
 import type { PurchaseRequestStatus, PurchaseTrace } from '@sgia/types';
-import { AlertCircle, ArrowLeft, Loader2, ShoppingCart } from 'lucide-react';
+import { AlertCircle, ArrowLeft, ShoppingCart } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { movementMeta } from '@/features/presupuestos/lib/movement-labels';
 import { PageHeading } from '@/components/ui/page-heading';
 import { SectionLabel } from '@/components/ui/section-label';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 function Step({ title, empty, children }: { title: string; empty?: string; children?: ReactNode }) {
   const hasContent = Array.isArray(children) ? children.length > 0 : Boolean(children);
@@ -137,9 +138,8 @@ export default function CompraTrazabilidadPage() {
         title={`Trazabilidad de la orden ${data?.purchase.code ?? (purchaseId ? `#${purchaseId}` : '')}`}
       />
       {isLoading && (
-        <div role="status" className="flex items-center gap-2 text-xs text-zinc-500">
-          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-          Cargando trazabilidad…
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <SkeletonList label="Cargando trazabilidad…" rows={5} columns={3} />
         </div>
       )}
       {(isError || (!isLoading && !data)) && (

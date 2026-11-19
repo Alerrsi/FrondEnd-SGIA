@@ -256,7 +256,8 @@ describe('Integration Test: Módulo de Fichas técnicas de Equipos (/equipos)', 
     );
   });
 
-  it('permite a un usuario con rol DIR-01 editar especificaciones técnicas dinámicas y guardar vía PUT', async () => {
+  // Edición oculta hasta que exista PUT /api/equipment/{id}/specs (SPECS_API_READY en la página).
+  it.skip('permite a un usuario con rol DIR-01 editar especificaciones técnicas dinámicas y guardar vía PUT', async () => {
     const user = userEvent.setup();
     mockMutateUpdateSpecs.mockResolvedValueOnce({
       id: 1,

@@ -16,6 +16,7 @@ import { formatDateOnly } from "@/features/compras/lib/format";
 import { toast } from "@/lib/toast";
 import { PageHeading } from '@/components/ui/page-heading';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from "@/components/ui/typography";
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function MisNovedadesPage() {
   const [page, setPage] = useState(1);
@@ -41,9 +42,7 @@ export default function MisNovedadesPage() {
 
       <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>
-            Cargando informes…
-          </div>
+          <SkeletonList label="Cargando informes…" rows={4} columns={3} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />

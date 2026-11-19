@@ -5,6 +5,7 @@ import type { BudgetSpendingGroupBy } from '@sgia/types';
 import { Button } from '@/components/ui/button';
 import { formatCLP } from '@/features/compras/lib/format';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 const GROUPS: Array<{ value: BudgetSpendingGroupBy; label: string }> = [
   { value: 'product', label: 'Producto' },
@@ -69,11 +70,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
             {isLoading && (
-              <tr>
-                <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
-                  Cargando gasto…
-                </td>
-              </tr>
+              <SkeletonRows columns={4} rows={4} label="Cargando gasto…" cellClassName="px-3 py-2" />
             )}
             {!isLoading && rows.length === 0 && (
               <tr>

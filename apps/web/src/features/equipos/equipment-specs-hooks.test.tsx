@@ -6,6 +6,7 @@ import {
   fetchEquipmentReports,
   fetchEquipmentSpecs,
   fetchEquipmentTechnicalSheet,
+  fetchEquipos,
   updateEquipmentSpecs,
   useEquipmentSpecs,
   useUpdateEquipmentSpecs,
@@ -97,6 +98,46 @@ describe('Unit Test: Hooks y Servicios de Fichas técnicas de Equipos (REQ-12)',
       );
       expect(res.equipment_id).toBe(15);
       expect(res.lifespan_years).toBe(7);
+    });
+  });
+
+  describe('fetchEquipos', () => {
+    it('lista los productos equipo y los adapta a la ficha', async () => {
+      const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          data: [
+            {
+              id: 7,
+              name: 'Osciloscopio',
+              barcode: 'X1',
+              master_code: 'EQP-IC-000001',
+              estado: 'en_reparacion',
+              oracle_category: { name: 'Instrumentación' },
+              location: { sala: 'Lab 2' },
+              cajon: { codigo: 'C-03' },
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-02T00:00:00Z',
+            },
+          ],
+        }),
+      } as Response);
+
+      const [equipo] = await fetchEquipos();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/products?type=equipo&per_page=100',
+        expect.objectContaining({ method: 'GET' }),
+      );
+      expect(equipo).toMatchObject({
+        id: 7,
+        nombre: 'Osciloscopio',
+        codigo: 'EQP-IC-000001',
+        categoria: 'Instrumentación',
+        ubicacion: 'Lab 2 · C-03',
+        estado: 'en_mantencion',
+      });
     });
   });
 

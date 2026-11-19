@@ -13,7 +13,8 @@ import { toast } from '@/lib/toast';
 import { ProveedoresTable } from '@/features/proveedores/components/proveedores-table';
 import { SupplierFormDialog } from '@/features/proveedores/components/supplier-form-dialog';
 import { PageHeading } from '@/components/ui/page-heading';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function ProveedoresPage() {
   const setSupplierStatus = useSetSupplierStatus();
@@ -104,8 +105,11 @@ export default function ProveedoresPage() {
 
   if (isLoading) {
     return (
-      <div className={`flex items-center gap-2 py-12 justify-center ${STATE_TEXT_CLASS}`}>
-        <span>Cargando catálogo de proveedores…</span>
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-8 w-56" />
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <SkeletonList label="Cargando catálogo de proveedores…" rows={8} columns={4} />
+        </div>
       </div>
     );
   }

@@ -34,6 +34,14 @@ vi.mock('@sgia/api-client', () => ({
     isLoading: false,
     isError: false,
   }),
+  useLoginActivity: () => ({
+    data: { totals: { successful: 9, failed: 3, throttled: 1 }, flagged_accounts: [{ email: 'x@sgia.cl', failed: 6 }] },
+    isLoading: false,
+  }),
+  useSystemHealth: () => ({
+    data: { status: 'degraded', checks: { database: { ok: true }, storage: { ok: true }, queue: { ok: false } } },
+    isLoading: false,
+  }),
   useMyLoanRequests: () => ({
     data: [
       { id: 1, estado: 'pendiente' },
@@ -89,9 +97,16 @@ describe('Inicio (/inicio)', () => {
     expect(links).toContainEqual(['Stock crítico: al día', '/alertas']);
   });
 
-  it('muestra al administrador la actividad reciente de la auditoría', () => {
+  it('muestra al administrador la seguridad del sistema y la actividad reciente de la auditoría', () => {
     mockRole = 'AD-01';
     renderInicio();
+
+    expect(todayLinks()).toEqual(
+      expect.arrayContaining([
+        ['Estado del sistema: 1 con fallas', '/monitoreo'],
+        ['Accesos rechazados: 4 en 24 h', '/monitoreo'],
+      ]),
+    );
 
     const items = screen.getAllByRole('listitem').map((li) => li.textContent ?? '');
     expect(items.some((text) => text.includes(' · Admin'))).toBe(true);

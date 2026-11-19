@@ -41,12 +41,12 @@ export function ProductoDetailDialog({
   onReubicar,
 }: ProductoDetailDialogProps) {
   const [copied, setCopied] = useState(false);
-  // Mantenciones y documentos: escritura solo AD-01 y PAN-01 (sin sesión, p. ej. en tests, se permite).
+  // Mantenciones y documentos: escritura solo PAN-01 (sin sesión, p. ej. en tests, se permite).
   const role = useOptionalAuth()?.user?.rol;
-  const canMaintain = role === undefined || role === 'AD-01' || role === 'PAN-01';
+  const canMaintain = role === undefined || role === 'PAN-01';
   const canPrintServerLabel =
     producto?.type === 'insumo' &&
-    (role === undefined || role === 'AD-01' || role === 'DIR-01' || role === 'PAN-01');
+    (role === undefined || role === 'DIR-01' || role === 'PAN-01');
   const { data: barcodeData, isLoading: isBarcodeLoading } = useProductBarcode(
     open && producto ? producto.id : undefined,
   );

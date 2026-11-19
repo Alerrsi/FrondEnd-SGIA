@@ -7,7 +7,7 @@ import {
   useUpdateIncidentReportStatus,
 } from '@sgia/api-client';
 import { INCIDENT_PROBLEM_LABELS, type IncidentStatus } from '@sgia/types';
-import { FileDown, Loader2 } from 'lucide-react';
+import { FileDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,7 +23,8 @@ import { IncidentStatusBadge } from '@/features/novedades/components/incident-st
 import { INCIDENT_TRANSITION_LABELS } from '@/features/novedades/lib/incident-labels';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { SECTION_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { SECTION_LABEL_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface IncidentDetailSheetProps {
   reportId: number | null;
@@ -79,9 +80,12 @@ export function IncidentDetailSheet({ reportId, onClose, readOnly = false }: Inc
     <Sheet open={reportId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <SheetContent className="w-full sm:max-w-lg">
         {isLoading || !report ? (
-          <div className={`flex items-center justify-center py-16 ${STATE_TEXT_CLASS}`}>
-            <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" />
-            Cargando informe…
+          <div role="status" className="flex flex-col gap-3 p-1">
+            <span className="sr-only">Cargando informe…</span>
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-24 w-full" />
           </div>
         ) : (
           <>

@@ -860,3 +860,25 @@
   - Inventario: «bajo mínimo» usa el total del servidor (`critical_only`), no solo la página cargada.
   - `select:focus-visible` con contorno fuera de `@layer` (lo anulaba `focus:outline-none`).
 - **Verificación:** typecheck, lint y vitest (484) en verde; recorrido en Chromium como PAN-01 y PRO-01 sin errores de API.
+
+## FIX-046: `/equipos` leía rutas que el backend no tiene
+
+- **Fecha:** 2026-11-18
+- **Módulo:** `packages/api-client` (`services/equipments.ts`), `apps/web` (`features/equipos`)
+- **Qué cambia:**
+  - `fetchEquipos()` y `fetchEquipo()` pedían `GET /api/equipment` y `/api/equipment/{id}/specs` (404). Ahora leen `GET /api/products?type=equipo` y `GET /api/products/{id}` y los adaptan a `Equipo` (código maestro, categoría Oracle, sala · cajón, estado operativo).
+  - La edición de especificaciones queda oculta (`SPECS_API_READY = false`) hasta que el backend exponga `PUT /api/equipment/{id}/specs` (sigue en «Endpoints pendientes»). Su prueba queda en `it.skip`.
+  - Sin datos de specs, la vida útil y el manual se muestran como pendientes.
+- **Verificación:** typecheck, lint y vitest (484 + 1 omitida) en verde.
+
+## FEAT-047: Recorte del administrador, monitoreo de seguridad, estudiantes sin borrado y esquemas de carga
+
+- **Fecha:** 2026-11-18
+- **Módulo:** `packages/types` (`monitoreo.ts`, `estudiante.ts`, `auditoria.ts`), `packages/api-client` (`services|hooks/monitoring.ts`, `students.ts`), `apps/web` (roles, layout, inicio, estudiantes, `features/monitoreo`, `components/ui/skeleton*`)
+- **Qué cambia:**
+  - `AD-01` solo administra el sistema: Inicio, Usuarios, Pañoles, Auditoría y **Monitoreo** (`roles.ts`, espejo del backend). Sus tareas de inicio pasan a «Estado del sistema» y «Accesos rechazados». Se quitó el filtro por pañol de la cola (era solo de `AD-01`).
+  - **`/monitoreo`:** estado de base de datos, archivos y cola; intentos de conexión por hora (24 h / 7 días) con cuentas de 5 o más fallos e IP con más rechazos; últimos intentos rechazados; cambios sensibles de cuentas (auditoría `user.*`); sesiones activas con «Cerrar sesión» (confirmación, queda en auditoría). Se refresca solo cada 30-60 s.
+  - **Estudiantes:** ya no se borran. Menú «Desactivar»/«Activar» (`PATCH /students/{id}/status`), filtro Activos/Desactivados/Todos y pastilla «Desactivado». En el mostrador, un RUT de estudiante desactivado avisa y no se puede elegir.
+  - **Esquemas de carga** (`Skeleton`, `SkeletonRows`, `SkeletonList`): reemplazan los «Cargando…» de unas 35 vistas (listados, tablas, dashboard, detalles y paneles). Conservan el texto para lectores de pantalla (`role="status"`) y respetan «reducir movimiento» (`motion-safe:animate-pulse`).
+- **Verificación:** typecheck, lint y vitest (490 + 1 omitida). Recorrido en Chrome headless (admin y pañol, claro/oscuro, 390/768/1024/1440 px): sin errores de API; el texto `sr-only` de tablas con scroll ensanchaba la página (se agregó `relative`).
+- **Pendiente visto:** en el teléfono el menú lateral no se oculta (ocupa 256 px en todas las pantallas); es anterior a este cambio.

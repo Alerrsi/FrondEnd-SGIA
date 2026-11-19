@@ -31,7 +31,7 @@ const errorClasses = 'text-[11px] text-rose-600 dark:text-rose-400';
 interface OrderPanelProps {
   request: PurchaseRequest;
   canManage: boolean;
-  /** DIR-01 y AD-01 registran facturas (`scanInvoice`). */
+  /** DIR-01 registra facturas (`scanInvoice`). */
   canRegisterInvoice: boolean;
 }
 

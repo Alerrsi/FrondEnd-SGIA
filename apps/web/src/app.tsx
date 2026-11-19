@@ -10,6 +10,7 @@ import SolicitudesCompraPage from '@/features/solicitudes-compra/pages/solicitud
 import SolicitudCompraDetailPage from '@/features/solicitudes-compra/pages/solicitud-compra-detail-page';
 import DashboardPage from '@/features/dashboard/pages/dashboard-page';
 import AuditoriaPage from '@/features/administracion/pages/auditoria-page';
+import MonitoreoPage from '@/features/monitoreo/pages/monitoreo-page';
 import PanolesPage from '@/features/administracion/pages/panoles-page';
 import MantencionesPage from '@/features/mantenciones/pages/mantenciones-page';
 import EstudiantesPage from '@/features/estudiantes/pages/estudiantes-page';
@@ -60,7 +61,7 @@ function RootRoute() {
   const { user } = useAuth();
   if (!user) return null;
 
-  if (user.rol === 'DIR-01' || user.rol === 'AD-01') {
+  if (user.rol === 'DIR-01') {
     return <DashboardPage />;
   }
 
@@ -363,6 +364,15 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={rolesForRoute('/auditoria') ?? []}>
                   <AuditoriaPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/monitoreo"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/monitoreo') ?? []}>
+                  <MonitoreoPage />
                 </RequireRole>
               }
             />

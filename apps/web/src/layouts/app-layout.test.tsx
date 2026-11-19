@@ -341,8 +341,8 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
   });
 
   it('con muchos módulos la lista expandida hace scroll y nunca tapa al usuario', () => {
-    mockUserRole = 'AD-01';
-    mockUserName = 'Admin Rodrigo';
+    mockUserRole = 'DIR-01';
+    mockUserName = 'Directora Rosa';
 
     render(
       <MemoryRouter initialEntries={['/']}>
@@ -363,17 +363,19 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     expect(nav.parentElement?.className).toContain('min-h-0');
     expect(nav.parentElement?.className).toContain('flex-1');
     // Los enlaces no se aplastan: desbordan hacia el scroll
-    expect(nav.querySelectorAll('a').length).toBeGreaterThan(12);
+    // DIR-01 es el rol con más módulos desde que AD-01 solo administra el sistema.
+    expect(nav.querySelectorAll('a').length).toBeGreaterThan(8);
     nav.querySelectorAll('a').forEach((a) => expect(a.className).toContain('shrink-0'));
 
     // El bloque de usuario no se encoge y está fuera del área con scroll
     expect(userBlock.className).toContain('shrink-0');
     expect(nav.contains(userBlock)).toBe(false);
-    expect(userBlock.textContent).toContain('Admin Rodrigo');
+    expect(userBlock.textContent).toContain('Directora Rosa');
   });
 
   it('en modo encogido el riel de módulos hace scroll y el bloque de usuario queda fijo', async () => {
     mockUserRole = 'AD-01';
+    mockUserName = 'Admin Rodrigo';
     const user = userEvent.setup();
 
     render(

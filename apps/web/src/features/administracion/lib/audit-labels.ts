@@ -8,6 +8,7 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   'user.deactivated': 'Usuario desactivado',
   'user.password_changed': 'Cambio de contraseña',
   'user.deleted': 'Usuario eliminado',
+  'user.session_revoked': 'Sesión cerrada por administración',
   'equipment_unit.written_off': 'Unidad dada de baja',
   'product.written_off': 'Producto dado de baja',
   'purchase.created': 'Compra creada',

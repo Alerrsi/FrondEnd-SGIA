@@ -18,6 +18,7 @@ import {
 import { PageHeading } from '@/components/ui/page-heading';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const controlClasses =
   FILTER_CONTROL_CLASS;
@@ -146,7 +147,7 @@ export default function MantencionesPage() {
         </div>
 
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando mantenciones…</div>
+          <SkeletonList label="Cargando mantenciones…" columns={5} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />

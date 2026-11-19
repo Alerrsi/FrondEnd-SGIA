@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 /** Ingresos de factura confirmados que consumieron este presupuesto. */
 export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
@@ -27,11 +28,7 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
         </thead>
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
           {isLoading && (
-            <tr>
-              <td colSpan={4} className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
-                Cargando ingresos…
-              </td>
-            </tr>
+            <SkeletonRows columns={4} rows={3} label="Cargando ingresos…" cellClassName="px-3 py-2" />
           )}
           {!isLoading && rows.length === 0 && (
             <tr>

@@ -360,19 +360,6 @@ describe('REQ-10: Cola de Despacho de Solicitudes Remotas (ColaPrestamosPage)', 
     expect(mockUsePendingLoans).toHaveBeenLastCalledWith(undefined);
   });
 
-  it('el administrador filtra la cola por pañol', async () => {
-    mockAuth.rol = 'AD-01';
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <ColaPrestamosPage />
-      </MemoryRouter>,
-    );
-
-    await user.selectOptions(screen.getByLabelText('Filtro de pañol'), '1');
-    expect(mockUsePendingLoans).toHaveBeenLastCalledWith({ storeroom_id: 1 });
-  });
-
   describe('Revisión de la solicitud', () => {
     it('Revisar despliega los detalles, la propuesta y la ubicación de cada unidad', async () => {
       const user = userEvent.setup();

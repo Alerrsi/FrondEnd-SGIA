@@ -258,3 +258,14 @@ export type {
   MaintenancePushData,
   PushNotificationData,
 } from './notificacion';
+
+export type {
+  FailedLoginReason,
+  LoginActivityHour,
+  LoginActivity,
+  FailedLogin,
+  FailedLoginQueryParams,
+  ActiveSession,
+  HealthCheck,
+  SystemHealth,
+} from './monitoreo';

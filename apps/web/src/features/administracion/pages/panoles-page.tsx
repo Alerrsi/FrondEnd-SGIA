@@ -16,6 +16,7 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function PanolesPage() {
   const [search, setSearch] = useState('');
@@ -67,7 +68,7 @@ export default function PanolesPage() {
           />
         </div>
         {isLoading ? (
-          <div className={`py-12 ${STATE_TEXT_CLASS}`}>Cargando pañoles…</div>
+          <SkeletonList label="Cargando pañoles…" rows={4} columns={3} />
         ) : isError ? (
           <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
             <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />

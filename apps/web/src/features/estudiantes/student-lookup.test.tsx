@@ -38,7 +38,7 @@ describe('StudentLookup (REQ-20)', () => {
 
   it('200: muestra al estudiante y entrega el borrower existente', async () => {
     lookupResult = {
-      data: { id: 7, rut: '12345678-5', full_name: 'Ana Pérez', career: { name: 'Informática' } },
+      data: { id: 7, rut: '12345678-5', full_name: 'Ana Pérez', career: { name: 'Informática' }, is_active: true },
       isFetching: false,
       isError: false,
       error: null,
@@ -55,6 +55,22 @@ describe('StudentLookup (REQ-20)', () => {
         expect.objectContaining({ kind: 'existing', student: expect.objectContaining({ id: 7 }) }),
       ),
     );
+  });
+
+  it('estudiante desactivado: avisa y no lo entrega como prestatario', async () => {
+    lookupResult = {
+      data: { id: 8, rut: '12345678-5', full_name: 'Beto Soto', is_active: false },
+      isFetching: false,
+      isError: false,
+      error: null,
+    };
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<StudentLookup onChange={onChange} />);
+    await user.type(screen.getByLabelText(/RUT del estudiante/i), '12.345.678-5{Enter}');
+
+    expect((await screen.findByRole('alert')).textContent).toMatch(/Beto Soto está desactivado/);
+    expect(onChange).not.toHaveBeenCalledWith(expect.objectContaining({ kind: 'existing' }));
   });
 
   it('404: pide el nombre y entrega un RUT nuevo', async () => {
@@ -74,7 +90,7 @@ describe('StudentLookup (REQ-20)', () => {
 describe('studentBorrowerPayload y esquema', () => {
   it('existente → solo student_id; nuevo → student_rut y nombre si lo hay', () => {
     expect(
-      studentBorrowerPayload({ kind: 'existing', student: { id: 7, rut: '12345678-5' } }),
+      studentBorrowerPayload({ kind: 'existing', student: { id: 7, rut: '12345678-5', is_active: true } }),
     ).toEqual({ student_id: 7 });
     expect(studentBorrowerPayload({ kind: 'new', rut: '98765432-5', name: ' Luis ' })).toEqual({
       student_rut: '98765432-5',

@@ -42,10 +42,15 @@ import { calculateEquipmentLifeCycle } from '../utils/lifecycle';
 import { downloadBlob } from '../utils/download';
 import { PageHeading } from '@/components/ui/page-heading';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
+
+const SPECS_API_READY = false;
 
 export default function EquiposPage() {
   const { user } = useAuth();
-  const canEdit = user?.rol === 'DIR-01' || user?.rol === 'AD-01';
+  // shortcut: `PUT /api/equipment/{id}/specs` sigue pendiente en el backend (ENDPOINTS.md);
+  // reactivar la edición cuando exista.
+  const canEdit = SPECS_API_READY && user?.rol === 'DIR-01';
 
   const { id: paramId } = useParams<{ id?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -476,14 +481,7 @@ export default function EquiposPage() {
             </thead>
             <tbody className="divide-y divide-zinc-200/70 dark:divide-zinc-800">
               {isLoading ? (
-                <tr>
-                  <td colSpan={columns.length} className={`py-12 ${STATE_TEXT_CLASS}`}>
-                    <div className="flex flex-col items-center gap-2">
-                      <RefreshCw aria-hidden="true" className="h-5 w-5 animate-spin text-zinc-400" />
-                      <span>Cargando catálogo de equipamiento técnico…</span>
-                    </div>
-                  </td>
-                </tr>
+                <SkeletonRows columns={columns.length} label="Cargando catálogo de equipamiento técnico…" />
               ) : isError ? (
                 <tr>
                   <td colSpan={columns.length} className="py-12 text-center text-rose-500">

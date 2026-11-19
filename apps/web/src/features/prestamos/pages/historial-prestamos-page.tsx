@@ -50,6 +50,7 @@ import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 const columnHelper = createColumnHelper<Prestamo>();
 
@@ -546,12 +547,7 @@ export default function HistorialPrestamosPage() {
 
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-mono text-xs">
               {isLoading ? (
-                <tr>
-                  <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
-                    <RefreshCw aria-hidden="true" className="mx-auto mb-2 h-5 w-5 animate-spin" />
-                    Cargando bitácora histórica de préstamos…
-                  </td>
-                </tr>
+                <SkeletonRows columns={columns.length} label="Cargando bitácora histórica de préstamos…" />
               ) : loans.length === 0 ? (
                 <tr>
                   <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>

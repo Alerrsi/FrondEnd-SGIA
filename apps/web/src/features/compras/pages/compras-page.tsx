@@ -12,6 +12,7 @@ import { PurchaseDetailSheet } from '@/features/compras/components/purchase-deta
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { PageHeading } from '@/components/ui/page-heading';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
   { value: '', label: 'Todas' },
@@ -84,8 +85,8 @@ export default function ComprasPage() {
       </div>
 
       {isLoading ? (
-        <div className={`py-12 ${STATE_TEXT_CLASS}`}>
-          Cargando órdenes de compra…
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <SkeletonList label="Cargando órdenes de compra…" columns={5} />
         </div>
       ) : isError || !data ? (
         <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">

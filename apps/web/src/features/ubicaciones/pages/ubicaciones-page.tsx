@@ -30,6 +30,7 @@ import { printBlob } from '@/features/equipos/utils/download';
 import { LocationFormDialog } from '@/features/ubicaciones/components/location-form-dialog';
 import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
 import { cajonFullCode } from '@/features/ubicaciones/lib/location-code';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function UbicacionesPage() {
   const [search, setSearch] = useState('');
@@ -204,10 +205,7 @@ export default function UbicacionesPage() {
           </div>
 
           {isLoading ? (
-            <div className={`flex items-center justify-center p-8 gap-2 ${STATE_TEXT_CLASS}`}>
-              <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-              <span>Cargando ubicaciones…</span>
-            </div>
+            <SkeletonList label="Cargando ubicaciones…" rows={5} columns={2} />
           ) : locations.length === 0 ? (
             <div className={`p-6 ${STATE_TEXT_CLASS}`}>
               No se encontraron salas o ubicaciones registradas.
@@ -306,10 +304,7 @@ export default function UbicacionesPage() {
               </div>
 
               {isLoadingCajones ? (
-                <div className={`flex items-center justify-center p-8 gap-2 ${STATE_TEXT_CLASS}`}>
-                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-                  <span>Cargando compartimientos…</span>
-                </div>
+                <SkeletonList label="Cargando compartimientos…" rows={4} columns={3} />
               ) : cajones.length === 0 ? (
                 <div className="p-8 text-center text-xs font-mono text-zinc-400 border border-dashed border-zinc-200 dark:border-zinc-800 rounded">
                   Esta ubicación no tiene cajones o gavetas configuradas. Pulsa en "Nuevo cajón" para añadir una.

@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SupplierAreaBadges } from '@/features/proveedores/components/supplier-area-badges';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export interface ProveedoresTableProps {
   suppliers: Supplier[];
@@ -125,13 +126,7 @@ export function ProveedoresTable({
       {/* Table */}
       <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
         {isLoading ? (
-          <div
-            className={`flex items-center justify-center py-12 ${STATE_TEXT_CLASS}`}
-            role="progressbar"
-            aria-label="Cargando proveedores"
-          >
-            Cargando catálogo de proveedores…
-          </div>
+          <SkeletonList label="Cargando catálogo de proveedores…" columns={4} />
         ) : (
           <table className="w-full">
             <thead className={TABLE_HEAD_CLASS}>

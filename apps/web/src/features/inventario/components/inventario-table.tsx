@@ -35,6 +35,7 @@ import { cn } from '@/lib/cn';
 import { ProductoUnidadesExpandidas } from './producto-unidades-expandidas';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 export const AREAS_INACAP = [
   'Informática',
@@ -574,18 +575,7 @@ export function InventarioTable({
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {isLoading ? (
-              <tr>
-                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
-                  <div
-                    role="progressbar"
-                    aria-label="Cargando productos en pañol"
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-600 dark:text-zinc-400" />
-                    <span>Buscando y cargando productos en pañol…</span>
-                  </div>
-                </td>
-              </tr>
+              <SkeletonRows columns={columns.length} rows={8} label="Buscando y cargando productos en pañol…" />
             ) : safeProductos.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>

@@ -9,7 +9,7 @@ import { CotizacionDetailSheet } from '@/features/cotizaciones/components/cotiza
 import { LegacyQuotationsNotice } from '@/features/cotizaciones/components/legacy-quotations-notice';
 import { PageHeading } from '@/components/ui/page-heading';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /** Historial del flujo antiguo de cotizaciones: solo lectura (lista y detalle). */
 export default function CotizacionesPage() {
@@ -66,8 +66,11 @@ export default function CotizacionesPage() {
       {/* Cotizaciones list */}
       <div className="flex flex-col gap-3">
         {isLoading && (
-          <div className={`flex items-center gap-2 py-12 justify-center ${STATE_TEXT_CLASS}`}>
-            <span>Cargando historial de cotizaciones…</span>
+          <div role="status" className="flex flex-col gap-3">
+            <span className="sr-only">Cargando historial de cotizaciones…</span>
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} className="h-24" />
+            ))}
           </div>
         )}
         {isError && (

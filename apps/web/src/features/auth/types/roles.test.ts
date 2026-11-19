@@ -21,13 +21,14 @@ describe('Role and Route Permissions', () => {
   });
 
   describe('canAccessRoute', () => {
-    it('allows AD-01 to access management, inventory and administrative routes', () => {
-      expect(canAccessRoute('AD-01', '/usuarios')).toBe(true);
-      expect(canAccessRoute('AD-01', '/inventario')).toBe(true);
-      expect(canAccessRoute('AD-01', '/compras/cotizaciones')).toBe(true);
-      expect(canAccessRoute('AD-01', '/')).toBe(true);
-      expect(canAccessRoute('AD-01', '/compras/presupuestos')).toBe(true);
-      expect(canAccessRoute('AD-01', '/prestamos/cola')).toBe(false);
+    it('limits AD-01 to system administration and monitoring', () => {
+      for (const route of ['/inicio', '/usuarios', '/panoles', '/auditoria', '/monitoreo']) {
+        expect(canAccessRoute('AD-01', route)).toBe(true);
+      }
+      for (const route of ['/', '/dashboard', '/inventario', '/prestamos/cola', '/estudiantes', '/compras/cotizaciones', '/compras/presupuestos', '/mantenciones', '/alertas']) {
+        expect(canAccessRoute('AD-01', route)).toBe(false);
+      }
+      expect(canAccessRoute('DIR-01', '/monitoreo')).toBe(false);
     });
 
     it('allows DIR-01 to access dashboard, quotations, and inventory', () => {

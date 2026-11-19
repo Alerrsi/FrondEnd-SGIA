@@ -1,9 +1,11 @@
 import { PurchaseFlowSteps } from '@/features/compras/components/purchase-flow-steps';
 import { CriticalStockTask } from './critical-stock-task';
+import { FailedLoginsTask } from './failed-logins-task';
 import { LoanQueueTask } from './loan-queue-task';
 import { MyLoanRequestsTasks } from './my-loan-requests-tasks';
 import { OverdueLoansTask } from './overdue-loans-task';
 import { RecentActivity } from './recent-activity';
+import { SystemHealthTask } from './system-health-task';
 
 const GRID = 'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3';
 const SUBTITLE = 'text-xs font-semibold text-zinc-500 dark:text-zinc-400';
@@ -38,8 +40,8 @@ export function TodaySection({ role }: { role: string }) {
     return (
       <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
-          <OverdueLoansTask to="/prestamos/historial" />
-          <CriticalStockTask description="Productos bajo el mínimo en todos los pañoles." />
+          <SystemHealthTask />
+          <FailedLoginsTask />
         </div>
         <div className="lg:col-span-2">
           <RecentActivity />

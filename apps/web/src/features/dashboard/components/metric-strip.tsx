@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { apiErrorToMessage } from '@/lib/api-error';
 import type { ExecutiveKpis } from '../types/metrics';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface MetricStripProps {
   kpis?: ExecutiveKpis;
@@ -30,9 +31,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
 
   if (isLoading || !kpis) {
     return (
-      <div className="flex items-center justify-between rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs animate-pulse font-mono text-xs text-zinc-400">
-        <span>Cargando indicadores ejecutivos…</span>
-      </div>
+      <Skeleton label="Cargando indicadores ejecutivos…" className="h-11 w-full" />
     );
   }
 
