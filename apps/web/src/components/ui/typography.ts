@@ -16,7 +16,8 @@ import type { ComponentType } from 'react';
  *   Mensaje de estado   STATE_TEXT_CLASS  13px · centrado · zinc-500 (cargando, sin datos)
  *
  * Pesos 400 y 500 (600 solo en cifras destacadas); nunca 700. Tipo oración: nada de MAYÚSCULAS en rótulos.
- * `font-mono` y `font-code` son Geist Mono con cifras tabulares: SKU, RUT, seriales, códigos y montos.
+ * `font-mono` es Geist con cifras tabulares (montos, fechas, ubicaciones); `font-code` es Geist Mono, solo para
+ * identificadores (SKU, Code128, RUT, seriales, códigos de solicitud u OC).
  * Los títulos de modales y paneles laterales (16px · 500) los ponen `Dialog` y `Sheet`. Nada bajo 12px.
  */
 

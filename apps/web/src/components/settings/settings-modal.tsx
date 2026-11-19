@@ -1,7 +1,8 @@
-import { KeyRound, Laptop, Monitor, Moon, Sparkles, Sun } from 'lucide-react';
+import { KeyRound, Laptop, LayoutPanelLeft, LayoutPanelTop, Monitor, Moon, Rows3, Rows4, Sparkles, Sun } from 'lucide-react';
 import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useTheme, type ThemePreference } from '@/contexts/theme-context';
+import { useLayoutPreference, type Density, type LayoutMode } from '@/contexts/layout-context';
 import { cn } from '@/lib/cn';
 import { SectionLabel } from '@/components/ui/section-label';
 
@@ -18,8 +19,27 @@ const THEME_OPTIONS: Array<{ id: ThemePreference; label: string; icon: typeof Su
   { id: 'system', label: 'Sistema', icon: Laptop },
 ];
 
+const LAYOUT_OPTIONS: Array<{ id: LayoutMode; label: string; icon: typeof Sun }> = [
+  { id: 'sidebar', label: 'Menú lateral', icon: LayoutPanelLeft },
+  { id: 'header', label: 'Barra superior', icon: LayoutPanelTop },
+];
+
+const DENSITY_OPTIONS: Array<{ id: Density; label: string; icon: typeof Sun }> = [
+  { id: 'comoda', label: 'Cómoda', icon: Rows3 },
+  { id: 'compacta', label: 'Compacta', icon: Rows4 },
+];
+
+const OPTION_CLASS = (active: boolean) =>
+  cn(
+    'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-[13px] font-medium transition-colors cursor-pointer pointer-coarse:py-3',
+    active
+      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700',
+  );
+
 export function SettingsModal({ open, onClose, onChangePassword, onViewSessions }: SettingsModalProps) {
   const { theme, setTheme } = useTheme();
+  const { layout, setLayout, density, setDensity } = useLayoutPreference();
 
   return (
     <Dialog
@@ -70,14 +90,47 @@ export function SettingsModal({ open, onClose, onChangePassword, onViewSessions 
                   type="button"
                   onClick={() => setTheme(item.id)}
                   aria-pressed={active}
-                  className={cn(
-                    'flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-xs font-medium transition-colors cursor-pointer',
-                    active
-                      ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                      : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700',
-                  )}
+                  className={OPTION_CLASS(active)}
                 >
                   <Icon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Navegación: menú lateral o barra superior */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
+            <LayoutPanelLeft aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
+            <SectionLabel>Navegación</SectionLabel>
+          </div>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {LAYOUT_OPTIONS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button key={item.id} type="button" onClick={() => setLayout(item.id)} aria-pressed={layout === item.id} className={OPTION_CLASS(layout === item.id)}>
+                  <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Densidad de tablas */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2 pb-1 border-b border-zinc-200 dark:border-zinc-800">
+            <Rows3 aria-hidden="true" className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0" />
+            <SectionLabel>Densidad de tablas</SectionLabel>
+          </div>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {DENSITY_OPTIONS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button key={item.id} type="button" onClick={() => setDensity(item.id)} aria-pressed={density === item.id} className={OPTION_CLASS(density === item.id)}>
+                  <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
                   <span>{item.label}</span>
                 </button>
               );

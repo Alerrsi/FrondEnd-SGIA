@@ -28,10 +28,12 @@
   /* Chip de código (SKU, OC, Code128): etiqueta crema con tinta burdeo. Solo ahí. */
   --color-tag: #ECE6DA;
   --color-tag-ink: #6B1729;
-  /* Una familia en dos cortes: Geist para la interfaz, Geist Mono para datos técnicos. */
+  /* Una familia en dos cortes. `font-mono` se usa en ~400 lugares como «dato técnico» (montos, fechas, áreas):
+     es Geist con cifras tabulares. La monoespaciada real, Geist Mono, es `font-code`: solo identificadores
+     (SKU, Code128, RUT, seriales, códigos de solicitud u OC). */
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-mono: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-code: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   /* Radio «sharp»: chip, control, contenedor. */
   --radius-sm: 4px;
@@ -551,6 +553,12 @@
 .cell-grid > * {
   box-shadow: 1px 0 0 0 var(--line), 0 1px 0 0 var(--line);
 }
+/* Densidad compacta (Ajustes): filas de tabla más bajas en toda la app. */
+[data-density='compacta'] tbody td {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+
 /* Separador discontinuo dentro de una celda: el único uso de línea discontinua. */
 .rule-dashed {
   border: 0;

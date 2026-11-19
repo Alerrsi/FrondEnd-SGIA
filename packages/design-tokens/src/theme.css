@@ -26,7 +26,8 @@
   --color-danger-bg: var(--danger-bg);
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+  --font-mono: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-code: 'Geist Mono Variable', ui-monospace, monospace;
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;

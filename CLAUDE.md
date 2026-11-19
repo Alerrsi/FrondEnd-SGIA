@@ -43,7 +43,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 
 ## Decisiones de diseño
 
-Sistema «Trazo» en implementación (rama `feat/rediseno-zed`, `docs/rediseno-interfaz.md`; manda sobre `sgia-design` en color, tipografía y menú hasta que se reescriba en la fase 8): neutros cálidos papel/grafito con la escala `zinc` redefinida en `apps/web/src/index.css` (se sigue escribiendo `zinc-*`), burdeo como único acento (rosa en oscuro), menú lateral neutro (`bg-zinc-100 dark:bg-zinc-900`, activo con barra burdeo), Geist en la interfaz y Geist Mono en `font-mono`/`font-code` (SKU, RUT, códigos, montos), radios 4/6/8px, sin paletas alternativas, pesos 400/500 (nunca 700), nada bajo 12px y rótulos en tipo oración (sin `uppercase`). Chips de código como etiqueta crema (`CODE_CHIP_CLASS`); badges con el componente `Badge`.
+Sistema «Trazo» en implementación (rama `feat/rediseno-zed`, `docs/rediseno-interfaz.md`; manda sobre `sgia-design` en color, tipografía y menú hasta que se reescriba en la fase 8): neutros cálidos papel/grafito con la escala `zinc` redefinida en `apps/web/src/index.css` (se sigue escribiendo `zinc-*`), burdeo como único acento (rosa en oscuro), menú lateral neutro (`bg-zinc-100 dark:bg-zinc-900`, activo con barra burdeo), Geist en la interfaz y Geist Mono solo en `font-code` (SKU, RUT, seriales, códigos); `font-mono` es Geist con cifras tabulares, radios 4/6/8px, sin paletas alternativas, pesos 400/500 (nunca 700), nada bajo 12px y rótulos en tipo oración (sin `uppercase`). Chips de código como etiqueta crema (`CODE_CHIP_CLASS`); badges con el componente `Badge`.
 
 ## Convenciones de trabajo
 

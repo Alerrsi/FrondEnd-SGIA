@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -177,8 +177,9 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
       </MemoryRouter>,
     );
 
-    // En estado expandido, el texto "Usuarios" está visible
-    expect(screen.getByText('Usuarios')).toBeDefined();
+    // En estado expandido, el texto "Usuarios" está visible en el menú (las migas también lo nombran)
+    const mainNav = () => screen.getByRole('navigation', { name: 'Navegación principal' });
+    expect(within(mainNav()).getByText('Usuarios')).toBeDefined();
 
     // Hacer clic en encoger
     const collapseButton = screen.getByTitle('Encoger panel lateral');
@@ -197,7 +198,7 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
 
     // Vuelve al modo expandido
     expect(screen.getByTitle('Encoger panel lateral')).toBeDefined();
-    expect(screen.getByText('Usuarios')).toBeDefined();
+    expect(within(mainNav()).getByText('Usuarios')).toBeDefined();
   });
 
   it('has a resize separator handle with cursor-col-resize and draggable properties', () => {

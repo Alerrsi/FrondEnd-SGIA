@@ -64,7 +64,7 @@ export function IconNav({
   glyph = 18,
   axis = "column",
   dilate = 100,
-  bounce = 50,
+  bounce = 0, // «Trazo»: sin rebote (ninguna curva pasa de su marca)
   speed = 50,
   hug = 4,
   className,

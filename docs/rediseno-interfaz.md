@@ -1,6 +1,6 @@
 # Rediseño de la interfaz web «Trazo»
 
-**Estado: en implementación (19 nov 2026), fases 1 y 2 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
+**Estado: en implementación (19 nov 2026), fases 1 a 3 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
 
 Plan escrito con el skill `design-taste-frontend` (tasteskill 2.5). Ese skill está hecho para sitios de empresa; aquí se usan su sistema de tokens, tipografía, botones, formularios, movimiento, accesibilidad y presupuesto de rendimiento. Lo que es solo de páginas de marketing (fotografías, una sección por pantalla, «momentos», efectos de shader) no aplica a un panel de operación y queda fuera (ver «Fuera de alcance»).
 
@@ -38,7 +38,7 @@ Revisado en `zed.dev`, `/pricing`, `/blog` y `/docs` (HTML y CSS del 19 nov 2026
 | # | Decisión |
 |---|---|
 | 1 | **Sistema «Trazo»:** neutros cálidos, líneas de 1px como estructura, burdeo como único acento. Reemplaza «Pañol». |
-| 2 | **Tipografía dada por el skill:** Geist (interfaz y títulos) + Geist Mono (SKU, RUT, códigos, cifras técnicas). Una familia, dos cortes, 4 archivos de fuente como máximo, alojados en el proyecto (`@fontsource-variable/geist`, `@fontsource-variable/geist-mono`) con `font-display: swap`. Se elimina Schibsted Grotesk. |
+| 2 | **Tipografía dada por el skill:** Geist (interfaz, títulos y `font-mono` con cifras tabulares) + Geist Mono (`font-code`: SKU, RUT, seriales, códigos). Una familia, dos cortes, 4 archivos de fuente como máximo, alojados en el proyecto (`@fontsource-variable/geist`, `@fontsource-variable/geist-mono`) con `font-display: swap`. Se elimina Schibsted Grotesk. |
 | 3 | **Paleta con los colores del cliente** (`start.mjs brand`): las tres paletas que repartió el skill (menta, verde azulado, rosa) chocan con el burdeo de INACAP, así que se usan los colores institucionales sobre neutros cálidos. |
 | 4 | **Radio `sharp`** (4 / 6 / 8px), como las herramientas de desarrollo de referencia. Botones en **`pill`** (sorteado por el skill): un solo estilo de botón en toda la app. |
 | 5 | **Dos layouts con un solo menú:** `sidebar` (por defecto, conserva colapsar, redimensionar y el `IconBar` vertical) y `header` (barra superior tradicional). Los dos leen el mismo `nav-config.ts`. El usuario elige en Ajustes; se guarda en `localStorage` (`sgia-layout`). Sidebar es el valor por defecto (confirmado). |
@@ -91,7 +91,8 @@ Una escala, en `components/ui/typography.ts` (se mantiene la regla de no escribi
 | Texto | — | 14/22 | 15/24 | 400 |
 | Cabecera de tabla, etiqueta de campo | `TABLE_HEAD_CLASS`, `FIELD_LABEL_CLASS` | 13/18 | 13/18 | 500 |
 | Cifra de métrica | `Metric` | 28/32 | 24/28 | 500, cifras tabulares |
-| Código (SKU, RUT, OC) | `CODE_CHIP_CLASS`, `font-mono` | 12/16 | 12/16 | 400 Geist Mono |
+| Código (SKU, RUT, OC, serial) | `CODE_CHIP_CLASS`, `font-code` | 12/16 | 12/16 | 400 Geist Mono |
+| Dato técnico (monto, fecha, ubicación) | `font-mono` | — | — | Geist con cifras tabulares |
 
 Tipo oración siempre; nada bajo 12px (se elimina `text-[11px]`); nunca 700; cifras con `font-variant-numeric: tabular-nums`.
 
@@ -239,13 +240,13 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 - [x] Tests de cada componente nuevo (`components/ui/trazo-components.test.tsx`).
 
 ### Fase 3 — Layouts y navegación
-- [ ] `nav-config.ts` como fuente única (migrar `app-layout.tsx` e `inicio-content.ts`).
-- [ ] `SidebarLayout` neutro, con cajón bajo 1024px.
-- [ ] `HeaderLayout` con paneles de grupo y menú a pantalla completa bajo 1024px.
-- [ ] Preferencia de layout y densidad en Ajustes.
-- [ ] Buscador `Ctrl K`, lista de atajos `?` y migas de pan.
-- [ ] Rutas con `React.lazy` y `Suspense`.
-- [ ] Actualizar `app-layout.test.tsx` y sumar tests del header y del buscador.
+- [x] `nav-config.ts` como fuente única (`navForRole`, `screensForRole`, `findScreen`, `quickActionsForRole`); `inicio-content.ts` pasa en la fase 4.
+- [x] `SidebarLayout` neutro, con cajón bajo 1024px (antes el sidebar quedaba fijo también en el teléfono).
+- [x] `HeaderLayout` con paneles de grupo (Compras, «Más») y menú a pantalla completa bajo 1024px.
+- [x] Preferencia de layout y densidad en Ajustes (`LayoutPreferenceProvider`, `sgia-layout`, `sgia-density`).
+- [x] Buscador `Ctrl K`, lista de atajos `?` y migas de pan.
+- [x] Rutas con `React.lazy` y `Suspense` (dentro de `ContentFrame`).
+- [x] Actualizar `app-layout.test.tsx` y sumar tests del header y del buscador (`layout-shell.test.tsx`).
 
 ### Fase 4 — Páginas de inicio por rol
 - [ ] Registrar en `ENDPOINTS.md` (ambos repos) los campos GraphQL que falten para inicio.
