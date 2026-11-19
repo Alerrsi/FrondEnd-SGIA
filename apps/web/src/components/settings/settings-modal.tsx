@@ -23,10 +23,27 @@ interface PaletteOption {
 const PALETTE_OPTIONS: PaletteOption[] = [
   {
     id: 'default',
-    name: 'Paleta Principal (Industrial INACAP)',
+    name: 'Pañol (burdeo y navy)',
     badge: 'Predeterminada',
     description:
-      'Estética técnica y densa de ingeniería basada en escala neutra Zinc, acento institucional INACAP y estados semánticos estandarizados.',
+      'Marco navy, acento burdeo y etiquetas crema para los códigos, sobre neutros fríos derivados del slate.',
+    swatches: [
+      { name: 'Canvas', hex: '#EFF2F6', role: 'Fondo' },
+      { name: 'Superficie', hex: '#ffffff', role: 'Panel' },
+      { name: 'Burdeo', hex: '#490B1A', role: 'Acento' },
+      { name: 'Navy', hex: '#142841', role: 'Texto / menú' },
+      { name: 'Slate', hex: '#798DA6', role: 'Neutros' },
+      { name: 'Crema', hex: '#E5DED2', role: 'Etiquetas' },
+      { name: 'Disponible / activo', hex: '#10b981', role: 'Óptimo' },
+      { name: 'Stock crítico', hex: '#f43f5e', role: 'Alerta' },
+    ],
+  },
+  {
+    id: 'industrial',
+    name: 'Industrial INACAP (diseño anterior)',
+    badge: 'Clásica',
+    description:
+      'El estilo previo al rediseño Pañol: escala neutra Zinc, menú lateral claro, botones monocromos y tipografía IBM Plex.',
     swatches: [
       { name: 'Canvas Zinc', hex: '#f4f4f5', role: 'Fondo' },
       { name: 'Superficie', hex: '#ffffff', role: 'Panel' },

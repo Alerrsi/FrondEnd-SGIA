@@ -135,6 +135,83 @@
   }
 
   /* ==========================================================================
+     Paleta «Industrial INACAP»: el diseño anterior al rediseño Pañol (main antes de 423b05f).
+     Devuelve la escala zinc original de Tailwind, neutros cálidos, CTA monocromo e IBM Plex.
+     ========================================================================== */
+  :root[data-palette='industrial'] {
+    --color-zinc-50: oklch(98.5% 0 0);
+    --color-zinc-100: oklch(96.7% 0.001 286.375);
+    --color-zinc-200: oklch(92% 0.004 286.32);
+    --color-zinc-300: oklch(87.1% 0.006 286.286);
+    --color-zinc-400: oklch(70.5% 0.015 286.067);
+    --color-zinc-500: oklch(55.2% 0.016 285.938);
+    --color-zinc-600: oklch(44.2% 0.017 285.786);
+    --color-zinc-700: oklch(37% 0.013 285.805);
+    --color-zinc-800: oklch(27.4% 0.006 286.033);
+    --color-zinc-900: oklch(21% 0.006 285.885);
+    --color-zinc-950: oklch(14.1% 0.005 285.823);
+    --color-tag: var(--color-zinc-100);
+    --color-tag-ink: var(--color-zinc-900);
+    --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    --font-display: 'Sora', 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-code: 'IBM Plex Mono', ui-monospace, monospace;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+
+    --brand: #E1060D;
+    --brand-strong: #B8050A;
+    --brand-soft: #FDEEEE;
+    --ink: #202124;
+    --ink-muted: #5F6368;
+    --bg: #FAF8F5;
+    --surface: #FFFFFF;
+    --surface-alt: #F3F0EB;
+    --line: #E4E1DC;
+    --info: #1A73E8;
+    --ok: #1E7B4F;
+    --ok-bg: #E6F4EC;
+    --warn: #A15C00;
+    --warn-bg: #FFF3D9;
+    --danger: #B42318;
+    --danger-bg: #FEE4E2;
+
+    --color-background: var(--bg);
+    --color-surface: var(--surface);
+    --color-surface-raised: var(--surface-alt);
+    --color-border: var(--line);
+    --color-border-strong: var(--line);
+    --color-text: var(--ink);
+    --color-text-muted: var(--ink-muted);
+    /* El CTA era monocromo (zinc-900 / zinc-100 en oscuro), no del color de marca */
+    --color-accent: var(--color-zinc-900);
+    --color-accent-muted: var(--color-zinc-800);
+  }
+
+  html.dark[data-palette='industrial'],
+  :root[data-theme='dark'][data-palette='industrial'] {
+    --brand: #E1060D;
+    --brand-strong: #FF3B42;
+    --brand-soft: rgba(225, 6, 13, 0.15);
+    --ink: #F1F2F4;
+    --ink-muted: #9AA0A6;
+    --bg: #141517;
+    --surface: #1E2023;
+    --surface-alt: #26292D;
+    --line: rgba(255, 255, 255, 0.1);
+    --info: #8AB4F8;
+    --ok: #34A853;
+    --ok-bg: rgba(52, 168, 83, 0.15);
+    --warn: #FBBC04;
+    --warn-bg: rgba(251, 188, 4, 0.15);
+    --danger: #EA4335;
+    --danger-bg: rgba(234, 67, 53, 0.15);
+    --color-accent: var(--color-zinc-100);
+    --color-accent-muted: #FFFFFF;
+  }
+
+  /* ==========================================================================
      Paleta B1 Alternativa (Azul Acero & Indigo Industrial)
      NOTA AGENTS.md (L100): Se deben mantener como colores de fondo ya sea el
      blanco y negro (variación sutil permitida según la paleta elegida).

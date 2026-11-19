@@ -5,15 +5,15 @@ import { AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { MAINTENANCE_STATUS_META } from '@/features/mantenciones/lib/maintenance-labels';
 import { SectionTitle } from '@/components/ui/section-title';
-import { STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 const nf = new Intl.NumberFormat('es-CL');
 const STATUSES = Object.keys(MAINTENANCE_STATUS_META) as MaintenanceStatus[];
 
-const SEGMENT_CLASS: Record<MaintenanceStatus, string> = {
-  en_curso: 'bg-amber-500',
-  finalizada: 'bg-emerald-500',
-  anulada: 'bg-zinc-400 dark:bg-zinc-600',
+const STATUS_TEXT_CLASS: Record<MaintenanceStatus, string> = {
+  en_curso: 'text-amber-600 dark:text-amber-400',
+  finalizada: 'text-emerald-600 dark:text-emerald-400',
+  anulada: 'text-zinc-500',
 };
 
 const CARD_CLASS =
@@ -32,7 +32,7 @@ function StatCard({ label, value, accent }: { label: string; value: number; acce
   );
 }
 
-/** Totales por estado (tarjetas) y carga por carrera (barras apiladas por estado). */
+/** Totales por estado (tarjetas) y carga por carrera (tabla con desglose por estado). */
 export function MaintenanceCareerSummary() {
   const { data, isLoading, isError } = useMaintenanceSummary();
 
@@ -63,46 +63,61 @@ export function MaintenanceCareerSummary() {
       </div>
 
       <section aria-label="Mantenciones por carrera" className={cn(CARD_CLASS, 'p-0')}>
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800 px-4 py-2.5">
+        <div className="border-b border-zinc-200 dark:border-zinc-800 px-4 py-2.5">
           <SectionTitle>Mantenciones por carrera</SectionTitle>
-          <ul className="flex items-center gap-3 text-[11px] text-zinc-500 dark:text-zinc-400">
-            {STATUSES.map((s) => (
-              <li key={s} className="flex items-center gap-1.5">
-                <span className={cn('h-2 w-2 rounded-full', SEGMENT_CLASS[s])} />
-                {MAINTENANCE_STATUS_META[s].label}
-              </li>
-            ))}
-          </ul>
         </div>
 
-        <ul className="flex flex-col gap-3 px-4 py-3">
-          {withRecords.map((c) => {
-            const detail = STATUSES.map((s) => `${MAINTENANCE_STATUS_META[s].label}: ${nf.format(c.by_status[s])}`).join(' · ');
-            return (
-              <li key={c.career_id ?? 'none'} className="grid grid-cols-[minmax(0,10rem)_1fr_auto] items-center gap-3 text-xs">
-                <span className="truncate" title={c.name}>
-                  {c.code && <span className="mr-1.5 font-mono text-zinc-500">{c.code}</span>}
-                  {c.name}
-                </span>
-                <div
-                  role="img"
-                  aria-label={`${c.name}: ${detail}`}
-                  title={detail}
-                  className="flex h-3 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800"
-                  style={{ width: `${Math.max((c.total / max) * 100, 4)}%` }}
-                >
-                  {STATUSES.filter((s) => c.by_status[s] > 0).map((s) => (
-                    <div key={s} className={SEGMENT_CLASS[s]} style={{ width: `${(c.by_status[s] / c.total) * 100}%` }} />
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-xs">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
+                <th className="px-4 py-2 font-medium">Carrera</th>
+                {STATUSES.map((s) => (
+                  <th key={s} className="px-3 py-2 text-right font-medium">
+                    {MAINTENANCE_STATUS_META[s].label}
+                  </th>
+                ))}
+                <th className="px-3 py-2 text-right font-medium">Unidades</th>
+                <th className="w-2/5 px-4 py-2 font-medium">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+              {withRecords.map((c) => (
+                <tr key={c.career_id ?? 'none'}>
+                  <td className="max-w-48 truncate px-4 py-2" title={c.name}>
+                    {c.code && <span className="mr-1.5 font-mono text-zinc-500">{c.code}</span>}
+                    {c.name}
+                  </td>
+                  {STATUSES.map((s) => (
+                    <td
+                      key={s}
+                      className={cn(
+                        'px-3 py-2 text-right font-mono tabular-nums',
+                        c.by_status[s] === 0 ? 'text-zinc-300 dark:text-zinc-600' : STATUS_TEXT_CLASS[s],
+                      )}
+                    >
+                      {nf.format(c.by_status[s])}
+                    </td>
                   ))}
-                </div>
-                <span className="text-right font-mono tabular-nums text-zinc-800 dark:text-zinc-200">
-                  {nf.format(c.total)}
-                  <span className="ml-2 text-zinc-400">{nf.format(c.units)} u.</span>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+                  <td className="px-3 py-2 text-right font-mono tabular-nums text-zinc-500">{nf.format(c.units)}</td>
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 flex-1 rounded-full bg-zinc-100 dark:bg-zinc-800">
+                        <div
+                          className="h-full rounded-full bg-zinc-500 dark:bg-zinc-400"
+                          style={{ width: `${(c.total / max) * 100}%` }}
+                        />
+                      </div>
+                      <span className="w-12 text-right font-mono font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                        {nf.format(c.total)}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {empty.length > 0 && (
           <p className="border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-[11px] text-zinc-400">

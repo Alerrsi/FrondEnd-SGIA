@@ -54,12 +54,20 @@ interface NavItem {
   group?: boolean;
 }
 
-const navLinkClass = (isActive: boolean) =>
-  cn(
-    'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
-    // Menú navy: el activo es una etiqueta crema con tinta burdeo (el icono hereda el color)
-    isActive ? 'bg-tag text-tag-ink font-semibold' : 'text-zinc-300 hover:bg-white/8 hover:text-white',
-  );
+const navLinkClass = (isActive: boolean, industrial = false) =>
+  industrial
+    ? cn(
+        // Paleta «Industrial INACAP» (diseño previo al rediseño Pañol): menú claro con barra lateral
+        'relative flex shrink-0 items-center rounded-md text-xs font-medium gap-2.5 px-2.5 py-1.5 transition-colors duration-150',
+        isActive
+          ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-r before:bg-zinc-900 dark:before:bg-zinc-100'
+          : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 hover:text-zinc-900 dark:hover:text-zinc-100',
+      )
+    : cn(
+        'relative flex shrink-0 items-center rounded-md text-[13px] font-medium gap-2.5 px-2.5 py-2 transition-colors duration-150',
+        // Menú navy: el activo es una etiqueta crema con tinta burdeo (el icono hereda el color)
+        isActive ? 'bg-tag text-tag-ink font-semibold' : 'text-zinc-300 hover:bg-white/8 hover:text-white',
+      );
 
 const navigation: NavItem[] = [
   {
@@ -177,7 +185,8 @@ const navigation: NavItem[] = [
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme, palette } = useTheme();
+  const industrial = palette === 'industrial';
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -261,11 +270,16 @@ export default function AppLayout() {
           style={{ width: isCollapsed ? 64 : sidebarWidth }}
           className={cn(
             // `dark` fija el menú en navy también en modo claro: sus hijos usan las variantes dark:
-            'dark relative flex flex-col justify-between select-none overflow-hidden z-20 bg-zinc-900 text-zinc-100',
+            'relative flex flex-col justify-between select-none overflow-hidden z-20',
+            !industrial && 'dark bg-zinc-900 text-zinc-100',
             isDragging ? 'transition-none' : 'transition-[width] duration-200 ease-out',
             isCollapsed
               ? 'rail-collapsed gap-2 py-3 px-2 items-center'
               : 'gap-3 p-3',
+            industrial &&
+              (isCollapsed
+                ? 'bg-transparent border-none shadow-none'
+                : 'bg-zinc-50 dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800'),
           )}
         >
           {isCollapsed ? (
@@ -452,7 +466,7 @@ export default function AppLayout() {
                         label={label}
                         icon={Icon}
                         links={purchaseLinksFor(userRole)}
-                        linkClassName={navLinkClass}
+                        linkClassName={(isActive) => navLinkClass(isActive, industrial)}
                       />
                     ) : (
                       <NavLink
@@ -460,7 +474,7 @@ export default function AppLayout() {
                         to={to}
                         end={end}
                         aria-label={label}
-                        className={({ isActive }) => navLinkClass(isActive)}
+                        className={({ isActive }) => navLinkClass(isActive, industrial)}
                       >
                         <Icon className="h-4 w-4 shrink-0" />
                         <span className="truncate">{label}</span>

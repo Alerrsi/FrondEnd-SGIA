@@ -13,7 +13,7 @@ const by = (en_curso: number, finalizada: number, anulada: number) => ({
 });
 
 describe('MaintenanceCareerSummary', () => {
-  it('muestra tarjetas de totales, barra por carrera y agrupa las carreras sin registros', () => {
+  it('muestra tarjetas de totales, tabla por carrera y agrupa las carreras sin registros', () => {
     state.value = {
       isLoading: false,
       isError: false,
@@ -30,12 +30,13 @@ describe('MaintenanceCareerSummary', () => {
 
     // Tarjetas con formato es-CL
     expect(screen.getAllByText('1.200').length).toBe(2); // tarjeta Total + total de la carrera
-    expect(screen.getByText('1.197')).toBeTruthy();
+    expect(screen.getAllByText('1.197').length).toBe(2); // tarjeta Finalizadas + celda de la carrera
     expect(screen.getByText('Unidades distintas')).toBeTruthy();
 
-    // Barra con el desglose accesible
-    const bar = screen.getByRole('img', { name: /Ingeniería en Sistemas: En curso: 2 · Finalizada: 1\.197 · Anulada: 1/ });
-    expect(bar).toBeTruthy();
+    // Fila de la carrera con su desglose
+    const row = screen.getByText('Ingeniería en Sistemas').closest('tr')!;
+    expect(row.textContent).toContain('1.197');
+    expect(screen.getByRole('columnheader', { name: 'Unidades' })).toBeTruthy();
 
     // Las carreras sin mantenciones no ocupan fila
     expect(screen.getByText('Sin registros: II, Sin carrera')).toBeTruthy();
