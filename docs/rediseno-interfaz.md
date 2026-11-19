@@ -41,9 +41,9 @@ Revisado en `zed.dev`, `/pricing`, `/blog` y `/docs` (HTML y CSS del 19 nov 2026
 | 2 | **Tipografía dada por el skill:** Geist (interfaz y títulos) + Geist Mono (SKU, RUT, códigos, cifras técnicas). Una familia, dos cortes, 4 archivos de fuente como máximo, alojados en el proyecto (`@fontsource-variable/geist`, `@fontsource-variable/geist-mono`) con `font-display: swap`. Se elimina Schibsted Grotesk. |
 | 3 | **Paleta con los colores del cliente** (`start.mjs brand`): las tres paletas que repartió el skill (menta, verde azulado, rosa) chocan con el burdeo de INACAP, así que se usan los colores institucionales sobre neutros cálidos. |
 | 4 | **Radio `sharp`** (4 / 6 / 8px), como las herramientas de desarrollo de referencia. Botones en **`pill`** (sorteado por el skill): un solo estilo de botón en toda la app. |
-| 5 | **Dos layouts con un solo menú:** `sidebar` (por defecto, conserva colapsar, redimensionar y el `IconBar` vertical) y `header` (barra superior tradicional). Los dos leen el mismo `nav-config.ts`. El usuario elige en Ajustes; se guarda en `localStorage` (`sgia-layout`). |
+| 5 | **Dos layouts con un solo menú:** `sidebar` (por defecto, conserva colapsar, redimensionar y el `IconBar` vertical) y `header` (barra superior tradicional). Los dos leen el mismo `nav-config.ts`. El usuario elige en Ajustes; se guarda en `localStorage` (`sgia-layout`). Sidebar es el valor por defecto (confirmado). |
 | 6 | **Menú lateral neutro:** deja de ser navy. Fondo `--surface-alt`, línea derecha de 1px, ítem activo con fondo `--surface` y barra de 2px burdeo. Así no hay un segundo color de superficie. |
-| 7 | **Paletas alternativas eliminadas** (B1, Sage, Lavender, Nordic, Peach, Chamomile, Industrial). Ajustes conserva claro/oscuro/sistema y suma layout y densidad. *Por confirmar con el usuario* (pregunta 1). |
+| 7 | **Paletas alternativas eliminadas** (B1, Sage, Lavender, Nordic, Peach, Chamomile, Industrial). Ajustes conserva claro/oscuro/sistema y suma layout y densidad. Confirmado por el usuario (19 nov 2026). |
 | 8 | **Buscador de pantallas y acciones (`Ctrl K`)** en ambos layouts: lista las rutas que el rol puede abrir (`ROUTE_PERMISSIONS`) y las acciones rápidas del rol. Ninguna pantalla queda a más de 2 clics ni a más de una búsqueda. |
 | 9 | **Página de inicio por rol:** `/` muestra una composición distinta por rol (sección 6). Datos operativos (cola, vencidos, stock crítico) con los hooks REST actuales; **cualquier métrica o KPI nuevo va por GraphQL** (`POST /api/metrics`). |
 | 10 | **Modales responsivos:** desde 640px, `Dialog` centrado como hoy; bajo 640px, hoja inferior a ancho completo. `Sheet` lateral pasa a pantalla completa bajo 640px. La API de `Dialog`/`Sheet` no cambia. |
@@ -221,7 +221,7 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 - [x] Rama `feat/rediseno-zed`.
 - [x] Este plan en `docs/rediseno-interfaz.md`.
 - [x] `TASKS/REQ-DISEÑO.md` y `CLAUDE.md` apuntan a este plan.
-- [ ] Respuestas a las preguntas abiertas (sección 12).
+- [x] Respuestas a las preguntas abiertas (sección 12).
 
 ### Fase 1 — Tokens y tipografía
 - [ ] Geist y Geist Mono alojadas en el proyecto; fuera Schibsted Grotesk.
@@ -285,8 +285,8 @@ Cada pantalla: `PageHeading` + acciones, `Metric` en vez de cinta hecha a mano, 
 - Reglas del skill pensadas para sitios de marketing: fotografías, una sección por pantalla, «momentos» y efectos WebGL. El portero final del skill (`gate.mjs`) da fallos falsos en un panel de operación; se usan solo `shoot.mjs`, `check.mjs` (desbordes y solapes) y `perf.mjs`.
 - Cambios de flujo o de permisos: el rediseño no mueve reglas de negocio ni rutas, salvo agregar el buscador y los atajos.
 
-## 12. Preguntas abiertas
+## 12. Preguntas resueltas (19 nov 2026)
 
-1. ¿Se eliminan las paletas alternativas de Ajustes (decisión 7) o se conserva alguna?
-2. Layout por defecto para usuarios nuevos: ¿sidebar (propuesto) o header?
-3. ¿El pañolero entra a Inicio o directo al mostrador? (Hoy todos entran a `/`.)
+1. Paletas alternativas: **se eliminan todas** (decisión 7).
+2. Layout por defecto: **sidebar** (decisión 5).
+3. El pañolero **entra a Inicio** (`/`), como los demás roles; el mostrador es su acción principal ahí.
