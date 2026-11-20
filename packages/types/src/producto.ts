@@ -21,6 +21,9 @@ export interface LocationEntity {
   storeroom_id?: string | null;
   building?: string | null;
   floor?: string | null;
+  /** Medidas del plano de la sala en cm (REQ-22); `null` si aún no se definen. */
+  map_width_cm?: number | null;
+  map_height_cm?: number | null;
   cajones_count?: number;
   cajones?: CajonEntity[];
   created_by?: number | null;
@@ -38,6 +41,9 @@ export interface CajonEntity {
   location_id: number;
   /** Sala del cajón; trae `code` cuando el backend la carga. */
   location?: LocationEntity;
+  /** Estante del mapa donde está el cajón (REQ-22), de la misma sala. */
+  estante_id?: number | null;
+  estante?: { id: number; codigo: string } | null;
   products_count?: number;
   created_by?: number | null;
   updated_by?: number | null;
@@ -56,6 +62,10 @@ export interface LocationQueryParams {
 
 export interface CajonQueryParams {
   location_id?: number;
+  /** REQ-22: cajones de un estante del mapa. */
+  estante_id?: number;
+  /** REQ-22: solo cajones sin estante (para asignarlos desde el mapa). */
+  sin_estante?: boolean;
   search?: string;
   per_page?: number;
   page?: number;
@@ -79,18 +89,22 @@ export interface UpdateLocationPayload {
   nombre?: string;
   tipo?: LocationTipo | string;
   descripcion?: string;
+  map_width_cm?: number;
+  map_height_cm?: number;
 }
 
 export interface CreateCajonPayload {
   location_id: number;
   codigo: string;
   descripcion?: string;
+  estante_id?: number | null;
 }
 
 export interface UpdateCajonPayload {
   location_id?: number;
   codigo?: string;
   descripcion?: string;
+  estante_id?: number | null;
 }
 
 export interface ProductLocationDetailResponse {
@@ -175,7 +189,6 @@ export interface CreateProductoPayload {
   supplier_id?: number;
   location_id?: number;
   cajon_id?: number;
-  estante_id?: number;
   sala?: string;
   cajon?: string;
   area?: string;
@@ -216,7 +229,6 @@ export interface UpdateProductoPayload {
   supplier_id?: number;
   location_id?: number;
   cajon_id?: number;
-  estante_id?: number;
   sala?: string;
   cajon?: string;
   area?: string;
@@ -272,7 +284,6 @@ export interface ProductoParams {
   supplier_id?: number;
   location_id?: number;
   cajon_id?: number;
-  estante_id?: number;
   ubicacionId?: number;
   sala?: string;
   cajon?: string;
@@ -287,7 +298,6 @@ export interface ProductoParams {
 export interface ProductLocationPayload {
   location_id?: number;
   cajon_id?: number;
-  estante_id?: number;
   sala?: string;
   cajon?: string;
   descripcion?: string;

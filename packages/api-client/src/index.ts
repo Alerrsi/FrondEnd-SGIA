@@ -100,6 +100,38 @@ export {
 } from './hooks/locations';
 
 export {
+  fetchSalaMapa,
+  fetchEstantes,
+  createEstante,
+  updateEstante,
+  deleteEstante,
+  fetchEstanteContenido,
+  fetchZonas,
+  createZona,
+  updateZona,
+  deleteZona,
+  normalizeSalaMapa,
+  normalizeEstante,
+  normalizeZona,
+  normalizeEstanteContenido,
+} from './services/room-map';
+export {
+  salaMapaKeys,
+  estanteKeys,
+  useSalaMapa,
+  useEstantes,
+  useEstanteContenido,
+  usePrefetchEstanteContenido,
+  useCreateEstante,
+  useUpdateEstante,
+  useDeleteEstante,
+  useCreateZona,
+  useUpdateZona,
+  useDeleteZona,
+} from './hooks/room-map';
+export type { UpdateEstanteVariables, UpdateZonaVariables } from './hooks/room-map';
+
+export {
   fetchLoans,
   fetchLoan,
   fetchLoanReview,

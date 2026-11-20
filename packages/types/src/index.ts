@@ -36,6 +36,25 @@ export type {
   ExtraerFacturaPayload,
 } from './producto';
 
+export type {
+  EstanteRotation,
+  Zona,
+  EstanteCajonResumen,
+  Estante,
+  SalaMapaLocation,
+  SalaMapa,
+  EstanteContenidoProducto,
+  EstanteContenidoUnidades,
+  EstanteContenidoCajon,
+  EstanteContenido,
+  EstanteQueryParams,
+  CreateEstantePayload,
+  UpdateEstantePayload,
+  CreateZonaPayload,
+  UpdateZonaPayload,
+  UpdateSalaDimensionesPayload,
+} from './mapa-sala';
+
 export { LoanStatus } from './prestamo';
 export { INCIDENT_LOCATION_TYPES, INCIDENT_PROBLEM_LABELS } from './equipo';
 export type {

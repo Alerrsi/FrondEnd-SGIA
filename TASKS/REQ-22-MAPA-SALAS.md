@@ -58,11 +58,11 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] `ENDPOINTS.md` de ambos repos a ✅ (sección 2.2).
 
 ### Fase 2 · Tipos y cliente (`packages/`)
-- [ ] `packages/types/src/mapa-sala.ts` (`Zona`, `Estante`, `EstanteRotation`, `SalaMapa`, `EstanteContenido`, payloads) exportados en `index.ts`.
-- [ ] `CajonEntity` con `estante_id` y `estante`; quitar el `estante_id` sin uso del payload de producto.
-- [ ] `services/room-map.ts` con normalizadores tipados (sin `any`); filtros `estante_id` y `sin_estante` en `fetchCajones`.
-- [ ] `hooks/room-map.ts`: `useSalaMapa`, `useEstanteContenido`, `usePrefetchEstanteContenido`, mutaciones de estante y zona; `useUpdateEstante` optimista con vuelta atrás.
-- [ ] Tests de servicio y del hook optimista.
+- [x] `packages/types/src/mapa-sala.ts` (`Zona`, `Estante`, `EstanteRotation`, `SalaMapa`, `EstanteContenido`, payloads) exportados en `index.ts`.
+- [x] `CajonEntity` con `estante_id` y `estante`; quitar el `estante_id` sin uso del payload de producto.
+- [x] `services/room-map.ts` con normalizadores tipados (sin `any`); filtros `estante_id` y `sin_estante` en `fetchCajones`.
+- [x] `hooks/room-map.ts`: `useSalaMapa`, `useEstanteContenido`, `usePrefetchEstanteContenido`, mutaciones de estante y zona; `useUpdateEstante` optimista con vuelta atrás.
+- [x] Tests de servicio y del hook optimista (`features/mapa-salas/room-map-hooks.test.tsx`; `api-client` no tiene runner propio).
 
 ### Fase 3 · Mapa en modo vista (`apps/web/src/features/mapa-salas/`)
 - [ ] `lib/map-geometry.ts` (snap, clamp, rotación, superposición, zona por centro, primer hueco) con tests.
@@ -99,7 +99,7 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 ## 🧪 Pruebas requeridas
 
 - [ ] `features/mapa-salas/lib/map-geometry.test.ts`
-- [ ] Servicio y hook optimista en `packages/api-client`
+- [x] Servicio y hook optimista en `packages/api-client` (`features/mapa-salas/room-map-hooks.test.tsx`)
 - [ ] `features/mapa-salas/sala-svg.test.tsx`
 - [ ] `features/mapa-salas/estante-contenido-dialog.test.tsx`
 - [ ] `features/mapa-salas/mapa-sala-drag.test.tsx`
