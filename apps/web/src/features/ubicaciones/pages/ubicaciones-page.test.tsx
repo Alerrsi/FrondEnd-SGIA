@@ -54,6 +54,19 @@ vi.mock('@/features/equipos/utils/download', () => ({
   downloadBlob: vi.fn(),
 }));
 
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useAuth: () => ({ user: { id: 2, name: 'Pañolero', role: 'PAN-01' } }),
+}));
+
+// El plano tiene sus propias pruebas (features/mapa-salas); aquí solo importa qué sala recibe y con qué permisos.
+vi.mock('@/features/mapa-salas/components/sala-mapa-panel', () => ({
+  SalaMapaPanel: (props: { locationId: number; canEdit: boolean; canSeeInventory: boolean; variant?: string }) => (
+    <div data-testid="sala-mapa-panel">
+      {`mapa sala=${props.locationId} editar=${props.canEdit} inventario=${props.canSeeInventory} variante=${props.variant}`}
+    </div>
+  ),
+}));
+
 vi.mock('@/lib/toast', () => ({
   toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn(), info: vi.fn() },
 }));
@@ -191,11 +204,21 @@ describe('UbicacionesPage (REQ-05)', () => {
   });
 });
 
-describe('UbicacionesPage · acceso al mapa (REQ-22)', () => {
-  it('cada sala enlaza a su mapa', () => {
+describe('UbicacionesPage · mapa de la sala (REQ-22)', () => {
+  it('muestra el mapa de la sala elegida junto a la lista, editable por el pañolero', async () => {
+    const user = userEvent.setup();
     render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
-    expect(screen.getByRole('link', { name: 'Ver mapa de Laboratorio 201' }).getAttribute('href')).toBe('/mapa-salas/2');
+    expect(screen.getByTestId('sala-mapa-panel').textContent).toBe('mapa sala=1 editar=true inventario=true variante=embedded');
+    expect(screen.queryByRole('link', { name: /Ver mapa/ })).toBeNull();
+
+    await user.click(screen.getByText('Laboratorio 201'));
+    expect(screen.getByTestId('sala-mapa-panel').textContent).toContain('mapa sala=2');
+  });
+
+  it('cada cajón dice en qué estante está', () => {
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    expect(screen.getByText('Sin estante')).toBeDefined();
   });
 });
 

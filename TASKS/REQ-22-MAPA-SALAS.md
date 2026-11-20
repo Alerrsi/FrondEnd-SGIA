@@ -98,11 +98,11 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 ---
 
 ### Fase 6 · Mapa en Ubicaciones, edición en modal y datos de prueba (plan en `docs/mapa-salas.md` §12)
-- [ ] Backend: `MapaSalasDemoSeeder` repetible (8 ubicaciones, zonas A/B/C, siete estantes, todos los cajones asignados) con test; corrido en la base de desarrollo.
-- [ ] `SalaMapaPanel` (modo vista reutilizable) y `SalaMapaEditorDialog` (edición en `Dialog size="2xl"`).
-- [ ] `Escape` en el modal: cancela arrastre o deselecciona antes de cerrar (`onEscapeKeyDown` en `Dialog`); un movimiento de teclado pendiente se guarda al cerrar.
-- [ ] `/mapa-salas` solo para `DIR-01` y `AD-01` (rutas, menú y test del menú).
-- [ ] Ubicaciones (`PAN-01`): mapa a la derecha de las salas y cajones debajo, con su estante; sin «Ver mapa».
+- [x] Backend: `MapaSalasDemoSeeder` repetible (8 ubicaciones, zonas A/B/C, siete estantes, todos los cajones asignados) con test; corrido en la base de desarrollo.
+- [x] `SalaMapaPanel` (modo vista reutilizable) y `SalaMapaEditorDialog` (edición en `Dialog size="2xl"`).
+- [x] `Escape` en el modal: cancela arrastre o deselecciona antes de cerrar (`onEscapeKeyDown` en `Dialog`); un movimiento de teclado pendiente se guarda al cerrar.
+- [x] `/mapa-salas` solo para `DIR-01` y `AD-01` (rutas, menú y test del menú).
+- [x] Ubicaciones (`PAN-01`): mapa a la derecha de las salas y cajones debajo, con su estante; sin «Ver mapa».
 - [ ] Recorrido contra la API real y capturas a 390 y 1440 px.
 
 ---

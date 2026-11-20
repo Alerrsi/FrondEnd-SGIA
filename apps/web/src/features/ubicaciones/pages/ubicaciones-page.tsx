@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Layers,
-  Map as MapIcon,
   Plus,
   Building2,
   FolderTree,
@@ -42,8 +40,13 @@ import { LocationFormDialog } from '@/features/ubicaciones/components/location-f
 import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
 import { cajonFullCode } from '@/features/ubicaciones/lib/location-code';
 import { SkeletonList } from '@/components/ui/skeleton-list';
+import { useAuth } from '@/features/auth/context/auth-context';
+import { canAccessRoute, canDo } from '@/features/auth/types/roles';
+import { SalaMapaPanel } from '@/features/mapa-salas/components/sala-mapa-panel';
 
 export default function UbicacionesPage() {
+  const { user } = useAuth();
+  const role = user?.role;
   const [search, setSearch] = useState('');
   const [tipoFilter, setTipoFilter] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<LocationEntity | null>(null);
@@ -254,15 +257,6 @@ export default function UbicacionesPage() {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-1">
-                      <Link
-                        to={`/mapa-salas/${loc.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className={ICON_BUTTON_CLASS}
-                        title="Ver mapa"
-                        aria-label={`Ver mapa de ${loc.nombre}`}
-                      >
-                        <MapIcon aria-hidden="true" className="h-3.5 w-3.5" />
-                      </Link>
                       <button
                         type="button"
                         onClick={(e) => {
@@ -295,10 +289,23 @@ export default function UbicacionesPage() {
           )}
         </section>
 
+        <div className="flex min-w-0 flex-col gap-6 lg:col-span-7">
+        {/* Mapa de la sala activa (REQ-22): se mira aquí; la edición abre un modal. */}
+        {activeLocation && (
+          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <SalaMapaPanel
+              locationId={activeLocation.id}
+              variant="embedded"
+              canEdit={canDo(role, 'editRoomMap')}
+              canSeeInventory={role ? canAccessRoute(role, '/inventario') : false}
+            />
+          </div>
+        )}
+
         {/* Cajones de la sala activa */}
         <section
           aria-label="Cajones de la ubicación"
-          className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-7"
+          className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
         >
           {activeLocation ? (
             <>
@@ -339,6 +346,15 @@ export default function UbicacionesPage() {
                                   {cajon.descripcion}
                                 </span>
                               )}
+                              <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
+                                {cajon.estante ? (
+                                  <>
+                                    Estante <span className="font-code text-zinc-700 dark:text-zinc-200">{cajon.estante.codigo}</span>
+                                  </>
+                                ) : (
+                                  'Sin estante'
+                                )}
+                              </span>
                             </div>
                           </div>
 
@@ -381,6 +397,7 @@ export default function UbicacionesPage() {
             />
           )}
         </section>
+        </div>
       </div>
 
       <LocationFormDialog
