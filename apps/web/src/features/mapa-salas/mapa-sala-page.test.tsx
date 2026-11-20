@@ -2,38 +2,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import type { LocationEntity, SalaMapa } from '@sgia/types';
 
 import MapaSalaPage from './pages/mapa-sala-page';
-import { CONTENIDO, makeMapa } from './test-fixtures';
+import { apiState, resetApiState } from './test-api-mock';
+import { makeMapa } from './test-fixtures';
 
-const state = vi.hoisted(() => ({
-  role: 'AD-01',
-  mapa: undefined as SalaMapa | undefined,
-  prefetch: vi.fn(),
-}));
+const state = vi.hoisted(() => ({ role: 'AD-01' }));
 
-const SALAS: LocationEntity[] = [
-  { id: 7, code: 'L206', nombre: 'Laboratorio 206', tipo: 'sala' },
-  { id: 8, code: 'PCENTRAL', nombre: 'Pañol Central', tipo: 'panol' },
-];
+vi.mock('@sgia/api-client', async (importOriginal) => {
+  const { buildApiMock } = await import('./test-api-mock');
+  return { ...(await importOriginal<typeof import('@sgia/api-client')>()), ...buildApiMock() };
+});
 
-vi.mock('@sgia/api-client', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@sgia/api-client')>()),
-  useLocations: () => ({ data: { data: SALAS }, isLoading: false }),
-  useSalaMapa: (id?: number) => ({
-    data: id === 7 ? state.mapa : undefined,
-    isLoading: false,
-    isError: false,
-    refetch: vi.fn(),
-  }),
-  usePrefetchEstanteContenido: () => state.prefetch,
-  useEstanteContenido: (id?: number) => ({
-    data: id ? CONTENIDO : undefined,
-    isLoading: false,
-    isError: false,
-    refetch: vi.fn(),
-  }),
+vi.mock('@/lib/toast', () => ({
+  toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn(), info: vi.fn() },
 }));
 
 vi.mock('@/features/auth/context/auth-context', () => ({
@@ -54,7 +36,7 @@ describe('MapaSalaPage · modo vista (REQ-22)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     state.role = 'AD-01';
-    state.mapa = makeMapa();
+    resetApiState();
     try {
       window.localStorage.clear();
     } catch {
@@ -88,7 +70,7 @@ describe('MapaSalaPage · modo vista (REQ-22)', () => {
     const estante = screen.getByRole('button', { name: /^Estante EST-B1,/ });
 
     estante.focus();
-    expect(state.prefetch).toHaveBeenCalledWith(3);
+    expect(apiState.prefetch).toHaveBeenCalledWith(3);
     await userEvent.keyboard('{Enter}');
 
     expect(await screen.findByRole('dialog', { name: 'Estante EST-A1' })).toBeDefined();
@@ -110,5 +92,90 @@ describe('MapaSalaPage · modo vista (REQ-22)', () => {
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Sala' }), '8');
 
     expect(screen.queryByRole('group', { name: 'Plano de Laboratorio 206' })).toBeNull();
+  });
+});
+
+describe('MapaSalaPage · edición y roles (REQ-22)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetApiState();
+  });
+
+  it('AD-01 no ve los controles de edición; PAN-01 y DIR-01 sí', () => {
+    state.role = 'AD-01';
+    const { unmount } = renderPage();
+    expect(screen.queryByRole('button', { name: 'Editar distribución' })).toBeNull();
+    unmount();
+
+    for (const role of ['PAN-01', 'DIR-01']) {
+      state.role = role;
+      const view = renderPage();
+      expect(screen.getByRole('button', { name: 'Editar distribución' })).toBeDefined();
+      view.unmount();
+    }
+  });
+
+  it('una sala sin medidas lo avisa; solo el editor puede definirlas', async () => {
+    apiState.mapa = makeMapa({ location: { ...makeMapa().location, has_dimensions: false } });
+    state.role = 'AD-01';
+    const { unmount } = renderPage();
+    expect(screen.getByText(/aún no tiene medidas/)).toBeDefined();
+    expect(screen.queryByRole('button', { name: 'Definir medidas' })).toBeNull();
+    unmount();
+
+    state.role = 'PAN-01';
+    renderPage();
+    await userEvent.click(screen.getByRole('button', { name: 'Definir medidas' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Medidas de la sala' });
+    const ancho = within(dialog).getByLabelText('Ancho (m) *');
+    await userEvent.clear(ancho);
+    await userEvent.type(ancho, '12.5');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Guardar medidas' }));
+
+    expect(apiState.updateLocation).toHaveBeenCalledWith({ id: 7, payload: { map_width_cm: 1250, map_height_cm: 600 } });
+  });
+
+  it('PAN-01 crea un estante en la sala del mapa', async () => {
+    state.role = 'PAN-01';
+    apiState.createEstante.mockResolvedValue({ ...makeMapa().estantes[0]!, id: 9, codigo: 'EST-C1' });
+    renderPage();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Editar distribución' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Nuevo estante' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Nuevo estante' });
+    await userEvent.type(within(dialog).getByLabelText('Código *'), 'est c1');
+    await userEvent.selectOptions(within(dialog).getByLabelText('Zona (opcional)'), '2');
+    await userEvent.click(within(dialog).getByLabelText('Vertical'));
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Crear estante' }));
+
+    expect(apiState.createEstante).toHaveBeenCalledWith({
+      location_id: 7,
+      codigo: 'est c1',
+      nombre: null,
+      zona_id: 2,
+      width: 200,
+      depth: 60,
+      rotation: 90,
+    });
+  });
+
+  it('el editor asigna cajones sueltos a un estante desde el pop-up', async () => {
+    state.role = 'DIR-01';
+    apiState.cajones = [
+      { id: 21, codigo: 'R9', barcode: 'L206-R9', location_id: 7, estante_id: null },
+      { id: 11, codigo: 'R1', barcode: 'L206-R1', location_id: 7, estante_id: 1 },
+    ];
+    apiState.updateCajon.mockResolvedValue({});
+    renderPage();
+
+    await userEvent.click(screen.getByRole('button', { name: /^Estante EST-A1,/ }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Asignar cajones' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Cajones del estante EST-A1' });
+    await userEvent.click(within(dialog).getByRole('checkbox', { name: /L206-R9/ }));
+    await userEvent.click(within(dialog).getByRole('checkbox', { name: /L206-R1/ }));
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Guardar' }));
+
+    expect(apiState.updateCajon).toHaveBeenCalledWith({ id: 11, payload: { estante_id: null } });
+    expect(apiState.updateCajon).toHaveBeenCalledWith({ id: 21, payload: { estante_id: 1 } });
   });
 });

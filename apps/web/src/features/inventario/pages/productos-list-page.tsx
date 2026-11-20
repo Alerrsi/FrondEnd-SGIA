@@ -1,12 +1,13 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
+  useCajon,
   useDeleteProducto,
   useProducts,
   useToggleProductoActivo,
 } from '@sgia/api-client';
 import type { Producto, ProductoParams } from '@sgia/types';
-import { Boxes, FileUp, Plus } from 'lucide-react';
+import { Boxes, FileUp, Plus, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -28,6 +29,7 @@ import { CellGrid } from '@/components/ui/cell-grid';
 import { ErrorState } from '@/components/ui/error-state';
 import { Metric } from '@/components/ui/metric';
 import { PageHeader } from '@/components/ui/page-header';
+import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 export default function ProductosListPage() {
   const { user } = useAuth();
@@ -42,7 +44,11 @@ export default function ProductosListPage() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   // `?q=` llega desde el escaneo de Inicio (rediseño «Trazo», fase 4).
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // REQ-22: «Ver en inventario» desde el pop-up del mapa filtra por cajón (`?cajon_id=`).
+  const cajonIdParam = Number(searchParams.get('cajon_id'));
+  const cajonIdFilter = Number.isInteger(cajonIdParam) && cajonIdParam > 0 ? cajonIdParam : undefined;
+  const { data: cajonFiltrado } = useCajon(cajonIdFilter);
   const [search, setSearch] = useState(() => searchParams.get('q') ?? '');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [areaFilter, setAreaFilter] = useState('');
@@ -125,6 +131,7 @@ export default function ProductosListPage() {
     area: areaFilter || undefined,
     sala: salaFilter || undefined,
     cajon: cajonFilter || undefined,
+    cajon_id: cajonIdFilter,
     is_active:
       estadoFilter === 'todos' ? undefined : estadoFilter === 'activos',
     critical_only: criticalOnly ? true : undefined,
@@ -204,6 +211,25 @@ export default function ProductosListPage() {
           </>
         }
       />
+
+      {cajonIdFilter && (
+        <div className="flex flex-wrap items-center gap-2 text-[13px] text-zinc-600 dark:text-zinc-300">
+          Mostrando el cajón
+          <span className={CODE_CHIP_CLASS}>{cajonFiltrado?.barcode ?? cajonFiltrado?.codigo ?? `#${cajonIdFilter}`}</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const next = new URLSearchParams(searchParams);
+              next.delete('cajon_id');
+              setSearchParams(next);
+            }}
+          >
+            <X aria-hidden="true" className="h-3.5 w-3.5" />
+            Quitar filtro
+          </Button>
+        </div>
+      )}
 
       <CellGrid columns={3} aria-label="Resumen del inventario">
         <Cell>

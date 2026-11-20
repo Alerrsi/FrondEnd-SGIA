@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2 } from 'lucide-react';
-import { useCreateCajon } from '@sgia/api-client';
+import { useCreateCajon, useEstantes } from '@sgia/api-client';
 import type { LocationEntity } from '@sgia/types';
 
 import { Button } from '@/components/ui/button';
@@ -29,11 +29,13 @@ const cajonFormSchema = z.object({
       `El código del cajón no puede pasar de ${CAJON_CODE_MAX} caracteres`,
     ),
   descripcion: z.string(),
+  /** REQ-22: estante del mapa de la sala (opcional). */
+  estante_id: z.string(),
 });
 
 type CajonFormValues = z.infer<typeof cajonFormSchema>;
 
-const EMPTY: CajonFormValues = { codigo: '', descripcion: '' };
+const EMPTY: CajonFormValues = { codigo: '', descripcion: '', estante_id: '' };
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -51,6 +53,7 @@ export function CajonFormDialog({
   location: LocationEntity;
 }) {
   const createCajon = useCreateCajon();
+  const estantes = useEstantes({ location_id: location.id, per_page: 200 }, open);
   const isPending = createCajon.isPending;
 
   const {
@@ -79,12 +82,14 @@ export function CajonFormDialog({
         location_id: location.id,
         codigo: values.codigo.trim(),
         descripcion: values.descripcion.trim() || undefined,
+        estante_id: values.estante_id ? Number(values.estante_id) : undefined,
       });
       toast.success('Cajón / gaveta agregada');
       onClose();
     } catch (error) {
       const fieldErrors = apiFieldErrors(error);
       if (fieldErrors.codigo) setError('codigo', { message: fieldErrors.codigo });
+      if (fieldErrors.estante_id) setError('estante_id', { message: fieldErrors.estante_id });
       toast.error(apiErrorToMessage(error));
     }
   });
@@ -143,6 +148,23 @@ export function CajonFormDialog({
             {...register('descripcion')}
           />
         </div>
+
+        {(estantes.data?.data.length ?? 0) > 0 && (
+          <div className="flex flex-col gap-1">
+            <label htmlFor="cajon-estante" className={FIELD_LABEL_CLASS}>
+              Estante del mapa (opcional)
+            </label>
+            <select id="cajon-estante" className={FORM_CONTROL_CLASS} {...register('estante_id')}>
+              <option value="">Sin estante</option>
+              {estantes.data?.data.map((estante) => (
+                <option key={estante.id} value={estante.id}>
+                  {estante.nombre ? `${estante.codigo} · ${estante.nombre}` : estante.codigo}
+                </option>
+              ))}
+            </select>
+            <FieldError message={errors.estante_id?.message} />
+          </div>
+        )}
 
         <DialogFooter>
           <DialogCloseButton disabled={isPending}>Cancelar</DialogCloseButton>

@@ -193,6 +193,7 @@ export async function fetchProducts(
   if (params?.ubicacionId) query.set("location_id", String(params.ubicacionId));
   if (params?.sala) query.set("sala", params.sala);
   if (params?.cajon) query.set("cajon", params.cajon);
+  if (params?.cajon_id) query.set("cajon_id", String(params.cajon_id));
   if (params?.critical_only) query.set("critical_only", "1");
   if (params?.soloStockCritico) query.set("critical_only", "1");
   if (params?.page) query.set("page", String(params.page));

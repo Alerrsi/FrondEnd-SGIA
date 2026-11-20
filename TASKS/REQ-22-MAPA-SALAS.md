@@ -75,17 +75,17 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] Tests de dibujo y pop-up.
 
 ### Fase 4 · Edición
-- [ ] Botón «Editar distribución» (solo `PAN-01`/`DIR-01`), rejilla de 50 cm.
-- [ ] `useSvgDrag` (Pointer Events, `ref` + `requestAnimationFrame`, umbral de 4 px entre clic y arrastre).
-- [ ] Al soltar: snap a 10 cm, validación, `zona_id` por centro y `PATCH` optimista; aviso y vuelta atrás si falla.
-- [ ] Teclado (flechas, `Shift`, `R`, `Escape`) y `MovePad` para puntero táctil.
-- [ ] `EstanteFormDialog` y `ZonaFormDialog` (RHF + Zod); el estante nuevo queda seleccionado en modo edición.
-- [ ] Mover y redimensionar zonas.
-- [ ] `SalaDimensionesDialog` y aviso de sala sin medidas.
-- [ ] Selector de estante en `cajon-form-dialog.tsx` y aviso de cajones sin estante.
-- [ ] «Asignar cajones» desde el pop-up (cajones sin estante de la sala).
-- [ ] `/inventario` lee `?cajon_id=` para «Ver en inventario» (solo `PAN-01`/`DIR-01`).
-- [ ] Tests de arrastre, teclado y roles.
+- [x] Botón «Editar distribución» (solo `PAN-01`/`DIR-01`), rejilla de 50 cm.
+- [x] `useSvgDrag` (Pointer Events, `ref` + `requestAnimationFrame`, umbral de 4 px entre clic y arrastre).
+- [x] Al soltar: snap a 10 cm, validación, `zona_id` por centro y `PATCH` optimista; aviso y vuelta atrás si falla.
+- [x] Teclado (flechas, `Shift`, `R`, `Escape`) y `MovePad` para puntero táctil.
+- [x] `EstanteFormDialog` y `ZonaFormDialog` (RHF + Zod); el estante nuevo queda seleccionado en modo edición.
+- [x] Mover y redimensionar zonas.
+- [x] `SalaDimensionesDialog` y aviso de sala sin medidas.
+- [x] Selector de estante en `cajon-form-dialog.tsx` y aviso de cajones sin estante.
+- [x] «Asignar cajones» desde el pop-up (cajones sin estante de la sala).
+- [x] `/inventario` lee `?cajon_id=` para «Ver en inventario» (solo `PAN-01`/`DIR-01`).
+- [x] Tests de arrastre, teclado y roles.
 
 ### Fase 5 · Pulido y cierre
 - [ ] Zoom (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo.
@@ -102,5 +102,5 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] Servicio y hook optimista en `packages/api-client` (`features/mapa-salas/room-map-hooks.test.tsx`)
 - [x] `features/mapa-salas/sala-svg.test.tsx`
 - [x] `features/mapa-salas/estante-contenido-dialog.test.tsx`
-- [ ] `features/mapa-salas/mapa-sala-drag.test.tsx`
-- [ ] `features/mapa-salas/mapa-sala-page.test.tsx`
+- [x] `features/mapa-salas/mapa-sala-drag.test.tsx`
+- [x] `features/mapa-salas/mapa-sala-page.test.tsx`

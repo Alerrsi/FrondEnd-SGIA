@@ -40,6 +40,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
   useUpdateLocation: () => ({ mutateAsync: mocks.updateLocation, isPending: false }),
   useDeleteLocation: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCreateCajon: () => ({ mutateAsync: mocks.createCajon, isPending: false }),
+  useEstantes: () => ({ data: { data: [{ id: 3, codigo: 'EST-A1', nombre: 'Rack' }] }, isLoading: false }),
   useDeleteCajon: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useDownloadCajonLabel: () => ({
     mutateAsync: mocks.downloadLabel,
@@ -195,5 +196,20 @@ describe('UbicacionesPage · acceso al mapa (REQ-22)', () => {
     render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     expect(screen.getByRole('link', { name: 'Ver mapa de Laboratorio 201' }).getAttribute('href')).toBe('/mapa-salas/2');
+  });
+});
+
+describe('UbicacionesPage · cajón en un estante del mapa (REQ-22)', () => {
+  it('el cajón nuevo puede quedar en un estante de la sala', async () => {
+    const user = userEvent.setup();
+    mocks.createCajon.mockResolvedValue({ id: 11 });
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    await user.click(screen.getByRole('button', { name: /Nuevo cajón/i }));
+    await user.type(screen.getByLabelText(/Código \/ identificador del cajón/i), 'R5');
+    await user.selectOptions(screen.getByLabelText('Estante del mapa (opcional)'), '3');
+    await user.click(screen.getByRole('button', { name: 'Guardar cajón' }));
+
+    expect(mocks.createCajon.mock.calls[0]?.[0]).toEqual({ location_id: 1, codigo: 'R5', descripcion: undefined, estante_id: 3 });
   });
 });
