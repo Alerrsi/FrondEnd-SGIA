@@ -58,6 +58,7 @@ FrondEnd-SGIA/
 - **Administración de Usuarios:** [`TASKS/REQ-02-ADMINISTRACION-USUARIOS.md`](TASKS/REQ-02-ADMINISTRACION-USUARIOS.md)
 - **Inventario y Facturas OCR:** [`TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md`](TASKS/REQ-03-REQ-04-INVENTARIO-PRODUCTOS.md)
 - **Ubicación Física:** [`TASKS/REQ-05-UBICACION-FISICA.md`](TASKS/REQ-05-UBICACION-FISICA.md)
+- **Mapa de Salas (zonas y estantes en SVG):** [`TASKS/REQ-22-MAPA-SALAS.md`](TASKS/REQ-22-MAPA-SALAS.md) · plan en [`docs/mapa-salas.md`](docs/mapa-salas.md)
 - **Alertas de Stock Crítico:** [`TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md`](TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
 - **Cotizaciones y Proveedores:** [`TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md`](TASKS/REQ-07-COTIZACIONES-PROVEEDORES.md)
 - **Compras y Adquisiciones:** [`TASKS/REQ-08-COMPRAS-ADQUISICIONES.md`](TASKS/REQ-08-COMPRAS-ADQUISICIONES.md)
