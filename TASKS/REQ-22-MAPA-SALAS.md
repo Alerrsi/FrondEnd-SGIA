@@ -2,7 +2,7 @@
 
 > **Código:** `REQ-22` | **Módulo:** `FU-02` (Gestión de Inventario y Activos) — amplía [REQ-05](./REQ-05-UBICACION-FISICA.md)
 > **Plataforma:** Web (`apps/web`)
-> **Roles:** Pañolero (`PAN-01`) y Director (`DIR-01`) ven y editan; Administrador (`AD-01`) solo ve
+> **Roles:** Pañolero (`PAN-01`, en Ubicaciones) y Director (`DIR-01`, en `/mapa-salas`) ven y editan; Administrador (`AD-01`, en `/mapa-salas`) solo ve
 > **Plan:** [`docs/mapa-salas.md`](../docs/mapa-salas.md) · **Contrato API:** `BackEnd-SGIA/docs/mapa-salas.md` · **Prompt backend:** [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md) · **Rama:** `mapa-salas` (ambos repos)
 
 ---
@@ -94,6 +94,16 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] Recorrido de punta a punta contra la API real con PAN-01, DIR-01 y AD-01 (30/30).
 - [x] Prueba de fluidez con 200 estantes (`mapa-sala-performance.test.tsx`: ningún render de React mientras se mueve el puntero).
 - [x] Entrada en `FIXES/CHANGELOG-FIXES.md` (FIX-048) y estado final en `TASKS/README.md`.
+
+---
+
+### Fase 6 · Mapa en Ubicaciones, edición en modal y datos de prueba (plan en `docs/mapa-salas.md` §12)
+- [ ] Backend: `MapaSalasDemoSeeder` repetible (8 ubicaciones, zonas A/B/C, siete estantes, todos los cajones asignados) con test; corrido en la base de desarrollo.
+- [ ] `SalaMapaPanel` (modo vista reutilizable) y `SalaMapaEditorDialog` (edición en `Dialog size="2xl"`).
+- [ ] `Escape` en el modal: cancela arrastre o deselecciona antes de cerrar (`onEscapeKeyDown` en `Dialog`); un movimiento de teclado pendiente se guarda al cerrar.
+- [ ] `/mapa-salas` solo para `DIR-01` y `AD-01` (rutas, menú y test del menú).
+- [ ] Ubicaciones (`PAN-01`): mapa a la derecha de las salas y cajones debajo, con su estante; sin «Ver mapa».
+- [ ] Recorrido contra la API real y capturas a 390 y 1440 px.
 
 ---
 

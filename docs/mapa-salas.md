@@ -1,6 +1,6 @@
 # Mapa de salas (plano SVG con estantes arrastrables)
 
-**Estado: implementado (20 nov 2026), fases 1 a 5.** Ver «Diferencias con lo planificado» al final. Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
+**Estado: fases 1 a 5 implementadas (20 nov 2026); fase 6 (mapa en Ubicaciones, edición en modal y datos de prueba) en plan, sin implementar.** Ver §11 y §12 al final. Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
 
 ---
 
@@ -274,4 +274,38 @@ Formas no rectangulares de sala, puertas y ventanas, rotaciones libres, varios p
 **Archivos:** `apps/web/src/features/mapa-salas/` (`components/`, `hooks/`, `lib/`, `pages/`, tests), `packages/api-client/src/{services,hooks}/room-map.ts`, `packages/types/src/mapa-sala.ts`; cambios menores en `ubicaciones-page.tsx` («Ver mapa»), `cajon-form-dialog.tsx` (estante), `productos-list-page.tsx` (`?cajon_id=`), `roles.ts`, `nav-config.ts` y `app.tsx`.
 
 **Verificación:** 95 archivos de test (561 + 1 omitida) en verde; typecheck y lint de web sin errores. Revisión visual a 320, 390, 768, 1024 y 1440 px en claro y oscuro con datos de prueba (Chromium con emulación de dispositivo). **Recorrido de punta a punta contra la API real** (Chromium, mouse y teclado reales, login de desarrollo): PAN-01 crea zona y estante, lo arrastra (guarda ajustado a 10 cm y recalcula la zona), persiste al recargar, soltar fuera de la sala no guarda, flechas mueven 10 cm, «Asignar cajones» ofrece solo los cajones sueltos de la sala (la API rechaza uno de otra sala con 422), búsqueda y zoom; AD-01 solo lee (403 al escribir) y DIR-01 edita; 30/30 comprobaciones, sin errores en consola. Encontró un cajón repetido en «Asignar cajones» mientras se refrescaban las listas (corregido).
+
+## 12. Fase 6 · Mapa en Ubicaciones, edición en modal y datos de prueba (plan, 20 nov 2026, sin implementar)
+
+### Pedido
+
+El mapa debe verse en Ubicaciones, al costado de la lista de salas. Editar la distribución abre un modal que sigue el sistema «Trazo». Todas las salas deben quedar con estantes y cajones asignados como datos de prueba.
+
+### Decisiones (usuario, 20 nov 2026)
+
+| # | Decisión |
+|---|---|
+| 16 | **Ubicaciones (`PAN-01`)**: salas a la izquierda; a la derecha, el mapa de la sala elegida (modo vista: zoom, búsqueda, pop-up) y debajo la lista de cajones que ya existe. Se quita «Ver mapa» de cada fila: el mapa ya está en la misma pantalla. |
+| 17 | **La edición va en un modal**: «Editar distribución» abre `Dialog` `size="2xl"` (hoja inferior a pantalla completa bajo 640 px) con barra Medidas · Nueva zona · Nuevo estante, rejilla, arrastre, teclado y `MovePad`; pie con `DialogCloseButton` «Listo». Los formularios (estante, zona, medidas, asignar cajones) se abren encima. El plano de afuera queda solo para mirar. Vale igual en `/mapa-salas`. |
+| 18 | **`/mapa-salas` solo para `DIR-01` y `AD-01`** (`ROUTE_PERMISSIONS` y menú). `PAN-01` usa Ubicaciones. `DIR-01` edita con el mismo modal; `AD-01` solo mira. |
+| 19 | **Datos de prueba en las 8 ubicaciones** con un seeder repetible del backend (`MapaSalasDemoSeeder`, contrato en `BackEnd-SGIA/docs/mapa-salas.md`): medidas por tipo, zonas A/B/C como la referencia, siete estantes y todos los cajones asignados; crea cajones donde no hay. No pisa lo que ya existe (respeta `EST-1` de `PCENTRAL`). |
+
+### Diseño
+
+- **`SalaMapaPanel`** (nuevo, `components/sala-mapa-panel.tsx`): lo que hoy arma `MapaSalaPage` para mirar el plano (barra de zoom y búsqueda, avisos, SVG en modo vista, lista «Estantes de la sala», pop-up). Recibe `locationId`, `canEdit`, `canSeeInventory` y un `variant` (`page` | `embedded`: en Ubicaciones va en una celda con su título y un alto menor). Si `canEdit`, muestra «Editar distribución».
+- **`SalaMapaEditorDialog`** (nuevo): la edición que hoy vive en la página (rejilla, arrastre de estantes y zonas, teclado, `MovePad`, crear/editar/borrar, medidas, asignar cajones) dentro del modal. Reusa `useSvgDrag`, `useEstanteKeyboard`, `useMapViewport` y los diálogos existentes.
+- **`Escape` dentro del modal**: mientras se arrastra cancela el arrastre y, con un estante seleccionado, lo deselecciona; solo sin nada de eso cierra el modal. `Dialog` suma la prop opcional `onEscapeKeyDown` (se llama antes de su lógica de cambios sin guardar).
+- **Cierre del modal con un movimiento de teclado pendiente**: se guarda al cerrar (no se pierde la espera de 400 ms).
+- **`MapaSalaPage`** (`/mapa-salas`): `PageHeader` + selector + `SalaMapaPanel`.
+- **Ubicaciones**: la columna derecha pasa a `SalaMapaPanel variant="embedded"` + cajones. Cada cajón muestra su estante (`EST-A1`) si tiene.
+
+### Fases
+
+| Fase | Alcance | Repo | Listo cuando |
+|---|---|---|---|
+| 6.0 | Este plan, REQ-22, docs del backend. | Ambos | Commit. |
+| 6.1 | `MapaSalasDemoSeeder` con test; se corre en la base de desarrollo. | Backend | Test en verde; las 8 ubicaciones con estantes y cajones asignados. |
+| 6.2 | `SalaMapaPanel`, `SalaMapaEditorDialog`, `onEscapeKeyDown` en `Dialog`, `/mapa-salas` para `DIR-01`/`AD-01`. | Front | Tests de panel, modal (arrastre, teclado, `Escape`) y roles en verde. |
+| 6.3 | Mapa en Ubicaciones; estante en la lista de cajones. | Front | Tests de Ubicaciones en verde. |
+| 6.4 | Recorrido de punta a punta contra la API real (PAN-01 en Ubicaciones, DIR-01 y AD-01 en `/mapa-salas`), capturas a 390 y 1440 px, cierre de docs. | Ambos | Recorrido completo sin fallas. |
 
