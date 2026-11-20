@@ -20,8 +20,8 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/prestamos/mostrador': ['PAN-01'],
   '/prestamos/historial': ['PAN-01', 'DIR-01'],
   '/ubicaciones': ['PAN-01'],
-  // REQ-22: el plano lo editan PAN-01 y DIR-01 (`ACTION_ROLES.editRoomMap`); AD-01 solo lo ve.
-  '/mapa-salas': ['PAN-01', 'DIR-01', 'AD-01'],
+  // REQ-22: pantalla aparte del plano para DIR-01 (edita) y AD-01 (solo mira); PAN-01 lo tiene en Ubicaciones.
+  '/mapa-salas': ['DIR-01', 'AD-01'],
   '/historial': ['PAN-01', 'DIR-01'],
   '/equipos': ['DIR-01', 'PAN-01'],
   '/alertas': ['DIR-01', 'PAN-01'],

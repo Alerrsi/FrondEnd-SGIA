@@ -58,6 +58,11 @@ export interface DialogProps {
    */
   confirmExitTitle?: string;
   confirmExitDescription?: string;
+  /**
+   * Se llama con `Escape` antes de cerrar; `event.preventDefault()` deja el modal abierto (p. ej. para cancelar
+   * un arrastre o quitar una selección dentro del modal).
+   */
+  onEscapeKeyDown?: (event: KeyboardEvent) => void;
 }
 
 export function Dialog({
@@ -71,6 +76,7 @@ export function Dialog({
   hasUnsavedChanges = false,
   confirmExitTitle = '¿Descartar cambios?',
   confirmExitDescription = 'Tienes datos escritos en el formulario. Si sales ahora, se perderán los cambios ingresados.',
+  onEscapeKeyDown,
 }: DialogProps) {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
@@ -138,6 +144,8 @@ export function Dialog({
               }
             }}
             onEscapeKeyDown={(e) => {
+              onEscapeKeyDown?.(e);
+              if (e.defaultPrevented) return;
               if (checkHasChanges()) {
                 e.preventDefault();
                 setShowExitConfirm(true);

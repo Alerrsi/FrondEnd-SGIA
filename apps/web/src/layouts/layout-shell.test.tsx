@@ -53,6 +53,9 @@ describe('nav-config: fuente única del menú', () => {
     expect(navForRole('PRO-01').map((e) => e.to)).toEqual(['/', '/profesor/catalogo', '/profesor/solicitudes', '/profesor/novedades']);
     // AD-01 solo ve (no edita) el mapa de salas (REQ-22).
     expect(screensForRole('AD-01').map((s) => s.to)).toEqual(['/mapa-salas', '/usuarios', '/panoles', '/auditoria', '/monitoreo']);
+    // El pañolero ve el mapa dentro de Ubicaciones, no como pantalla aparte.
+    expect(screensForRole('PAN-01').map((s) => s.to)).not.toContain('/mapa-salas');
+    expect(screensForRole('DIR-01').map((s) => s.to)).toContain('/mapa-salas');
   });
 
   it('las acciones rápidas solo apuntan a pantallas que el rol puede abrir', () => {

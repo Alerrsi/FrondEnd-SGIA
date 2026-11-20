@@ -1,6 +1,6 @@
 import { Profiler } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ vi.mock('@/lib/toast', () => ({
 }));
 
 vi.mock('@/features/auth/context/auth-context', () => ({
-  useAuth: () => ({ user: { id: 1, name: 'Pañolero', role: 'PAN-01' } }),
+  useAuth: () => ({ user: { id: 1, name: 'Director', role: 'DIR-01' } }),
 }));
 
 describe('Fluidez del arrastre con 200 estantes (REQ-22)', () => {
@@ -47,9 +47,10 @@ describe('Fluidez del arrastre con 200 estantes (REQ-22)', () => {
       </Profiler>,
     );
     await userEvent.click(screen.getByRole('button', { name: 'Editar distribución' }));
-    expect(screen.getAllByRole('button', { name: /^Estante E\d+,/ })).toHaveLength(200);
+    const editor = await screen.findByRole('dialog', { name: 'Editar distribución · L206' });
+    expect(within(editor).getAllByRole('button', { name: /^Estante E\d+,/ })).toHaveLength(200);
 
-    const element = screen.getByRole('button', { name: /^Estante E1,/ });
+    const element = within(editor).getByRole('button', { name: /^Estante E1,/ });
     fireEvent.pointerDown(element, { pointerId: 1, button: 0, clientX: 0, clientY: 0 });
     const afterSelect = commits;
 

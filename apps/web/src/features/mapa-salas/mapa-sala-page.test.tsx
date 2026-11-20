@@ -101,18 +101,18 @@ describe('MapaSalaPage · edición y roles (REQ-22)', () => {
     resetApiState();
   });
 
-  it('AD-01 no ve los controles de edición; PAN-01 y DIR-01 sí', () => {
+  it('AD-01 no ve los controles de edición; DIR-01 sí y edita en un modal', async () => {
     state.role = 'AD-01';
     const { unmount } = renderPage();
     expect(screen.queryByRole('button', { name: 'Editar distribución' })).toBeNull();
     unmount();
 
-    for (const role of ['PAN-01', 'DIR-01']) {
-      state.role = role;
-      const view = renderPage();
-      expect(screen.getByRole('button', { name: 'Editar distribución' })).toBeDefined();
-      view.unmount();
-    }
+    state.role = 'DIR-01';
+    renderPage();
+    await userEvent.click(screen.getByRole('button', { name: 'Editar distribución' }));
+    const editor = await screen.findByRole('dialog', { name: 'Editar distribución · L206' });
+    expect(within(editor).getByRole('button', { name: 'Nuevo estante' })).toBeDefined();
+    expect(within(editor).getByRole('button', { name: 'Listo' })).toBeDefined();
   });
 
   it('una sala sin medidas lo avisa; solo el editor puede definirlas', async () => {
@@ -123,9 +123,10 @@ describe('MapaSalaPage · edición y roles (REQ-22)', () => {
     expect(screen.queryByRole('button', { name: 'Definir medidas' })).toBeNull();
     unmount();
 
-    state.role = 'PAN-01';
+    state.role = 'DIR-01';
     renderPage();
-    await userEvent.click(screen.getByRole('button', { name: 'Definir medidas' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Editar distribución' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Definir medidas' }));
     const dialog = await screen.findByRole('dialog', { name: 'Medidas de la sala' });
     const ancho = within(dialog).getByLabelText('Ancho (m) *');
     await userEvent.clear(ancho);
@@ -135,13 +136,13 @@ describe('MapaSalaPage · edición y roles (REQ-22)', () => {
     expect(apiState.updateLocation).toHaveBeenCalledWith({ id: 7, payload: { map_width_cm: 1250, map_height_cm: 600 } });
   });
 
-  it('PAN-01 crea un estante en la sala del mapa', async () => {
-    state.role = 'PAN-01';
+  it('DIR-01 crea un estante en la sala del mapa desde el modal', async () => {
+    state.role = 'DIR-01';
     apiState.createEstante.mockResolvedValue({ ...makeMapa().estantes[0]!, id: 9, codigo: 'EST-C1' });
     renderPage();
 
     await userEvent.click(screen.getByRole('button', { name: 'Editar distribución' }));
-    await userEvent.click(screen.getByRole('button', { name: 'Nuevo estante' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Nuevo estante' }));
     const dialog = await screen.findByRole('dialog', { name: 'Nuevo estante' });
     await userEvent.type(within(dialog).getByLabelText('Código *'), 'est c1');
     await userEvent.selectOptions(within(dialog).getByLabelText('Zona (opcional)'), '2');

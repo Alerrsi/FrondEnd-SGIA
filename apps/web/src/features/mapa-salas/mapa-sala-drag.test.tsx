@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ vi.mock('@/lib/toast', () => ({
 }));
 
 vi.mock('@/features/auth/context/auth-context', () => ({
-  useAuth: () => ({ user: { id: 1, name: 'Pañolero', role: 'PAN-01' } }),
+  useAuth: () => ({ user: { id: 1, name: 'Director', role: 'DIR-01' } }),
 }));
 
 // jsdom/happy-dom no calculan la matriz de pantalla: con la identidad, 1 px de puntero = 1 cm del plano.
@@ -33,10 +33,16 @@ async function renderEditing() {
     </MemoryRouter>,
   );
   await userEvent.click(screen.getByRole('button', { name: 'Editar distribución' }));
+  await screen.findByRole('dialog', { name: 'Editar distribución · L206' });
+}
+
+/** El editor está en un modal: el plano de afuera tiene los mismos estantes, solo para mirar. */
+function editor(): HTMLElement {
+  return screen.getByRole('dialog', { name: 'Editar distribución · L206' });
 }
 
 function estante(codigo: string): SVGGElement {
-  return screen.getByRole('button', { name: new RegExp(`^Estante ${codigo},`) }) as unknown as SVGGElement;
+  return within(editor()).getByRole('button', { name: new RegExp(`^Estante ${codigo},`) }) as unknown as SVGGElement;
 }
 
 function drag(element: Element, to: { x: number; y: number }, from = { x: 0, y: 0 }) {
@@ -89,7 +95,7 @@ describe('Arrastre y teclado en el mapa (REQ-22)', () => {
     drag(estante('EST-B1'), { x: 2, y: 1 });
 
     expect(apiState.updateEstante).not.toHaveBeenCalled();
-    expect(await screen.findByRole('dialog')).toBeDefined();
+    expect(await screen.findByRole('dialog', { name: 'Estante EST-A1' })).toBeDefined();
   });
 
   it('soltar encima de otro estante vuelve a su lugar con el motivo', async () => {
@@ -167,7 +173,7 @@ describe('Arrastre y teclado en el mapa (REQ-22)', () => {
     vi.useFakeTimers();
 
     act(() => {
-      fireEvent.click(screen.getByRole('button', { name: 'Mover a la izquierda' }));
+      fireEvent.click(within(editor()).getByRole('button', { name: 'Mover a la izquierda' }));
       vi.advanceTimersByTime(KEYBOARD_SAVE_DELAY_MS);
     });
 
@@ -176,7 +182,7 @@ describe('Arrastre y teclado en el mapa (REQ-22)', () => {
 
   it('arrastrar una zona la mueve y redimensionar cambia su tamaño', async () => {
     await renderEditing();
-    const zona = document.querySelector('[data-zona-id="2"]') as SVGGElement;
+    const zona = editor().querySelector('[data-zona-id="2"]') as SVGGElement;
 
     drag(zona, { x: -48, y: 102 });
     expect(apiState.updateZona.mock.calls[0]?.[0]).toEqual({
@@ -188,5 +194,35 @@ describe('Arrastre y teclado en el mapa (REQ-22)', () => {
     const handle = zona.querySelector('[data-zona-handle]') as SVGGElement;
     drag(handle, { x: -96, y: 31 });
     expect(apiState.updateZona.mock.calls[1]?.[0].payload).toEqual({ x: 550, y: 50, width: 300, depth: 230 });
+  });
+
+  it('Escape en el modal primero quita la selección y recién después cierra', async () => {
+    await renderEditing();
+    fireEvent.pointerDown(estante('EST-B1'), { pointerId: 1, button: 0, clientX: 0, clientY: 0 });
+    fireEvent.pointerMove(window, { pointerId: 1, clientX: 40, clientY: 0 });
+    fireEvent.pointerUp(window, { pointerId: 1, clientX: 40, clientY: 0 });
+    expect(within(editor()).getByRole('group', { name: 'Mover estante EST-B1' })).toBeDefined();
+
+    await userEvent.keyboard('{Escape}');
+    expect(screen.getByRole('dialog', { name: 'Editar distribución · L206' })).toBeDefined();
+    expect(within(editor()).queryByRole('group', { name: 'Mover estante EST-B1' })).toBeNull();
+
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: 'Editar distribución · L206' })).toBeNull();
+  });
+
+  it('cerrar el modal guarda un movimiento de teclado pendiente', async () => {
+    await renderEditing();
+    vi.useFakeTimers();
+    act(() => {
+      fireEvent.keyDown(estante('EST-B1'), { key: 'ArrowUp' });
+    });
+    expect(apiState.updateEstante).not.toHaveBeenCalled();
+
+    act(() => {
+      fireEvent.click(within(editor()).getByRole('button', { name: 'Listo' }));
+    });
+
+    expect(apiState.updateEstante.mock.calls[0]?.[0].payload).toMatchObject({ x: 600, y: 70 });
   });
 });

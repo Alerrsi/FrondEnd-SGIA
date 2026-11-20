@@ -40,10 +40,15 @@ export function useEstanteKeyboard({ estantes, room, onSave, onInvalid, onDesele
   const latest = useRef({ estantes, room, onSave, onInvalid });
   latest.current = { estantes, room, onSave, onInvalid };
 
+  // Al desmontar (p. ej. cerrar el modal de edición) se guarda lo que estaba esperando, no se pierde.
   useEffect(() => () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      commitRef.current();
+    }
   }, []);
 
+  const commitRef = useRef<() => void>(() => undefined);
   const commit = useCallback(() => {
     timerRef.current = null;
     const current = draftRef.current;
@@ -59,6 +64,8 @@ export function useEstanteKeyboard({ estantes, room, onSave, onInvalid, onDesele
     if (reason) invalid(reason);
     else save(estante, current);
   }, []);
+
+  commitRef.current = commit;
 
   const schedule = useCallback(
     (next: EstanteDraft) => {
@@ -111,5 +118,12 @@ export function useEstanteKeyboard({ estantes, room, onSave, onInvalid, onDesele
     [nudge, rotate, onDeselect],
   );
 
-  return { draft, handleKey, nudge, rotate };
+  /** Guarda ya lo que esperaba los 400 ms (al cerrar el modal de edición). */
+  const flush = useCallback(() => {
+    if (!timerRef.current) return;
+    clearTimeout(timerRef.current);
+    commit();
+  }, [commit]);
+
+  return { draft, handleKey, nudge, rotate, flush };
 }
