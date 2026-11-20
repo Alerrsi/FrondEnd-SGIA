@@ -1,6 +1,6 @@
 # Mapa de salas (plano SVG con estantes arrastrables)
 
-**Estado: fases 1 a 5 implementadas (20 nov 2026); fase 6 (mapa en Ubicaciones, edición en modal y datos de prueba) en plan, sin implementar.** Ver §11 y §12 al final. Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
+**Estado: implementado (20 nov 2026), fases 1 a 6.** Ver §11 y §12 al final. Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
 
 ---
 
@@ -275,7 +275,7 @@ Formas no rectangulares de sala, puertas y ventanas, rotaciones libres, varios p
 
 **Verificación:** 95 archivos de test (561 + 1 omitida) en verde; typecheck y lint de web sin errores. Revisión visual a 320, 390, 768, 1024 y 1440 px en claro y oscuro con datos de prueba (Chromium con emulación de dispositivo). **Recorrido de punta a punta contra la API real** (Chromium, mouse y teclado reales, login de desarrollo): PAN-01 crea zona y estante, lo arrastra (guarda ajustado a 10 cm y recalcula la zona), persiste al recargar, soltar fuera de la sala no guarda, flechas mueven 10 cm, «Asignar cajones» ofrece solo los cajones sueltos de la sala (la API rechaza uno de otra sala con 422), búsqueda y zoom; AD-01 solo lee (403 al escribir) y DIR-01 edita; 30/30 comprobaciones, sin errores en consola. Encontró un cajón repetido en «Asignar cajones» mientras se refrescaban las listas (corregido).
 
-## 12. Fase 6 · Mapa en Ubicaciones, edición en modal y datos de prueba (plan, 20 nov 2026, sin implementar)
+## 12. Fase 6 · Mapa en Ubicaciones, edición en modal y datos de prueba (implementado, 20 nov 2026)
 
 ### Pedido
 
@@ -308,4 +308,11 @@ El mapa debe verse en Ubicaciones, al costado de la lista de salas. Editar la di
 | 6.2 | `SalaMapaPanel`, `SalaMapaEditorDialog`, `onEscapeKeyDown` en `Dialog`, `/mapa-salas` para `DIR-01`/`AD-01`. | Front | Tests de panel, modal (arrastre, teclado, `Escape`) y roles en verde. |
 | 6.3 | Mapa en Ubicaciones; estante en la lista de cajones. | Front | Tests de Ubicaciones en verde. |
 | 6.4 | Recorrido de punta a punta contra la API real (PAN-01 en Ubicaciones, DIR-01 y AD-01 en `/mapa-salas`), capturas a 390 y 1440 px, cierre de docs. | Ambos | Recorrido completo sin fallas. |
+
+### Resultado de la fase 6
+
+- `SalaMapaPanel` y `SalaMapaEditorDialog` como se planificó; `MapaSalaPage` quedó en encabezado + selector + panel. `MapaToolbar` pasó a dos huecos (`children` a la izquierda, `actions` a la derecha).
+- **Corregido al probar contra la API real:** `useMapScale` medía el `<svg>` solo al montar; como el panel primero muestra el esqueleto de carga, en Ubicaciones los textos quedaban a la mitad (6 px). Ahora vuelve a medir cuando aparece el `<svg>` (igual el zoom con rueda). Test: `sala-mapa-panel.test.tsx`.
+- **Corregido en el seeder:** los dos estantes horizontales de las zonas B y C se pisaban en el lugar previsto y caían en el primer hueco libre. Ahora ocupan el 38 % del ancho de la zona cada uno; el test exige el lugar previsto.
+- **Verificación:** vitest (97 archivos) y typecheck en verde; recorrido de punta a punta contra la API real con los datos de prueba: 27/27 (PAN-01 en Ubicaciones: mapa a la derecha, cajones abajo con su estante, pop-up, modal de edición con crear, arrastrar, `Escape` por capas y «Listo», asignar cajón solo de la sala; PAN-01 sin `/mapa-salas`; DIR-01 edita en `/mapa-salas` con el modal; AD-01 solo mira), sin errores en consola.
 

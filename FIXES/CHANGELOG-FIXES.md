@@ -926,3 +926,17 @@
   - Formulario de cajón con estante; inventario acepta `?cajon_id=`; `useProducts` acepta `enabled`.
 - **Verificación:** vitest y typecheck en verde; revisión visual a 320–1440 px en claro y oscuro; recorrido de punta a punta contra la API real con PAN-01, DIR-01 y AD-01 (30/30 comprobaciones). El recorrido detectó un cajón repetido en «Asignar cajones» al refrescar (corregido: se quitan duplicados por id).
 
+---
+
+## FIX-049: Mapa en Ubicaciones, edición en modal y datos de prueba (REQ-22, fase 6)
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `features/ubicaciones`, `features/mapa-salas`, `components/ui/dialog.tsx`; seeder en `BackEnd-SGIA` — plan en [`docs/mapa-salas.md`](docs/mapa-salas.md) §12
+- **Qué cambia:**
+  - Ubicaciones (`PAN-01`): el mapa de la sala elegida va a la derecha de la lista de salas, con los cajones debajo (cada uno dice su estante). Se quitó «Ver mapa» de cada fila.
+  - «Editar distribución» abre un `Dialog size="2xl"` con toda la edición (rejilla, arrastre, teclado, `MovePad`, estantes, zonas, medidas, cajones); el plano de afuera solo se mira. `Escape` cancela un arrastre o quita la selección antes de cerrar (`Dialog` suma `onEscapeKeyDown`); cerrar guarda un movimiento de teclado pendiente.
+  - `/mapa-salas` y su entrada del menú quedan solo para `DIR-01` (edita con el mismo modal) y `AD-01` (solo mira).
+  - `useMapScale` y la rueda del zoom se enganchan aunque el `<svg>` aparezca después de la carga (los textos quedaban a 6 px en Ubicaciones).
+  - Backend: `MapaSalasDemoSeeder` deja las 8 ubicaciones con zonas A/B/C, siete estantes y todos los cajones asignados.
+- **Verificación:** vitest y typecheck en verde; recorrido contra la API real con PAN-01, DIR-01 y AD-01: 27/27.
+

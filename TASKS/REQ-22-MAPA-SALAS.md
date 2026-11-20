@@ -103,7 +103,7 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] `Escape` en el modal: cancela arrastre o deselecciona antes de cerrar (`onEscapeKeyDown` en `Dialog`); un movimiento de teclado pendiente se guarda al cerrar.
 - [x] `/mapa-salas` solo para `DIR-01` y `AD-01` (rutas, menú y test del menú).
 - [x] Ubicaciones (`PAN-01`): mapa a la derecha de las salas y cajones debajo, con su estante; sin «Ver mapa».
-- [ ] Recorrido contra la API real y capturas a 390 y 1440 px.
+- [x] Recorrido contra la API real y capturas a 390 y 1440 px (27/27).
 
 ---
 
