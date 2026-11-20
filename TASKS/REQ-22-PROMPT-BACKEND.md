@@ -1,5 +1,7 @@
 # REQ-22 · Prompt de modificación para la API (`BackEnd-SGIA`, Laravel)
 
+> **Ejecutado (20 nov 2026):** la fase 1 está implementada en la rama `mapa-salas` del backend. Este prompt queda como registro.
+
 > Complementa [REQ-22](./REQ-22-MAPA-SALAS.md). **El contrato completo (migraciones, reglas, respuestas, mensajes `422` y tests) vive en `BackEnd-SGIA/docs/mapa-salas.md`**, en la rama `mapa-salas` del backend; no se duplica aquí para que no se desincronice.
 
 ## Prompt

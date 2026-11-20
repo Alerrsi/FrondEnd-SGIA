@@ -30,16 +30,16 @@ Contrato completo en `BackEnd-SGIA/docs/mapa-salas.md`.
 
 | Método | Endpoint | Roles | Descripción | Estado API |
 |---|---|---|---|:---:|
-| `GET` | `/api/locations/{id}/map` | Auth | Medidas de la sala, zonas, estantes con cajones resumidos y `cajones_sin_estante_count`. | ⏳ Pendiente |
-| `PATCH` | `/api/locations/{id}` | `DIR-01`, `PAN-01` | Suma `map_width_cm` y `map_height_cm`. | ⏳ Pendiente |
-| `GET` | `/api/estantes` | Auth | Filtro `location_id`. | ⏳ Pendiente |
-| `POST` | `/api/estantes` | `DIR-01`, `PAN-01` | Crea estante; sin `x`/`y` lo ubica en el primer hueco libre. | ⏳ Pendiente |
-| `PATCH` | `/api/estantes/{id}` | `DIR-01`, `PAN-01` | Mueve, gira o edita. `422` por límites o superposición. | ⏳ Pendiente |
-| `DELETE` | `/api/estantes/{id}` | `DIR-01`, `PAN-01` | `422` si tiene cajones. | ⏳ Pendiente |
-| `GET` | `/api/estantes/{id}/contents` | Auth | Cajones con productos y unidades por nombre. | ⏳ Pendiente |
-| `GET/POST/PATCH/DELETE` | `/api/zonas` | Auth / `DIR-01`, `PAN-01` | Zonas de la sala. | ⏳ Pendiente |
-| `PATCH` | `/api/cajones/{id}` | `DIR-01`, `PAN-01` | Suma `estante_id`. | ⏳ Pendiente |
-| `GET` | `/api/cajones` | Auth | Filtros `estante_id` y `sin_estante=1`. | ⏳ Pendiente |
+| `GET` | `/api/locations/{id}/map` | Auth | Medidas de la sala, zonas, estantes con cajones resumidos y `cajones_sin_estante_count`. | ✅ Implementado |
+| `PATCH` | `/api/locations/{id}` | `DIR-01`, `PAN-01` | Suma `map_width_cm` y `map_height_cm`. | ✅ Implementado |
+| `GET` | `/api/estantes` | Auth | Filtro `location_id`. | ✅ Implementado |
+| `POST` | `/api/estantes` | `DIR-01`, `PAN-01` | Crea estante; sin `x`/`y` lo ubica en el primer hueco libre. | ✅ Implementado |
+| `PATCH` | `/api/estantes/{id}` | `DIR-01`, `PAN-01` | Mueve, gira o edita. `422` por límites o superposición. | ✅ Implementado |
+| `DELETE` | `/api/estantes/{id}` | `DIR-01`, `PAN-01` | `422` si tiene cajones. | ✅ Implementado |
+| `GET` | `/api/estantes/{id}/contents` | Auth | Cajones con productos y unidades por nombre. | ✅ Implementado |
+| `GET/POST/PATCH/DELETE` | `/api/zonas` | Auth / `DIR-01`, `PAN-01` | Zonas de la sala. | ✅ Implementado |
+| `PATCH` | `/api/cajones/{id}` | `DIR-01`, `PAN-01` | Suma `estante_id`. | ✅ Implementado |
+| `GET` | `/api/cajones` | Auth | Filtros `estante_id` y `sin_estante=1`. | ✅ Implementado |
 
 ---
 
@@ -54,8 +54,8 @@ Contrato completo en `BackEnd-SGIA/docs/mapa-salas.md`.
 
 ### Fase 1 · Backend (`BackEnd-SGIA`)
 Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
-- [ ] Migraciones, modelos, `RoomMapService`, form requests y endpoints con tests de feature.
-- [ ] `ENDPOINTS.md` de ambos repos a ✅.
+- [x] Migraciones, modelos, `RoomMapService`, form requests y endpoints con tests de feature (`RoomMapServiceTest`, `RoomMapTest`, `EstanteCrudTest`, `ZonaCrudTest`, `LocationAndCajonCrudTest`).
+- [x] `ENDPOINTS.md` de ambos repos a ✅ (sección 2.2).
 
 ### Fase 2 · Tipos y cliente (`packages/`)
 - [ ] `packages/types/src/mapa-sala.ts` (`Zona`, `Estante`, `EstanteRotation`, `SalaMapa`, `EstanteContenido`, payloads) exportados en `index.ts`.

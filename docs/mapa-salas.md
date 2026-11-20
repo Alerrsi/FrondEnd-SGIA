@@ -1,6 +1,6 @@
 # Mapa de salas (plano SVG con estantes arrastrables)
 
-**Estado: plan aprobado para desarrollo (20 nov 2026, revisado el mismo día), sin implementar.** Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
+**Estado: fase 1 (backend) implementada (20 nov 2026); fases 2 a 5 (esta pantalla) pendientes.** Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
 
 ---
 
@@ -109,7 +109,7 @@ export interface EstanteContenido { /* estante + cajones[] con productos[] y uni
 | Método | Endpoint | Roles | Uso en el front |
 |---|---|---|---|
 | `GET` | `/api/locations/{id}/map` | Auth | Un solo pedido para dibujar la sala: medidas, zonas, estantes con sus cajones resumidos. |
-| `PATCH` | `/api/locations/{id}` | `DIR-01`, `PAN-01` | Agrega `map_width_cm` y `map_height_cm` (100–10 000). `422` si al achicar queda un estante o zona afuera. |
+| `PATCH` | `/api/locations/{id}` | `DIR-01`, `PAN-01` | Agrega `map_width_cm` y `map_height_cm` (100–10 000, siempre juntos). `422` en `map_width_cm` si al achicar queda un estante o zona afuera. |
 | `GET` | `/api/estantes?location_id=` | Auth | Selector de estante en el formulario de cajón. |
 | `POST` | `/api/estantes` | `DIR-01`, `PAN-01` | Crear estante. Sin `x`/`y`, la API lo ubica en el primer hueco libre. |
 | `PATCH` | `/api/estantes/{id}` | `DIR-01`, `PAN-01` | Mover (`x`, `y`, `zona_id`), girar (`rotation`) o editar datos. `422` por límites o superposición. |
