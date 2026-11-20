@@ -28,7 +28,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - `FIXES/CHANGELOG-FIXES.md` — historial de correcciones; registrar ahí los cambios importantes.
 - `.claude/skills/sgia-design/` — skill con la especificación de diseño de UI (se carga sola). Leer antes de crear o modificar componentes visuales.
 - `AGENTS.md` — contexto de negocio y arquitectura completo. Consultarlo para tareas de dominio.
-- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, en plan); cuando se implemente reemplaza las decisiones de diseño de abajo.
+- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones.
 
 ## Reglas duras
 
@@ -43,7 +43,8 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 
 ## Decisiones de diseño
 
-Sistema «Trazo» en implementación (rama `feat/rediseno-zed`, `docs/rediseno-interfaz.md`; manda sobre `sgia-design` en color, tipografía y menú hasta que se reescriba en la fase 8): neutros cálidos papel/grafito con la escala `zinc` redefinida en `apps/web/src/index.css` (se sigue escribiendo `zinc-*`), burdeo como único acento (rosa en oscuro), menú lateral neutro (`bg-zinc-100 dark:bg-zinc-900`, activo con barra burdeo), Geist en la interfaz y Geist Mono solo en `font-code` (SKU, RUT, seriales, códigos); `font-mono` es Geist con cifras tabulares, radios 4/6/8px, sin paletas alternativas, pesos 400/500 (nunca 700), nada bajo 12px y rótulos en tipo oración (sin `uppercase`). Chips de código como etiqueta crema (`CODE_CHIP_CLASS`); badges con el componente `Badge`.
+Sistema «Trazo» (rama `feat/rediseno-zed`; regla completa en `.claude/skills/sgia-design/SKILL.md`, historia en `docs/rediseno-interfaz.md`): neutros cálidos papel/grafito con la escala `zinc` redefinida en `apps/web/src/index.css` (se sigue escribiendo `zinc-*`), burdeo como único acento (rosa en oscuro), menú lateral neutro (`bg-zinc-100 dark:bg-zinc-900`, activo con barra burdeo), Geist en la interfaz y Geist Mono solo en `font-code` (SKU, RUT, seriales, códigos); `font-mono` es Geist con cifras tabulares, radios 4/6/8px, sin paletas alternativas, pesos 400/500 (nunca 700), nada bajo 12px y rótulos en tipo oración (sin `uppercase`). Chips de código como etiqueta crema (`CODE_CHIP_CLASS`); badges con el componente `Badge`.
+Componentes base en `apps/web/src/components/ui/` (`PageHeader`, `Metric`, `CellGrid`, `TableFrame`, `Dialog`/`Sheet`, `Badge`, `ErrorState`); el menú sale de `layouts/nav-config.ts` y los gráficos de `lib/chart-theme.ts`. Responsivo de 320 a 1440 px, controles de 44px con puntero táctil.
 
 ## Convenciones de trabajo
 

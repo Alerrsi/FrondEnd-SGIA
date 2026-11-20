@@ -422,6 +422,7 @@ export default function HistorialPrestamosPage() {
                 <button
                   type="button"
                   onClick={() => setSearch('')}
+                  aria-label="Limpiar búsqueda"
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
                 >
                   <X aria-hidden="true" className="h-3.5 w-3.5" />
@@ -612,6 +613,7 @@ export default function HistorialPrestamosPage() {
                 size="icon"
                 onClick={() => setPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage <= 1}
+                aria-label="Página anterior"
                 className="h-7 w-7 p-0"
               >
                 <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
@@ -625,6 +627,7 @@ export default function HistorialPrestamosPage() {
                 size="icon"
                 onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage >= totalPages}
+                aria-label="Página siguiente"
                 className="h-7 w-7 p-0"
               >
                 <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />

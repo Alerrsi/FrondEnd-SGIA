@@ -17,11 +17,11 @@
 
 Plan completo: `docs/rediseno-interfaz.md` (estado: plan, sin implementar). Referencia visual: zed.dev.
 
-- [ ] Fase 1 — Tokens y tipografía (Geist + Geist Mono, neutros cálidos, burdeo único acento)
-- [ ] Fase 2 — Componentes base (`Button`, `Kbd`, `CellGrid`, `Metric`, `DataTable`, `Dialog`/`Sheet` responsivos)
-- [ ] Fase 3 — Layouts sidebar y header con `nav-config.ts` único, buscador `Ctrl K` y rutas diferidas
-- [ ] Fase 4 — Página de inicio por rol (PAN-01, DIR-01, AD-01, PRO-01)
-- [ ] Fase 5 — Migración de pantallas por módulo
-- [ ] Fase 6 — Tema de gráficos (Chart.js, datos por GraphQL)
-- [ ] Fase 7 — Responsivo (320–1440), rendimiento y accesibilidad
-- [ ] Fase 8 — Cierre: `sgia-design`, `CLAUDE.md`, changelog
+- [x] Fase 1 — Tokens y tipografía (Geist + Geist Mono, neutros cálidos, burdeo único acento)
+- [x] Fase 2 — Componentes base (`Button`, `Kbd`, `CellGrid`, `Metric`, `DataTable`, `Dialog`/`Sheet` responsivos)
+- [x] Fase 3 — Layouts sidebar y header con `nav-config.ts` único, buscador `Ctrl K` y rutas diferidas
+- [x] Fase 4 — Página de inicio por rol (PAN-01, DIR-01, AD-01, PRO-01)
+- [x] Fase 5 — Migración de pantallas por módulo
+- [x] Fase 6 — Tema de gráficos (Chart.js, datos por GraphQL)
+- [x] Fase 7 — Responsivo (320–1440), rendimiento y accesibilidad
+- [x] Fase 8 — Cierre: `sgia-design`, `CLAUDE.md`, changelog

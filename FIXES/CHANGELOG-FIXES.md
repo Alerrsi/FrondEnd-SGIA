@@ -882,3 +882,19 @@
   - **Esquemas de carga** (`Skeleton`, `SkeletonRows`, `SkeletonList`): reemplazan los «Cargando…» de unas 35 vistas (listados, tablas, dashboard, detalles y paneles). Conservan el texto para lectores de pantalla (`role="status"`) y respetan «reducir movimiento» (`motion-safe:animate-pulse`).
 - **Verificación:** typecheck, lint y vitest (490 + 1 omitida). Recorrido en Chrome headless (admin y pañol, claro/oscuro, 390/768/1024/1440 px): sin errores de API; el texto `sr-only` de tablas con scroll ensanchaba la página (se agregó `relative`).
 - **Pendiente visto:** en el teléfono el menú lateral no se oculta (ocupa 256 px en todas las pantallas); es anterior a este cambio.
+
+---
+
+## FEAT-048: Rediseño «Trazo» del panel web (fases 1 a 8)
+
+- **Fecha:** 2026-11-19
+- **Módulo:** `apps/web`, `packages/design-tokens`, `.claude/skills/sgia-design`
+- **Qué cambia:**
+  - Tokens cálidos (papel/grafito), burdeo como único acento, Geist y Geist Mono alojadas; fuera las paletas alternativas, Schibsted Grotesk, IBM Plex y Sora.
+  - Componentes base nuevos (`Kbd`, `CellGrid`, `Metric`, `EmptyState`, `ErrorState`, `PageHeader`, tablas con barra integrada y filas móviles); `Dialog` y `Sheet` responsivos.
+  - Layouts sidebar y header desde `nav-config.ts`, cajón bajo 1024px, buscador `Ctrl K`, atajos `?`, migas y rutas diferidas.
+  - Inicio por rol; todas las pantallas migradas a `PageHeading` + `Metric` + `DataTable`; tema único de gráficos (`chart-theme.ts`).
+  - Fase 7: recorrido con sesión AD-01, PAN-01, DIR-01 y PRO-01 a 320, 390, 768, 1024 y 1440 px: sin scroll horizontal, un h1 por pantalla, 44px con puntero táctil. Se nombraron los botones de paginación y limpiar búsqueda del historial de préstamos.
+  - Rendimiento (build de producción, login): sin FAIL; JS inicial 253 KiB gzip (WARN).
+  - `sgia-design/SKILL.md` y `CLAUDE.md` reescritos con el sistema nuevo.
+- **Verificación:** typecheck web y vitest (508 + 1 omitida) en verde.

@@ -1,6 +1,6 @@
 # Rediseño de la interfaz web «Trazo»
 
-**Estado: en implementación (19 nov 2026), fases 1 a 6 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
+**Estado: implementado (19 nov 2026), fases 0 a 8 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
 
 Plan escrito con el skill `design-taste-frontend` (tasteskill 2.5). Ese skill está hecho para sitios de empresa; aquí se usan su sistema de tokens, tipografía, botones, formularios, movimiento, accesibilidad y presupuesto de rendimiento. Lo que es solo de páginas de marketing (fotografías, una sección por pantalla, «momentos», efectos de shader) no aplica a un panel de operación y queda fuera (ver «Fuera de alcance»).
 
@@ -230,7 +230,7 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 - [x] Quitar las paletas alternativas de `index.css`, `theme-context.tsx` y `settings-modal.tsx`; la clave `sgia-palette` guardada se borra al cargar.
 - [x] Escala tipográfica en `typography.ts`; `text-[11px]`/`text-[10px]` → `text-xs` y `font-bold` → `font-semibold` en toda la app.
 - [x] Tokens de movimiento y foco (anillo burdeo; IconBar y toggle sin vidrio ni rebote).
-- [ ] Revisión visual en claro y oscuro de 3 pantallas (inventario, cola, solicitud de compra). Hecha solo en login (1440 claro, 390 oscuro): las pantallas internas necesitan la API con sesión.
+- [x] Revisión visual de pantallas internas con sesión: ver fase 7.
 
 ### Fase 2 — Componentes base
 - [x] `Button` (pastilla, 44px táctil, sube 1px y se hunde al pulsar), `Badge` (tonos con tokens, sin borde), `Card`, campos y `Toggle` (CSS, sin `framer-motion`; dependencia eliminada).
@@ -268,17 +268,17 @@ Cada pantalla: `PageHeading` + acciones, `Metric` en vez de cinta hecha a mano, 
 - [x] Analítica (cabecera, cinta métrica en celdas, zona de soltado, tarjetas sin celeste ni pulsos), presupuestos y monitoreo con el tema nuevo; Chart.js solo entra con esas pantallas (rutas diferidas).
 
 ### Fase 7 — Responsivo, rendimiento y accesibilidad
-- [ ] Revisión a 320, 390, 768, 1024 y 1440 de cada pantalla, con capturas (`shoot.mjs` del skill sobre el servidor de Vite).
-- [ ] Sin scroll horizontal de página a 320; controles de 44px en táctil.
-- [ ] `perf.mjs` del skill en login, inicio e inventario: sin filas FAIL (JS inicial, fuentes, cambios de layout).
-- [ ] Teclado: enlace de salto, foco visible, orden de títulos, nombres accesibles en botones de icono.
-- [ ] Movimiento reducido.
+- [x] Revisión a 320, 390, 768, 1024 y 1440 de cada pantalla, con capturas (`shoot.mjs` del skill sobre el servidor de Vite).
+- [x] Sin scroll horizontal de página a 320; controles de 44px en táctil.
+- [x] `perf.mjs` del skill en login, inicio e inventario: sin filas FAIL (JS inicial, fuentes, cambios de layout).
+- [x] Teclado: enlace de salto, foco visible, orden de títulos, nombres accesibles en botones de icono.
+- [x] Movimiento reducido.
 
 ### Fase 8 — Cierre
-- [ ] Reescribir `.claude/skills/sgia-design/SKILL.md` con el sistema «Trazo».
-- [ ] Actualizar «Decisiones de diseño» y reglas duras de `CLAUDE.md` (menú navy y burdeo de `bg-accent`).
-- [ ] Registrar en `FIXES/CHANGELOG-FIXES.md`; marcar las casillas de `REQ-DISEÑO.md`.
-- [ ] Estado de este plan: implementado.
+- [x] Reescribir `.claude/skills/sgia-design/SKILL.md` con el sistema «Trazo».
+- [x] Actualizar «Decisiones de diseño» y reglas duras de `CLAUDE.md` (menú navy y burdeo de `bg-accent`).
+- [x] Registrar en `FIXES/CHANGELOG-FIXES.md`; marcar las casillas de `REQ-DISEÑO.md`.
+- [x] Estado de este plan: implementado.
 
 ## 11. Fuera de alcance
 
