@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { useBudgetMovements } from '@sgia/api-client';
 import type { BudgetMovement, BudgetMovementType } from '@sgia/types';
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { Badge } from '@/components/ui/badge';
@@ -20,8 +20,7 @@ import { SkeletonRows } from '@/components/ui/skeleton-rows';
 
 const columnHelper = createColumnHelper<BudgetMovement>();
 
-const controlClasses =
-  FILTER_CONTROL_CLASS;
+const controlClasses = FILTER_CONTROL_CLASS;
 
 const dateTime = (value: string) =>
   value
@@ -52,7 +51,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
       columnHelper.accessor('created_at', {
         header: 'Fecha',
         cell: (info) => (
-          <span className="font-mono text-zinc-500">{dateTime(info.getValue())}</span>
+          <span className="font-mono whitespace-nowrap text-zinc-500 dark:text-zinc-400">{dateTime(info.getValue())}</span>
         ),
       }),
       columnHelper.accessor('type', {
@@ -67,7 +66,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
         cell: (info) => {
           const meta = movementMeta(info.row.original.type);
           return (
-            <span className="font-mono tabular-nums">
+            <span className="whitespace-nowrap font-mono">
               {meta.sign === '±' ? '' : `${meta.sign} `}
               {formatCLP(info.getValue())}
             </span>
@@ -83,7 +82,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             return (
               <Link
                 to="/compras/ordenes"
-                className="font-mono text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+                className="whitespace-nowrap text-accent underline-offset-2 hover:underline"
               >
                 Compra #{m.purchase_id}
               </Link>
@@ -93,13 +92,13 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
             return (
               <Link
                 to={`/compras/facturas?ingreso=${m.invoice_intake_id}`}
-                className="font-mono text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+                className="whitespace-nowrap text-accent underline-offset-2 hover:underline"
               >
                 Ingreso #{m.invoice_intake_id}
               </Link>
             );
           }
-          return <span className="text-zinc-400">—</span>;
+          return <span className="text-zinc-500 dark:text-zinc-400">—</span>;
         },
       }),
       columnHelper.accessor('notes', {
@@ -108,7 +107,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           <div className="text-zinc-600 dark:text-zinc-300">
             {info.getValue() ?? '—'}
             {(info.row.original.user?.nombre ?? info.row.original.user?.name) && (
-              <div className="text-xs text-zinc-400">
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">
                 {info.row.original.user?.nombre ?? info.row.original.user?.name}
               </div>
             )}
@@ -128,7 +127,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         <select
           aria-label="Filtrar por tipo de movimiento"
           value={type}
@@ -165,11 +164,11 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           }}
           className={controlClasses}
         />
-        {isFetching && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />}
+        {isFetching && <span className="text-[13px] text-zinc-500 dark:text-zinc-400">Buscando…</span>}
       </div>
 
-      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
-        <table className="w-full border-collapse text-left text-xs">
+      <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <table className="w-full border-collapse text-left text-[13px] text-zinc-700 dark:text-zinc-300">
           <thead>
             {table.getHeaderGroups().map((hg) => (
               <tr
@@ -191,7 +190,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {isLoading && (
               <SkeletonRows columns={columns.length} rows={5} label="Cargando movimientos…" cellClassName="px-3 py-2" />
             )}
@@ -219,13 +218,13 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
       </div>
 
       {meta && meta.lastPage > 1 && (
-        <div className="flex items-center justify-end gap-2 text-xs text-zinc-500">
+        <div className="flex items-center justify-end gap-2 text-[13px] text-zinc-500 dark:text-zinc-400">
           <span className="font-mono">
             {meta.currentPage} / {meta.lastPage}
           </span>
           <Button
             size="icon"
-            variant="outline"
+            variant="secondary"
             aria-label="Página anterior"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
@@ -234,7 +233,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           </Button>
           <Button
             size="icon"
-            variant="outline"
+            variant="secondary"
             aria-label="Página siguiente"
             disabled={page >= meta.lastPage}
             onClick={() => setPage((p) => p + 1)}
@@ -243,7 +242,7 @@ export function BudgetMovementsPanel({ budgetId }: { budgetId: number }) {
           </Button>
         </div>
       )}
-      <p className="text-xs text-zinc-400">
+      <p className="text-xs text-zinc-500 dark:text-zinc-400">
         Los ajustes muestran la diferencia absoluta; el detalle indica el monto anterior y el nuevo.
       </p>
     </div>

@@ -1,309 +1,96 @@
 ---
 name: sgia-design
-description: Diseño visual de la UI de SGIA (web). Usar al crear o modificar componentes, pantallas, tablas, formularios o badges en apps/web.
+description: Diseño visual de la UI de SGIA (web). Usar al crear o modificar componentes, pantallas, tablas, formularios, gráficos o badges en apps/web.
 ---
 
-> **Rediseño «Trazo» en curso** (rama `feat/rediseno-zed`, plan en `docs/rediseno-interfaz.md`). Donde este archivo hable de navy, Schibsted Grotesk, paletas alternativas, `text-[11px]` o `font-bold`, manda el plan: neutros cálidos, menú lateral neutro, Geist + Geist Mono, sin paletas alternativas, nada bajo 12px, pesos 400/500. Este archivo se reescribe en la fase 8.
+# SGIA · Sistema de diseño «Trazo»
 
-# Sistema de Gestión de Inventario y Activos (SGIA) - Global UI Specification (Dual Theme: Light & Dark)
+Interfaz del panel web de SGIA (INACAP Sede Temuco). Referencia de distribución: zed.dev (marco con líneas de 1px, celdas que comparten bordes, cabecera fija con atajos). Plan e historia de decisiones: `docs/rediseno-interfaz.md`. Este archivo es la regla; ante una duda, manda el código de `apps/web/src/components/ui/`.
 
-Eres un Diseñador de Producto Senior y Desarrollador Frontend experto en React, TypeScript y Tailwind CSS. Tu objetivo es diseñar e implementar interfaces para todo el ecosistema de la plataforma SGIA (Pañol TI, Inventario general, Mantenimiento, Préstamos, Gestión de Usuarios y Reportes), erradicando el aspecto de plantilla administrativa genérica con el sistema «Pañol»: alta densidad de información, marco navy, acento burdeo y etiquetas crema.Como senior debes usar variables CSS para codigo modular y que los temas no relentizen el sistema
+Objetivo: que todo se encuentre en pocos clics, se lea igual en cada pantalla y funcione de 320 a 1440 px.
 
+## 1. Stack
 
+React 19 + TypeScript estricto (sin `any`), Tailwind v4 con tema por clase (`dark:`), Radix (Dialog, DropdownMenu, Select, Tabs, Tooltip), Lucide, TanStack Table, React Hook Form + Zod, Sileo para avisos, Chart.js para gráficos. Sin librerías de animación.
 
-> **Sistema «Pañol» (vigente desde nov 2026, rama `feature/rediseno-paleta`).** Reemplaza la estética monocroma zinc anterior. Los tokens viven en `apps/web/src/index.css` (`@theme`).
+## 2. Tokens (`apps/web/src/index.css`, `packages/design-tokens/src/theme.css`)
 
----
+### Color
+La interfaz es 90–95 % neutra. Se sigue escribiendo `zinc-*`: la escala está redefinida a neutros cálidos.
 
-## 1. Stack Tecnológico Obligatorio
-- **Core:** React con TypeScript en modo estricto (cero `any`).
-- **Estilos:** Tailwind CSS con doble tema por clase (`dark:...`). Se escribe `zinc-*`: la escala está redefinida con la paleta (abajo).
-- **Iconografía:** Lucide React (`lucide-react`).
-- **Primitivas UI y Accesibilidad:** Radix UI / Shadcn UI (`DropdownMenu`, `Dialog`, `Sheet`/Drawer, `Tooltip`, `Select`, `Tabs`, `Popover`).
-- **Tablas de Datos:** TanStack Table (`@tanstack/react-table`).
-- **Formularios & Validación:** React Hook Form + Zod.
-- **Notificaciones & Feedback:** Sileo (`sileo`).
+| Uso | Claro | Oscuro | Clase |
+|---|---|---|---|
+| Canvas | `#F6F5F2` | `#131210` | `bg-zinc-50 dark:bg-zinc-950` |
+| Superficie (paneles, celdas, modales) | `#FFFFFF` | `#1B1A17` | `bg-white dark:bg-zinc-900` |
+| Superficie alterna (menú lateral, cabeceras) | `#EFEDE8` | `#22211E` | `bg-zinc-100 dark:bg-zinc-900` |
+| Línea de 1px | `#E2DFD8` | `#2E2C28` | `border-zinc-200 dark:border-zinc-800` |
+| Tinta | `#1B1A17` | `#F2F0EB` | `text-zinc-900 dark:text-zinc-100` |
+| Texto secundario (AA) | `#5F5B53` | `#A19C92` | `text-zinc-500 dark:text-zinc-400` |
+| **Acento único** | burdeo `#6B1729` | rosa `#E8A3B1` | `bg-accent text-accent-ink`, `text-accent`, `bg-accent-soft` |
 
----
+Estados (siempre con texto o icono, nunca solo color): `text-ok bg-ok-bg` (disponible), `text-info bg-info-bg` (en préstamo), `text-warn bg-warn-bg` (mantención, vence pronto), `text-danger bg-danger-bg` (crítico, error, destructivo). Prohibido escribir `red-*`, `rose-*`, `emerald-*`, `amber-*`, `blue-*`, `sky-*` para estados. **Nunca violeta ni lavanda.** El burdeo no es un estado: es el botón principal, el foco, el ítem activo y la serie principal de un gráfico. Etiqueta crema (`bg-tag text-tag-ink`) solo en chips de código.
 
-## 2. Identidad Visual «Pañol» (Dual Theme)
+### Forma
+Radios 4 / 6 / 8 px (`rounded-sm` chip, `rounded-md` control y celda, `rounded-lg` panel y modal). Botones en pastilla (`rounded-full`). Sin sombras salvo modal y menú desplegable; sin `backdrop-blur`.
 
-### A. Paleta
-| Nombre | Hex | Rol |
+### Tipografía
+Geist (interfaz) y Geist Mono, alojadas con `@fontsource-variable`. `font-mono` es Geist con cifras tabulares (montos, fechas, cantidades). `font-code` es Geist Mono, **solo** para identificadores: SKU, Code128, serial, RUT, N° de factura, `SC-…`, OC, cajón.
+
+| Nivel | Componente o clase | Estilo |
 |---|---|---|
-| Burdeo | `#490b1a` | Acento único: CTA (`bg-accent`), etiqueta de sede, línea de gráficos. En oscuro pasa a rosa `#E8A3B1` con texto navy (el burdeo no contrasta sobre navy). |
-| Navy | `#142841` | Tinta del texto (`zinc-900`), menú lateral, superficies en oscuro. |
-| Slate | `#798da6` | Origen de los neutros fríos: bordes, texto secundario, gráficos. |
-| Crema | `#e5ded2` | Etiqueta de inventario (`bg-tag` + `text-tag-ink` burdeo): solo chips de código y el ítem activo del menú. Nunca de fondo de página. |
+| Saludo de inicio | `HomeHero` | 26/32 → 32/40, 500, -0.035em |
+| Título de página (h1 único) | `PageHeader` / `PageHeading` | 20 → 24 px, 500, -0.02em; subtítulo 14 px obligatorio |
+| Título de sección o celda | `SectionTitle` | 15 px, 500 |
+| Rótulo de bloque | `SectionLabel` | 13 px, 500, secundario |
+| Cabecera de tabla / etiqueta de campo | `TH_CLASS`, `TABLE_HEAD_CLASS`, `FIELD_LABEL_CLASS` | 13 px, 500 |
+| Cifra | `Metric` | 24 → 28 px, 500, tabular |
+| Texto | — | 14 px (13 px secundario) |
 
-Escala `zinc` redefinida (no usar `slate-*`/`gray-*`): 50 `#EFF2F6` (canvas) · 100 `#E6EBF1` · 200 `#D8DFE8` (bordes) · 300 `#B9C4D2` · 400 `#8E9BAE` (texto secundario en oscuro, decorativo en claro) · 500 `#55677E` (texto secundario en claro, AA) · 600–700 · 800 `#1E3350` · 900 `#142841` · 950 `#0A1626` (canvas oscuro). En claro no usar `text-zinc-400` para texto que se debe leer (2.5:1).
+Pesos 400 y 500; 600 solo en cifras destacadas; **nunca 700**. Nada bajo 12 px (`text-xs` es el mínimo). Tipo oración siempre: sin `uppercase` ni `tracking-wider`.
 
-### B. Superficies y forma
-- **Canvas:** `bg-zinc-50 dark:bg-zinc-950`. **Paneles:** `bg-white dark:bg-zinc-900`, borde 1px `border-zinc-200 dark:border-zinc-800`, **sin sombra**.
-- **Menú lateral:** navy en ambos temas. El `<aside>` lleva la clase `dark`, así sus hijos usan las variantes `dark:` y los tokens oscuros. Ítem activo: `bg-tag text-tag-ink`.
-- **Radios por jerarquía:** contenedor `rounded-lg` (12px) · control/botón `rounded-md` (8px) · chip `rounded-sm` (6px).
-- **CTA principal:** `Button` variant `primary` (burdeo). Secundarias `outline`/`ghost`. Destructiva `danger` (rose).
-- **Estados (Badge):** emerald disponible · blue en préstamo · rose crítico · amber mantención · zinc de baja. El burdeo no es un estado.
+### Movimiento
+Tokens `--m-in` 150 ms, `--m-out` 120, `--m-press` 90, `--m-panel` 200, `--m-close` 120, `--m-slide` 240; curva `--ease` `cubic-bezier(.2,.8,.2,1)`, sin rebote. Solo `transform`, `opacity` y colores; nunca ancho, alto ni márgenes. Clases: `ui-press` (botón sube 1px y se hunde al pulsar), `ui-overlay`, `ui-dialog`, `ui-sheet-*`, `ui-menu`, `ui-tip`, `ui-enter` (solo la bienvenida de Inicio, una vez). Nada se anima al hacer scroll; sin `animate-pulse`/`ping`/`bounce` (solo `Loader2 animate-spin` mientras algo carga). Esqueletos sin brillo. Con `prefers-reduced-motion` todo queda quieto.
 
-### C. Tipografía
-- **Schibsted Grotesk** para toda la interfaz (`font-sans`, `font-display`). Títulos de página en `font-bold tracking-tight`.
-- `font-mono` = la misma fuente con cifras tabulares: ubicaciones, RUT, montos, fechas.
-- `font-code` = **Geist Mono**, monoespaciada real: solo dentro de `CODE_CHIP_CLASS` (SKU, Code128, códigos de solicitud u OC).
-- **Tipo oración siempre:** prohibido `uppercase` y `tracking-wider` en rótulos, cabeceras de tabla y etiquetas de campo.
-- **Escala única de títulos (obligatoria).** No escribir clases de tamaño o peso a mano en `h1`–`h4` ni en `<thead>`; usar los componentes de `apps/web/src/components/ui/` (clases en `typography.ts`):
+## 3. Layout y navegación (`apps/web/src/layouts/`)
 
-  | Nivel | Componente | Estilo |
-  |---|---|---|
-  | Título y subtítulo de página | `PageHeading` (`icon`, `title`, `aside`, subtítulo como `children`) | `text-2xl font-bold tracking-tight`, icono 20px; subtítulo `text-sm text-zinc-500` |
-  | Título de sección, tarjeta o panel | `SectionTitle` (`icon`, `as`) | `text-sm font-semibold`, icono 16px |
-  | Rótulo de bloque en un detalle (sheet, ficha, modal) | `SectionLabel` (`icon`, `as`) | `text-xs font-semibold text-zinc-500`, icono 14px |
-  | Cabecera de tabla | `TABLE_HEAD_CLASS` en `<thead>` | `text-xs font-medium text-zinc-500` |
-  | Título de modal / panel lateral | `Dialog` / `SheetTitle` | `text-base font-semibold` |
+- **Fuente única del menú:** `nav-config.ts` (`navForRole`, `screensForRole`, `findScreen`, `quickActionsForRole`). Lo leen sidebar, header, buscador, migas e Inicio. Permisos desde `ROUTE_PERMISSIONS`.
+- **Dos layouts**, elegidos en Ajustes (`useLayoutPreference`, `localStorage` `sgia-layout`): `SidebarLayout` (por defecto) y `HeaderLayout`.
+- **Sidebar:** neutro, ítem activo con superficie y barra burdeo de 2px. Desde 1024 px fijo, se encoge a riel y se redimensiona (`col-resize`). Bajo 1024 px es un cajón. **Regla dura:** encogido, el `IconBar` es siempre vertical (`axis="column"`, 48 px).
+- **Header:** 56 px fijo, 5 ítems + «Más», Compras y «Más» abren un panel; menú a pantalla completa bajo 1024 px.
+- **Marco de contenido** (`ContentFrame`): columna de hasta 1280 px con líneas laterales desde 1024 px. Cada pantalla con `React.lazy`.
+- **Buscador `Ctrl K`** (pantallas y acciones del rol), **`?`** lista de atajos, **`/`** búsqueda de la tabla, teclas de Inicio por rol (`M`, `N`, `U`). Los atajos no actúan dentro de campos. Junto a cada acción con atajo va su `Kbd`.
+- **Migas de pan** en la barra superior del layout con sidebar.
 
-  La cabecera de página es `flex flex-wrap items-center justify-between gap-3` con `PageHeading` a la izquierda y las acciones a la derecha, sin borde inferior. Excepciones: la marca del login y las pantallas de error.
-  Todo texto de interfaz (títulos, botones, menú, etiquetas, estados) va con mayúscula inicial tipo oración ("Órdenes de compra", "Guardar y salir"); solo conservan mayúscula los nombres propios y siglas (INACAP, PDF, Code128). Toda página lleva subtítulo.
-- **Estilos compartidos (obligatorios).** No reescribir estas clases a mano:
+## 4. Componentes (`apps/web/src/components/ui/`)
 
-  | Elemento | Fuente | Estilo |
-  |---|---|---|
-  | Campo de formulario | `FORM_CONTROL_CLASS` (`form-control.ts`; `FORM_CONTROL_BASE_CLASS` para `<textarea>`) | ancho completo, `h-8.5`, `px-3`, fondo blanco |
-  | Filtro de barra de tabla | `FILTER_CONTROL_CLASS` | `h-8`, `px-2`, fondo `zinc-50` |
-  | Etiqueta de campo | `FIELD_LABEL_CLASS` | `text-xs font-medium text-zinc-600` |
-  | Chip de código (SKU, ID) | `CODE_CHIP_CLASS` | `font-code text-xs`, etiqueta crema `bg-tag text-tag-ink` |
-  | Mensaje de carga / sin datos | `STATE_TEXT_CLASS` | `text-xs` centrado `zinc-500`; `Loader2` siempre `h-4 w-4` |
-  | Celdas de tabla | — | listado: `px-4 py-2.5`; tabla dentro de panel: `px-3 py-2`; `<th>` en `font-medium` |
-  | Tarjeta / contenedor | `Card` o las mismas clases | `rounded-lg`, borde, sin sombra |
-  | Botón | `Button` con `variant` y `size` | sin colores ni alturas por `className` |
-  | Pastilla de estado | `Badge` con `tone` | nunca un `<span>` coloreado a mano |
+| Necesidad | Usar | Nunca |
+|---|---|---|
+| Cabecera de página | `PageHeader` (`icon`, `title`, `description`, `actions`) | bloques `flex justify-between` a mano |
+| Botón | `Button` `primary` (uno por vista) / `secondary` / `ghost` / `danger`; `size` `sm`,`md`,`lg`,`icon` | colores o alturas por `className` |
+| Botón de icono en fila | `ICON_BUTTON_CLASS` + `aria-label` | `h-7 w-7` sueltos |
+| Tabla | `TableFrame` (`toolbar`, `mobile`, `footer`, `maxHeight`) + `TableToolbar` + `TableSearch` + `TH_CLASS`/`TD_CLASS`/`ROW_CLASS`/`STICKY_COL_CLASS` | barra de filtros en una caja aparte |
+| Fila en teléfono | `MobileRow` dentro de `TableFrame mobile` | ocultar columnas con CSS |
+| Cifras | `Metric` dentro de `CellGrid`/`Cell` | tarjetas KPI de 150 px de alto |
+| Accesos / pendientes | `CellGrid` + `Cell` (bordes compartidos) | tarjetas sueltas con `gap` |
+| Estado | `Badge` `tone` | `<span>` coloreado a mano |
+| Vacío / error | `EmptyState` / `ErrorState` | cajas rojas a mano |
+| Campo | `FORM_CONTROL_CLASS`, `FILTER_CONTROL_CLASS`, `FIELD_LABEL_CLASS` | estilos de campo propios |
+| Chip de código | `CODE_CHIP_CLASS` | `font-mono` en un SKU |
 
-  Raíz de página: `flex flex-col gap-4`. Texto micro: `text-[11px]` (no `[10px]` ni `[9px]`). Título de panel lateral: `SheetTitle` sin clases de tamaño.
+- **Tablas densas:** TanStack Table donde haya orden/paginación. Una acción directa por fila; el resto en `DropdownMenu` (`MoreHorizontal`). Densidad cómoda/compacta en Ajustes (`data-density`).
+- **Modales (`Dialog`, obligatorio):** prop `size` (`sm` 448, `md` 512, `lg` 672, `xl` 768, `2xl` 1024), sin `max-w`/`max-h`/`overflow` en `className`; raíz `flex flex-col gap-4`; `DialogFooter` último hijo con `DialogCloseButton` y la acción principal. Bajo 640 px el modal es una hoja inferior a ancho completo y los botones del pie se apilan. Si hay datos escritos, cerrar pide confirmación (`hasUnsavedChanges`). Nunca `window.confirm()`.
+- **Paneles laterales (`Sheet`):** para fichas y operaciones de mesón sin perder la tabla; pantalla completa bajo 640 px; ya hacen scroll.
+- **Avisos (Sileo):** escaneo, stock crítico, operación completada, error de red.
+- **Escáner Code128:** listener de ráfagas que terminan en `Enter` en las vistas de mesón; el campo de escaneo usa `font-code`.
+- **Tema:** `Toggle` (CSS) en el sidebar expandido; botón sol/luna en el riel encogido.
 
----
+## 5. Gráficos (`apps/web/src/lib/chart-theme.ts`)
 
-## 3. Arquitectura de Componentes por Módulo
+Todo gráfico toma de ahí colores, fuente, ejes, leyenda, tooltip y animación. Serie única en el acento; segunda medida en neutro; estados con sus tonos. Paleta categórica de 6 (validada con el skill `dataviz`), en orden fijo, sin reciclar: desde la sexta porción, «Otros». Leyenda arriba a la izquierda en todo gráfico de categorías; rejilla solo en el eje de valores; un solo eje Y. Datos de analítica siempre por GraphQL (`POST /api/metrics`).
 
-### A. Sustitución de Tarjetas KPI por Cinta Métrica Compacta (Metric Strip)
-- **Regla estricta:** Prohibido colocar tarjetas blancas gigantescas de 150px de alto para mostrar un solo número.
-- **Solución técnica:** Integrar una barra horizontal compacta de métricas (36px a 40px de alto) directamente sobre la tabla (`2 Referencias registradas · 0 Stock Crítico · Lector Code128 listo`). Ahorra espacio vertical y da foco inmediato a los datos.
+## 6. Responsivo y accesibilidad
 
-### B. Toolbar Unificado con la Tabla
-- El buscador y los filtros **no flotan en una caja externa separada**.
-- Se integran como la cabecera superior del marco de la tabla, con acceso rápido mediante teclado (`/` o `Ctrl + K`) y botones compactos tipo chip para desplegar filtros.
-
-### C. Data Grids de Alta Densidad (TanStack Table)
-- **Cabeceras:** `TABLE_HEAD_CLASS` (tipo oración, `text-xs font-medium text-zinc-500`, fondo `zinc-50/70`).
-- **Filas de Activos:**
-  - SKU como etiqueta crema con `CODE_CHIP_CLASS` (Geist Mono).
-  - Nombre del producto en seminegrita con categoría o modelo secundario debajo.
-  - Indicador visual de stock: microbarra de nivel compacto (40-60px) en lugar de texto plano huérfano.
-  - Acciones por fila: Máximo 1 botón de acción contextual directa (ej. "Prestar" o "Ficha") y el resto agrupadas en menú flotante `MoreHorizontal` de Radix UI.
-
-### D. Paneles Laterales (Drawers / Sheets) vs Modales
-- **Drawers laterales (Radix Sheet):** Utilizados para operaciones frecuentes de mesón (Ficha técnica del equipo, Asignación rápida a alumno, Historial de movimientos). Permiten no perder el contexto de la tabla inferior.
-- **Modales centrados (Radix Dialog):** Reservados para confirmaciones destructivas (Dar de baja, Eliminar registro).
-
-### D2. Estándar de modales (obligatorio, `components/ui/dialog.tsx`)
-Todo modal usa `Dialog` (o `ConfirmDialog` para confirmar); nunca `window.confirm()`/`alert()` ni un overlay propio. El modal ya se limita al alto de la pantalla (`max-h-[calc(100dvh-2rem)]`): cabecera fija, cuerpo con scroll y pie fijo, así nunca se corta.
-- **Ancho:** prop `size`, nunca `max-w-*` en `className`. `sm` (448px) confirmaciones y formularios de 1 a 4 campos · `md` (512px, por defecto) formularios de una columna · `lg` (672px) formularios de dos columnas o con tablas cortas · `xl` (768px) fichas y revisiones · `2xl` (1024px) gráficos ampliados.
-- **Alto y scroll:** no poner `max-h-*`, `overflow-*` ni `flex` en el `className` del `Dialog`, ni envolver el contenido en un scroll propio. Solo listas acotadas internas (p. ej. `max-h-40 overflow-y-auto`).
-- **Raíz del contenido:** un único `<form>` o `<div>` con `flex flex-col gap-4`, sin padding propio.
-- **Pie:** siempre `<DialogFooter>` como último hijo de la raíz (dentro del `<form>`). Cancelar = `DialogCloseButton` (ghost, sm) primero; acción principal = `Button size="sm"` al final, con `Loader2` mientras está pendiente; destructiva `variant="danger"`; secundarias `variant="outline"`. Contenido a la izquierda: `DialogFooter className="sm:justify-between"`. Un modal informativo cierra con `DialogCloseButton` "Cerrar".
-- **Móvil:** grillas `grid-cols-1 sm:grid-cols-2` (nunca `grid-cols-2` fijo); tablas anchas dentro de `overflow-x-auto`.
-- **Paneles laterales (`SheetContent`):** hacen scroll por defecto; no agregar `overflow-y-auto`. Una grilla dentro del panel declara `grid-cols-1` para que el contenido ancho (imágenes) no la ensanche en móvil.
-
-### E. Integración de Notificaciones con Sileo
-- Implementar avisos con Sileo en todos los eventos críticos del sistema:
-  - Escaneo con lector de código de barras: `toast.success("Código Code128 detectado: SGIA-36824904")`.
-  - Alerta de stock bajo mínimo: `toast.warning("Stock crítico: 2 unidades disponibles")`.
-  - Operación completada: `toast.info("Activo asignado exitosamente")`.
-  - Error de red o validación: `toast.error("Activo no encontrado en pañol")`.
-
-### F. Escáner Code128 y Ergonomía de Operador
-- Listener global para eventos `keydown` en vistas de mesón: capturar ráfagas continuas de caracteres de pistola lectora que finalizan en `Enter`, sin necesidad de obligar al operador a hacer clic manual en el campo de búsqueda.
-### G. Togle de modo oscuro
-- componente llamado 'toggle' sacado de benco.dev que debe ser usado en el sidebar para activar/ desactivar modo oscuro 
-### H. Sidebar Icon
-- componente llamado 'iconbar' en el estado del sidebar comprimido (costado izquierdo) SIEMPRE debe ser estrictamente vertical (`axis="column"`, con los iconos apilados en columna vertical centrada, prohibido en horizontal).
----
-
-## 4. Patrón de Componente de Referencia (Dual Theme)
-
-> Estructura vigente; sus clases de color y tipografía son del sistema anterior. Ante diferencias, manda la sección 2.
-
-```tsx
-import React from 'react';
-import { MoreHorizontal, ArrowUpRight, Barcode, Search, SlidersHorizontal } from 'lucide-react';
-import { toast } from 'sileo';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-
-export interface SGIAAsset {
-  id: string;
-  sku: string;
-  name: string;
-  category: string;
-  location: string;
-  currentStock: number;
-  minStock: number;
-  status: 'available' | 'loaned' | 'critical' | 'maintenance';
-}
-
-export const InventoryView: React.FC<{ assets: SGIAAsset[] }> = ({ assets }) => {
-  return (
-    <div className="w-full bg-zinc-100 dark:bg-zinc-950 min-h-screen p-6 text-zinc-900 dark:text-zinc-100 transition-colors">
-      
-      {/* 1. Header técnico compacto */}
-      <div className="flex items-center justify-between pb-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-              SEDE TEMUCO · PAÑOL TI
-            </span>
-            <span className="text-zinc-400 dark:text-zinc-600 text-xs font-mono">/ Módulo FU-02</span>
-          </div>
-          <h1 className="text-lg font-semibold tracking-tight">Control de Inventario y Activos</h1>
-        </div>
-
-        <button 
-          onClick={() => toast.info('Formulario de alta iniciado')}
-          className="h-8 px-3 rounded text-xs font-medium bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white shadow-xs transition-colors"
-        >
-          + Dar de alta producto
-        </button>
-      </div>
-
-      {/* 2. Barra métrica horizontal compacta (Sustituye tarjetas gigantes) */}
-      <div className="flex items-center gap-6 px-4 py-2.5 mb-3 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Total Referencias:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">{assets.length}</span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Stock Crítico:</span>
-          <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400">0 bajo mínimo</span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Lector Code128:</span>
-          <span className="font-mono text-zinc-600 dark:text-zinc-400">Listo (Presiona /)</span>
-        </div>
-      </div>
-
-      {/* 3. Marco unificado: Toolbar + Tabla */}
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        
-        {/* Toolbar integrado */}
-        <div className="flex items-center justify-between p-2.5 border-b border-zinc-200 dark:border-zinc-800 gap-3">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400"/>
-            <input
-              type="text"
-              placeholder="Buscar por nombre o escanear Code128..."
-              className="w-full pl-8 pr-12 py-1 text-xs bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
-            />
-            <kbd className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-mono text-zinc-400 px-1 rounded bg-zinc-200/60 dark:bg-zinc-800">
-              /
-            </kbd>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 dark:border-zinc-800 rounded bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
-              <SlidersHorizontal className="w-3 h-3"/>
-              Filtros
-            </button>
-          </div>
-        </div>
-
-        {/* Tabla técnica de alta densidad */}
-        <table className="w-full text-left text-xs border-collapse">
-          <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 text-zinc-500 dark:text-zinc-400 uppercase font-mono text-[11px]">
-              <th className="py-2.5 px-4 font-medium">SKU / Code128</th>
-              <th className="py-2.5 px-4 font-medium">Activo / Modelo</th>
-              <th className="py-2.5 px-4 font-medium">Ubicación Física</th>
-              <th className="py-2.5 px-4 font-medium">Stock</th>
-              <th className="py-2.5 px-4 font-medium">Estado</th>
-              <th className="py-2.5 px-4 font-medium text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-            {assets.map((asset) => {
-              const isCritical = asset.currentStock <= asset.minStock;
-              const ratio = Math.min((asset.currentStock / (asset.minStock * 2.5)) * 100, 100);
-
-              return (
-                <tr 
-                  key={asset.id} 
-                  className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
-                >
-                  <td className="py-2.5 px-4">
-                    <span className="inline-flex items-center gap-1 font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/60">
-                      <Barcode className="w-3 h-3 text-zinc-400"/>
-                      {asset.sku}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-4">
-                    <div className="font-medium text-zinc-900 dark:text-zinc-100">{asset.name}</div>
-                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400">{asset.category}</div>
-                  </td>
-                  <td className="py-2.5 px-4 font-mono text-zinc-600 dark:text-zinc-400">
-                    {asset.location}
-                  </td>
-                  <td className="py-2.5 px-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full ${isCritical ? 'bg-rose-500' : 'bg-emerald-500'}`}
-                          style={{ width: `${ratio}%` }}
-                        />
-                      </div>
-                      <span className="font-mono text-zinc-700 dark:text-zinc-300">
-                        {asset.currentStock} <span className="text-zinc-400 dark:text-zinc-500">(mín {asset.minStock})</span>
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-2.5 px-4">
-                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/60">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      Activo
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-4 text-right">
-                    <div className="inline-flex items-center gap-1">
-                      <button
-                        onClick={() => toast.success(`Préstamo iniciado: ${asset.sku}`)}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 transition-colors"
-                      >
-                        Prestar <ArrowUpRight className="w-3 h-3 text-zinc-400"/>
-                      </button>
-
-                      <DropdownMenu.Root>
-                        <DropdownMenu.Trigger asChild>
-                          <button className="p-1 rounded text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                            <MoreHorizontal className="w-3.5 h-3.5"/>
-                          </button>
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content className="w-36 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md shadow-lg p-1 text-xs">
-                          <DropdownMenu.Item className="px-2 py-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 cursor-pointer">
-                            Ver Ficha
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-2 py-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 cursor-pointer">
-                            Reubicar
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-2 py-1.5 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 cursor-pointer">
-                            Dar de baja
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
+- De 320 a 1440 sin scroll lateral de página. Grillas `grid-cols-1 sm:…`, nunca columnas fijas. Barras de controles apiladas bajo 640 px; acciones de cabecera a ancho completo en el teléfono.
+- Controles de 44 px con puntero táctil (`pointer-coarse:`), ya incluidos en `Button`, campos e íconos de fila.
+- Foco visible: anillo burdeo de 2 px, sin transición. Enlace «Saltar al contenido». Un h1 por pantalla, títulos en orden. Todo botón de icono con `aria-label`; íconos decorativos `aria-hidden`.
+- Texto que se lee: 4,5:1 como mínimo (`zinc-400` en claro es solo decorativo).

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useMyIncidentReports } from "@sgia/api-client";
 import {
-  AlertCircle,
   ChevronLeft,
   ChevronRight,
   FileWarning,
@@ -14,8 +13,13 @@ import { IncidentStatusBadge } from "@/features/novedades/components/incident-st
 import { NewIncidentDialog } from "@/features/profesor/components/new-incident-dialog";
 import { formatDateOnly } from "@/features/compras/lib/format";
 import { toast } from "@/lib/toast";
-import { PageHeading } from '@/components/ui/page-heading';
-import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from "@/components/ui/typography";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { MobileRow } from "@/components/ui/mobile-row";
+import { PageHeader } from "@/components/ui/page-header";
+import { TableFrame } from "@/components/ui/table-frame";
+import { ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from "@/components/ui/table-styles";
+import { TABLE_HEAD_CLASS } from "@/components/ui/typography";
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function MisNovedadesPage() {
@@ -28,119 +32,116 @@ export default function MisNovedadesPage() {
   });
   const meta = data?.meta;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeading icon={FileWarning} title="Novedades">
-          Informes de fallas y faltantes que has reportado.
-        </PageHeading>
-        <Button onClick={() => setFormOpen(true)}>
-          <Plus aria-hidden="true" className="h-4 w-4" />
-          Nuevo informe
-        </Button>
-      </div>
+  const reports = data?.data ?? [];
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
+  const footer =
+    meta && meta.lastPage > 1 ? (
+      <>
+        <span className="font-mono">
+          Página {meta.currentPage} de {meta.lastPage}
+        </span>
+        <div className="flex gap-1">
+          <Button
+            variant="secondary"
+            size="icon"
+            aria-label="Página anterior"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            <ChevronLeft aria-hidden="true" className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="secondary"
+            size="icon"
+            aria-label="Página siguiente"
+            disabled={page >= meta.lastPage}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            <ChevronRight aria-hidden="true" className="h-4 w-4" />
+          </Button>
+        </div>
+      </>
+    ) : undefined;
+
+  const mobile =
+    !isLoading && !isError && reports.length > 0 ? (
+      <ul>
+        {reports.map((report) => (
+          <MobileRow
+            key={report.id}
+            title={report.subject ?? report.title ?? "—"}
+            meta={`${report.location?.nombre ?? "—"} · ${formatDateOnly(report.report_date ?? report.created_at)}`}
+            trailing={<IncidentStatusBadge status={report.status} />}
+            onClick={() => setOpenId(report.id)}
+          />
+        ))}
+      </ul>
+    ) : undefined;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={FileWarning}
+        title="Novedades"
+        description="Informes de fallas y faltantes que has reportado."
+        actions={
+          <Button onClick={() => setFormOpen(true)}>
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            Nuevo informe
+          </Button>
+        }
+      />
+
+      <TableFrame footer={footer} mobile={mobile}>
         {isLoading ? (
           <SkeletonList label="Cargando informes…" rows={4} columns={3} />
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-            No se pudieron cargar tus informes.
+          <div className="p-3">
+            <ErrorState>No se pudieron cargar tus informes.</ErrorState>
           </div>
+        ) : reports.length === 0 ? (
+          <EmptyState icon={FileWarning} title="Aún no has enviado informes." />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-xs">
-              <thead className={TABLE_HEAD_CLASS}>
-                <tr>
-                  {[
-                    "Código",
-                    "Asignatura",
-                    "Lugar",
-                    "Problemas",
-                    "Fecha",
-                    "Estado",
-                  ].map((h) => (
-                    <th key={h} className="px-4 py-2.5 font-medium">
-                      {h}
-                    </th>
-                  ))}
+          <table className="w-full min-w-[760px] border-collapse text-left">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
+                {["Código", "Asignatura", "Lugar", "Problemas", "Fecha", "Estado"].map((h, i) => (
+                  <th
+                    key={h}
+                    className={i === 0 ? `${TH_CLASS} ${STICKY_COL_CLASS} max-md:bg-zinc-50` : TH_CLASS}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {reports.map((report) => (
+                <tr
+                  key={report.id}
+                  tabIndex={0}
+                  onClick={() => setOpenId(report.id)}
+                  onKeyDown={(e) => e.key === "Enter" && setOpenId(report.id)}
+                  className={`${ROW_CLASS} cursor-pointer focus:outline-none focus-visible:bg-zinc-50 dark:focus-visible:bg-zinc-800/40`}
+                >
+                  <td className={`${TD_CLASS} ${STICKY_COL_CLASS} whitespace-nowrap`}>
+                    <span className="font-code text-xs">{report.code ?? `#${report.id}`}</span>
+                  </td>
+                  <td className={TD_CLASS}>{report.subject ?? report.title ?? "—"}</td>
+                  <td className={TD_CLASS}>{report.location?.nombre ?? "—"}</td>
+                  <td className={`${TD_CLASS} font-mono`}>{report.problems?.length ?? 0}</td>
+                  <td className={`${TD_CLASS} whitespace-nowrap font-mono`}>
+                    {formatDateOnly(report.report_date ?? report.created_at)}
+                  </td>
+                  <td className={TD_CLASS}>
+                    <IncidentStatusBadge status={report.status} />
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-                {(data?.data ?? []).length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className={`px-4 py-10 ${STATE_TEXT_CLASS}`}
-                    >
-                      Aún no has enviado informes.
-                    </td>
-                  </tr>
-                ) : (
-                  data?.data.map((report) => (
-                    <tr
-                      key={report.id}
-                      tabIndex={0}
-                      onClick={() => setOpenId(report.id)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && setOpenId(report.id)
-                      }
-                      className="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
-                    >
-                      <td className="px-4 py-2.5 font-mono">
-                        {report.code ?? `#${report.id}`}
-                      </td>
-                      <td className="px-4 py-2.5">
-                        {report.subject ?? report.title ?? "—"}
-                      </td>
-                      <td className="px-4 py-2.5">
-                        {report.location?.nombre ?? "—"}
-                      </td>
-                      <td className="px-4 py-2.5 font-mono tabular-nums">
-                        {report.problems?.length ?? 0}
-                      </td>
-                      <td className="px-4 py-2.5 font-mono">
-                        {formatDateOnly(
-                          report.report_date ?? report.created_at,
-                        )}
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <IncidentStatusBadge status={report.status} />
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
-        {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 px-4 py-2 text-xs">
-            <span className="font-mono text-zinc-500">
-              Página {meta.currentPage} de {meta.lastPage}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Página anterior"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Página siguiente"
-              disabled={page >= meta.lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              <ChevronRight aria-hidden="true" className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </div>
+      </TableFrame>
 
       <NewIncidentDialog
         open={formOpen}

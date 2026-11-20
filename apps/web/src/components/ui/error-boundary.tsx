@@ -41,25 +41,25 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <div className="flex min-h-[400px] w-full flex-col items-center justify-center rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 p-6 text-center shadow-xs">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 mb-3">
-            <AlertTriangle aria-hidden="true" className="h-6 w-6" />
+        <div role="alert" className="flex min-h-[320px] w-full flex-col items-center justify-center rounded-lg border border-zinc-200 bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-danger-bg text-danger">
+            <AlertTriangle aria-hidden="true" className="h-5 w-5" />
           </div>
-          <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-            Ocurrió un error inesperado al renderizar el módulo
+          <h2 className="text-base font-medium text-zinc-900 dark:text-zinc-100">
+            Esta pantalla no se pudo mostrar
           </h2>
-          <p className="mt-1 max-w-md text-xs text-zinc-600 dark:text-zinc-400 font-mono">
+          <p className="mt-1 max-w-md font-code text-xs text-zinc-500 dark:text-zinc-400">
             {this.state.error?.message || 'Error desconocido'}
           </p>
 
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={this.handleReset}
             >
-              <RotateCcw aria-hidden="true" className="mr-1.5 h-3.5 w-3.5" />
+              <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
               Reintentar
             </Button>
             <Button

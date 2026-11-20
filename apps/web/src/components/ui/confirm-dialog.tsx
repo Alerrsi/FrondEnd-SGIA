@@ -31,7 +31,7 @@ export function ConfirmDialog({
       <div className="flex flex-col gap-4">
         <div className="flex items-start gap-3">
           {variant === 'danger' && (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-danger-bg text-danger">
               <AlertTriangle aria-hidden="true" className="h-4 w-4" />
             </div>
           )}

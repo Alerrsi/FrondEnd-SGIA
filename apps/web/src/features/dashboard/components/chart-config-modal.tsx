@@ -299,7 +299,7 @@ export function ChartConfigModal({
                 />
               </div>
               {(missingDateFrom || invalidRange) && (
-                <p role="alert" className="sm:col-span-2 text-xs text-amber-700 dark:text-amber-400">
+                <p role="alert" className="sm:col-span-2 text-xs text-warn dark:text-warn">
                   {missingDateFrom
                     ? 'El rango personalizado requiere una fecha de inicio.'
                     : 'La fecha final no puede ser anterior a la inicial.'}
@@ -330,7 +330,7 @@ export function ChartConfigModal({
               className={cn(FIELD_CLASS, 'disabled:opacity-50')}
             />
             {invalidLimit && (
-              <span role="alert" className="text-xs text-amber-700 dark:text-amber-400">
+              <span role="alert" className="text-xs text-warn dark:text-warn">
                 Ingresa un entero entre 1 y 50.
               </span>
             )}

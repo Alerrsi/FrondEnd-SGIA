@@ -22,11 +22,12 @@ import { toast } from '@/lib/toast';
 import { SectionTitle } from '@/components/ui/section-title';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { ButtonLink } from '@/components/shared/button-link';
 
-const inputClasses =
-  FORM_CONTROL_CLASS;
+const inputClasses = FORM_CONTROL_CLASS;
 
-const errorClasses = 'text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-danger';
+const TERM_CLASS = 'text-zinc-500 dark:text-zinc-400';
 
 interface OrderPanelProps {
   request: PurchaseRequest;
@@ -87,15 +88,15 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
   const pending = upload.isPending;
 
   return (
-    <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-      <header className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
+    <section className="min-w-0 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <header className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <SectionTitle icon={ShoppingCart}>Orden de compra y factura</SectionTitle>
-        <p className="text-xs text-zinc-500">
+        <p className="mt-0.5 text-[13px] text-zinc-500 dark:text-zinc-400">
           La OC se emite fuera del sistema; aquí se sube su archivo ligado a {request.code}.
         </p>
       </header>
 
-      <div className="flex flex-col gap-3 p-3 text-xs">
+      <div className="flex flex-col gap-3 p-4 text-[13px] text-zinc-700 dark:text-zinc-300">
         {selected && (
           <p className="text-zinc-600 dark:text-zinc-400">
             Cotización elegida:{' '}
@@ -107,41 +108,41 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
         )}
 
         {order ? (
-          <dl className="grid grid-cols-2 gap-3 rounded-md border border-zinc-200 p-3 dark:border-zinc-800 sm:grid-cols-4">
+          <dl className="grid grid-cols-1 gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800 min-[400px]:grid-cols-2 lg:grid-cols-4">
             <div>
-              <dt className="text-zinc-500">Código</dt>
-              <dd className="font-mono">{order.code ?? `#${order.id}`}</dd>
+              <dt className={TERM_CLASS}>Código</dt>
+              <dd className="font-code text-xs">{order.code ?? `#${order.id}`}</dd>
             </div>
             <div>
-              <dt className="text-zinc-500">N° OC</dt>
-              <dd className="font-mono">{order.order_number ?? '—'}</dd>
+              <dt className={TERM_CLASS}>N° OC</dt>
+              <dd className="font-code text-xs">{order.order_number ?? '—'}</dd>
             </div>
             <div>
-              <dt className="text-zinc-500">Proveedor</dt>
+              <dt className={TERM_CLASS}>Proveedor</dt>
               <dd>{order.supplier_name ?? '—'}</dd>
             </div>
             <div>
-              <dt className="text-zinc-500">Estado OC</dt>
-              <dd className="font-mono">{order.status}</dd>
+              <dt className={TERM_CLASS}>Estado OC</dt>
+              <dd>{order.status}</dd>
             </div>
             <div>
-              <dt className="text-zinc-500">Total</dt>
+              <dt className={TERM_CLASS}>Total</dt>
               <dd className="font-mono">{formatCLP(order.total_amount)}</dd>
             </div>
             <div>
-              <dt className="text-zinc-500">Reservado</dt>
+              <dt className={TERM_CLASS}>Reservado</dt>
               <dd className="font-mono">{formatCLP(order.reserved_amount)}</dd>
             </div>
-            <div className="col-span-2 flex flex-wrap items-center gap-2 sm:col-span-4">
+            <div className="flex flex-wrap items-center gap-3 min-[400px]:col-span-2 lg:col-span-4">
               {order.has_order_file && (
-                <Button size="sm" variant="outline" onClick={handleDownload}>
+                <Button size="sm" variant="secondary" onClick={handleDownload}>
                   <FileDown aria-hidden="true" className="h-3.5 w-3.5" />
                   Ver archivo de la OC
                 </Button>
               )}
               <Link
                 to={`/compras/ordenes/${order.id}/trazabilidad`}
-                className="text-xs font-medium text-zinc-700 underline underline-offset-2 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                className="text-[13px] font-medium text-accent underline underline-offset-2 hover:no-underline"
               >
                 Ver trazabilidad
               </Link>
@@ -161,7 +162,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
                 {...register('order_number')}
                 aria-invalid={Boolean(errors.order_number) || undefined}
                 disabled={pending}
-                className={`${inputClasses} max-w-xs`}
+                className={`${inputClasses} sm:max-w-xs`}
               />
               {errors.order_number && <p className={errorClasses}>{errors.order_number.message}</p>}
             </div>
@@ -193,7 +194,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
             </div>
           </form>
         ) : (
-          <p className="text-zinc-400">
+          <p className="text-zinc-500 dark:text-zinc-400">
             {request.selected_quotation_id === null
               ? 'Primero elige una cotización.'
               : 'Sin orden de compra registrada.'}
@@ -201,11 +202,13 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
         )}
 
         {request.invoices.length > 0 && (
-          <ul className="flex flex-col gap-1 border-t border-zinc-100 pt-2 dark:border-zinc-800">
+          <ul className="flex flex-col gap-1.5 border-t border-zinc-200 pt-3 dark:border-zinc-800">
             {request.invoices.map((inv) => (
-              <li key={inv.id} className="flex items-center gap-2">
+              <li key={inv.id} className="flex flex-wrap items-center gap-2">
                 <ReceiptText aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
-                <span className="font-mono">Factura {inv.document_number ?? `#${inv.id}`}</span>
+                <span>
+                  Factura <span className="font-code text-xs">{inv.document_number ?? `#${inv.id}`}</span>
+                </span>
                 <Badge
                   tone={
                     inv.status === 'confirmado'
@@ -219,7 +222,7 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
                   {inv.status}
                 </Badge>
                 {inv.total_deducted > 0 && (
-                  <span className="font-mono text-zinc-500">{formatCLP(inv.total_deducted)}</span>
+                  <span className="font-mono text-zinc-500 dark:text-zinc-400">{formatCLP(inv.total_deducted)}</span>
                 )}
               </li>
             ))}
@@ -227,20 +230,21 @@ export function OrderPanel({ request, canManage, canRegisterInvoice }: OrderPane
         )}
 
         {request.status === PurchaseRequestStatus.FACTURADA && (
-          <p className="text-xs text-zinc-500">
+          <p className="text-zinc-500 dark:text-zinc-400">
             Si se anula la factura, la solicitud vuelve a «Con OC» y se puede registrar otra.
           </p>
         )}
 
         {canInvoice && (
           <div>
-            <Link
+            <ButtonLink
+              variant="primary"
+              size="sm"
               to={`/compras/facturas?solicitud=${encodeURIComponent(request.code)}`}
-              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-zinc-900 px-3 text-xs font-medium text-white shadow-xs hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
             >
               <ReceiptText aria-hidden="true" className="h-3.5 w-3.5" />
               Registrar factura
-            </Link>
+            </ButtonLink>
           </div>
         )}
       </div>

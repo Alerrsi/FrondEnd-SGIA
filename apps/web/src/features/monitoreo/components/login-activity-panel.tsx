@@ -46,7 +46,7 @@ export function LoginActivityPanel() {
           <Skeleton className="h-56 w-full" />
         </div>
       ) : isError || !data ? (
-        <p role="alert" className="p-4 text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="p-4 text-xs text-danger">
           No se pudo cargar la actividad: {apiErrorToMessage(error)}
         </p>
       ) : (

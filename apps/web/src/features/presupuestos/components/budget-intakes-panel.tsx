@@ -16,8 +16,8 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
   const rows = data?.data ?? [];
 
   return (
-    <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
-      <table className="w-full border-collapse text-left text-xs">
+    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <table className="w-full border-collapse text-left text-[13px] text-zinc-700 dark:text-zinc-300">
         <thead className={TABLE_HEAD_CLASS}>
           <tr>
             <th className="px-3 py-2 font-medium">N° factura</th>
@@ -26,7 +26,7 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
             <th className="px-3 py-2 text-right font-medium">Descontado</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
           {isLoading && (
             <SkeletonRows columns={4} rows={3} label="Cargando ingresos…" cellClassName="px-3 py-2" />
           )}
@@ -42,15 +42,15 @@ export function BudgetIntakesPanel({ budgetId }: { budgetId: number }) {
               <td className="px-3 py-2">
                 <Link
                   to={`/compras/facturas?ingreso=${intake.id}`}
-                  className="font-mono text-zinc-800 underline-offset-2 hover:underline dark:text-zinc-200"
+                  className="font-code text-xs text-accent underline-offset-2 hover:underline"
                 >
                   {intake.document_number ?? `#${intake.id}`}
                 </Link>
               </td>
-              <td className="px-3 py-2 font-mono text-zinc-500">
+              <td className="px-3 py-2 font-mono whitespace-nowrap text-zinc-500 dark:text-zinc-400">
                 {intake.purchase_id ? `#${intake.purchase_id}` : '—'}
               </td>
-              <td className="px-3 py-2 font-mono text-zinc-500">
+              <td className="px-3 py-2 font-mono whitespace-nowrap text-zinc-500 dark:text-zinc-400">
                 {formatDate(intake.received_at)}
               </td>
               <td className="px-3 py-2 text-right font-mono tabular-nums">

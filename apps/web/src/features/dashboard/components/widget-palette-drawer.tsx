@@ -107,7 +107,7 @@ export function WidgetPaletteDrawer({
         side="right"
         overlayClassName={cn(
           'pointer-events-none transition-opacity duration-300',
-          isDraggingWidget ? 'opacity-0' : 'opacity-100 bg-black/20 backdrop-blur-2xs',
+          isDraggingWidget ? 'opacity-0' : 'opacity-100 bg-black/20',
         )}
         className={cn(
           'w-full sm:max-w-md bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 flex flex-col p-6 transition-transform duration-300',
@@ -115,7 +115,7 @@ export function WidgetPaletteDrawer({
         )}
       >
         <SheetHeader className="pb-3 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center gap-2 text-xs text-sky-600 dark:text-sky-500 font-semibold">
+          <div className="flex items-center gap-2 text-xs text-accent dark:text-accent font-medium">
             <span>Catálogo</span>
             <span className="text-zinc-400">/</span>
             <span>Paleta de formas</span>
@@ -131,9 +131,9 @@ export function WidgetPaletteDrawer({
         {isMaxCapacity && (
           <div
             data-testid="palette-max-capacity-warning"
-            className="flex items-center gap-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-mono"
+            className="flex items-center gap-2 p-3 rounded-md bg-warn-bg dark:bg-warn-bg border border-warn/40 dark:border-warn/40 text-warn dark:text-warn text-xs font-mono"
           >
-            <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 text-warn dark:text-warn" />
             <span>Límite de {MAX_CHARTS} gráficos alcanzado. Retira un gráfico del panel para añadir nuevos.</span>
           </div>
         )}
@@ -156,7 +156,7 @@ export function WidgetPaletteDrawer({
                 className={`flex flex-col gap-2 rounded-lg border p-3.5 transition select-none ${
                   isMaxCapacity
                     ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 opacity-60 cursor-not-allowed'
-                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:border-sky-500/60 hover:shadow-xs cursor-grab active:cursor-grabbing'
+                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:border-accent/40 cursor-grab active:cursor-grabbing'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -165,7 +165,7 @@ export function WidgetPaletteDrawer({
                       <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                         {shape.title}
                       </div>
                       <div className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -206,7 +206,7 @@ export function WidgetPaletteDrawer({
                       e.stopPropagation();
                       onSelectWidget?.(shape.type);
                     }}
-                    className="h-6 text-xs px-2.5 gap-1 border-sky-300 dark:border-sky-900/60 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 font-medium"
+                    className="h-6 text-xs px-2.5 gap-1 border-accent/40 dark:border-accent/40 text-accent dark:text-accent hover:bg-accent-soft dark:hover:bg-accent-soft font-medium"
                   >
                     <Plus aria-hidden="true" className="h-3 w-3" />
                     <span>Añadir</span>

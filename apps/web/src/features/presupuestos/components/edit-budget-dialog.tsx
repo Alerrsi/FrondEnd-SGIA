@@ -21,7 +21,7 @@ import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 const inputClasses =
   FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = 'mt-1 text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-danger';
 
 const toNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? Number.NaN : Number(v);
@@ -78,13 +78,13 @@ export function EditBudgetDialog({
       size="sm"
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
-        <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs">
+        <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2 rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 text-[13px]">
           <div>
-            <dt className="text-zinc-500">Consumido</dt>
+            <dt className="text-zinc-500 dark:text-zinc-400">Consumido</dt>
             <dd className="font-mono">{formatCLP(budget.consumed_amount)}</dd>
           </div>
           <div>
-            <dt className="text-zinc-500">Reservado</dt>
+            <dt className="text-zinc-500 dark:text-zinc-400">Reservado</dt>
             <dd className="font-mono">{formatCLP(budget.reserved_amount)}</dd>
           </div>
         </dl>

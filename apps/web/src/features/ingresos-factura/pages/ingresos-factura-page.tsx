@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useInvoiceIntakes } from '@sgia/api-client';
 import { InvoiceIntakeStatus } from '@sgia/types';
-import { AlertCircle, ChevronLeft, ChevronRight, ReceiptText, Upload } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ReceiptText, Upload } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,12 @@ import { InvoiceIntakesTable } from '@/features/ingresos-factura/components/invo
 import { UploadInvoiceIntakeDialog } from '@/features/ingresos-factura/components/upload-invoice-intake-dialog';
 import { BudgetSelect } from '@/features/presupuestos/components/budget-select';
 import { isPurchaseRequestCode } from '@/features/solicitudes-compra/lib/purchase-request-code';
-import { PageHeading } from '@/components/ui/page-heading';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { SegmentedFilter } from '@/components/shared/segmented-filter';
+import { InvoiceIntakeMobileList } from '@/features/ingresos-factura/components/invoice-intake-mobile-list';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
@@ -24,8 +29,7 @@ const STATUS_FILTERS: Array<{
   { value: InvoiceIntakeStatus.ANULADO, label: 'Anulados' },
 ];
 
-const controlClasses =
-  FILTER_CONTROL_CLASS;
+const controlClasses = FILTER_CONTROL_CLASS;
 
 const positiveParam = (value: string | null) => {
   const n = Number(value);
@@ -70,111 +74,110 @@ export default function IngresosFacturaPage() {
 
   const meta = data?.meta;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+  const rows = data?.data ?? [];
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={ReceiptText} title="Ingresos de factura">
-            Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e
-            ingresar stock.
-          </PageHeading>
-          <Button onClick={() => setUploadOpen(true)} className="text-xs">
+  const toolbar = (
+    <TableToolbar>
+      <SegmentedFilter
+        label="Filtrar por estado"
+        options={STATUS_FILTERS}
+        value={status}
+        onChange={(value) => {
+          setStatus(value);
+          setPage(1);
+        }}
+      />
+      <BudgetSelect
+        aria-label="Filtrar por presupuesto"
+        value={budgetId}
+        onChange={(id) => {
+          setBudgetId(id);
+          setPage(1);
+        }}
+        className={`${controlClasses} sm:max-w-xs`}
+      />
+      <input
+        type="date"
+        aria-label="Recibidas desde"
+        value={from}
+        onChange={(e) => {
+          setFrom(e.target.value);
+          setPage(1);
+        }}
+        className={controlClasses}
+      />
+      <input
+        type="date"
+        aria-label="Recibidas hasta"
+        value={to}
+        onChange={(e) => {
+          setTo(e.target.value);
+          setPage(1);
+        }}
+        className={controlClasses}
+      />
+    </TableToolbar>
+  );
+
+  const footer =
+    meta && meta.lastPage > 1 ? (
+      <>
+        <span className="font-mono">
+          {meta.currentPage} / {meta.lastPage} · {meta.total} ingresos
+        </span>
+        <div className="flex gap-1">
+          <Button
+            size="icon"
+            variant="secondary"
+            aria-label="Página anterior"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            size="icon"
+            variant="secondary"
+            aria-label="Página siguiente"
+            disabled={page >= meta.lastPage}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </>
+    ) : undefined;
+
+  const mobile =
+    !isLoading && !isError && rows.length > 0 ? (
+      <InvoiceIntakeMobileList rows={rows} onOpen={(intake) => setSelectedId(intake.id)} />
+    ) : undefined;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={ReceiptText}
+        title="Ingresos de factura"
+        description="Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e ingresar stock."
+        actions={
+          <Button onClick={() => setUploadOpen(true)}>
             <Upload aria-hidden="true" className="h-4 w-4" />
             Subir factura
           </Button>
-        </div>
-      </div>
+        }
+      />
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
-          <div className="flex gap-1" role="group" aria-label="Filtrar por estado">
-            {STATUS_FILTERS.map((f) => (
-              <Button
-                key={f.value || 'all'}
-                size="sm"
-                variant={status === f.value ? 'primary' : 'outline'}
-                aria-pressed={status === f.value}
-                onClick={() => {
-                  setStatus(f.value);
-                  setPage(1);
-                }}
-              >
-                {f.label}
-              </Button>
-            ))}
-          </div>
-          <BudgetSelect
-            aria-label="Filtrar por presupuesto"
-            value={budgetId}
-            onChange={(id) => {
-              setBudgetId(id);
-              setPage(1);
-            }}
-            className={`${controlClasses} max-w-xs`}
-          />
-          <input
-            type="date"
-            aria-label="Recibidas desde"
-            value={from}
-            onChange={(e) => {
-              setFrom(e.target.value);
-              setPage(1);
-            }}
-            className={controlClasses}
-          />
-          <input
-            type="date"
-            aria-label="Recibidas hasta"
-            value={to}
-            onChange={(e) => {
-              setTo(e.target.value);
-              setPage(1);
-            }}
-            className={controlClasses}
-          />
-        </div>
-
+      <TableFrame toolbar={toolbar} footer={footer} mobile={mobile}>
         {isLoading ? (
           <SkeletonList label="Cargando ingresos de factura…" columns={5} />
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-            <span>No se pudieron cargar los ingresos de factura desde el servidor.</span>
+          <div className="p-3">
+            <ErrorState>No se pudieron cargar los ingresos de factura desde el servidor.</ErrorState>
           </div>
         ) : (
-          <InvoiceIntakesTable
-            rows={data?.data ?? []}
-            onOpen={(intake) => setSelectedId(intake.id)}
-          />
+          <InvoiceIntakesTable rows={rows} onOpen={(intake) => setSelectedId(intake.id)} />
         )}
-
-        {meta && meta.lastPage > 1 && (
-          <div className="flex items-center justify-end gap-2 border-t border-zinc-200 dark:border-zinc-800 p-2 text-xs text-zinc-500">
-            <span className="font-mono">
-              {meta.currentPage} / {meta.lastPage} · {meta.total} ingresos
-            </span>
-            <Button
-              size="icon"
-              variant="outline"
-              aria-label="Página anterior"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              size="icon"
-              variant="outline"
-              aria-label="Página siguiente"
-              disabled={page >= meta.lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        )}
-      </div>
+      </TableFrame>
 
       <UploadInvoiceIntakeDialog
         open={uploadOpen}

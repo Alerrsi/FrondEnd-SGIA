@@ -12,7 +12,7 @@ interface BudgetExecutionBarProps {
 }
 
 /**
- * Microbarra de ejecución: consumido (sólido) + reservado (tenue). Tono ámbar desde 80 % y rosa desde 100 %.
+ * Microbarra de ejecución: consumido (sólido) + reservado (tenue). Tono de advertencia desde 80 % y de peligro desde 100 %.
  */
 export function BudgetExecutionBar({
   initial,
@@ -27,9 +27,9 @@ export function BudgetExecutionBar({
   const reservedPct = Math.min(100 - consumedPct, (reserved / safe) * 100);
   const tone =
     percent >= 100
-      ? 'bg-rose-500'
+      ? 'bg-danger'
       : percent >= 80
-        ? 'bg-amber-500'
+        ? 'bg-warn'
         : 'bg-zinc-800 dark:bg-zinc-200';
 
   return (

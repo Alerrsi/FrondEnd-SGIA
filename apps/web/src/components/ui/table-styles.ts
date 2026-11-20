@@ -16,3 +16,7 @@ export const ROW_CLASS =
   'border-b border-zinc-200 last:border-b-0 dark:border-zinc-800 transition-colors duration-150 hover:bg-zinc-50 dark:hover:bg-zinc-800/40';
 export const STICKY_COL_CLASS =
   'max-md:sticky max-md:left-0 max-md:z-[1] max-md:bg-white max-md:shadow-[1px_0_0_0_var(--line)] max-md:dark:bg-zinc-900';
+
+/** Botón de icono en una fila (editar, más acciones): 32px, 44px con puntero táctil. Lleva `aria-label`. */
+export const ICON_BUTTON_CLASS =
+  'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-zinc-500 transition-colors duration-150 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 cursor-pointer pointer-coarse:h-11 pointer-coarse:w-11';

@@ -20,7 +20,7 @@ import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 const inputClasses =
   FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = 'mt-1 text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-danger';
 
 const toNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? Number.NaN : Number(v);

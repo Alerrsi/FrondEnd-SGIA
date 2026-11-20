@@ -94,7 +94,7 @@ export default function MantencionesPage() {
           aria-label="Unidades con mantención vencida"
           className="rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/20 p-3 text-xs"
         >
-          <p className="font-semibold text-amber-800 dark:text-amber-300">
+          <p className="font-semibold text-warn">
             {due.data?.meta.total ?? 0} unidades con mantención vencida
           </p>
           <p className="mt-1 flex flex-wrap gap-1.5">
@@ -110,7 +110,7 @@ export default function MantencionesPage() {
         </section>
       )}
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
+      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
         <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
           <div className="flex gap-1" role="group" aria-label="Filtrar por estado">
             {STATUS_FILTERS.map((f) => (

@@ -72,7 +72,7 @@ export function DynamicChartCard({
 
   const title = input.title || `${input.entity} (${input.metric})`;
   const isForbidden = error instanceof ApiRequestError && error.status === 403;
-  const legend = data ? buildLegend(data) : [];
+  const legend = data ? buildLegend(data, resolvedTheme === 'dark') : [];
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (!isEditMode) return;
@@ -121,26 +121,26 @@ export function DynamicChartCard({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       data-testid={`chart-card-${index}`}
-      className={`flex flex-col p-4 shadow-xs transition relative ${
+      className={`flex flex-col p-4 transition relative ${
         isEditMode
           ? isDragOverCard
-            ? 'cursor-grabbing border-2 border-sky-500 ring-2 ring-sky-500/30 bg-sky-50/30 dark:bg-sky-950/30 scale-[1.01]'
-            : 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-sky-500/70'
+            ? 'cursor-grabbing border border-accent ring-2 ring-accent/30 bg-accent-soft dark:bg-accent-soft'
+            : 'cursor-grab active:cursor-grabbing border-dashed border-zinc-400 dark:border-zinc-700 hover:border-accent/40'
           : ''
       }`}
     >
       {/* Overlay feedback cuando se arrastra un gráfico encima para intercambiar lugar */}
       {isEditMode && isDragOverCard && (
-        <div className="absolute inset-0 bg-sky-500/10 dark:bg-sky-500/20 rounded-lg flex items-center justify-center z-10 pointer-events-none backdrop-blur-2xs">
-          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-sky-400 dark:border-sky-600 px-3 py-1.5 rounded-md shadow-md text-sky-700 dark:text-sky-400 font-mono text-xs font-semibold">
-            <ArrowLeftRight aria-hidden="true" className="h-4 w-4 animate-pulse" />
+        <div className="absolute inset-0 bg-accent dark:bg-accent rounded-lg flex items-center justify-center z-10 pointer-events-none">
+          <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-accent dark:border-accent px-3 py-1.5 rounded-md text-accent dark:text-accent font-mono text-xs font-medium">
+            <ArrowLeftRight aria-hidden="true" className="h-4 w-4" />
             <span>Soltar para mover a posición #{index + 1}</span>
           </div>
         </div>
       )}
 
-      <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-3">
-        <div className="flex items-center gap-2">
+      <div className="mb-3 flex items-start gap-2 border-b border-zinc-200 pb-2 dark:border-zinc-800">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
           {isEditMode && (
             <div
               className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-grab active:cursor-grabbing"
@@ -152,9 +152,9 @@ export function DynamicChartCard({
             </div>
           )}
 
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="truncate text-[13px] font-medium text-zinc-900 dark:text-zinc-100">
                 {title}
               </span>
               {isEditMode && (
@@ -163,7 +163,7 @@ export function DynamicChartCard({
                 </span>
               )}
             </div>
-            <span className="font-mono text-xs text-zinc-400">
+            <span className="truncate text-xs text-zinc-500 dark:text-zinc-400">
               {describeRange(input)} · {CHART_TYPE_LABELS[input.chartType]}
             </span>
           </div>
@@ -176,10 +176,10 @@ export function DynamicChartCard({
         >
           {data && visualization === 'kpi' ? (
             <div className="flex h-full flex-col items-center justify-center gap-2">
-              <span className="font-mono text-7xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+              <span className="font-mono text-7xl font-medium tabular-nums text-zinc-900 dark:text-zinc-100">
                 {formatKpiValue(data.points, input.metric)}
               </span>
-              <span className="font-mono text-sm text-zinc-500">{title}</span>
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">{title}</span>
             </div>
           ) : data ? (
             <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />
@@ -190,7 +190,7 @@ export function DynamicChartCard({
             type="button"
             variant="ghost"
             size="icon"
-            onClick={onHide} className="h-7 w-7 text-zinc-400 hover:text-zinc-700"
+            onClick={onHide}
             title="Ocultar gráfico"
             aria-label="Ocultar gráfico"
           >
@@ -202,7 +202,7 @@ export function DynamicChartCard({
             type="button"
             variant="ghost"
             size="icon"
-            onClick={onDelete} className="h-7 w-7 text-zinc-400 hover:text-rose-600"
+            onClick={onDelete}
             title="Eliminar gráfico"
             aria-label="Eliminar gráfico"
           >
@@ -225,7 +225,7 @@ export function DynamicChartCard({
         ) : error ? (
           <div
             role="alert"
-            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-rose-600 dark:text-rose-400"
+            className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center font-mono text-xs text-danger dark:text-danger"
           >
             <AlertTriangle aria-hidden="true" className="h-5 w-5" />
             <span>{apiErrorToMessage(error)}</span>
@@ -243,7 +243,7 @@ export function DynamicChartCard({
             data-testid={`chart-kpi-${index}`}
             className="flex h-full flex-col items-center justify-center gap-1"
           >
-            <span className="font-mono text-4xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+            <span className="font-mono text-4xl font-medium tabular-nums text-zinc-900 dark:text-zinc-100">
               {formatKpiValue(data.points, input.metric)}
             </span>
             <span className="font-mono text-xs text-zinc-500">{title}</span>

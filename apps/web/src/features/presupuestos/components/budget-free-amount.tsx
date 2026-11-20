@@ -15,7 +15,7 @@ export function BudgetFreeAmount({ amount, className }: BudgetFreeAmountProps) {
     <span
       className={cn(
         'font-mono tabular-nums',
-        negative && 'text-rose-600 dark:text-rose-400',
+        negative && 'text-danger',
         className,
       )}
     >

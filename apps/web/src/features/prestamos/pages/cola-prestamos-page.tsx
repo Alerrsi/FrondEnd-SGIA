@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { usePendingLoans, useRechazarPrestamo } from '@sgia/api-client';
 import type { Prestamo } from '@sgia/types';
 import {
-  AlertTriangle,
   Ban,
   ClipboardCheck,
   Calendar,
@@ -15,7 +14,6 @@ import {
   Package,
   Plus,
   RefreshCw,
-  Search,
   User,
 } from 'lucide-react';
 
@@ -35,9 +33,14 @@ import {
 } from '@/features/prestamos/lib/loan-display';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { PageHeading } from '@/components/ui/page-heading';
-import { SectionTitle } from '@/components/ui/section-title';
-import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { Cell } from '@/components/ui/cell';
+import { CellGrid } from '@/components/ui/cell-grid';
+import { EmptyState } from '@/components/ui/empty-state';
+import { FORM_CONTROL_BASE_CLASS } from '@/components/ui/form-control';
+import { Metric } from '@/components/ui/metric';
+import { PageHeader } from '@/components/ui/page-header';
+import { TableSearch } from '@/components/ui/table-search';
+import { CODE_CHIP_CLASS, FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ColaPrestamosPage() {
@@ -88,6 +91,8 @@ export default function ColaPrestamosPage() {
     return codigoMatch || docenteMatch || itemMatch;
   });
 
+  const overdueInQueue = rawLoans.filter((l) => (l.estado || '').toLowerCase() === 'vencido').length;
+
   const openRejectModal = (loan: Prestamo) => {
     setSelectedPrestamo(loan);
     setRejectionReason('');
@@ -124,117 +129,85 @@ export default function ColaPrestamosPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeading icon={ClipboardCheck} title="Cola de despacho de solicitudes remotas">
-          Solicitudes remotas de tu pañol enviadas por los docentes.
-        </PageHeading>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={ClipboardCheck}
+        title="Cola de despacho de solicitudes remotas"
+        description="Solicitudes remotas de tu pañol enviadas por los docentes."
+        actions={
+          <>
+            <Button variant="secondary" size="sm" onClick={() => refetch()}>
+              <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+              Actualizar cola
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => navigate('/prestamos/historial')}>
+              <History aria-hidden="true" className="h-3.5 w-3.5" />
+              Ver historial / auditoría
+            </Button>
+            <Button variant="primary" size="sm" onClick={() => navigate('/prestamos/registro-presencial')}>
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+              Nuevo préstamo presencial
+            </Button>
+          </>
+        }
+      />
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5 text-xs">
-            <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
-            <span>Actualizar cola</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/prestamos/historial')}
-            className="gap-1.5 text-xs"
-          >
-            <History aria-hidden="true" className="h-3.5 w-3.5" />
-            <span>Ver historial / auditoría</span>
-          </Button>
-
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => navigate('/prestamos/registro-presencial')}
-            className="gap-1.5 text-xs bg-red-600 hover:bg-red-700 text-white"
-          >
-            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-            <span>Nuevo préstamo presencial</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Barra de métricas rápidas de la cola */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Card className="flex items-center justify-between p-3 border-l-4 border-l-amber-500">
-          <div>
-            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-              Solicitudes por preparar
-            </span>
-            <span className="mt-0.5 text-xl font-semibold font-mono text-zinc-900 dark:text-zinc-100">
-              {pendingLoans.length}
-            </span>
-          </div>
-          <Clock aria-hidden="true" className="h-5 w-5 text-amber-500" />
-        </Card>
-
-        <Card className="flex items-center justify-between p-3 border-l-4 border-l-blue-500">
-          <div>
-            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-              Total solicitudes en cola
-            </span>
-            <span className="mt-0.5 text-xl font-semibold font-mono text-zinc-900 dark:text-zinc-100">
-              {rawLoans.length}
-            </span>
-          </div>
-          <Package aria-hidden="true" className="h-5 w-5 text-blue-500" />
-        </Card>
-
-        <Card className="flex items-center justify-between p-3 border-l-4 border-l-rose-500">
-          <div>
-            <span className="block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-              Vencidos / fuera de plazo
-            </span>
-            <span className="mt-0.5 text-xl font-semibold font-mono text-rose-600 dark:text-rose-400">
-              {rawLoans.filter((l) => (l.estado || '').toLowerCase() === 'vencido').length}
-            </span>
-          </div>
-          <AlertTriangle aria-hidden="true" className="h-5 w-5 text-rose-500" />
-        </Card>
-      </div>
-
-      {/* Buscador reactivo */}
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <div className="relative flex-1">
-          <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
-          <input
-            type="search"
-            placeholder="Filtrar por código, docente, laboratorio o producto…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-8.5 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 pl-9 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none"
+      <CellGrid columns={3} aria-label="Resumen de la cola">
+        <Cell>
+          <Metric
+            label="Solicitudes por preparar"
+            value={pendingLoans.length}
+            tone={pendingLoans.length > 0 ? 'warning' : 'neutral'}
           />
-        </div>
-      </div>
+        </Cell>
+        <Cell>
+          <Metric label="Total solicitudes en cola" value={rawLoans.length} />
+        </Cell>
+        <Cell>
+          <Metric
+            label="Vencidos / fuera de plazo"
+            value={overdueInQueue}
+            tone={overdueInQueue > 0 ? 'danger' : 'neutral'}
+          />
+        </Cell>
+      </CellGrid>
+
+      <TableSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Filtrar por código, docente, laboratorio o producto…"
+        className="sm:max-w-md"
+      />
 
       {/* Listado tipo Tarjetas Técnicas / Cola */}
       {isLoading ? (
-        <div role="status" className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        <div role="status" className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <span className="sr-only">Cargando cola de solicitudes…</span>
           {[0, 1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-44" />
           ))}
         </div>
       ) : filteredLoans.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-12 text-center shadow-xs">
-          <Package aria-hidden="true" className="h-8 w-8 text-zinc-300 dark:text-zinc-600 mb-2" />
-          <SectionTitle as="h3">
-            {search
-            ? 'Sin resultados para la búsqueda'
-            : 'No hay solicitudes pendientes en la cola'}
-          </SectionTitle>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm">
-            {search
-              ? 'Intenta con otro término de búsqueda o limpia el filtro.'
-              : 'Cuando un docente solicite insumos, aparecerá en esta lista para preparación.'}
-          </p>
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <EmptyState
+            icon={Package}
+            title={search ? 'Sin resultados para la búsqueda' : 'No hay solicitudes pendientes en la cola'}
+            description={
+              search
+                ? 'Intenta con otro término de búsqueda o limpia el filtro.'
+                : 'Cuando un docente solicite insumos, aparecerá en esta lista para preparación.'
+            }
+            action={
+              search ? (
+                <Button variant="secondary" size="sm" onClick={() => setSearch('')}>
+                  Limpiar búsqueda
+                </Button>
+              ) : undefined
+            }
+          />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredLoans.map((loan) => {
             const docenteName = loanTeacher(loan);
             const actividad = [
@@ -258,32 +231,32 @@ export default function ColaPrestamosPage() {
             return (
               <Card
                 key={loan.id}
-                className="flex flex-col justify-between p-4 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors shadow-xs"
+                className="flex flex-col justify-between"
               >
                 <div>
                   {/* Top Bar: Código + Estado */}
-                  <div className="flex items-start justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
+                  <div className="flex items-start justify-between gap-2 border-b border-zinc-200 pb-2.5 dark:border-zinc-800">
                     <div>
-                      <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                      <span className={CODE_CHIP_CLASS}>
                         {loan.codigo || `#${loan.id}`}
                       </span>
-                      <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                      <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                         <Calendar aria-hidden="true" className="h-3 w-3" />
-                        <span>{fechaStr}</span>
+                        <span className="font-mono">{fechaStr}</span>
                       </div>
                     </div>
                     <LoanStatusBadge estado={String(loan.estado)} />
                   </div>
 
                   {/* Datos del Solicitante */}
-                  <div className="mt-3 flex items-start gap-2.5 rounded-md bg-zinc-50 dark:bg-zinc-950/60 p-2.5">
+                  <div className="mt-3 flex items-start gap-2.5 rounded-md bg-zinc-50 p-2.5 dark:bg-zinc-950/60">
                     <User aria-hidden="true" className="h-4 w-4 text-zinc-400 mt-0.5 shrink-0" />
                     <div className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      <span className="block truncate text-[13px] font-medium text-zinc-900 dark:text-zinc-100">
                         {docenteName}
                       </span>
-                      <span className="block font-mono text-xs text-zinc-500 dark:text-zinc-400">
-                        RUN: {docenteRun}
+                      <span className="block text-xs text-zinc-500 dark:text-zinc-400">
+                        RUN: <span className="font-code">{docenteRun}</span>
                       </span>
                       <span className="block text-xs text-zinc-500 dark:text-zinc-400">
                         Asignatura: {loanSubject(loan)} · Carrera: {loanCareer(loan)}
@@ -292,11 +265,11 @@ export default function ColaPrestamosPage() {
                   </div>
 
                   {/* Actividad: fecha y horario, laboratorio y pañol que la prepara */}
-                  <dl className="mt-2 grid grid-cols-1 gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+                  <dl className="mt-2 grid grid-cols-1 gap-1 text-[13px] text-zinc-600 dark:text-zinc-400">
                     <div className="flex items-center gap-1.5">
                       <Clock aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                       <dt className="sr-only">Actividad</dt>
-                      <dd className="font-mono tabular-nums">
+                      <dd className="font-mono">
                         {actividad || 'Horario no informado'}
                       </dd>
                     </div>
@@ -314,9 +287,9 @@ export default function ColaPrestamosPage() {
 
                   {/* Insumos solicitados con micro-inspección de ubicación */}
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">
+                    <div className="mb-1.5 flex items-center justify-between text-[13px] font-medium text-zinc-600 dark:text-zinc-400">
                       <span>Insumos solicitados</span>
-                      <span className="font-mono text-zinc-600 dark:text-zinc-400">
+                      <span className="font-mono font-normal text-zinc-500 dark:text-zinc-400">
                         ({itemsCount} {itemsCount === 1 ? 'ítem' : 'ítems'})
                       </span>
                     </div>
@@ -332,20 +305,20 @@ export default function ColaPrestamosPage() {
                         return (
                           <div
                             key={it.id ?? idx}
-                            className="flex items-center justify-between gap-2 rounded border border-zinc-100 dark:border-zinc-800/80 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs font-mono"
+                            className="flex items-center justify-between gap-2 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-[13px] dark:border-zinc-800 dark:bg-zinc-900"
                           >
                             <div className="min-w-0 flex-1">
                               <span className="block truncate text-zinc-800 dark:text-zinc-200">
                                 {prodName}
                               </span>
                               {ubicacionStr && (
-                                <span className="flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
-                                  <MapPin aria-hidden="true" className="h-2.5 w-2.5" />
+                                <span className="flex items-center gap-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                                  <MapPin aria-hidden="true" className="h-3 w-3" />
                                   <span>{ubicacionStr}</span>
                                 </span>
                               )}
                             </div>
-                            <span className="shrink-0 rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                            <span className="shrink-0 rounded-sm bg-zinc-100 px-1.5 py-0.5 font-mono text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                               x{it.cantidad}
                             </span>
                           </div>
@@ -356,33 +329,31 @@ export default function ColaPrestamosPage() {
 
                   {/* Observaciones del docente si existen */}
                   {loan.observaciones && (
-                    <div className="mt-3 rounded border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/30 p-2 text-xs text-amber-800 dark:text-amber-300">
-                      <strong>Nota del docente:</strong> {loan.observaciones}
+                    <div className="mt-3 rounded-md bg-warn-bg p-2 text-[13px] text-warn">
+                      <span className="font-medium">Nota del docente:</span> {loan.observaciones}
                     </div>
                   )}
                 </div>
 
                 {/* Acciones del Pañolero */}
-                <div className="mt-4 flex items-center justify-between gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
+                <div className="mt-4 flex items-center justify-between gap-2 border-t border-zinc-200 pt-3 dark:border-zinc-800">
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => openRejectModal(loan)}
                     disabled={rechazarMutation.isPending}
-                    className="text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-700 h-8 px-2.5"
                   >
-                    <Ban aria-hidden="true" className="h-3.5 w-3.5 mr-1" />
+                    <Ban aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
                     <span>Rechazar</span>
                   </Button>
 
                   <Button
                     type="button"
-                    variant="primary"
+                    variant="secondary"
                     size="sm"
                     onClick={() => setReviewLoan(loan)}
                     aria-label={`Revisar solicitud ${loan.codigo ?? loan.id}`}
-                    className="text-xs bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 h-8 gap-1"
                   >
                     <ClipboardCheck aria-hidden="true" className="h-3.5 w-3.5" />
                     <span>Revisar</span>
@@ -415,10 +386,10 @@ export default function ColaPrestamosPage() {
         description="Indica el motivo por el cual no se puede preparar la solicitud. Será notificado al docente."
         size="sm"
       >
-        <div className="flex flex-col gap-4 text-xs">
+        <div className="flex flex-col gap-4 text-[13px]">
           <p className="text-zinc-600 dark:text-zinc-300">
             Solicitud seleccionada:{' '}
-            <strong className="font-mono text-zinc-900 dark:text-zinc-100">
+            <strong className="font-code font-normal text-zinc-900 dark:text-zinc-100">
               {selectedPrestamo?.codigo ?? `#${selectedPrestamo?.id}`}
             </strong>
           </p>
@@ -428,7 +399,7 @@ export default function ColaPrestamosPage() {
               htmlFor="rejection_reason"
               className={FIELD_LABEL_CLASS}
             >
-              Motivo de rechazo <span className="text-rose-500">*</span>
+              Motivo de rechazo <span className="text-danger">*</span>
             </label>
             <textarea
               id="rejection_reason"
@@ -439,10 +410,10 @@ export default function ColaPrestamosPage() {
                 if (reasonError) setReasonError(null);
               }}
               placeholder="Ej. Insumos comprometidos en mantención preventiva, sin stock de multímetros…"
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+              className={`${FORM_CONTROL_BASE_CLASS} py-2`}
             />
             {reasonError && (
-              <span className="text-xs text-rose-600 dark:text-rose-400">{reasonError}</span>
+              <span className="text-xs text-danger">{reasonError}</span>
             )}
           </div>
 

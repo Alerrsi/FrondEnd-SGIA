@@ -31,7 +31,7 @@ export function RecentFailuresPanel() {
               <SkeletonRows columns={4} rows={5} label="Cargando intentos rechazados…" cellClassName="px-3 py-2" />
             ) : isError ? (
               <tr>
-                <td colSpan={4} role="alert" className="px-3 py-4 text-center text-xs text-rose-600 dark:text-rose-400">
+                <td colSpan={4} role="alert" className="px-3 py-4 text-center text-xs text-danger">
                   No se pudieron cargar los intentos.
                 </td>
               </tr>

@@ -388,13 +388,13 @@ describe('REQ-14: Drag & Drop, Modo edición y Asistente Post-Drop', () => {
     // Se muestra la zona destacada de soltado con alta visibilidad
     const prominentDropZone = screen.getByTestId('prominent-drop-zone');
     expect(prominentDropZone).toBeDefined();
-    expect(prominentDropZone.textContent).toContain('Zona Principal de Soltado Destacada');
+    expect(prominentDropZone.textContent).toContain('Suelta tu gráfico aquí para configurarlo');
 
     // Hover sobre la zona destacada
     fireEvent.dragOver(prominentDropZone, {
       dataTransfer: { dropEffect: 'copy' },
     });
-    expect(prominentDropZone.textContent).toContain('¡Suelta aquí para configurar el gráfico!');
+    expect(prominentDropZone.textContent).toContain('Suelta aquí para configurar el gráfico');
 
     // Soltar dentro de la zona destacada
     fireEvent.drop(prominentDropZone, {

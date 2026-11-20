@@ -58,12 +58,12 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
             <>
               <SheetHeader>
                 <SheetTitle>
-                  <span className="font-mono">
+                  <span className="font-code">
                     {intake.document_number ?? `Ingreso #${intake.id}`}
                   </span>
                   <InvoiceIntakeStatusBadge status={intake.status} />
                 </SheetTitle>
-                <SheetDescription className="text-sm text-zinc-600 dark:text-zinc-300">
+                <SheetDescription>
                   {budget
                     ? `${careerLabel(budget)} · ${budget.year}`
                     : intake.annual_budget_id
@@ -92,8 +92,8 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                       purchaseReserved={purchase?.reserved_amount ?? 0}
                     />
                   ) : (
-                    <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
-                      <table className="w-full border-collapse text-left text-xs">
+                    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+                      <table className="w-full border-collapse text-left text-[13px] text-zinc-700 dark:text-zinc-300">
                         <thead className={TABLE_HEAD_CLASS}>
                           <tr>
                             <th className="px-3 py-2 font-medium">Producto</th>
@@ -102,7 +102,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                             <th className="px-3 py-2 text-right font-medium">Subtotal</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                           {intake.items.map((item) => (
                             <tr key={item.id}>
                               <td className="px-3 py-2">
@@ -112,18 +112,18 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                                     `Producto #${item.product_id}`}
                                 </div>
                                 {item.detected_name && (
-                                  <div className="text-xs text-zinc-400">
+                                  <div className="text-xs text-zinc-500 dark:text-zinc-400">
                                     OCR: {item.detected_name}
                                   </div>
                                 )}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono tabular-nums">
+                              <td className="px-3 py-2 text-right whitespace-nowrap font-mono">
                                 {item.quantity}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono tabular-nums">
+                              <td className="px-3 py-2 text-right whitespace-nowrap font-mono">
                                 {formatCLP(item.unit_price)}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono tabular-nums">
+                              <td className="px-3 py-2 text-right whitespace-nowrap font-mono">
                                 {formatCLP(item.subtotal)}
                               </td>
                             </tr>
@@ -137,11 +137,11 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                           )}
                         </tbody>
                         <tfoot>
-                          <tr className="border-t border-zinc-200 dark:border-zinc-800 font-semibold">
+                          <tr className="border-t border-zinc-200 font-medium text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">
                             <td className="px-3 py-2" colSpan={3}>
                               Total descontado
                             </td>
-                            <td className="px-3 py-2 text-right font-mono">
+                            <td className="whitespace-nowrap px-3 py-2 text-right font-mono font-semibold">
                               {formatCLP(intake.total_deducted)}
                             </td>
                           </tr>
@@ -151,11 +151,7 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                   )}
 
                   {canCancel && (
-                    <Button
-                      variant="ghost"
-                      onClick={() => setCancelling(true)}
-                      className="self-start text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
-                    >
+                    <Button variant="secondary" onClick={() => setCancelling(true)} className="self-start">
                       <Ban aria-hidden="true" className="h-4 w-4" />
                       {isDraft ? 'Anular borrador' : 'Anular factura confirmada'}
                     </Button>

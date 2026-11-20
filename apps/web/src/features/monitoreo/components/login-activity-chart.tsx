@@ -14,14 +14,18 @@ import { Bar } from 'react-chartjs-2';
 import type { LoginActivityHour } from '@sgia/types';
 
 import { useTheme } from '@/contexts/theme-context';
+import {
+  categoricalColor,
+  categoryAxis,
+  chartAnimation,
+  legendStyle,
+  tooltipStyle,
+  valueAxis,
+} from '@/lib/chart-theme';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
-// Paleta categórica validada (skill dataviz, slots 1 y 2), la misma del gráfico mensual de presupuestos.
-const SERIES = {
-  light: { successful: '#2a78d6', failed: '#eb6834', grid: '#e4e4e7', text: '#71717a' },
-  dark: { successful: '#3987e5', failed: '#d95926', grid: '#27272a', text: '#a1a1aa' },
-} as const;
+// Slots 1 y 2 de la paleta del tema (`lib/chart-theme.ts`), los mismos del gráfico mensual de presupuestos.
 
 const hourLabel = new Intl.DateTimeFormat('es-CL', { hour: '2-digit', minute: '2-digit' });
 const dayHourLabel = new Intl.DateTimeFormat('es-CL', { weekday: 'short', hour: '2-digit' });
@@ -29,7 +33,8 @@ const dayHourLabel = new Intl.DateTimeFormat('es-CL', { weekday: 'short', hour: 
 /** Inicios de sesión correctos y rechazados por hora. */
 export function LoginActivityChart({ hours }: { hours: LoginActivityHour[] }) {
   const { resolvedTheme } = useTheme();
-  const colors = SERIES[resolvedTheme === 'dark' ? 'dark' : 'light'];
+  const isDark = resolvedTheme === 'dark';
+  const colors = useMemo(() => ({ successful: categoricalColor(0, isDark), failed: categoricalColor(1, isDark) }), [isDark]);
   const format = hours.length > 24 ? dayHourLabel : hourLabel;
 
   const data = useMemo<ChartData<'bar'>>(
@@ -47,26 +52,15 @@ export function LoginActivityChart({ hours }: { hours: LoginActivityHour[] }) {
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      animation: chartAnimation(),
       interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          position: 'top',
-          align: 'end',
-          labels: { color: colors.text, boxWidth: 8, boxHeight: 8, usePointStyle: true, font: { size: 11 } },
-        },
-      },
+      plugins: { legend: legendStyle(isDark), tooltip: tooltipStyle(isDark) },
       scales: {
-        x: { stacked: true, grid: { display: false }, ticks: { color: colors.text, font: { size: 11 }, maxTicksLimit: 12 } },
-        y: {
-          stacked: true,
-          beginAtZero: true,
-          grid: { color: colors.grid },
-          border: { display: false },
-          ticks: { color: colors.text, font: { size: 11 }, precision: 0, maxTicksLimit: 5 },
-        },
+        x: { ...categoryAxis(isDark), stacked: true, ticks: { ...categoryAxis(isDark).ticks, maxTicksLimit: 12 } },
+        y: { ...valueAxis(isDark), stacked: true, ticks: { ...valueAxis(isDark).ticks, precision: 0, maxTicksLimit: 5 } },
       },
     }),
-    [colors],
+    [isDark],
   );
 
   const total = hours.reduce((sum, h) => sum + h.successful + h.failed, 0);

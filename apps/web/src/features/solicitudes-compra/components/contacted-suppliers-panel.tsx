@@ -8,6 +8,7 @@ import { formatDate } from '@/features/compras/lib/format';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { SectionTitle } from '@/components/ui/section-title';
+import { ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 interface ContactedSuppliersPanelProps {
@@ -33,11 +34,11 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
   };
 
   return (
-    <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
+    <section className="min-w-0 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <header className="flex flex-col gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div>
           <SectionTitle icon={Mail}>Proveedores contactados ({request.suppliers.length})</SectionTitle>
-          <p className="text-xs text-zinc-500">
+          <p className="mt-0.5 text-[13px] text-zinc-500 dark:text-zinc-400">
             Áreas:{' '}
             {request.areas.length
               ? request.areas.map((a) => SUPPLIER_AREA_LABELS[a]).join(', ')
@@ -46,7 +47,7 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
           </p>
         </div>
         {canManage && request.actions.can_resend && failed > 0 && (
-          <Button size="sm" variant="outline" onClick={handleResend} disabled={resend.isPending}>
+          <Button size="sm" variant="secondary" onClick={handleResend} disabled={resend.isPending}>
             {resend.isPending ? (
               <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
             ) : (
@@ -57,27 +58,28 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
         )}
       </header>
       {request.suppliers.length === 0 ? (
-        <p className={`px-3 py-6 ${STATE_TEXT_CLASS}`}>
+        <p className={`px-4 py-8 ${STATE_TEXT_CLASS}`}>
           Aún no se envía a proveedores.
         </p>
       ) : (
-        <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] text-left">
           <thead className={TABLE_HEAD_CLASS}>
             <tr>
-              <th className="px-3 py-2 font-medium">Proveedor</th>
-              <th className="px-3 py-2 font-medium">Correo</th>
-              <th className="px-3 py-2 font-medium">Estado del correo</th>
-              <th className="px-3 py-2 font-medium">Cotización</th>
+              <th className={`${TH_CLASS} ${STICKY_COL_CLASS} max-md:bg-zinc-50`}>Proveedor</th>
+              <th className={TH_CLASS}>Correo</th>
+              <th className={TH_CLASS}>Estado del correo</th>
+              <th className={TH_CLASS}>Cotización</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+          <tbody>
             {request.suppliers.map((s) => (
-              <tr key={s.id}>
-                <td className="px-3 py-2 font-medium text-zinc-800 dark:text-zinc-200">
+              <tr key={s.id} className={ROW_CLASS}>
+                <td className={`${TD_CLASS} ${STICKY_COL_CLASS} font-medium text-zinc-900 dark:text-zinc-100`}>
                   {s.supplier?.name ?? `Proveedor #${s.supplier_id}`}
                 </td>
-                <td className="px-3 py-2 font-mono text-zinc-500">{s.supplier?.email ?? '—'}</td>
-                <td className="px-3 py-2">
+                <td className={`${TD_CLASS} text-[13px] text-zinc-500 dark:text-zinc-400`}>{s.supplier?.email ?? '—'}</td>
+                <td className={TD_CLASS}>
                   {s.email_status === 'fallido' ? (
                     <span title={s.email_error ?? undefined}>
                       <Badge tone="danger" dot>
@@ -94,17 +96,18 @@ export function ContactedSuppliersPanel({ request, canManage }: ContactedSupplie
                     </Badge>
                   )}
                 </td>
-                <td className="px-3 py-2">
+                <td className={TD_CLASS}>
                   {quotedIds.has(s.supplier_id) ? (
                     <Badge tone="loaned">Recibida</Badge>
                   ) : (
-                    <span className="text-zinc-400">—</span>
+                    <span className="text-zinc-500 dark:text-zinc-400">—</span>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </section>
   );

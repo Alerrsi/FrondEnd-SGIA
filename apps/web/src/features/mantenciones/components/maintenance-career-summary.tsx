@@ -12,13 +12,13 @@ const nf = new Intl.NumberFormat('es-CL');
 const STATUSES = Object.keys(MAINTENANCE_STATUS_META) as MaintenanceStatus[];
 
 const STATUS_TEXT_CLASS: Record<MaintenanceStatus, string> = {
-  en_curso: 'text-amber-600 dark:text-amber-400',
-  finalizada: 'text-emerald-600 dark:text-emerald-400',
+  en_curso: 'text-warn',
+  finalizada: 'text-ok',
   anulada: 'text-zinc-500',
 };
 
 const CARD_CLASS =
-  'rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 shadow-xs';
+  'rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3';
 
 function StatCard({ label, value, accent }: { label: string; value: number; accent?: string }) {
   return (
@@ -58,8 +58,8 @@ export function MaintenanceCareerSummary() {
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label="Total" value={data.total.total} />
-        <StatCard label="En curso" value={data.total.by_status.en_curso} accent="text-amber-600 dark:text-amber-400" />
-        <StatCard label="Finalizadas" value={data.total.by_status.finalizada} accent="text-emerald-600 dark:text-emerald-400" />
+        <StatCard label="En curso" value={data.total.by_status.en_curso} accent="text-warn" />
+        <StatCard label="Finalizadas" value={data.total.by_status.finalizada} accent="text-ok" />
         <StatCard label="Unidades distintas" value={data.total.units} />
       </div>
 

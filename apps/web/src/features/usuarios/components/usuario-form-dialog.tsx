@@ -41,7 +41,7 @@ const inputClasses =
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="mt-1 block text-xs text-red-600 dark:text-red-400 font-medium">{message}</span>;
+  return <span className="mt-1 block text-xs text-danger font-medium">{message}</span>;
 }
 
 function Label({ htmlFor, children }: { htmlFor: string; children: string }) {
@@ -191,8 +191,8 @@ export function UsuarioFormDialog({
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación Personal */}
-        <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
+        <fieldset className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 space-y-3">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-300 inline-flex items-center gap-1.5">
             <User aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Identificación de usuario
           </legend>
@@ -218,7 +218,7 @@ export function UsuarioFormDialog({
             />
             <FieldError message={errors.run?.message} />
             {esEdicion && (
-              <span className="mt-1 block text-xs text-zinc-400 dark:text-zinc-500 font-mono">
+              <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">
                 El RUN se mantiene como identificación única del usuario.
               </span>
             )}
@@ -272,8 +272,8 @@ export function UsuarioFormDialog({
         </fieldset>
 
         {/* Fieldset: Rol y Dependencia */}
-        <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
+        <fieldset className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 space-y-3">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-300 inline-flex items-center gap-1.5">
             <Shield aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Rol y dependencia institucional
           </legend>
@@ -326,12 +326,12 @@ export function UsuarioFormDialog({
           </div>
 
           <div>
-            <span className="mb-1 block text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+            <span className="mb-1 block text-[13px] font-medium text-zinc-600 dark:text-zinc-300">
               Carreras asignadas
             </span>
             <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
               {(careers?.data ?? []).map((c) => (
-                <label key={c.id} className="flex items-center gap-2 text-xs">
+                <label key={c.id} className="flex items-center gap-2 text-[13px]">
                   <input
                     type="checkbox"
                     disabled={isPending}
@@ -349,8 +349,8 @@ export function UsuarioFormDialog({
         </fieldset>
 
         {/* Fieldset: Credenciales */}
-        <fieldset className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <legend className="px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
+        <fieldset className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 space-y-3">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-300 inline-flex items-center gap-1.5">
             <Lock aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             Credenciales de acceso
           </legend>

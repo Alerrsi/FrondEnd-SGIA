@@ -17,7 +17,7 @@ import { toast } from '@/lib/toast';
 const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPTED = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
 
-const errorClasses = 'mt-1 text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-danger';
 
 interface UploadInvoiceIntakeDialogProps {
   open: boolean;
@@ -159,8 +159,8 @@ export function UploadInvoiceIntakeDialog({
           ) : file ? (
             <div className="flex items-center gap-2 text-xs">
               <FileText aria-hidden="true" className="h-5 w-5 text-zinc-400" />
-              <span className="font-mono text-zinc-800 dark:text-zinc-200">{file.name}</span>
-              <span className="text-zinc-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+              <span className="min-w-0 truncate text-zinc-800 dark:text-zinc-200">{file.name}</span>
+              <span className="font-mono text-zinc-500 dark:text-zinc-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
               <button
                 type="button"
                 aria-label="Quitar archivo"
@@ -179,12 +179,12 @@ export function UploadInvoiceIntakeDialog({
               <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
                 Arrastra la factura aquí
               </p>
-              <p className="mt-0.5 font-mono text-xs text-zinc-500">
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                 PDF, PNG, JPG o WEBP · máx. 10 MB
               </p>
               <Button
                 type="button"
-                variant="outline"
+                variant="secondary"
                 size="sm" className="mt-3"
                 onClick={() => fileRef.current?.click()}
               >

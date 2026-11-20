@@ -6,19 +6,13 @@ import {
   useToggleProductoActivo,
 } from '@sgia/api-client';
 import type { Producto, ProductoParams } from '@sgia/types';
-import {
-  AlertCircle,
-  Boxes,
-  FileUp,
-  Plus,
-} from 'lucide-react';
+import { Boxes, FileUp, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
-import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
 import {
   InventarioTable,
@@ -29,7 +23,11 @@ import { UploadInvoiceIntakeDialog } from '@/features/ingresos-factura/component
 import { ProductoDetailDialog } from '../components/producto-detail-dialog';
 import { ProductoFormDialog } from '../components/producto-form-dialog';
 import { ReubicarProductoModal } from '../components/reubicar-producto-modal';
-import { PageHeading } from '@/components/ui/page-heading';
+import { Cell } from '@/components/ui/cell';
+import { CellGrid } from '@/components/ui/cell-grid';
+import { ErrorState } from '@/components/ui/error-state';
+import { Metric } from '@/components/ui/metric';
+import { PageHeader } from '@/components/ui/page-header';
 
 export default function ProductosListPage() {
   const { user } = useAuth();
@@ -186,70 +184,48 @@ export default function ProductosListPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* 1. Encabezado Técnico Compacto y Acciones */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeading icon={Boxes} title="Control de inventario y activos">
-          Productos, insumos y equipos del pañol con su stock, ubicación y estado.
-        </PageHeading>
-
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
-          {canScanInvoice && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setInvoiceUploadOpen(true)}
-              className="flex items-center gap-1.5 text-xs h-8"
-            >
-              <FileUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500 dark:text-zinc-400" />
-              <span>Ingresar por factura</span>
-            </Button>
-          )}
-
-          {/* CTA Principal: Monocromático de alto contraste técnico */}
-          <Button onClick={handleOpenCreate} size="sm" className="flex items-center gap-1.5">
-            <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-            <span>Dar de alta producto</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* 2. Barra métrica horizontal compacta (Sustituye tarjetas gigantes de 150px) */}
-      <div className="flex flex-wrap items-center gap-4 sm:gap-6 px-4 py-2.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs shadow-xs">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Total referencias:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
-            {totalItems}
-          </span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Stock crítico:</span>
-          <span
-            className={cn(
-              'font-mono font-medium',
-              criticalItemsCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400',
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Boxes}
+        title="Inventario"
+        description="Productos, insumos y equipos del pañol con su stock, ubicación y estado."
+        actions={
+          <>
+            {canScanInvoice && (
+              <Button variant="secondary" size="sm" onClick={() => setInvoiceUploadOpen(true)}>
+                <FileUp aria-hidden="true" className="h-3.5 w-3.5" />
+                Ingresar por factura
+              </Button>
             )}
-          >
-            {criticalItemsCount} {criticalItemsCount === 1 ? 'ítem bajo mínimo' : 'bajo mínimo'}
-          </span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Lector Code128:</span>
-          <span className="font-mono text-zinc-600 dark:text-zinc-400">Listo (presiona /)</span>
-        </div>
-      </div>
+            <Button variant="primary" size="sm" onClick={handleOpenCreate}>
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+              Dar de alta producto
+            </Button>
+          </>
+        }
+      />
 
-      {/* Error state */}
+      <CellGrid columns={3} aria-label="Resumen del inventario">
+        <Cell>
+          <Metric label="Referencias" value={totalItems} hint="En el catálogo del pañol" />
+        </Cell>
+        <Cell>
+          <Metric
+            label="Stock crítico"
+            value={criticalItemsCount}
+            tone={criticalItemsCount > 0 ? 'danger' : 'neutral'}
+            hint={criticalItemsCount > 0 ? 'Bajo el mínimo' : 'Al día'}
+          />
+        </Cell>
+        <Cell>
+          <Metric label="Lector Code128" value="Listo" hint="Escanea un código o presiona /" />
+        </Cell>
+      </CellGrid>
+
       {isError && (
-        <div className="flex items-center gap-2 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 p-3 text-xs text-rose-700 dark:text-rose-400">
-          <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
-          <span>Error de conexión con el catálogo de pañol. Reintentando sincronización…</span>
-        </div>
+        <ErrorState>Error de conexión con el catálogo de pañol. Reintentando sincronización…</ErrorState>
       )}
 
-      {/* 3. Marco unificado: Toolbar + Tabla de Datos */}
       <InventarioTable
         productos={productosList}
         isLoading={isLoading}

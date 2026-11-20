@@ -6,7 +6,7 @@ import { CheckCircle2, Loader2, PackageX, ScanLine, Undo2, Wrench } from 'lucide
 import { Badge, LoanStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FORM_CONTROL_BASE_CLASS, FORM_CONTROL_CLASS } from '@/components/ui/form-control';
-import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
+import { FIELD_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { playScannerBeep } from '@/lib/audio';
 import { cn } from '@/lib/cn';
@@ -134,14 +134,15 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
     : 'Escanea una unidad o insumo del préstamo';
 
   return (
-    <div className="flex flex-col gap-4 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
+    <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 pb-3 dark:border-zinc-800">
         <div className="flex min-w-0 flex-col">
-          <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-            Recepcionando préstamo {loan.codigo ?? `#${loan.id}`}
+          <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            Recepcionando préstamo <span className="font-code text-xs">{loan.codigo ?? `#${loan.id}`}</span>
           </span>
-          <span className="text-xs text-zinc-500">
-            Docente: {loan.solicitanteNombre} {loan.solicitanteRun ? `(${loan.solicitanteRun})` : ''}
+          <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
+            Docente: {loan.solicitanteNombre}{' '}
+            {loan.solicitanteRun ? <span className="font-code text-xs">({loan.solicitanteRun})</span> : ''}
           </span>
         </div>
         <LoanStatusBadge estado={loan.estado} />
@@ -169,7 +170,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
               }
             }}
             placeholder={waiting ? 'Código del cajón (ej. L206-RACK-R1)' : 'Código de la unidad o del insumo'}
-            className={cn(FORM_CONTROL_CLASS, 'pl-8', waiting && 'border-amber-400 dark:border-amber-600')}
+            className={cn(FORM_CONTROL_CLASS, 'pl-8 font-code', waiting && 'border-warn dark:border-warn')}
           />
           {busy && <Loader2 aria-hidden="true" className="absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-zinc-400" />}
         </div>
@@ -177,8 +178,8 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
           <p
             role="status"
             className={cn(
-              'text-xs font-medium',
-              feedback.tone === 'ok' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400',
+              'text-[13px] font-medium',
+              feedback.tone === 'ok' ? 'text-ok' : 'text-danger',
             )}
           >
             {feedback.text}
@@ -188,25 +189,25 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
 
       {/* Lo que falta devolver */}
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-semibold text-zinc-400">
+        <span className="text-[13px] font-medium text-zinc-500 dark:text-zinc-400">
           Ítems por devolver ({entries.length} de {targets.length} registrados)
         </span>
         {targets.length === 0 ? (
-          <p className="rounded border border-dashed border-zinc-200 dark:border-zinc-800 p-4 text-center text-xs text-zinc-500">
+          <p className={`rounded-md border border-zinc-200 p-4 dark:border-zinc-800 ${STATE_TEXT_CLASS}`}>
             Este préstamo no tiene ítems pendientes de devolución.
           </p>
         ) : (
-          <ul className="flex flex-col divide-y divide-zinc-100 dark:divide-zinc-800 rounded border border-zinc-200 dark:border-zinc-800">
+          <ul className="flex flex-col divide-y divide-zinc-200 rounded-md border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
             {targets.map((target) => {
               const entry = entryFor(target);
               const isWaiting = entry && entry.condition !== 'extraviado' && entry.cajon === null;
               return (
-                <li key={target.key} data-testid={`checkin-row-${target.code}`} className="flex flex-col gap-2 p-3 text-xs">
+                <li key={target.key} data-testid={`checkin-row-${target.code}`} className="flex flex-col gap-2 p-3 text-[13px]">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex min-w-0 flex-col">
                       <span className="font-medium text-zinc-800 dark:text-zinc-200">{target.name}</span>
-                      <span className="font-mono text-xs text-zinc-500">
-                        {target.code || '—'}
+                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                        <span className="font-code">{target.code || '—'}</span>
                         {target.kind === 'supply' && ` · Cantidad: ${target.quantity}`}
                         {target.kind === 'supply' && target.registeredCajonCode && ` · Cajón: ${target.registeredCajonCode}`}
                       </span>
@@ -217,7 +218,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
                       {entry?.condition === 'extraviado' && <Badge tone="danger">Extraviado</Badge>}
                       {entry?.cajon && (
                         <Badge tone={entry.condition === 'dañado' ? 'maintenance' : 'available'}>
-                          <span className="font-mono">{entry.cajon.code}</span>
+                          <span className="font-code">{entry.cajon.code}</span>
                         </Badge>
                       )}
                       {entry && entry.condition !== 'extraviado' && (
@@ -262,7 +263,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
                       aria-label={`Detalle del daño de ${target.code || target.name}`}
                       onChange={(e) => updateEntry(target.key, { notes: e.target.value })}
                       placeholder="Detalle del daño (ej. cable cortado, lente rayado)…"
-                      className={cn(FORM_CONTROL_CLASS, 'border-rose-300 dark:border-rose-800')}
+                      className={cn(FORM_CONTROL_CLASS, 'border-danger dark:border-danger')}
                     />
                   )}
                 </li>
@@ -286,8 +287,8 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
         />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-        <span className="text-xs text-zinc-500">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 pt-3 dark:border-zinc-800">
+        <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
           {pendingCajon.length > 0
             ? `Falta escanear el cajón de ${pendingCajon.length} ítem(s).`
             : entries.length < targets.length && entries.length > 0

@@ -106,7 +106,7 @@ export function OracleCategorySelect({
           </Button>
         </div>
         {error && (
-          <span className="mt-1 block text-xs font-medium text-rose-600 dark:text-rose-400">{error}</span>
+          <span className="mt-1 block text-xs font-medium text-danger">{error}</span>
         )}
       </div>
     );

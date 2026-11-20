@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { FORM_CONTROL_BASE_CLASS, FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 const controlClasses =
   FORM_CONTROL_CLASS;
@@ -74,9 +75,9 @@ export function AgregarUnidadesDialog({
       description={producto.nombre}
       size="sm"
     >
-      <div className="flex flex-col gap-4 text-xs">
+      <div className="flex flex-col gap-4">
         <label className="flex flex-col gap-1">
-          <span className="font-mono text-zinc-500">Cajón</span>
+          <span className={FIELD_LABEL_CLASS}>Cajón</span>
           <select
             className={controlClasses}
             value={cajonId ?? ''}
@@ -93,7 +94,7 @@ export function AgregarUnidadesDialog({
           </select>
         </label>
         <label className="flex flex-col gap-1">
-          <span className="font-mono text-zinc-500">Cantidad (máx. 200)</span>
+          <span className={FIELD_LABEL_CLASS}>Cantidad (máx. 200)</span>
           <input
             type="number"
             min={1}
@@ -105,10 +106,10 @@ export function AgregarUnidadesDialog({
           />
         </label>
         <label className="flex flex-col gap-1">
-          <span className="font-mono text-zinc-500">Números de serie (opcional, uno por línea)</span>
+          <span className={FIELD_LABEL_CLASS}>Números de serie (opcional, uno por línea)</span>
           <textarea
             rows={4}
-            className={`${controlClasses} h-auto py-1.5`}
+            className={`${FORM_CONTROL_BASE_CLASS} py-1.5 font-code text-xs`}
             value={serials}
             onChange={(e) => setSerials(e.target.value)}
           />

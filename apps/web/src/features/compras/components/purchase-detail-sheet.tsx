@@ -37,6 +37,7 @@ import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { SectionLabel } from '@/components/ui/section-label';
+import { TD_COMPACT_CLASS, TH_CLASS } from '@/components/ui/table-styles';
 import { TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 
@@ -46,8 +47,8 @@ interface PurchaseDetailSheetProps {
   purchase: PurchaseOrder | null;
 }
 
-const inputClasses =
-  FORM_CONTROL_CLASS;
+const inputClasses = FORM_CONTROL_CLASS;
+const thCompact = TH_CLASS.replace('px-4 py-2.5', 'px-3 py-2');
 
 export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailSheetProps) {
   const { user } = useAuth();
@@ -160,18 +161,18 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
   return (
     <>
       <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent className="w-full sm:max-w-lg">
+        <SheetContent>
           <SheetHeader>
-            <SheetTitle className="font-mono">
-              Orden {code}
+            <SheetTitle className="flex flex-wrap items-center gap-2">
+              Orden <span className="font-code">{code}</span>
             </SheetTitle>
-            <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+            <SheetDescription>
               {purchase.supplier?.name ?? 'Proveedor sin nombre'}
               {purchase.quotation_id ? ` · Cotización #${purchase.quotation_id}` : ''}
             </SheetDescription>
             <Link
               to={`/compras/ordenes/${purchase.id}/trazabilidad`}
-              className="w-fit rounded text-xs font-medium text-zinc-700 underline underline-offset-2 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:text-zinc-300 dark:hover:text-zinc-100"
+              className="w-fit rounded text-[13px] font-medium text-accent underline underline-offset-2 hover:no-underline"
             >
               Ver trazabilidad
             </Link>
@@ -180,26 +181,26 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
           <div className="mt-4 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <PurchaseStatusBadge status={purchase.status} />
-              <span className="inline-flex items-center gap-1 text-xs font-mono text-zinc-400">
+              <span className="inline-flex items-center gap-1 font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
                 <Calendar aria-hidden="true" className="h-3 w-3" />
                 {formatDate(purchase.created_at)}
               </span>
             </div>
 
-            <dl className="grid grid-cols-2 gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs">
+            <dl className="grid grid-cols-1 gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 text-[13px] min-[400px]:grid-cols-2">
               <div>
                 <dt className="text-zinc-500">Recibida</dt>
                 <dd className="font-mono">{formatDate(purchase.received_at)}</dd>
               </div>
               <div>
                 <dt className="text-zinc-500">N° guía</dt>
-                <dd className="font-mono">{purchase.guide_number ?? '—'}</dd>
+                <dd className="font-code text-xs">{purchase.guide_number ?? '—'}</dd>
               </div>
               <div>
                 <dt className="text-zinc-500">N° factura</dt>
-                <dd className="font-mono">{purchase.invoice_number ?? '—'}</dd>
+                <dd className="font-code text-xs">{purchase.invoice_number ?? '—'}</dd>
               </div>
-              <div className="col-span-2 border-t border-zinc-100 dark:border-zinc-800 pt-2">
+              <div className="border-t border-zinc-200 pt-2 dark:border-zinc-800 min-[400px]:col-span-2">
                 <dt className="text-zinc-500">Presupuesto</dt>
                 <dd>
                   {budget
@@ -219,41 +220,41 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
               </div>
             </dl>
 
-            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <table className="w-full text-xs">
+            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+              <table className="w-full">
                 <thead className={TABLE_HEAD_CLASS}>
                   <tr>
-                    <th className="px-3 py-2 text-left font-medium">Ítem</th>
-                    <th className="px-3 py-2 text-right font-medium">Cant.</th>
-                    <th className="px-3 py-2 text-right font-medium">P. unit.</th>
-                    <th className="px-3 py-2 text-right font-medium">Subtotal</th>
+                    <th className={thCompact}>Ítem</th>
+                    <th className={`${thCompact} text-right`}>Cant.</th>
+                    <th className={`${thCompact} text-right`}>P. unit.</th>
+                    <th className={`${thCompact} text-right`}>Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
                   {purchase.items.map((item, i) => (
                     <tr
                       key={item.id ?? i}
-                      className="border-t border-zinc-100 dark:border-zinc-800"
+                      className="border-t border-zinc-200 dark:border-zinc-800"
                     >
-                      <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
+                      <td className={`${TD_COMPACT_CLASS} text-zinc-800 dark:text-zinc-200`}>
                         {item.name ?? `Producto #${item.product_id}`}
                       </td>
-                      <td className="px-3 py-2 text-right font-mono">{item.quantity}</td>
-                      <td className="px-3 py-2 text-right font-mono">
+                      <td className={`${TD_COMPACT_CLASS} text-right font-mono`}>{item.quantity}</td>
+                      <td className={`${TD_COMPACT_CLASS} text-right font-mono whitespace-nowrap`}>
                         {formatCLP(item.unit_price)}
                       </td>
-                      <td className="px-3 py-2 text-right font-mono">
+                      <td className={`${TD_COMPACT_CLASS} text-right font-mono whitespace-nowrap`}>
                         {formatCLP(item.subtotal ?? (item.unit_price ?? 0) * item.quantity)}
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-zinc-200 dark:border-zinc-800 font-semibold">
-                    <td className="px-3 py-2" colSpan={3}>
+                  <tr className="border-t border-zinc-200 dark:border-zinc-800 font-medium">
+                    <td className={`${TD_COMPACT_CLASS} text-zinc-900 dark:text-zinc-100`} colSpan={3}>
                       Total
                     </td>
-                    <td className="px-3 py-2 text-right font-mono">
+                    <td className={`${TD_COMPACT_CLASS} text-right font-mono font-semibold whitespace-nowrap text-zinc-900 dark:text-zinc-100`}>
                       {formatCLP(purchase.total_amount)}
                     </td>
                   </tr>
@@ -262,7 +263,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             </div>
 
             {purchase.notes && (
-              <p className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 text-xs text-zinc-600 dark:text-zinc-300 whitespace-pre-wrap">
+              <p className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 text-[13px] text-zinc-600 dark:text-zinc-300 whitespace-pre-wrap">
                 {purchase.notes}
               </p>
             )}
@@ -281,7 +282,6 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                     variant="outline"
                     onClick={() => changeStatus(PurchaseStatus.EN_CAMINO)}
                     disabled={updateStatus.isPending}
-                    className="text-xs"
                   >
                     {updateStatus.isPending ? (
                       <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
@@ -292,7 +292,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                   </Button>
                 )}
                 {canReceive && (
-                  <Button onClick={() => setConfirmReceive(true)} className="text-xs">
+                  <Button onClick={() => setConfirmReceive(true)}>
                     <PackageCheck aria-hidden="true" className="h-4 w-4" />
                     Confirmar llegada / marcar completa
                   </Button>
@@ -303,10 +303,10 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             {canScan && (
               <form
                 onSubmit={handleScan}
-                className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3"
+                className="flex flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 p-3"
               >
                 <SectionLabel icon={ScanLine}>Registrar guía / factura de llegada</SectionLabel>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
                   Al registrarla la orden pasa a completa y se lee la factura por OCR.
                 </p>
                 <input
@@ -315,9 +315,9 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                   accept="application/pdf,image/png,image/jpeg,image/webp"
                   aria-label="Documento de llegada"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="text-xs text-zinc-600 dark:text-zinc-300"
+                  className="text-[13px] text-zinc-600 dark:text-zinc-300"
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2">
                   <input
                     aria-label="Número de guía"
                     placeholder="N° guía"
@@ -335,6 +335,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
                 </div>
                 <Button
                   type="submit"
+                  variant={canReceive ? 'secondary' : 'primary'}
                   disabled={!hasScanInput || scanArrival.isPending}
                 >
                   {scanArrival.isPending && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
@@ -353,7 +354,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             {fromRequest && isManager && isOpen && (
               <Link
                 to={`/compras/solicitudes/${purchase.purchase_request_id}`}
-                className="text-xs text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:hover:text-zinc-200"
+                className="text-[13px] text-zinc-500 underline underline-offset-2 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
               >
                 Para cancelar esta OC, cancela la solicitud{' '}
                 {purchase.purchase_request?.code ?? `#${purchase.purchase_request_id}`}
@@ -361,11 +362,7 @@ export function PurchaseDetailSheet({ open, onClose, purchase }: PurchaseDetailS
             )}
 
             {canCancel && (
-              <Button
-                variant="ghost"
-                onClick={() => setConfirmCancel(true)}
-                className="text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
-              >
+              <Button variant="secondary" onClick={() => setConfirmCancel(true)}>
                 <Ban aria-hidden="true" className="h-4 w-4" />
                 Cancelar compra
               </Button>

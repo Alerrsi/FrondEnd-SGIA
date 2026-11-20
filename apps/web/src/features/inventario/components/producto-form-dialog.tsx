@@ -61,7 +61,7 @@ const inputClasses =
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="mt-1 block text-xs font-medium text-rose-600 dark:text-rose-400">{message}</span>;
+  return <span className="mt-1 block text-xs font-medium text-danger">{message}</span>;
 }
 
 function Label({
@@ -76,7 +76,7 @@ function Label({
   return (
     <label htmlFor={htmlFor} className={`mb-1 block ${FIELD_LABEL_CLASS}`}>
       {children}
-      {required && <span className="ml-0.5 text-red-500">*</span>}
+      {required && <span className="ml-0.5 text-danger">*</span>}
     </label>
   );
 }
@@ -284,8 +284,8 @@ export function ProductoFormDialog({
     >
       <form onSubmit={onSubmit} className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100" noValidate>
         {/* Fieldset: Identificación de hardware */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+        <fieldset className="flex flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 p-3.5">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-400">
             Identificación de hardware
           </legend>
 
@@ -396,7 +396,7 @@ export function ProductoFormDialog({
                     }}
                     className="mb-1 flex items-center gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                   >
-                    <Sparkles aria-hidden="true" className="h-3 w-3 text-amber-500" />
+                    <Sparkles aria-hidden="true" className="h-3 w-3 text-zinc-500 dark:text-zinc-400" />
                     <span>{autoBarcode ? 'Manual' : 'Autogenerar'}</span>
                   </button>
                 )}
@@ -418,8 +418,8 @@ export function ProductoFormDialog({
         </fieldset>
 
         {/* Fieldset: Maestro de artículos de Oracle (opcional) */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+        <fieldset className="flex flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 p-3.5">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-400">
             Maestro Oracle (opcional)
           </legend>
 
@@ -453,8 +453,8 @@ export function ProductoFormDialog({
         </fieldset>
 
         {/* Fieldset: Parámetros de Stock */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+        <fieldset className="flex flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 p-3.5">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-400">
             Parámetros de stock y alertas
           </legend>
 
@@ -504,8 +504,8 @@ export function ProductoFormDialog({
         </fieldset>
 
         {/* Fieldset: Ubicación en pañol */}
-        <fieldset className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3.5">
-          <legend className="px-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
+        <fieldset className="flex flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 p-3.5">
+          <legend className="px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-400 flex items-center gap-1">
             <MapPin aria-hidden="true" className="h-3 w-3 text-zinc-400" />
             <span>Ubicación en pañol</span>
           </legend>

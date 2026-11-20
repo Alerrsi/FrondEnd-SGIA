@@ -22,7 +22,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
     return (
       <div
         role="alert"
-        className="flex items-center rounded-lg border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-zinc-900 p-3 font-mono text-xs text-rose-600 dark:text-rose-400"
+        className="flex items-center rounded-lg border border-danger/40 dark:border-danger/40 bg-white dark:bg-zinc-900 p-3 font-mono text-xs text-danger dark:text-danger"
       >
         No se pudieron cargar los indicadores: {apiErrorToMessage(error)}
       </div>
@@ -36,14 +36,14 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-y sm:divide-y-0 sm:divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 font-mono shadow-xs overflow-hidden">
+    <div className="cell-grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
       {/* 1. Activos Disponibles */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <CheckCircle2 aria-hidden="true" className="h-3 w-3 text-emerald-500" />
+          <CheckCircle2 aria-hidden="true" className="h-3 w-3 text-ok" />
           <span>Disponibles</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+        <span className="mt-1 text-base font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
           {kpis.activosDisponibles}
         </span>
       </div>
@@ -51,10 +51,10 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 2. En préstamo */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <Boxes aria-hidden="true" className="h-3 w-3 text-blue-500" />
+          <Boxes aria-hidden="true" className="h-3 w-3 text-info" />
           <span>En préstamo</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+        <span className="mt-1 text-base font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
           {kpis.activosEnPrestamo}
         </span>
       </div>
@@ -62,10 +62,10 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 3. En taller / Mantención */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <Wrench aria-hidden="true" className="h-3 w-3 text-amber-500" />
+          <Wrench aria-hidden="true" className="h-3 w-3 text-warn" />
           <span>En taller</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+        <span className="mt-1 text-base font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
           {kpis.activosEnTaller}
         </span>
       </div>
@@ -76,7 +76,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
           <AlertOctagon aria-hidden="true" className="h-3 w-3 text-zinc-400" />
           <span>De baja</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-zinc-700 dark:text-zinc-300 tabular-nums">
+        <span className="mt-1 text-base font-medium text-zinc-700 dark:text-zinc-300 tabular-nums">
           {kpis.activosDeBaja}
         </span>
       </div>
@@ -84,10 +84,10 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 5. Préstamos hoy */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <CalendarClock aria-hidden="true" className="h-3 w-3 text-indigo-500" />
+          <CalendarClock aria-hidden="true" className="h-3 w-3 text-info" />
           <span>Préstamos hoy</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+        <span className="mt-1 text-base font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
           {kpis.prestamosActivosHoy}
         </span>
       </div>
@@ -95,10 +95,10 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 6. Tasa de Atrasos */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <Percent aria-hidden="true" className="h-3 w-3 text-rose-500" />
+          <Percent aria-hidden="true" className="h-3 w-3 text-danger" />
           <span>Tasa atrasos</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-rose-600 dark:text-rose-400 tabular-nums">
+        <span className="mt-1 text-base font-medium text-danger dark:text-danger tabular-nums">
           {kpis.tasaAtrasosPct}%
         </span>
       </div>
@@ -106,10 +106,10 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
       {/* 7. Alertas Críticas */}
       <div className="flex flex-col p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <AlertOctagon aria-hidden="true" className="h-3 w-3 text-red-600 animate-pulse" />
+          <AlertOctagon aria-hidden="true" className="h-3 w-3 text-danger" />
           <span>Alertas stock</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-red-600 dark:text-red-500 tabular-nums">
+        <span className="mt-1 text-base font-medium text-danger dark:text-danger tabular-nums">
           {kpis.alertasCriticasNoResueltas}
         </span>
       </div>
@@ -120,7 +120,7 @@ export function MetricStrip({ kpis, isLoading, error }: MetricStripProps) {
           <TrendingUp aria-hidden="true" className="h-3 w-3 text-teal-500" />
           <span>Rotación mes</span>
         </div>
-        <span className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+        <span className="mt-1 text-base font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">
           {kpis.tasaRotacionMensualPct}%
         </span>
       </div>

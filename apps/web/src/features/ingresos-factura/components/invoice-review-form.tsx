@@ -23,6 +23,7 @@ import {
 } from '@/features/ingresos-factura/lib/invoice-review-schema';
 import { parseOverBudget, type OverBudgetInfo } from '@/features/ingresos-factura/lib/over-budget';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
+import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
@@ -33,7 +34,7 @@ type ProductType = NonNullable<Producto['type']>;
 
 const inputClasses =
   FORM_CONTROL_CLASS;
-const errorClasses = 'mt-0.5 text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-0.5 text-xs text-danger';
 
 const toNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? Number.NaN : Number(v);
@@ -190,7 +191,7 @@ export function InvoiceReviewForm({
     <>
       <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
         {!intake.raw_ocr_payload.ocr_available && (
-          <p className="flex items-center gap-2 rounded-md border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 p-2.5 text-xs text-amber-800 dark:text-amber-300">
+          <p className="flex items-center gap-2 rounded-md bg-warn-bg p-2.5 text-[13px] text-warn">
             <AlertTriangle aria-hidden="true" className="h-4 w-4 shrink-0" />
             El OCR no estuvo disponible: agrega los ítems de la factura a mano.
           </p>
@@ -220,7 +221,7 @@ export function InvoiceReviewForm({
             autoComplete="off"
             aria-invalid={Boolean(errors.document_number) || undefined}
             disabled={pending}
-            className={cn(inputClasses, 'max-w-xs')}
+            className={cn(inputClasses, 'sm:max-w-xs')}
           />
           {errors.document_number && (
             <p className={errorClasses}>{errors.document_number.message}</p>
@@ -239,7 +240,7 @@ export function InvoiceReviewForm({
             value={purchaseId}
             onChange={(e) => setPurchaseId(e.target.value)}
             disabled={pending}
-            className={cn(inputClasses, 'max-w-xs')}
+            className={cn(inputClasses, 'sm:max-w-xs')}
           >
             <option value="">Detectar automáticamente</option>
             {/* La OC ya ligada al borrador no viene en `linkable` (su propio ingreso la excluye). */}
@@ -276,7 +277,7 @@ export function InvoiceReviewForm({
               }}
               invalid={Boolean(budgetError)}
               disabled={pending}
-              className={cn(inputClasses, 'max-w-xs')}
+              className={cn(inputClasses, 'sm:max-w-xs')}
             />
             {budgetError && <p className={errorClasses}>{budgetError}</p>}
             {pickedBudget && (
@@ -296,7 +297,7 @@ export function InvoiceReviewForm({
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
           <table className="w-full border-collapse text-left text-sm">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
@@ -308,7 +309,7 @@ export function InvoiceReviewForm({
                 <th className="w-8 p-2" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
               {fields.map((field, index) => {
                 const item = items?.[index];
                 const type = item ? productTypes.get(item.product_id) : undefined;
@@ -320,7 +321,7 @@ export function InvoiceReviewForm({
                     <td className="p-2">
                       {item?.detected_name && (
                         <div
-                          className="mb-1 truncate text-xs text-zinc-400"
+                          className="mb-1 truncate text-xs text-zinc-500 dark:text-zinc-400"
                           title={item.detected_name}
                         >
                           OCR: {item.detected_name}
@@ -359,7 +360,7 @@ export function InvoiceReviewForm({
                         <Button
                           type="button"
                           size="sm"
-                          variant="outline"
+                          variant="secondary"
                           title="Crear producto nuevo"
                           aria-label={`Crear producto nuevo para el ítem ${index + 1}`}
                           disabled={pending}
@@ -384,7 +385,7 @@ export function InvoiceReviewForm({
                                   key={p.id}
                                   type="button"
                                   size="sm"
-                                  variant="outline"
+                                  variant="secondary"
                                   className="mr-1"
                                   onClick={() => {
                                     setValue(`items.${index}.product_id`, p.id, {
@@ -455,7 +456,7 @@ export function InvoiceReviewForm({
                           )}
                         </>
                       ) : (
-                        <span className="text-xs text-zinc-400">
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
                           {type === 'insumo' ? 'Suma al stock' : '—'}
                         </span>
                       )}
@@ -492,7 +493,7 @@ export function InvoiceReviewForm({
                         <p className={errorClasses}>{rowErrors.unit_price.message}</p>
                       )}
                     </td>
-                    <td className="p-2 pt-4 text-right font-mono tabular-nums">
+                    <td className="whitespace-nowrap p-2 pt-4 text-right font-mono">
                       {formatCLP(subtotal)}
                     </td>
                     <td className="p-2 pt-3">
@@ -501,7 +502,7 @@ export function InvoiceReviewForm({
                         onClick={() => remove(index)}
                         disabled={pending}
                         aria-label={`Quitar ítem ${index + 1}`}
-                        className="rounded p-1 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
+                        className={ICON_BUTTON_CLASS}
                       >
                         <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>
@@ -525,7 +526,7 @@ export function InvoiceReviewForm({
           <Button
             type="button"
             size="sm"
-            variant="outline"
+            variant="secondary"
             disabled={pending}
             onClick={() =>
               append({
@@ -540,7 +541,7 @@ export function InvoiceReviewForm({
             <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             Agregar ítem
           </Button>
-          <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px]">
             <span className="text-zinc-500 dark:text-zinc-400">
               Libre
               {purchaseReserved > 0 ? ' (+ reserva de la compra)' : ''}:{' '}
@@ -551,7 +552,7 @@ export function InvoiceReviewForm({
             <span
               className={cn(
                 'font-mono font-semibold',
-                exceeds ? 'text-rose-600 dark:text-rose-400' : 'text-zinc-900 dark:text-zinc-100',
+                exceeds ? 'text-danger' : 'text-zinc-900 dark:text-zinc-100',
               )}
             >
               Total {formatCLP(total)}
@@ -561,7 +562,7 @@ export function InvoiceReviewForm({
         {exceeds && (
           <p
             role="alert"
-            className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400"
+            className="flex items-center gap-1.5 text-xs text-danger"
           >
             <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5" />
             El total supera lo libre del presupuesto; el servidor lo rechazará, salvo que el director de carrera autorice el exceso.
@@ -571,7 +572,7 @@ export function InvoiceReviewForm({
         {overBudget?.stage === 'blocked' && (
           <p
             role="alert"
-            className="flex items-start gap-1.5 text-xs text-rose-600 dark:text-rose-400"
+            className="flex items-start gap-1.5 text-xs text-danger"
           >
             <AlertTriangle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             La factura supera lo libre del presupuesto por {formatCLP(overBudget.info.overBy)}. Solo

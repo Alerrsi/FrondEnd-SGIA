@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
@@ -56,7 +56,7 @@ describe('Historial de cotizaciones (Fase 7, solo lectura)', () => {
     await user.click(await screen.findByText('#4'));
 
     expect(await screen.findByText('Cotización #4')).toBeDefined();
-    expect(screen.getByText('Proveedor A')).toBeDefined();
+    expect(within(screen.getByRole('dialog')).getByText('Proveedor A')).toBeDefined();
     for (const name of [/Aceptar/, /Rechazar/, /Registrar respuesta/, /Generar Orden/]) {
       expect(screen.queryByRole('button', { name })).toBeNull();
     }

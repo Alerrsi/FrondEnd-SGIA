@@ -25,6 +25,7 @@ import { UnidadBarcodeDialog } from './unidad-barcode-dialog';
 import { UNIT_STATUS_LABELS, UnidadStatusBadge } from './unidad-status-badge';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { SkeletonList } from '@/components/ui/skeleton-list';
+import { ROW_CLASS, STICKY_COL_CLASS, TD_COMPACT_CLASS, TH_CLASS } from '@/components/ui/table-styles';
 
 const STATUS_FILTERS: Array<EquipmentUnitStatus | ''> = [
   '',
@@ -74,7 +75,7 @@ function UnitStatusControl({
       <Button
         type="button"
         variant="outline"
-        size="sm" className="gap-1"
+        size="sm"
         onClick={() => onOpenMaintenance(active.id)}
       >
         <Wrench aria-hidden="true" className="h-3 w-3" />
@@ -185,17 +186,17 @@ export function ProductoUnidadesPanel({
   return (
     <section
       aria-label="Unidades del producto"
-      className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs"
+      className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
     >
-      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
-        <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+      <div className="flex flex-col gap-2 border-b border-zinc-200 p-2.5 dark:border-zinc-800 sm:flex-row sm:flex-wrap sm:items-center">
+        <span className="text-[13px] font-medium text-zinc-600 dark:text-zinc-400">
           Unidades{meta ? ` · ${meta.total}` : ''}
         </span>
         <input
           type="search"
           placeholder="Código o serie…"
           aria-label="Buscar unidad"
-          className={`${controlClasses} ml-auto w-36`}
+          className={`${controlClasses} w-full sm:ml-auto sm:w-40`}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -222,7 +223,6 @@ export function ProductoUnidadesPanel({
             type="button"
             size="sm"
             onClick={() => setAddOpen(true)}
-            className="flex items-center gap-1 text-xs"
           >
             <Plus aria-hidden="true" className="h-3.5 w-3.5" />
             Agregar unidades
@@ -233,7 +233,7 @@ export function ProductoUnidadesPanel({
       {isLoading ? (
         <SkeletonList label="Cargando unidades…" rows={4} columns={4} />
       ) : isError ? (
-        <p role="alert" className="p-4 text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="p-4 text-[13px] text-danger">
           {apiErrorToMessage(error)}
         </p>
       ) : units.length === 0 ? (
@@ -242,42 +242,42 @@ export function ProductoUnidadesPanel({
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[640px] text-left text-[13px]">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
-                <th className="px-3 py-2 font-medium">Código</th>
-                <th className="px-3 py-2 font-medium">Serie</th>
-                <th className="px-3 py-2 font-medium">Cajón</th>
-                <th className="px-3 py-2 font-medium">Estado</th>
-                <th className="px-3 py-2 font-medium text-right">Acciones</th>
+                <th className={`${TH_CLASS} ${STICKY_COL_CLASS} max-md:bg-zinc-50`}>Código</th>
+                <th className={TH_CLASS}>Serie</th>
+                <th className={TH_CLASS}>Cajón</th>
+                <th className={TH_CLASS}>Estado</th>
+                <th className={`${TH_CLASS} text-right`}>Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody>
               {units.map((unit) => {
                 return (
-                  <tr key={unit.id}>
-                    <td className="px-3 py-2">
+                  <tr key={unit.id} className={ROW_CLASS}>
+                    <td className={`${TD_COMPACT_CLASS} ${STICKY_COL_CLASS}`}>
                       <span className={CODE_CHIP_CLASS}>
                         {unit.code}
                       </span>
                     </td>
-                    <td className="px-3 py-2 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className={`${TD_COMPACT_CLASS} font-code text-xs`}>
                       {unit.serial_number || '—'}
                     </td>
-                    <td className="px-3 py-2 font-mono text-zinc-600 dark:text-zinc-400">
+                    <td className={`${TD_COMPACT_CLASS} font-code text-xs`}>
                       {unit.cajon?.codigo ?? '—'}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className={TD_COMPACT_CLASS}>
                       <div className="flex flex-col gap-0.5">
                         <UnidadStatusBadge status={unit.status} />
                         {unit.active_loan?.code && (
-                          <span className="font-mono text-xs text-zinc-500">
+                          <span className="font-code text-xs text-zinc-500 dark:text-zinc-400">
                             {unit.active_loan.code}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2">
+                    <td className={TD_COMPACT_CLASS}>
                       <div className="flex items-center justify-end gap-1">
                         {canWrite && (
                           <UnitStatusControl
@@ -356,7 +356,7 @@ export function ProductoUnidadesPanel({
                             title="Eliminar unidad"
                             onClick={() => setDeleteUnit(unit)}
                           >
-                            <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
+                            <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
                           </Button>
                         )}
                       </div>
@@ -370,7 +370,7 @@ export function ProductoUnidadesPanel({
       )}
 
       {meta && meta.lastPage > 1 && (
-        <div className="flex items-center justify-between border-t border-zinc-200 dark:border-zinc-800 p-2 font-mono text-xs text-zinc-500">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 p-2 text-[13px] text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
           <span>
             Página {meta.currentPage} de {meta.lastPage}
           </span>

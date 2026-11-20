@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCancelLoanRequest, useMyLoanRequests } from "@sgia/api-client";
 import type { Prestamo } from "@sgia/types";
-import { AlertCircle, ClipboardPlus, Plus, X } from "lucide-react";
+import { ClipboardPlus, Plus, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -17,8 +17,15 @@ import {
 } from "@/features/profesor/lib/loan-request-format";
 import { apiErrorToMessage } from "@/lib/api-error";
 import { toast } from "@/lib/toast";
-import { PageHeading } from '@/components/ui/page-heading';
-import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from "@/components/ui/typography";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { MobileRow } from "@/components/ui/mobile-row";
+import { PageHeader } from "@/components/ui/page-header";
+import { TableFrame } from "@/components/ui/table-frame";
+import { ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from "@/components/ui/table-styles";
+import { TableToolbar } from "@/components/ui/table-toolbar";
+import { TABLE_HEAD_CLASS } from "@/components/ui/typography";
+import { SegmentedFilter } from "@/components/shared/segmented-filter";
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const STATUS_FILTERS: Array<{ value: string; label: string }> = [
@@ -67,116 +74,117 @@ export default function MisSolicitudesPage() {
     }
   };
 
+  const toolbar = (
+    <TableToolbar>
+      <SegmentedFilter
+        label="Filtrar por estado"
+        options={STATUS_FILTERS}
+        value={status}
+        onChange={setStatus}
+      />
+    </TableToolbar>
+  );
+
+  const mobile =
+    !isLoading && !isError && loans.length > 0 ? (
+      <ul>
+        {loans.map((loan) => (
+          <MobileRow
+            key={loan.id}
+            title={loan.subject ?? loan.asignatura ?? loanCareer(loan)}
+            meta={`${formatDateOnly(loan.loan_date ?? loan.fechaSolicitada)} · ${loanSchedule(loan)} · ${loanLaboratory(loan)}`}
+            trailing={<LoanRequestStatusBadge estado={String(loan.estado)} />}
+            onClick={() => setDetail(loan)}
+          />
+        ))}
+      </ul>
+    ) : undefined;
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeading icon={ClipboardPlus} title="Mis solicitudes">
-          Seguimiento de tus solicitudes de préstamo al pañol.
-        </PageHeading>
-        <Button
-          onClick={() => navigate("/profesor/catalogo")}
-        >
-          <Plus aria-hidden="true" className="h-4 w-4" />
-          Nueva solicitud
-        </Button>
-      </div>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={ClipboardPlus}
+        title="Mis solicitudes"
+        description="Seguimiento de tus solicitudes de préstamo al pañol."
+        actions={
+          <Button onClick={() => navigate("/profesor/catalogo")}>
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            Nueva solicitud
+          </Button>
+        }
+      />
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
-        <div className="flex flex-wrap gap-1.5 border-b border-zinc-200 dark:border-zinc-800 p-3">
-          {STATUS_FILTERS.map((f) => (
-            <Button
-              key={f.value}
-              size="sm"
-              variant={status === f.value ? "primary" : "outline"}
-              onClick={() => setStatus(f.value)}
-            >
-              {f.label}
-            </Button>
-          ))}
-        </div>
-
+      <TableFrame toolbar={toolbar} mobile={mobile}>
         {isLoading ? (
           <SkeletonList label="Cargando solicitudes…" rows={4} columns={4} />
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-            No se pudieron cargar tus solicitudes.
+          <div className="p-3">
+            <ErrorState>No se pudieron cargar tus solicitudes.</ErrorState>
           </div>
+        ) : loans.length === 0 ? (
+          <EmptyState
+            icon={ClipboardPlus}
+            title="No hay solicitudes para el filtro seleccionado."
+          />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-xs">
-              <thead className={TABLE_HEAD_CLASS}>
-                <tr>
-                  {HEADERS.map((h, i) => (
-                    <th key={`${h}-${i}`} className="px-4 py-2.5 font-medium">
-                      {h}
-                    </th>
-                  ))}
+          <table className="w-full min-w-[980px] border-collapse text-left">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
+                {HEADERS.map((h, i) => (
+                  <th
+                    key={`${h}-${i}`}
+                    className={i === 0 ? `${TH_CLASS} ${STICKY_COL_CLASS} max-md:bg-zinc-50` : TH_CLASS}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {loans.map((loan) => (
+                <tr
+                  key={loan.id}
+                  tabIndex={0}
+                  onClick={() => setDetail(loan)}
+                  onKeyDown={(e) => e.key === "Enter" && setDetail(loan)}
+                  className={`${ROW_CLASS} cursor-pointer focus:outline-none focus-visible:bg-zinc-50 dark:focus-visible:bg-zinc-800/40`}
+                >
+                  <td className={`${TD_CLASS} ${STICKY_COL_CLASS} whitespace-nowrap`}>
+                    <span className="font-code text-xs">{loan.codigo ?? loan.code}</span>
+                  </td>
+                  <td className={TD_CLASS}>{loanCareer(loan)}</td>
+                  <td className={TD_CLASS}>{loan.subject ?? loan.asignatura ?? "—"}</td>
+                  <td className={`${TD_CLASS} whitespace-nowrap font-mono`}>
+                    {formatDateOnly(loan.loan_date ?? loan.fechaSolicitada)}
+                  </td>
+                  <td className={`${TD_CLASS} whitespace-nowrap font-mono`}>{loanSchedule(loan)}</td>
+                  <td className={TD_CLASS}>{loanLaboratory(loan)}</td>
+                  <td className={TD_CLASS}>{loan.storeroom?.name ?? "—"}</td>
+                  <td className={TD_CLASS}>
+                    <LoanRequestStatusBadge estado={String(loan.estado)} />
+                  </td>
+                  <td className={`${TD_CLASS} text-right`}>
+                    {canCancelLoanRequest(loan) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label={`Cancelar ${loan.codigo ?? loan.code}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setToCancel(loan);
+                        }}
+                      >
+                        <X aria-hidden="true" className="h-3.5 w-3.5" />
+                        Cancelar
+                      </Button>
+                    )}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-                {loans.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={HEADERS.length}
-                      className={`px-4 py-10 ${STATE_TEXT_CLASS}`}
-                    >
-                      No hay solicitudes para el filtro seleccionado.
-                    </td>
-                  </tr>
-                ) : (
-                  loans.map((loan) => (
-                    <tr
-                      key={loan.id}
-                      tabIndex={0}
-                      onClick={() => setDetail(loan)}
-                      onKeyDown={(e) => e.key === "Enter" && setDetail(loan)}
-                      className="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
-                    >
-                      <td className="whitespace-nowrap px-4 py-2.5 font-mono">
-                        {loan.codigo ?? loan.code}
-                      </td>
-                      <td className="px-4 py-2.5">{loanCareer(loan)}</td>
-                      <td className="px-4 py-2.5">
-                        {loan.subject ?? loan.asignatura ?? "—"}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2.5 font-mono">
-                        {formatDateOnly(loan.loan_date ?? loan.fechaSolicitada)}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2.5 font-mono">
-                        {loanSchedule(loan)}
-                      </td>
-                      <td className="px-4 py-2.5">{loanLaboratory(loan)}</td>
-                      <td className="px-4 py-2.5">
-                        {loan.storeroom?.name ?? "—"}
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <LoanRequestStatusBadge estado={String(loan.estado)} />
-                      </td>
-                      <td className="px-4 py-2.5 text-right">
-                        {canCancelLoanRequest(loan) && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            aria-label={`Cancelar ${loan.codigo ?? loan.code}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setToCancel(loan);
-                            }}
-                          >
-                            <X aria-hidden="true" className="h-3.5 w-3.5" />
-                            Cancelar
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
-      </div>
+      </TableFrame>
 
       <LoanRequestDetailSheet
         loan={detail}

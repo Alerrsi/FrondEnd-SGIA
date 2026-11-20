@@ -13,12 +13,7 @@ import {
   ChevronRight,
   ChevronUp,
   ChevronsUpDown,
-  Loader2,
-  Pencil,
-  Power,
-  Search,
-  Trash2,
-  X,
+  Users,
 } from 'lucide-react';
 import {
   ROLE_LABELS,
@@ -32,10 +27,17 @@ import {
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { MobileRow } from '@/components/ui/mobile-row';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import { ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { CODE_CHIP_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { UsuarioRowActions } from '@/features/usuarios/components/usuario-row-actions';
 import { cn } from '@/lib/cn';
 import { formatRun } from '../lib/run';
-import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
-import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 
 const columnHelper = createColumnHelper<UsuarioSinPassword>();
 
@@ -44,17 +46,17 @@ const accessorColumns = [
     header: 'RUN',
     cell: (info) => {
       const val = info.getValue();
-      return (
-        <span className={CODE_CHIP_CLASS}>
-          {val ? formatRun(val) : '—'}
-        </span>
+      return val ? (
+        <span className={CODE_CHIP_CLASS}>{formatRun(val)}</span>
+      ) : (
+        <span className="text-zinc-500 dark:text-zinc-400">—</span>
       );
     },
   }),
   columnHelper.accessor('nombre', {
     header: 'Nombre',
     cell: (info) => (
-      <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+      <span className="whitespace-nowrap font-medium text-zinc-900 dark:text-zinc-100">
         {info.getValue()}
       </span>
     ),
@@ -62,18 +64,14 @@ const accessorColumns = [
   columnHelper.accessor('email', {
     header: 'Email',
     cell: (info) => (
-      <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
+      <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
         {info.getValue()}
       </span>
     ),
   }),
   columnHelper.accessor('rol', {
     header: 'Rol',
-    cell: (info) => (
-      <span className={CODE_CHIP_CLASS}>
-        {ROLE_LABELS[info.getValue()] ?? info.getValue()}
-      </span>
-    ),
+    cell: (info) => <Badge>{ROLE_LABELS[info.getValue()] ?? info.getValue()}</Badge>,
   }),
   columnHelper.display({
     id: 'assignment',
@@ -82,10 +80,14 @@ const accessorColumns = [
       const user = info.row.original;
       const careers = user.careers ?? [];
       return (
-        <div className="flex flex-col gap-0.5 text-xs">
-          <span className="font-mono text-zinc-700 dark:text-zinc-300">
-            {user.storeroom?.code ?? user.storeroom_id ?? '—'}
-          </span>
+        <div className="flex flex-col gap-0.5 text-[13px]">
+          {(user.storeroom?.code ?? user.storeroom_id) != null ? (
+            <span className="font-code text-xs text-zinc-700 dark:text-zinc-300">
+              {user.storeroom?.code ?? user.storeroom_id}
+            </span>
+          ) : careers.length === 0 ? (
+            <span className="text-zinc-500 dark:text-zinc-400">—</span>
+          ) : null}
           {careers.length > 0 && (
             <span className="text-xs text-zinc-500 dark:text-zinc-400">
               {careers.map((c) => c.code ?? c.name).join(', ')}
@@ -99,19 +101,19 @@ const accessorColumns = [
     header: 'Estado',
     cell: (info) =>
       info.getValue() ? (
-        <Badge tone="available">activo</Badge>
+        <Badge tone="available" dot>activo</Badge>
       ) : (
-        <Badge tone="retired">inactivo</Badge>
+        <Badge tone="retired" dot>inactivo</Badge>
       ),
   }),
   columnHelper.accessor('createdAt', {
     header: 'Creado',
     cell: (info) => {
       const val = info.getValue();
-      if (!val) return <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">—</span>;
+      if (!val) return <span className="text-zinc-500 dark:text-zinc-400">—</span>;
       const date = new Date(val);
       return (
-        <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 tabular-nums">
+        <span className="whitespace-nowrap font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
           {Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('es-CL')}
         </span>
       );
@@ -119,8 +121,7 @@ const accessorColumns = [
   }),
 ];
 
-const controlClasses =
-  FILTER_CONTROL_CLASS;
+const controlClasses = FILTER_CONTROL_CLASS;
 
 export const estadoOptions = [
   { value: 'todos', label: 'Todos los estados' },
@@ -195,78 +196,15 @@ export function UsuariosTable({
       columnHelper.display({
         id: 'acciones',
         header: 'Acciones',
-        cell: ({ row }) => {
-          const usuario = row.original;
-          const isSelf = currentUserId !== undefined && usuario.id === currentUserId;
-
-          return (
-            <div className="flex items-center justify-end gap-1.5">
-              <button
-                type="button"
-                onClick={() => onEdit(usuario)}
-                aria-label={`Editar a ${usuario.nombre}`}
-                title="Editar usuario"
-                className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400"
-              >
-                <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => onToggleActivo(usuario)}
-                disabled={isSelf}
-                aria-label={
-                  isSelf
-                    ? 'No puedes desactivar tu propia cuenta'
-                    : usuario.activo
-                      ? `Desactivar a ${usuario.nombre}`
-                      : `Activar a ${usuario.nombre}`
-                }
-                title={
-                  isSelf
-                    ? 'No puedes desactivar tu propia cuenta de administrador'
-                    : usuario.activo
-                      ? 'Desactivar usuario'
-                      : 'Activar usuario'
-                }
-                className={cn(
-                  'rounded p-1 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400',
-                  isSelf
-                    ? 'cursor-not-allowed opacity-30 text-zinc-400'
-                    : usuario.activo
-                      ? 'text-zinc-400 hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-400'
-                      : 'text-zinc-400 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400',
-                )}
-              >
-                <Power aria-hidden="true" className="h-3.5 w-3.5" />
-              </button>
-              {onDelete && (
-                <button
-                  type="button"
-                  onClick={() => onDelete(usuario)}
-                  disabled={isSelf}
-                  aria-label={
-                    isSelf
-                      ? 'No puedes eliminar tu propia cuenta'
-                      : `Eliminar a ${usuario.nombre}`
-                  }
-                  title={
-                    isSelf
-                      ? 'No puedes eliminar tu propia cuenta de administrador'
-                      : 'Eliminar usuario'
-                  }
-                  className={cn(
-                    'rounded p-1 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400',
-                    isSelf
-                      ? 'cursor-not-allowed opacity-30 text-zinc-400'
-                      : 'text-zinc-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400',
-                  )}
-                >
-                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
-                </button>
-              )}
-            </div>
-          );
-        },
+        cell: ({ row }) => (
+          <UsuarioRowActions
+            usuario={row.original}
+            isSelf={currentUserId !== undefined && row.original.id === currentUserId}
+            onEdit={onEdit}
+            onToggleActivo={onToggleActivo}
+            onDelete={onDelete}
+          />
+        ),
       }),
     ],
     [onEdit, onToggleActivo, onDelete, currentUserId],
@@ -287,127 +225,185 @@ export function UsuariosTable({
   const firstShown = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const lastShown = Math.min(currentPage * pageSize, totalRows);
 
-  return (
-    <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-      {/* Unified Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-        <div className="flex flex-1 flex-wrap items-center gap-2">
-          <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-72 sm:flex-none">
-            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => onSearchChange?.(event.target.value)}
-              placeholder="Buscar por nombre o correo…"
-              aria-label="Buscar usuarios"
-              className={cn(controlClasses, 'w-full py-1.5 pl-9 pr-9')}
-            />
-            {search ? (
-              <button
-                type="button"
-                onClick={() => onSearchChange?.('')}
-                aria-label="Limpiar búsqueda"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-300 focus-visible:outline-none"
-              >
-                <X aria-hidden="true" className="h-3.5 w-3.5" />
-              </button>
-            ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-xs text-zinc-400">
-                /
-              </kbd>
-            )}
-          </div>
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch
+        value={search}
+        onChange={(value) => onSearchChange?.(value)}
+        placeholder="Buscar por nombre o correo…"
+        label="Buscar usuarios"
+      />
 
+      <select
+        value={rolFilter}
+        onChange={(event) => onRolFilterChange?.(event.target.value as RoleCode | '')}
+        aria-label="Filtrar por rol"
+        className={controlClasses}
+      >
+        <option value="">Todos los roles</option>
+        {ROLES.map((rol) => (
+          <option key={rol} value={rol}>
+            {ROLE_LABELS[rol]}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={estadoFilter}
+        onChange={(event) => onEstadoFilterChange?.(event.target.value as EstadoFilter)}
+        aria-label="Filtrar por estado"
+        className={controlClasses}
+      >
+        {estadoOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+
+      {storerooms.length > 0 && (
+        <select
+          value={storeroomFilter}
+          onChange={(event) => {
+            const found = storerooms.find((st) => String(st.id) === event.target.value);
+            onStoreroomFilterChange?.(found ? found.id : '');
+          }}
+          aria-label="Filtrar por pañol"
+          className={controlClasses}
+        >
+          <option value="">Todos los pañoles</option>
+          {storerooms.map((st) => (
+            <option key={String(st.id)} value={String(st.id)}>
+              {st.name}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {careers.length > 0 && (
+        <select
+          value={careerFilter}
+          onChange={(event) =>
+            onCareerFilterChange?.(event.target.value ? Number(event.target.value) : '')
+          }
+          aria-label="Filtrar por carrera"
+          className={controlClasses}
+        >
+          <option value="">Todas las carreras</option>
+          {careers.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.code ? `${c.code} · ` : ''}
+              {c.name}
+            </option>
+          ))}
+        </select>
+      )}
+
+      {isFetching && <span className="text-[13px] text-zinc-500 dark:text-zinc-400">Actualizando…</span>}
+    </TableToolbar>
+  );
+
+  const footer = (
+    <>
+      <span>
+        Mostrando <span className="font-mono">{firstShown}</span> a <span className="font-mono">{lastShown}</span> de{' '}
+        <span className="font-mono">{totalRows}</span> usuarios
+      </span>
+
+      <div className="flex items-center gap-3">
+        <label className="flex items-center gap-1.5">
+          Filas
           <select
-            value={rolFilter}
-            onChange={(event) => onRolFilterChange?.(event.target.value as RoleCode | '')}
-            aria-label="Filtrar por rol"
-            className={controlClasses}
+            value={pageSize}
+            onChange={(event) => onPageSizeChange?.(Number(event.target.value))}
+            aria-label="Filas por página"
+            className={cn(controlClasses, 'font-mono')}
           >
-            <option value="">Todos los roles</option>
-            {ROLES.map((rol) => (
-              <option key={rol} value={rol}>
-                {ROLE_LABELS[rol]}
+            {[10, 25, 50].map((size) => (
+              <option key={size} value={size}>
+                {size}
               </option>
             ))}
           </select>
+        </label>
 
-          <select
-            value={estadoFilter}
-            onChange={(event) => onEstadoFilterChange?.(event.target.value as EstadoFilter)}
-            aria-label="Filtrar por estado"
-            className={controlClasses}
+        <div className="flex items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange?.(Math.max(1, currentPage - 1))}
+            disabled={currentPage <= 1}
+            aria-label="Página anterior"
           >
-            {estadoOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-
-          {storerooms.length > 0 && (
-            <select
-              value={storeroomFilter}
-              onChange={(event) => {
-                const found = storerooms.find((st) => String(st.id) === event.target.value);
-                onStoreroomFilterChange?.(found ? found.id : '');
-              }}
-              aria-label="Filtrar por pañol"
-              className={controlClasses}
-            >
-              <option value="">Todos los pañoles</option>
-              {storerooms.map((st) => (
-                <option key={String(st.id)} value={String(st.id)}>
-                  {st.name}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {careers.length > 0 && (
-            <select
-              value={careerFilter}
-              onChange={(event) =>
-                onCareerFilterChange?.(event.target.value ? Number(event.target.value) : '')
-              }
-              aria-label="Filtrar por carrera"
-              className={controlClasses}
-            >
-              <option value="">Todas las carreras</option>
-              {careers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.code ? `${c.code} · ` : ''}
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          )}
+            <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+          <span className="px-1 font-mono text-zinc-700 dark:text-zinc-300">
+            {totalPages === 0 ? 0 : currentPage} / {totalPages}
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange?.(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage >= totalPages}
+            aria-label="Página siguiente"
+          >
+            <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
         </div>
-
-        {isFetching && (
-          <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
-            <span>Actualizando…</span>
-          </div>
-        )}
       </div>
+    </>
+  );
 
-      {/* TanStack Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left text-sm">
+  const mobile =
+    usuarios.length > 0 ? (
+      <ul>
+        {usuarios.map((usuario) => (
+          <MobileRow
+            key={usuario.id}
+            title={usuario.nombre}
+            meta={`${ROLE_LABELS[usuario.rol] ?? usuario.rol} · ${usuario.activo ? 'activo' : 'inactivo'} · ${usuario.email}`}
+            trailing={
+              <UsuarioRowActions
+                usuario={usuario}
+                isSelf={currentUserId !== undefined && usuario.id === currentUserId}
+                onEdit={onEdit}
+                onToggleActivo={onToggleActivo}
+                onDelete={onDelete}
+              />
+            }
+          />
+        ))}
+      </ul>
+    ) : undefined;
+
+  return (
+    <TableFrame toolbar={toolbar} footer={footer} mobile={mobile}>
+      {usuarios.length === 0 ? (
+        <EmptyState icon={Users} title="No se encontraron usuarios con los filtros aplicados." />
+      ) : (
+        <table className="w-full min-w-[1040px] border-collapse text-left">
           <thead className={TABLE_HEAD_CLASS}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
                   return (
-                    <th key={header.id} className="px-4 py-2.5 font-medium">
+                    <th
+                      key={header.id}
+                      className={cn(
+                        TH_CLASS,
+                        index === 0 && `${STICKY_COL_CLASS} max-md:bg-zinc-50`,
+                        header.column.id === 'acciones' && 'text-right',
+                      )}
+                    >
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
+                          className="inline-flex cursor-pointer items-center gap-1 font-medium transition-colors duration-150 hover:text-zinc-900 dark:hover:text-zinc-100"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === 'asc' ? (
@@ -419,9 +415,7 @@ export function UsuariosTable({
                           )}
                         </button>
                       ) : (
-                        <span>
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
+                        <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
                       )}
                     </th>
                   );
@@ -429,86 +423,22 @@ export function UsuariosTable({
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {usuarios.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className={`px-4 py-12 ${STATE_TEXT_CLASS}`}
-                >
-                  No se encontraron usuarios con los filtros aplicados.
-                </td>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className={ROW_CLASS}>
+                {row.getVisibleCells().map((cell, index) => (
+                  <td
+                    key={cell.id}
+                    className={cn(TD_CLASS, index === 0 && `${STICKY_COL_CLASS} whitespace-nowrap`)}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
               </tr>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-2.5">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Technical Pagination Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 dark:border-zinc-800 p-2.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono bg-zinc-50/30 dark:bg-zinc-900/30">
-        <div>
-          Mostrando {firstShown} a {lastShown} de {totalRows} usuarios
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="text-zinc-400">Filas:</span>
-            <select
-              value={pageSize}
-              onChange={(event) => onPageSizeChange?.(Number(event.target.value))}
-              aria-label="Filas por página"
-              className={cn(controlClasses, 'h-7 py-0 pl-2 pr-6 text-xs')}
-            >
-              {[10, 25, 50].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onPageChange?.(Math.max(1, currentPage - 1))}
-              disabled={currentPage <= 1}
-              aria-label="Página anterior"
-              className="h-7 w-7 p-0"
-            >
-              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-            <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
-              {totalPages === 0 ? 0 : currentPage} / {totalPages}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onPageChange?.(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage >= totalPages}
-              aria-label="Página siguiente"
-              className="h-7 w-7 p-0"
-            >
-              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+      )}
+    </TableFrame>
   );
 }

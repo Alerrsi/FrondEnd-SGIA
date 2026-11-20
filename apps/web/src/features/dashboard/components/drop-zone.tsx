@@ -71,21 +71,21 @@ export function DropZone({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`relative flex items-center justify-center rounded-lg border-2 border-dashed transition duration-150 py-3 px-4 font-mono text-xs ${
+      className={`relative flex items-center justify-center rounded-lg border border-dashed transition duration-150 py-3 px-4 font-mono text-xs ${
         disabled
           ? 'border-zinc-200 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-900/20 text-zinc-400 cursor-not-allowed opacity-60'
           : isOver
-            ? 'border-sky-500 ring-2 ring-sky-500/50 bg-sky-100/60 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 scale-[1.02] shadow-sm'
+            ? 'border-accent ring-2 ring-accent/30 bg-accent-soft dark:bg-accent-soft text-accent dark:text-accent'
             : isFocused
-              ? 'border-sky-500 ring-2 ring-sky-400/40 bg-sky-50/50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 animate-pulse shadow-xs'
+              ? 'border-accent ring-2 ring-accent/30 bg-accent-soft dark:bg-accent-soft text-accent dark:text-accent'
               : 'border-zinc-300 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-900/30 text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-700'
       }`}
     >
       <div className="flex items-center gap-2 pointer-events-none select-none">
         {isFocused ? (
-          <Target aria-hidden="true" className="h-4 w-4 text-sky-500 animate-spin-slow" />
+          <Target aria-hidden="true" className="h-4 w-4 text-accent animate-spin-slow" />
         ) : (
-          <PlusCircle aria-hidden="true" className={`h-4 w-4 ${isOver ? 'text-sky-500 animate-pulse' : 'text-zinc-400'}`} />
+          <PlusCircle aria-hidden="true" className={`h-4 w-4 ${isOver ? 'text-accent' : 'text-zinc-400'}`} />
         )}
 
         <span>

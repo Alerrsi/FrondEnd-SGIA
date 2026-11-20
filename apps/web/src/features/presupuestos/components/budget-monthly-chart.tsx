@@ -15,6 +15,15 @@ import { useBudgetMonthly } from '@sgia/api-client';
 
 import { ChartExpandButton } from '@/components/ui/chart-expand-button';
 import { useTheme } from '@/contexts/theme-context';
+import {
+  categoricalColor,
+  categoryAxis,
+  chartAnimation,
+  chartTokens,
+  legendStyle,
+  tooltipStyle,
+  valueAxis,
+} from '@/lib/chart-theme';
 import { formatCLP } from '@/features/compras/lib/format';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
@@ -22,32 +31,22 @@ ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Legend, 
 
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-// Paleta categórica validada (skill dataviz, slots 1-3) para cada modo; el aqua claro queda bajo 3:1,
-// por eso la tabla con los mismos valores va siempre debajo del gráfico.
-const SERIES = {
-  light: {
-    reserved: '#2a78d6',
-    consumed: '#eb6834',
-    restored: '#1baf7a',
-    grid: '#e4e4e7',
-    text: '#71717a',
-    surface: '#ffffff',
-  },
-  dark: {
-    reserved: '#3987e5',
-    consumed: '#d95926',
-    restored: '#199e70',
-    grid: '#27272a',
-    text: '#a1a1aa',
-    surface: '#18181b',
-  },
-} as const;
-
+// Slots 1 a 3 de la paleta del tema (validados también contra todos los pares). En claro el aqua queda
+// bajo 3:1, por eso la tabla con los mismos valores va siempre debajo del gráfico.
 /** Reservado, consumido y repuesto por mes del año (desde el ledger). */
 export function BudgetMonthlyChart({ budgetId, year }: { budgetId: number; year: number }) {
   const { resolvedTheme } = useTheme();
   const { data, isLoading } = useBudgetMonthly(budgetId, year);
-  const colors = SERIES[resolvedTheme === 'dark' ? 'dark' : 'light'];
+  const isDark = resolvedTheme === 'dark';
+  const colors = useMemo(
+    () => ({
+      reserved: categoricalColor(0, isDark),
+      consumed: categoricalColor(1, isDark),
+      restored: categoricalColor(2, isDark),
+      surface: chartTokens(isDark).surface,
+    }),
+    [isDark],
+  );
   const rows = useMemo(() => data?.data ?? [], [data]);
 
   const chartData = useMemo<ChartData<'bar'>>(() => {
@@ -75,44 +74,26 @@ export function BudgetMonthlyChart({ budgetId, year }: { budgetId: number; year:
     () => ({
       responsive: true,
       maintainAspectRatio: false,
+      animation: chartAnimation(),
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          position: 'top',
-          align: 'end',
-          labels: {
-            color: colors.text,
-            boxWidth: 8,
-            boxHeight: 8,
-            usePointStyle: true,
-            font: { size: 11 },
-          },
-        },
+        legend: legendStyle(isDark),
         tooltip: {
+          ...tooltipStyle(isDark),
           callbacks: {
             label: (ctx) => `${ctx.dataset.label}: ${formatCLP(Number(ctx.parsed.y))}`,
           },
         },
       },
       scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: colors.text, font: { size: 11 } },
-        },
+        x: categoryAxis(isDark),
         y: {
-          beginAtZero: true,
-          grid: { color: colors.grid },
-          border: { display: false },
-          ticks: {
-            color: colors.text,
-            font: { size: 11 },
-            callback: (value) => formatCLP(Number(value)),
-            maxTicksLimit: 5,
-          },
+          ...valueAxis(isDark),
+          ticks: { ...valueAxis(isDark).ticks, callback: (value) => formatCLP(Number(value)), maxTicksLimit: 5 },
         },
       },
     }),
-    [colors],
+    [isDark],
   );
 
   if (isLoading)

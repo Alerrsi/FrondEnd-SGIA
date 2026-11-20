@@ -23,7 +23,6 @@ import { toast } from '@/lib/toast';
 
 import { useOptionalAuth } from '@/features/auth/context/auth-context';
 import { ProductoUnidadesPanel } from './producto-unidades-panel';
-import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 export interface ProductoDetailDialogProps {
   open: boolean;
@@ -123,26 +122,18 @@ export function ProductoDetailDialog({
         {/* Cabecera del producto */}
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3.5">
           <div className="space-y-1">
-            <h2 className="text-base font-semibold tracking-tight leading-snug">
+            <h2 className="text-base font-medium leading-snug">
               {producto.nombre}
             </h2>
             {producto.description ? (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-md">{producto.description}</p>
+              <p className="max-w-md text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400">{producto.description}</p>
             ) : (
-              <p className="text-xs text-zinc-400 dark:text-zinc-500 italic">Sin descripción complementaria</p>
+              <p className="text-[13px] text-zinc-500 dark:text-zinc-400">Sin descripción complementaria</p>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            {producto.categoria && (
-              <span className={CODE_CHIP_CLASS}>
-                {producto.categoria}
-              </span>
-            )}
-            {producto.area && (
-              <span className={CODE_CHIP_CLASS}>
-                {producto.area}
-              </span>
-            )}
+          <div className="flex flex-wrap items-center gap-2">
+            {producto.categoria && <Badge>{producto.categoria}</Badge>}
+            {producto.area && <Badge>{producto.area}</Badge>}
             {producto.activo ? (
               <Badge tone="available">Activo</Badge>
             ) : (
@@ -153,16 +144,16 @@ export function ProductoDetailDialog({
 
         {/* Maestro de artículos de Oracle (opcional) */}
         {(producto.master_code || producto.oracle_category) && (
-          <dl className="grid grid-cols-1 gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 text-xs shadow-xs sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 text-[13px] sm:grid-cols-2">
             <div>
               <dt className="text-zinc-500 dark:text-zinc-400">Código maestro (Oracle)</dt>
-              <dd className="mt-0.5 font-mono font-semibold text-zinc-900 dark:text-zinc-100">
+              <dd className="mt-0.5 font-code text-zinc-900 dark:text-zinc-100">
                 {producto.master_code || '—'}
               </dd>
             </div>
             <div>
               <dt className="text-zinc-500 dark:text-zinc-400">Descripción de categoría</dt>
-              <dd className="mt-0.5 font-semibold text-zinc-900 dark:text-zinc-100">
+              <dd className="mt-0.5 font-medium text-zinc-900 dark:text-zinc-100">
                 {producto.oracle_category?.name || '—'}
               </dd>
             </div>
@@ -170,19 +161,19 @@ export function ProductoDetailDialog({
         )}
 
         {/* Módulo de Identificación Óptica Code128 */}
-        <div className="flex flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-4">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 p-4">
           <div className="mb-2.5 flex items-center justify-between w-full">
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+            <span className="flex items-center gap-1.5 text-[13px] font-medium text-zinc-600 dark:text-zinc-400">
               <Barcode aria-hidden="true" className="h-4 w-4 text-zinc-500" />
               Rotulado Code128 de pañol
             </span>
             <button
               type="button"
               onClick={handleCopyBarcode}
-              className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="inline-flex cursor-pointer items-center gap-1 text-[13px] text-zinc-500 transition-colors duration-150 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
               title="Copiar código al portapapeles"
             >
-              {copied ? <Check aria-hidden="true" className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy aria-hidden="true" className="h-3.5 w-3.5" />}
+              {copied ? <Check aria-hidden="true" className="h-3.5 w-3.5 text-ok" /> : <Copy aria-hidden="true" className="h-3.5 w-3.5" />}
               <span>{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
           </div>
@@ -190,10 +181,10 @@ export function ProductoDetailDialog({
           {/* Tarjeta de alto contraste para lectura por pistola (fondo blanco puro) */}
           <div
             data-testid="barcode-container"
-            className="flex min-h-[96px] w-full max-w-sm flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-white p-3 text-black shadow-xs"
+            className="flex min-h-[96px] w-full max-w-sm flex-col items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-white p-3 text-black"
           >
             {isBarcodeLoading ? (
-              <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono">
+              <div className="flex items-center gap-2 text-xs text-zinc-500">
                 <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-600" />
                 <span>Generando código vectorial…</span>
               </div>
@@ -206,15 +197,15 @@ export function ProductoDetailDialog({
             ) : (
               <div className="flex flex-col items-center gap-1 text-zinc-400">
                 <Barcode aria-hidden="true" className="h-8 w-8 opacity-40" />
-                <span className="text-xs font-mono">SVG no disponible</span>
+                <span className="text-xs">SVG no disponible</span>
               </div>
             )}
-            <span className="mt-1 font-mono text-xs font-semibold tracking-widest text-black">
+            <span className="mt-1 font-code text-xs text-black">
               {barcode}
             </span>
           </div>
 
-          <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500 font-mono text-center">
+          <p className="mt-2 text-center text-xs text-zinc-500 dark:text-zinc-400">
             Lectura continua soportada con escáner USB / Bluetooth en mesón.
           </p>
         </div>
@@ -222,52 +213,52 @@ export function ProductoDetailDialog({
         {/* Especificaciones técnicas y Parámetros Operativos */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {/* Tarjeta de Stock */}
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="font-mono">Control de inventario</span>
+          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5">
+            <div className="flex items-center justify-between text-[13px] text-zinc-500 dark:text-zinc-400">
+              <span>Control de inventario</span>
               <Badge tone={isCritical ? 'critical' : 'available'}>
                 {isCritical ? 'Crítico' : 'Normal'}
               </Badge>
             </div>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">
+              <span className="font-mono text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
                 {producto.stock}
               </span>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">unidades en pañol</span>
+              <span className="text-[13px] text-zinc-500 dark:text-zinc-400">unidades en pañol</span>
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-xs border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono">
-              <span className="text-zinc-500 dark:text-zinc-400">Umbral mínimo:</span>
-              <span className="font-semibold text-zinc-800 dark:text-zinc-200 tabular-nums">
+            <div className="mt-2.5 flex items-center justify-between border-t border-zinc-200 pt-2 text-[13px] dark:border-zinc-800">
+              <span className="text-zinc-500 dark:text-zinc-400">Umbral mínimo</span>
+              <span className="font-mono font-medium text-zinc-800 dark:text-zinc-200">
                 {producto.stockCritico ?? producto.stock_minimo ?? 0} uds
               </span>
             </div>
             {isCritical && (
-              <div className="mt-2.5 flex items-center gap-1.5 rounded bg-red-50 dark:bg-red-950/40 border border-red-200/60 dark:border-red-900/40 px-2 py-1 text-xs text-red-700 dark:text-red-400">
-                <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" />
+              <div className="mt-2.5 flex items-center gap-1.5 rounded-md bg-danger-bg px-2 py-1 text-xs font-medium text-danger">
+                <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                 <span>Nivel de stock bajo umbral crítico</span>
               </div>
             )}
           </div>
 
           {/* Tarjeta de Ubicación Física */}
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="font-mono">Ubicación en pañol</span>
+          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5">
+            <div className="flex items-center justify-between text-[13px] text-zinc-500 dark:text-zinc-400">
+              <span>Ubicación en pañol</span>
               <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
             </div>
             <div className="mt-2 flex items-center gap-2">
-              <span className="font-mono text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="font-mono text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 {producto.ubicacion?.sala || 'Sala sin asignar'}
               </span>
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-xs border-t border-zinc-100 dark:border-zinc-800 pt-2 font-mono">
-              <span className="text-zinc-500 dark:text-zinc-400">Gaveta / cajón:</span>
-              <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+            <div className="mt-2.5 flex items-center justify-between border-t border-zinc-200 pt-2 text-[13px] dark:border-zinc-800">
+              <span className="text-zinc-500 dark:text-zinc-400">Gaveta / cajón</span>
+              <span className="font-code text-xs text-zinc-800 dark:text-zinc-200">
                 {producto.ubicacion?.cajon || 'Sin cajón'}
               </span>
             </div>
             {producto.ubicacion?.descripcion && (
-              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 font-mono line-clamp-2">
+              <p className="mt-2 line-clamp-2 text-[13px] text-zinc-500 dark:text-zinc-400">
                 {producto.ubicacion.descripcion}
               </p>
             )}
@@ -280,10 +271,10 @@ export function ProductoDetailDialog({
         )}
 
         {/* Metadatos de Creación / Auditoría */}
-        <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono border-t border-zinc-200 dark:border-zinc-800 pt-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 pt-2.5 text-[13px] text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
           <div className="flex items-center gap-1.5">
             <Calendar aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
-            <span>
+            <span className="font-mono">
               Ingresado:{' '}
               {producto.createdAt
                 ? new Date(producto.createdAt).toLocaleDateString('es-CL', {
@@ -294,7 +285,7 @@ export function ProductoDetailDialog({
                 : '—'}
             </span>
           </div>
-          <span className="text-zinc-400 dark:text-zinc-500">SGIA · Pañol TI</span>
+          <span>SGIA · Pañol TI</span>
         </div>
 
         <DialogFooter className="sm:justify-between">
@@ -304,7 +295,7 @@ export function ProductoDetailDialog({
             size="sm"
             onClick={canPrintServerLabel ? handleServerLabel : handlePrintLabel}
           >
-            <Printer aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500" />
+            <Printer aria-hidden="true" className="h-3.5 w-3.5" />
             <span>{canPrintServerLabel ? 'Imprimir etiqueta' : 'Imprimir etiqueta térmica'}</span>
           </Button>
 

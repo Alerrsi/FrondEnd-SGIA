@@ -11,6 +11,7 @@ import { formatCLP } from '@/features/compras/lib/format';
 import { BudgetFreeAmount } from '@/features/presupuestos/components/budget-free-amount';
 import { BudgetExecutionBar } from '@/features/presupuestos/components/budget-execution-bar';
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
+import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
 import { CODE_CHIP_CLASS } from '@/components/ui/typography';
 
 interface BudgetCardProps {
@@ -38,7 +39,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
           onOpen(budget);
         }
       }}
-      className="group flex cursor-pointer flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 shadow-xs transition-colors hover:border-zinc-300 dark:hover:border-zinc-700 focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-600"
+      className="group flex min-w-0 cursor-pointer flex-col gap-3 bg-white p-4 transition-colors duration-150 hover:bg-zinc-50 focus-visible:outline-2 focus-visible:-outline-offset-2 dark:bg-zinc-900 dark:hover:bg-zinc-800/50"
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
@@ -48,11 +49,11 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 {code}
               </span>
             )}
-            <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
               {budget.year}
             </span>
           </div>
-          <h3 className="mt-1 truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100" title={name}>
+          <h3 className="mt-1 truncate text-[15px] font-medium text-zinc-900 dark:text-zinc-100" title={name}>
             {name}
           </h3>
         </div>
@@ -64,7 +65,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 <button
                   type="button"
                   aria-label={`Acciones de ${label} ${budget.year}`}
-                  className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                  className={ICON_BUTTON_CLASS}
                 >
                   <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
                 </button>
@@ -76,7 +77,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => onDelete(budget)}
-                  className="text-rose-600 dark:text-rose-400"
+                  className="text-danger"
                 >
                   <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
                   Eliminar
@@ -88,12 +89,12 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
       </header>
 
       <div>
-        <div className="text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="text-[13px] text-zinc-500 dark:text-zinc-400">
           Libre (gastable)
         </div>
         <BudgetFreeAmount
           amount={budget.free_amount}
-          className="block text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+          className="block text-2xl font-medium tracking-[-0.02em] text-zinc-900 dark:text-zinc-100"
         />
       </div>
 
@@ -105,7 +106,7 @@ export function BudgetCard({ budget, canManage, onOpen, onEdit, onDelete }: Budg
         barClassName="flex-1"
       />
 
-      <dl className="grid grid-cols-3 gap-2 border-t border-zinc-100 dark:border-zinc-800/60 pt-2.5 text-xs">
+      <dl className="grid grid-cols-1 gap-2 border-t border-zinc-200 pt-3 text-[13px] dark:border-zinc-800 min-[400px]:grid-cols-3">
         {(
           [
             ['Inicial', budget.initial_amount],

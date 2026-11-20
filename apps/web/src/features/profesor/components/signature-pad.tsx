@@ -83,7 +83,7 @@ export function SignaturePad({ onChange, invalid }: SignaturePadProps) {
         onPointerMove={move}
         onPointerUp={end}
         onPointerLeave={end}
-        className="h-32 w-full touch-none rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 bg-white aria-invalid:border-rose-400"
+        className="h-32 w-full touch-none rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 bg-white aria-invalid:border-danger"
       />
       <Button
         type="button"

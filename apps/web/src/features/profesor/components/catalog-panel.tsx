@@ -2,11 +2,13 @@ import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useProducts } from "@sgia/api-client";
 import type { Producto } from "@sgia/types";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { LoanRequestItem } from "@/features/profesor/lib/loan-request-schema";
+import { ErrorState } from '@/components/ui/error-state';
 import { SectionTitle } from '@/components/ui/section-title';
+import { TableSearch } from '@/components/ui/table-search';
 import { STATE_TEXT_CLASS } from "@/components/ui/typography";
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
@@ -59,41 +61,32 @@ export function CatalogPanel({
   return (
     <section
       aria-label="Catálogo"
-      className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs"
+      className="flex min-w-0 flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
     >
       <SectionTitle>Catálogo</SectionTitle>
       {!hasStoreroom && (
-        <p className="text-xs text-zinc-500">
+        <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
           Elige un pañol para ver sus existencias.
         </p>
       )}
-      <div className="relative">
-        <Search aria-hidden="true" className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
-        <input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar insumo o equipo…"
-          aria-label="Buscar en el catálogo"
-          className="h-8 w-full rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pl-7 pr-2 font-mono text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
-        />
-      </div>
+      <TableSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Buscar insumo o equipo…"
+        label="Buscar en el catálogo"
+        className="sm:min-w-0"
+      />
 
       {isLoading ? (
         <SkeletonList label="Cargando catálogo…" rows={5} columns={3} />
       ) : isError ? (
-        <p
-          role="alert"
-          className="py-6 text-center text-xs text-rose-600 dark:text-rose-400"
-        >
-          No se pudo cargar el catálogo.
-        </p>
+        <ErrorState>No se pudo cargar el catálogo.</ErrorState>
       ) : products.length === 0 ? (
         <p className={`py-6 ${STATE_TEXT_CLASS}`}>
           No hay productos disponibles.
         </p>
       ) : (
-        <ul className="flex max-h-[28rem] flex-col divide-y divide-zinc-100 dark:divide-zinc-800/60 overflow-y-auto">
+        <ul className="flex max-h-[28rem] flex-col divide-y divide-zinc-200 dark:divide-zinc-800 overflow-y-auto">
           {products.map((p) => {
             const name = p.nombre ?? p.name ?? "Producto";
             const available = availableOf(p);
@@ -105,11 +98,11 @@ export function CatalogPanel({
                 className="flex items-center justify-between gap-2 py-2"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-xs text-zinc-800 dark:text-zinc-200">
+                  <p className="truncate text-sm text-zinc-900 dark:text-zinc-100">
                     {name}
                   </p>
-                  <p className="font-mono text-xs text-zinc-400">
-                    {p.barcode ?? "—"} ·{" "}
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="font-code">{p.barcode ?? "—"}</span> ·{" "}
                     {!hasStoreroom
                       ? "Elige un pañol"
                       : noStock
@@ -119,7 +112,7 @@ export function CatalogPanel({
                 </div>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   disabled={added || !hasStoreroom || noStock}
                   aria-label={`Agregar ${name}`}

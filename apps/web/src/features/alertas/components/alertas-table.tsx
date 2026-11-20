@@ -20,9 +20,7 @@ import {
   ChevronsUpDown,
   Eye,
   Loader2,
-  Search,
   ShoppingCart,
-  X,
 } from 'lucide-react';
 import type { CriticalStockAlert, Producto } from '@sgia/types';
 
@@ -33,6 +31,10 @@ import { cn } from '@/lib/cn';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 import { SkeletonRows } from '@/components/ui/skeleton-rows';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import { ICON_BUTTON_CLASS, ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
 
 export type AlertTypeFilter = 'all' | 'critical' | 'warning';
 export type AlertStatusFilter = 'all' | 'active' | 'resolved';
@@ -119,7 +121,7 @@ export function AlertasTable({
                   checked={allSelected}
                   disabled={selectableAlerts.length === 0}
                   onChange={(e) => onToggleSelectAll?.(selectableAlerts, e.target.checked)}
-                  className="h-4 w-4 accent-zinc-900 dark:accent-zinc-100"
+                  className="h-4 w-4 accent-accent"
                 />
               ),
               cell: ({ row }) => {
@@ -134,7 +136,7 @@ export function AlertasTable({
                     checked={selectedProductIds?.has(alert.product_id) ?? false}
                     disabled={disabled}
                     onChange={() => onToggleSelect?.(alert)}
-                    className="h-4 w-4 accent-zinc-900 dark:accent-zinc-100"
+                    className="h-4 w-4 accent-accent"
                   />
                 );
               },
@@ -147,13 +149,11 @@ export function AlertasTable({
           const type = info.getValue();
           const isCritical = type === 'critical';
           return isCritical ? (
-            <Badge tone="critical">
-              <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
+            <Badge tone="critical" icon={<AlertTriangle aria-hidden="true" className="h-3 w-3" />}>
               Crítico
             </Badge>
           ) : (
-            <Badge tone="warning">
-              <AlertCircle aria-hidden="true" className="mr-1 h-3 w-3" />
+            <Badge tone="warning" icon={<AlertCircle aria-hidden="true" className="h-3 w-3" />}>
               Advertencia
             </Badge>
           );
@@ -177,19 +177,19 @@ export function AlertasTable({
           const area = alert.product?.area || alert.producto?.area;
 
           return (
-            <div className="flex flex-col gap-0.5 max-w-xs">
+            <div className="flex min-w-48 max-w-xs flex-col gap-0.5">
               <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug">
                 {name}
               </span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {sku && (
                   <span className={`inline-flex items-center gap-1 ${CODE_CHIP_CLASS}`}>
-                    <Barcode aria-hidden="true" className="h-2.5 w-2.5 text-zinc-400" />
+                    <Barcode aria-hidden="true" className="h-3 w-3 text-zinc-400" />
                     <span>{sku}</span>
                   </span>
                 )}
                 {area && (
-                  <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">
+                  <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
                     · {area}
                   </span>
                 )}
@@ -218,14 +218,14 @@ export function AlertasTable({
               <div className="w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden shrink-0">
                 <div
                   className={cn(
-                    'h-full transition-[width] duration-300',
-                    isCritical ? 'bg-rose-500' : 'bg-amber-500',
+                    'h-full',
+                    isCritical ? 'bg-danger' : 'bg-warn',
                   )}
                   style={{ width: `${Math.max(ratio, 8)}%` }}
                 />
               </div>
-              <span className="font-mono text-xs tabular-nums text-zinc-800 dark:text-zinc-200">
-                <strong>{stock}</strong>{' '}
+              <span className="whitespace-nowrap font-mono text-[13px] text-zinc-800 dark:text-zinc-200">
+                <span className="font-medium">{stock}</span>{' '}
                 <span className="text-zinc-400 dark:text-zinc-500">/ mín {stockMin}</span>
               </span>
             </div>
@@ -248,7 +248,7 @@ export function AlertasTable({
         header: 'Solicitud',
         cell: ({ row }) => {
           const request = row.original.open_purchase_request;
-          if (!request) return <span className="font-mono text-xs text-zinc-400">—</span>;
+          if (!request) return <span className="text-[13px] text-zinc-400">—</span>;
           return (
             <div className="flex flex-col items-start gap-1">
               <Link
@@ -266,10 +266,10 @@ export function AlertasTable({
         header: 'Fecha Alerta',
         cell: (info) => {
           const val = info.getValue();
-          if (!val) return <span className="font-mono text-xs text-zinc-400">—</span>;
+          if (!val) return <span className="text-[13px] text-zinc-400">—</span>;
           const date = new Date(val);
           return (
-            <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 tabular-nums">
+            <span className="whitespace-nowrap font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
               {Number.isNaN(date.getTime())
                 ? '—'
                 : date.toLocaleDateString('es-CL', {
@@ -299,25 +299,22 @@ export function AlertasTable({
                   onClick={() => onResolve(alert)}
                   title="Marcar alerta como resuelta / atendida"
                   aria-label={`Resolver alerta de ${alert.product_name ?? 'producto'}`}
-                  className="h-7 px-2 text-xs gap-1 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
                 >
-                  <CheckCheck aria-hidden="true" className="h-3.5 w-3.5" />
+                  <CheckCheck aria-hidden="true" className="h-3.5 w-3.5 text-ok" />
                   <span>Resolver</span>
                 </Button>
               )}
 
               {onRequestQuote && !alert.is_resolved && !alert.open_purchase_request && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
+                  className={ICON_BUTTON_CLASS}
                   onClick={() => onRequestQuote(alert)}
                   title="Crear solicitud de compra para este producto"
                   aria-label={`Crear solicitud de compra para ${alert.product_name ?? 'producto'}`}
-                  className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                 >
                   <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                </button>
               )}
 
               {/* Ya tiene solicitud de compra abierta: carrito tachado (no se puede pedir otra). */}
@@ -336,17 +333,15 @@ export function AlertasTable({
               )}
 
               {product && onViewProduct && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
+                  className={ICON_BUTTON_CLASS}
                   onClick={() => onViewProduct(product)}
                   title="Ver ficha técnica del producto"
                   aria-label={`Ver ficha de ${product.nombre}`}
-                  className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                 >
                   <Eye aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                </button>
               )}
             </div>
           );
@@ -381,187 +376,158 @@ export function AlertasTable({
   const firstShown = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const lastShown = Math.min(currentPage * pageSize, totalRows);
 
-  return (
-    <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-      {/* Unified Toolbar with Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-        <div className="flex flex-1 flex-wrap items-center gap-2">
-          {/* Search box with / kbd */}
-          <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-72 sm:flex-none">
-            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => onSearchChange?.(e.target.value)}
-              placeholder="Buscar por producto, SKU…"
-              aria-label="Buscar alertas"
-              className={cn(controlClasses, 'w-full py-1.5 pl-9 pr-9')}
-            />
-            {search ? (
-              <button
-                type="button"
-                onClick={() => onSearchChange?.('')}
-                aria-label="Limpiar búsqueda"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
-              >
-                <X aria-hidden="true" className="h-3.5 w-3.5" />
-              </button>
-            ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-xs text-zinc-400">
-                /
-              </kbd>
-            )}
-          </div>
-
-          {/* Filtro por Severidad */}
-          <select
-            value={typeFilter}
-            onChange={(e) => onTypeFilterChange?.(e.target.value as AlertTypeFilter)}
-            aria-label="Filtrar por severidad"
-            className={controlClasses}
-          >
-            <option value="all">Todas las severidades</option>
-            <option value="critical">Solo críticas (≤ mín)</option>
-            <option value="warning">Solo advertencias (≤ mín + 5)</option>
-          </select>
-
-          {/* Filtro por Estado */}
-          <select
-            value={statusFilter}
-            onChange={(e) => onStatusFilterChange?.(e.target.value as AlertStatusFilter)}
-            aria-label="Filtrar por estado"
-            className={controlClasses}
-          >
-            <option value="active">Solo activas</option>
-            <option value="resolved">Solo resueltas</option>
-            <option value="all">Todos los estados</option>
-          </select>
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch
+        value={search}
+        onChange={(val) => onSearchChange?.(val)}
+        placeholder="Buscar por producto, SKU…"
+        label="Buscar alertas"
+      />
+      <select
+        value={typeFilter}
+        onChange={(e) => onTypeFilterChange?.(e.target.value as AlertTypeFilter)}
+        aria-label="Filtrar por severidad"
+        className={controlClasses}
+      >
+        <option value="all">Todas las severidades</option>
+        <option value="critical">Solo críticas (≤ mín)</option>
+        <option value="warning">Solo advertencias (≤ mín + 5)</option>
+      </select>
+      <select
+        value={statusFilter}
+        onChange={(e) => onStatusFilterChange?.(e.target.value as AlertStatusFilter)}
+        aria-label="Filtrar por estado"
+        className={controlClasses}
+      >
+        <option value="active">Solo activas</option>
+        <option value="resolved">Solo resueltas</option>
+        <option value="all">Todos los estados</option>
+      </select>
+      {isFetching && (
+        <div className="flex items-center gap-1.5 text-[13px] text-zinc-500 dark:text-zinc-400 sm:ml-auto">
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
+          <span>Actualizando…</span>
         </div>
+      )}
+    </TableToolbar>
+  );
 
-        {isFetching && (
-          <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
-            <span>Actualizando…</span>
-          </div>
-        )}
-      </div>
-
-      {/* TanStack Table Container */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead className={TABLE_HEAD_CLASS}>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const canSort = header.column.getCanSort();
-                  const sorted = header.column.getIsSorted();
-                  return (
-                    <th key={header.id} className="px-4 py-2.5 font-medium">
-                      {header.isPlaceholder ? null : canSort ? (
-                        <button
-                          type="button"
-                          onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {sorted === 'asc' ? (
-                            <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
-                          ) : sorted === 'desc' ? (
-                            <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
-                          ) : (
-                            <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
-                          )}
-                        </button>
-                      ) : (
-                        <span>
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
+  const footer = (
+    <>
+      <span className="font-mono">
+        Mostrando {firstShown} a {lastShown} de {totalRows} alertas
+      </span>
+      <div className="flex items-center gap-3">
+        <label className="flex items-center gap-1.5">
+          <span>Filas</span>
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
+            aria-label="Filas por página"
+            className={controlClasses}
+          >
+            {[10, 25, 50].map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
             ))}
-          </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {isLoading ? (
-              <SkeletonRows columns={columns.length} label="Cargando registro de alertas de stock…" />
-            ) : alerts.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
-                  No se encontraron alertas de existencias con los filtros aplicados.
-                </td>
+          </select>
+        </label>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange?.(Math.max(1, currentPage - 1))}
+            disabled={currentPage <= 1}
+            aria-label="Página anterior"
+          >
+            <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+          <span className="px-2 font-mono text-zinc-700 dark:text-zinc-300">
+            {totalPages === 0 ? 0 : currentPage} / {totalPages}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange?.(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage >= totalPages}
+            aria-label="Página siguiente"
+          >
+            <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <TableFrame toolbar={toolbar} footer={footer}>
+      <table className="w-full min-w-[1100px] border-collapse text-left text-sm">
+        <thead className={TABLE_HEAD_CLASS}>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                const canSort = header.column.getCanSort();
+                const sorted = header.column.getIsSorted();
+                return (
+                  <th
+                    key={header.id}
+                    className={cn(
+                      TH_CLASS,
+                      header.column.id === 'acciones' && 'text-right',
+                      header.column.id === 'producto' && `${STICKY_COL_CLASS} max-md:bg-zinc-50`,
+                    )}
+                  >
+                    {header.isPlaceholder ? null : canSort ? (
+                      <button
+                        type="button"
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="inline-flex cursor-pointer items-center gap-1 font-medium transition-colors duration-150 hover:text-zinc-900 dark:hover:text-zinc-100"
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {sorted === 'asc' ? (
+                          <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                        ) : sorted === 'desc' ? (
+                          <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                        ) : (
+                          <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
+                        )}
+                      </button>
+                    ) : (
+                      <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
+                    )}
+                  </th>
+                );
+              })}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {isLoading ? (
+            <SkeletonRows columns={columns.length} label="Cargando registro de alertas de stock…" />
+          ) : alerts.length === 0 ? (
+            <tr>
+              <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
+                No se encontraron alertas de existencias con los filtros aplicados.
+              </td>
+            </tr>
+          ) : (
+            table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className={ROW_CLASS}>
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className={cn(TD_CLASS, cell.column.id === 'producto' && STICKY_COL_CLASS)}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
               </tr>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-2.5">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Technical Pagination Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 dark:border-zinc-800 p-2.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono bg-zinc-50/30 dark:bg-zinc-900/30">
-        <div>
-          Mostrando {firstShown} a {lastShown} de {totalRows} alertas
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="text-zinc-400">Filas:</span>
-            <select
-              value={pageSize}
-              onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-              aria-label="Filas por página"
-              className={cn(controlClasses, 'h-7 py-0 pl-2 pr-6 text-xs')}
-            >
-              {[10, 25, 50].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onPageChange?.(Math.max(1, currentPage - 1))}
-              disabled={currentPage <= 1}
-              aria-label="Página anterior"
-              className="h-7 w-7 p-0"
-            >
-              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-            <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
-              {totalPages === 0 ? 0 : currentPage} / {totalPages}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onPageChange?.(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage >= totalPages}
-              aria-label="Página siguiente"
-              className="h-7 w-7 p-0"
-            >
-              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+            ))
+          )}
+        </tbody>
+      </table>
+    </TableFrame>
   );
 }

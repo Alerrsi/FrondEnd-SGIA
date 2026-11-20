@@ -19,16 +19,16 @@ import {
 } from '@/features/solicitudes-compra/lib/quotation-upload-schema';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { TABLE_HEAD_CLASS } from '@/components/ui/typography';
-import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
-import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { FIELD_LABEL_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS, FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { TD_COMPACT_CLASS, TH_CLASS } from '@/components/ui/table-styles';
 
-const inputClasses =
-  FORM_CONTROL_CLASS;
+const inputClasses = FORM_CONTROL_CLASS;
+const thCompact = TH_CLASS.replace('px-4 py-2.5', 'px-3 py-2');
 
 const labelClasses = FIELD_LABEL_CLASS;
 
-const errorClasses = 'text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-danger';
 
 interface UploadQuotationDialogProps {
   open: boolean;
@@ -184,28 +184,28 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
           {errors.received_at && <p className={errorClasses}>{errors.received_at.message}</p>}
         </div>
 
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
           Indica el precio unitario de <strong>cada</strong> producto de la solicitud.
         </p>
         <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
-                <th className="px-3 py-2 font-medium">Producto</th>
-                <th className="px-3 py-2 text-right font-medium">Cant.</th>
-                <th className="px-3 py-2 text-right font-medium">Precio unit.</th>
+                <th className={thCompact}>Producto</th>
+                <th className={`${thCompact} text-right`}>Cant.</th>
+                <th className={`${thCompact} text-right`}>Precio unit.</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
               {request.items.map((item, index) => {
                 const priceError = errors.items?.[index]?.unit_price?.message;
                 return (
                   <tr key={item.id}>
-                    <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
+                    <td className={`${TD_COMPACT_CLASS} text-zinc-800 dark:text-zinc-200`}>
                       {item.product_name}
                     </td>
-                    <td className="px-3 py-2 text-right font-mono">{item.quantity}</td>
-                    <td className="px-3 py-2 text-right">
+                    <td className={`${TD_COMPACT_CLASS} text-right font-mono`}>{item.quantity}</td>
+                    <td className={`${TD_COMPACT_CLASS} text-right`}>
                       <input
                         type="number"
                         min={0}
@@ -214,7 +214,7 @@ export function UploadQuotationDialog({ open, onClose, request }: UploadQuotatio
                         aria-invalid={Boolean(priceError) || undefined}
                         disabled={pending}
                         {...register(`items.${index}.unit_price`, { valueAsNumber: true })}
-                        className="h-7 w-28 rounded border border-zinc-200 bg-zinc-50 px-2 text-right font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400 aria-invalid:border-rose-400 dark:border-zinc-700 dark:bg-zinc-900"
+                        className={`${FILTER_CONTROL_CLASS} w-28 text-right font-mono`}
                       />
                       {priceError && <p className={errorClasses}>{priceError}</p>}
                     </td>

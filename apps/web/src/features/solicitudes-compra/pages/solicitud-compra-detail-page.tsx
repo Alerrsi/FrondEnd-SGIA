@@ -6,7 +6,6 @@ import {
 } from '@sgia/api-client';
 import { PurchaseRequestStatus } from '@sgia/types';
 import {
-  AlertCircle,
   ArrowLeft,
   Ban,
   CheckCircle2,
@@ -32,9 +31,15 @@ import { QuotationsPanel } from '@/features/solicitudes-compra/components/quotat
 import { SendPurchaseRequestDialog } from '@/features/solicitudes-compra/components/send-purchase-request-dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { PageHeading } from '@/components/ui/page-heading';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
 import { SectionTitle } from '@/components/ui/section-title';
+import { TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
 import { TABLE_HEAD_CLASS } from '@/components/ui/typography';
+
+const BACK_LINK_CLASS =
+  'inline-flex w-fit items-center gap-1 rounded text-[13px] text-zinc-500 transition-colors duration-150 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100';
+const TERM_CLASS = 'text-[13px] text-zinc-500 dark:text-zinc-400';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SolicitudCompraDetailPage() {
@@ -55,7 +60,7 @@ export default function SolicitudCompraDetailPage() {
 
   if (isLoading) {
     return (
-      <div role="status" className="flex flex-col gap-4">
+      <div role="status" className="flex flex-col gap-6">
         <span className="sr-only">Cargando solicitud…</span>
         <Skeleton className="h-8 w-72" />
         <Skeleton className="h-16 w-full" />
@@ -70,14 +75,11 @@ export default function SolicitudCompraDetailPage() {
   if (isError || !request) {
     return (
       <div className="flex flex-col gap-3">
-        <Link to="/compras/solicitudes" className="inline-flex items-center gap-1 text-xs text-zinc-500">
+        <Link to="/compras/solicitudes" className={BACK_LINK_CLASS}>
           <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
           Volver a solicitudes
         </Link>
-        <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700 dark:border-red-900/60 dark:bg-red-950/20 dark:text-red-400">
-          <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-          No se encontró la solicitud de compra.
-        </div>
+        <ErrorState>No se encontró la solicitud de compra.</ErrorState>
       </div>
     );
   }
@@ -117,86 +119,85 @@ export default function SolicitudCompraDetailPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <Link
-        to="/compras/solicitudes"
-        className="inline-flex w-fit items-center gap-1 text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-      >
+    <div className="flex flex-col gap-6">
+      <Link to="/compras/solicitudes" className={`${BACK_LINK_CLASS} -mb-3`}>
         <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
         Solicitudes de compra
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <PageHeading
-          icon={ClipboardCheck}
-          title={<span className="font-mono">{request.code}</span>}
-          aside={<PurchaseRequestStatusBadge status={request.status} />}
-        >
-          Creada {formatDate(request.created_at)}
-          {request.creator_name && ` por ${request.creator_name}`}
-          {request.approved_at &&
-            ` · aprobada ${formatDate(request.approved_at)}${request.approver_name ? ` por ${request.approver_name}` : ''}`}
-        </PageHeading>
-
-        {canManage && (
-          <div className="flex flex-wrap gap-2">
+      <PageHeader
+        icon={ClipboardCheck}
+        title={<span className="font-code text-lg sm:text-xl">{request.code}</span>}
+        aside={<PurchaseRequestStatusBadge status={request.status} />}
+        description={
+          <>
+            Creada {formatDate(request.created_at)}
+            {request.creator_name && ` por ${request.creator_name}`}
+            {request.approved_at &&
+              ` · aprobada ${formatDate(request.approved_at)}${request.approver_name ? ` por ${request.approver_name}` : ''}`}
+          </>
+        }
+        actions={
+          canManage && (
+            <>
             {actions.can_edit && (
-              <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+              <Button variant="secondary" onClick={() => setEditOpen(true)}>
                 <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
                 Editar
               </Button>
             )}
             {actions.can_approve && (
-              <Button size="sm" onClick={() => setConfirmApprove(true)} disabled={approve.isPending}>
+              <Button onClick={() => setConfirmApprove(true)} disabled={approve.isPending}>
                 <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
                 Aprobar
               </Button>
             )}
             {actions.can_send && (
-              <Button size="sm" onClick={() => setSendOpen(true)}>
+              <Button onClick={() => setSendOpen(true)}>
                 <Send aria-hidden="true" className="h-3.5 w-3.5" />
                 Enviar a proveedores
               </Button>
             )}
             {actions.can_cancel && (
-              <Button variant="outline" size="sm" onClick={() => setConfirmCancel(true)}>
+              <Button variant="secondary" onClick={() => setConfirmCancel(true)}>
                 <Ban aria-hidden="true" className="h-3.5 w-3.5" />
                 Cancelar solicitud
               </Button>
             )}
-          </div>
-        )}
-      </div>
+            </>
+          )
+        }
+      />
 
       <PurchaseRequestStepper status={request.status} />
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <section className="overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-2">
-          <header className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <section className="min-w-0 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-2">
+          <header className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
             <SectionTitle icon={Package}>Productos solicitados ({request.items.length})</SectionTitle>
           </header>
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
-                <th className="px-3 py-2 font-medium">Producto</th>
-                <th className="px-3 py-2 text-right font-medium">Cantidad</th>
+                <th className={TH_CLASS}>Producto</th>
+                <th className={`${TH_CLASS} text-right`}>Cantidad</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+            <tbody>
               {request.items.map((item) => (
-                <tr key={item.id}>
-                  <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">{item.product_name}</td>
-                  <td className="px-3 py-2 text-right font-mono tabular-nums">{item.quantity}</td>
+                <tr key={item.id} className="border-b border-zinc-200 last:border-b-0 dark:border-zinc-800">
+                  <td className={`${TD_CLASS} text-zinc-800 dark:text-zinc-200`}>{item.product_name}</td>
+                  <td className={`${TD_CLASS} text-right font-mono`}>{item.quantity}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </section>
 
-        <dl className="flex flex-col gap-3 rounded-md border border-zinc-200 bg-white p-3 text-xs shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
+        <dl className="grid grid-cols-1 content-start gap-3 rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900 sm:grid-cols-2 lg:grid-cols-1">
           <div>
-            <dt className="text-zinc-500">Presupuesto</dt>
-            <dd className="text-zinc-800 dark:text-zinc-200">
+            <dt className={TERM_CLASS}>Presupuesto</dt>
+            <dd className="text-zinc-900 dark:text-zinc-100">
               {request.annual_budget
                 ? `${careerLabel(request.annual_budget)} · ${request.annual_budget.year}`
                 : `#${request.annual_budget_id}`}
@@ -204,16 +205,16 @@ export default function SolicitudCompraDetailPage() {
           </div>
           {request.annual_budget && (
             <div>
-              <dt className="text-zinc-500">Libre del presupuesto</dt>
+              <dt className={TERM_CLASS}>Libre del presupuesto</dt>
               <dd className="font-mono">{formatCLP(request.annual_budget.free_amount)}</dd>
             </div>
           )}
           <div>
-            <dt className="text-zinc-500">Enviada</dt>
+            <dt className={TERM_CLASS}>Enviada</dt>
             <dd className="font-mono">{formatDate(request.sent_at)}</dd>
           </div>
-          <div>
-            <dt className="text-zinc-500">Notas</dt>
+          <div className="sm:col-span-2 lg:col-span-1">
+            <dt className={TERM_CLASS}>Notas</dt>
             <dd className="whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">
               {request.notes || '—'}
             </dd>

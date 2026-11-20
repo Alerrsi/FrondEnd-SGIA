@@ -31,7 +31,8 @@ import {
 import type { ChartTemplate } from '@sgia/types';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { PageHeading } from '@/components/ui/page-heading';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
 import { SectionLabel } from '@/components/ui/section-label';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -294,7 +295,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {/* Visualización flotante del gráfico en movimiento que sigue el cursor del mouse */}
       <DragGhostPreview
         chartType={draggedWidgetType}
@@ -302,35 +303,17 @@ export default function DashboardPage() {
         isDragging={isDraggingWidget}
       />
 
-      {/* Encabezado Superior */}
-      <div className="flex flex-col gap-2">
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={BarChart3} title="Dashboards analíticos y métricas">
-            Métricas del pañol. Arrastra un gráfico desde el catálogo o pulsa Añadir, y elige qué datos mostrar.
-          </PageHeading>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Botón único para añadir gráficos: Abrir catálogo de widgets */}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleOpenWidgetCatalog}
-              disabled={!panel.canAdd} className="gap-1.5"
-            >
+      <PageHeader
+        icon={BarChart3}
+        title="Analítica"
+        description="Métricas del pañol. Arrastra un gráfico desde el catálogo o pulsa Añadir, y elige qué datos mostrar."
+        actions={
+          <>
+            <Button type="button" variant="outline" size="sm" onClick={handleOpenWidgetCatalog} disabled={!panel.canAdd}>
               <Palette aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Abrir catálogo de widgets ({panel.total}/{MAX_CHARTS})</span>
             </Button>
-
-            {/* Toggle Modo edición / Guardar y salir */}
-            <Button
-              type="button"
-              variant={isEditMode ? 'primary' : 'outline'}
-              size="sm"
-              onClick={handleToggleEditMode}
-              className="gap-1.5"
-            >
+            <Button type="button" variant={isEditMode ? 'primary' : 'outline'} size="sm" onClick={handleToggleEditMode}>
               {isEditMode ? (
                 <>
                   <Check aria-hidden="true" className="h-3.5 w-3.5" />
@@ -343,18 +326,18 @@ export default function DashboardPage() {
                 </>
               )}
             </Button>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* Banner Informativo en Modo edición */}
       {isEditMode && !isDraggingWidget && (
         <div
           data-testid="edit-mode-banner"
-          className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg border border-sky-200 dark:border-sky-900/50 bg-sky-50/50 dark:bg-sky-950/20 text-xs font-mono text-sky-700 dark:text-sky-400"
+          className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-accent-soft px-4 py-3 text-[13px] text-accent"
         >
           <div className="flex items-center gap-2">
-            <SlidersHorizontal aria-hidden="true" className="h-4 w-4 shrink-0 text-sky-600 dark:text-sky-400" />
+            <SlidersHorizontal aria-hidden="true" className="h-4 w-4 shrink-0" />
             <span>
               <strong>Modo edición activo:</strong> Añade gráficos desde el Catálogo de Widgets (arrastrando o pulsando Añadir).
               Al elegir un tipo se abre un menú para definir qué datos mostrar. Máximo {MAX_CHARTS} gráficos simultáneos.
@@ -366,7 +349,6 @@ export default function DashboardPage() {
             variant="outline"
             size="sm"
             onClick={() => setPaletteOpen(true)}
-            className="text-xs h-7 gap-1 border-sky-300 dark:border-sky-800 text-sky-700 dark:text-sky-300"
           >
             <Palette aria-hidden="true" className="h-3 w-3" />
             <span>Ver catálogo</span>
@@ -378,15 +360,15 @@ export default function DashboardPage() {
       {isDraggingWidget && (
         <div
           data-testid="drag-focus-banner"
-          className="flex items-center justify-between gap-3 p-3.5 rounded-lg bg-sky-950/40 border-2 border-sky-500/80 text-xs font-mono text-sky-300 shadow-md animate-pulse"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-accent-soft px-4 py-3 text-[13px] text-accent"
         >
           <div className="flex items-center gap-2">
-            <Target aria-hidden="true" className="h-4 w-4 text-sky-400 animate-spin" />
+            <Target aria-hidden="true" className="h-4 w-4 shrink-0" />
             <span>
               <strong>Zonas de inserción enfocadas:</strong> Suelta el gráfico en la zona principal o en cualquier ranura para configurarlo.
             </span>
           </div>
-          <span className="text-xs text-sky-400">
+          <span className="text-[13px]">
             {panel.canAdd ? `Espacio disponible (${panel.total}/${MAX_CHARTS})` : `Límite de ${MAX_CHARTS} alcanzado`}
           </span>
         </div>
@@ -399,8 +381,8 @@ export default function DashboardPage() {
       <DashboardTemplateBar selectedId={selectedTemplateId} onSelect={setSelectedTemplateId} />
 
       {/* Plantillas sembradas del servidor: añaden un gráfico a tu panel (máximo 9 por plantilla) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
-        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3">
+        <div className="flex items-center gap-2 text-[13px] font-medium text-zinc-500 dark:text-zinc-400">
           <LayoutGrid aria-hidden="true" className="h-4 w-4" />
           <span>Plantillas de análisis:</span>
         </div>
@@ -423,7 +405,6 @@ export default function DashboardPage() {
                       ? `"${tmpl.name}" ya está en tu panel`
                       : (tmpl.description ?? `Añadir "${tmpl.name}" a tu panel`)
                   }
-                  className="text-xs gap-1.5 text-zinc-600 dark:text-zinc-400"
                 >
                   {added ? <Check aria-hidden="true" className="h-3 w-3" /> : <Plus aria-hidden="true" className="h-3 w-3" />}
                   <span>{tmpl.name}</span>
@@ -431,7 +412,7 @@ export default function DashboardPage() {
               );
             })}
           {panel.templates.every((t) => t.entity === null) && (
-            <span className="font-mono text-xs text-zinc-400">
+            <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
               {panel.isLoading ? 'Cargando plantillas…' : 'Sin plantillas con consulta predefinida.'}
             </span>
           )}
@@ -447,35 +428,18 @@ export default function DashboardPage() {
           onDragLeave={handleProminentDragLeave}
           onDrop={handleProminentDrop}
           className={cn(
-            'relative flex flex-col items-center justify-center gap-3 p-6 sm:p-8 rounded-xl border-2 border-dashed transition duration-200 select-none shadow-xl cursor-copy',
-            isProminentOver
-              ? 'border-emerald-400 bg-emerald-950/60 text-emerald-100 shadow-emerald-500/30 scale-[1.01]'
-              : 'border-sky-500 bg-gradient-to-r from-sky-950/50 via-zinc-900/90 to-sky-950/50 text-zinc-100 shadow-sky-500/25 animate-pulse',
+            'flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-6 text-center transition-colors duration-150 select-none cursor-copy sm:p-8',
+            isProminentOver ? 'border-ok bg-ok-bg text-ok' : 'border-accent/50 bg-accent-soft text-accent',
           )}
         >
-          <div className="pointer-events-none select-none flex flex-col items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500 animate-ping" />
-              <span className="text-xs font-semibold text-sky-300 bg-sky-950/90 border border-sky-500/60 px-3 py-1 rounded-full shadow-xs">
-                ★ Zona Principal de Soltado Destacada ★
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3 text-center sm:text-left">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-600/20 border border-sky-500/40 text-sky-400 shrink-0">
-                <Target aria-hidden="true" className="h-6 w-6 animate-spin" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-zinc-100">
-                  {isProminentOver
-                    ? '¡Suelta aquí para configurar el gráfico!'
-                    : 'Suelta tu gráfico aquí para configurarlo'}
-                </h3>
-                <p className="text-xs text-zinc-400 font-mono">
-                  Al soltar se abre el menú para elegir qué datos mostrar ({panel.total + 1}/{MAX_CHARTS})
-                </p>
-              </div>
-            </div>
+          <div className="pointer-events-none flex flex-col items-center gap-2">
+            <Target aria-hidden="true" className="h-6 w-6" />
+            <h3 className="text-sm font-medium">
+              {isProminentOver ? 'Suelta aquí para configurar el gráfico' : 'Suelta tu gráfico aquí para configurarlo'}
+            </h3>
+            <p className="text-[13px] opacity-80">
+              Al soltar se abre el menú para elegir qué datos mostrar ({panel.total + 1}/{MAX_CHARTS})
+            </p>
           </div>
         </div>
       )}
@@ -489,22 +453,17 @@ export default function DashboardPage() {
           ))}
         </div>
       ) : panel.error ? (
-        <div
-          role="alert"
-          className="rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400"
-        >
-          {apiErrorToMessage(panel.error)}
-        </div>
+        <ErrorState>{apiErrorToMessage(panel.error)}</ErrorState>
       ) : panelCharts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-center font-mono text-xs text-zinc-400 gap-3">
-          <BarChart3 aria-hidden="true" className="h-8 w-8 text-zinc-300 dark:text-zinc-700" />
+        <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-zinc-300 p-12 text-center text-[13px] text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+          <BarChart3 aria-hidden="true" className="h-6 w-6 text-zinc-400" />
           <p>Tu panel no tiene gráficos visibles. Añade una plantilla o abre el Catálogo de Widgets.</p>
           <div className="flex flex-col items-center gap-3 w-full max-w-md">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={handleOpenWidgetCatalog} className="gap-1.5"
+              onClick={handleOpenWidgetCatalog}
             >
               <Palette aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Abrir catálogo de widgets</span>
@@ -580,7 +539,7 @@ export default function DashboardPage() {
       {panel.hidden.length > 0 && (
         <section
           aria-label="Gráficos ocultos"
-          className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs"
+          className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3"
         >
           <SectionLabel as="h2" className="mb-2">Ocultos ({panel.hidden.length})</SectionLabel>
           <ul className="flex flex-col gap-1.5">
@@ -602,7 +561,7 @@ export default function DashboardPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="ghost" className="text-rose-600"
+                    variant="ghost" className="text-danger"
                     onClick={() => void run(() => panel.remove(hiddenChart.id), 'Gráfico eliminado')}
                   >
                     Eliminar

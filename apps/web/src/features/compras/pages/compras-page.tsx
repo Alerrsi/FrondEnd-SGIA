@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import { usePurchases } from '@sgia/api-client';
 import { PurchaseStatus, type PurchaseOrder } from '@sgia/types';
-import { AlertCircle, ArrowRight, ShoppingCart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight, ShoppingCart } from 'lucide-react';
 
 import { PurchaseStatusBadge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ErrorState } from '@/components/ui/error-state';
+import { MobileRow } from '@/components/ui/mobile-row';
+import { PageHeader } from '@/components/ui/page-header';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import { ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { ButtonLink } from '@/components/shared/button-link';
+import { SegmentedFilter } from '@/components/shared/segmented-filter';
 import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { PurchaseDetailSheet } from '@/features/compras/components/purchase-detail-sheet';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
-import { PageHeading } from '@/components/ui/page-heading';
-import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { CODE_CHIP_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const STATUS_FILTERS: Array<{ value: PurchaseStatus | ''; label: string }> = [
@@ -40,103 +47,105 @@ export default function ComprasPage() {
   // El detalle se deriva del listado vivo para reflejar cambios tras invalidar caché.
   const selected: PurchaseOrder | null = data?.data.find((p) => p.id === selectedId) ?? null;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Buscar por código, guía o factura…"
+        label="Buscar órdenes"
+      />
+      <SegmentedFilter
+        label="Filtrar por estado"
+        options={STATUS_FILTERS}
+        value={status}
+        onChange={setStatus}
+      />
+    </TableToolbar>
+  );
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={ShoppingCart} title="Órdenes de compra">
-            Seguimiento de adquisiciones y recepción de mercancía.
-          </PageHeading>
-          {canRequest && (
-            <Link
-              to="/compras/solicitudes"
-              className="inline-flex h-8.5 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            >
+  const orders = data?.data ?? [];
+  const mobile =
+    !isLoading && orders.length > 0 ? (
+      <ul>
+        {orders.map((p) => (
+          <MobileRow
+            key={p.id}
+            title={<span className="font-code text-[13px]">{p.code ?? `#${p.id}`}</span>}
+            meta={`${p.supplier?.name ?? '—'} · ${formatCLP(p.total_amount)} · ${formatDate(p.created_at)}`}
+            trailing={<PurchaseStatusBadge status={p.status} />}
+            onClick={() => setSelectedId(p.id)}
+          />
+        ))}
+      </ul>
+    ) : undefined;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={ShoppingCart}
+        title="Órdenes de compra"
+        description="Órdenes emitidas a proveedores, su estado de envío y la recepción de la mercancía."
+        actions={
+          canRequest && (
+            <ButtonLink to="/compras/solicitudes">
               Nueva compra desde una solicitud
               <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </Link>
-          )}
-        </div>
-      </div>
+            </ButtonLink>
+          )
+        }
+      />
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex gap-1" role="group" aria-label="Filtrar por estado">
-          {STATUS_FILTERS.map((f) => (
-            <Button
-              key={f.value || 'all'}
-              size="sm"
-              variant={status === f.value ? 'primary' : 'outline'}
-              aria-pressed={status === f.value}
-              onClick={() => setStatus(f.value)}
-            >
-              {f.label}
-            </Button>
-          ))}
-        </div>
-        <input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por código, guía o factura…"
-          aria-label="Buscar órdenes"
-          className="h-8.5 w-full sm:w-72 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <SkeletonList label="Cargando órdenes de compra…" columns={5} />
-        </div>
-      ) : isError || !data ? (
-        <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-          <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-          <span>No se pudieron cargar las órdenes de compra desde el servidor.</span>
-        </div>
+      {isError ? (
+        <ErrorState>No se pudieron cargar las órdenes de compra desde el servidor.</ErrorState>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs">
-          <table className="w-full text-xs">
-            <thead className={TABLE_HEAD_CLASS}>
-              <tr>
-                <th className="px-3 py-2 text-left font-medium">Código</th>
-                <th className="px-3 py-2 text-left font-medium">Proveedor</th>
-                <th className="px-3 py-2 text-right font-medium">Total</th>
-                <th className="px-3 py-2 text-left font-medium">Estado</th>
-                <th className="px-3 py-2 text-left font-medium">Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.data.length === 0 && (
+        <TableFrame toolbar={toolbar} mobile={mobile}>
+          {isLoading || !data ? (
+            <SkeletonList label="Cargando órdenes de compra…" columns={5} />
+          ) : orders.length === 0 ? (
+            <EmptyState
+              icon={ShoppingCart}
+              title="No hay órdenes de compra para el filtro seleccionado."
+            />
+          ) : (
+            <table className="w-full min-w-[720px]">
+              <thead className={TABLE_HEAD_CLASS}>
                 <tr>
-                  <td colSpan={5} className={`px-3 py-8 ${STATE_TEXT_CLASS}`}>
-                    No hay órdenes de compra para el filtro seleccionado.
-                  </td>
+                  <th className={`${TH_CLASS} ${STICKY_COL_CLASS} max-md:bg-zinc-50`}>Código</th>
+                  <th className={TH_CLASS}>Proveedor</th>
+                  <th className={`${TH_CLASS} text-right`}>Total</th>
+                  <th className={TH_CLASS}>Estado</th>
+                  <th className={TH_CLASS}>Fecha</th>
                 </tr>
-              )}
-              {data.data.map((p) => (
-                <tr
-                  key={p.id}
-                  tabIndex={0}
-                  onClick={() => setSelectedId(p.id)}
-                  onKeyDown={(e) => e.key === 'Enter' && setSelectedId(p.id)}
-                  className="cursor-pointer border-t border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 focus:outline-none focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
-                >
-                  <td className="px-3 py-2 font-mono font-semibold text-zinc-900 dark:text-zinc-100">
-                    {p.code ?? `#${p.id}`}
-                  </td>
-                  <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">
-                    {p.supplier?.name ?? '—'}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono">{formatCLP(p.total_amount)}</td>
-                  <td className="px-3 py-2">
-                    <PurchaseStatusBadge status={p.status} />
-                  </td>
-                  <td className="px-3 py-2 font-mono text-zinc-500">{formatDate(p.created_at)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {orders.map((p) => (
+                  <tr
+                    key={p.id}
+                    tabIndex={0}
+                    onClick={() => setSelectedId(p.id)}
+                    onKeyDown={(e) => e.key === 'Enter' && setSelectedId(p.id)}
+                    className={`${ROW_CLASS} cursor-pointer focus:outline-none focus-visible:bg-zinc-50 dark:focus-visible:bg-zinc-800/40`}
+                  >
+                    <td className={`${TD_CLASS} ${STICKY_COL_CLASS} whitespace-nowrap`}>
+                      <span className={CODE_CHIP_CLASS}>{p.code ?? `#${p.id}`}</span>
+                    </td>
+                    <td className={TD_CLASS}>{p.supplier?.name ?? '—'}</td>
+                    <td className={`${TD_CLASS} text-right font-mono whitespace-nowrap`}>
+                      {formatCLP(p.total_amount)}
+                    </td>
+                    <td className={TD_CLASS}>
+                      <PurchaseStatusBadge status={p.status} />
+                    </td>
+                    <td className={`${TD_CLASS} font-mono whitespace-nowrap text-zinc-500 dark:text-zinc-400`}>
+                      {formatDate(p.created_at)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </TableFrame>
       )}
 
       <PurchaseDetailSheet

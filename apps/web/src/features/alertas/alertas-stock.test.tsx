@@ -250,9 +250,9 @@ describe('REQ-06: Alertas de stock Crítico y Preventivo', () => {
       expect(screen.getByText(/Alertas de stock Crítico y Preventivo/i)).toBeDefined();
 
       // Cinta Métrica
-      expect(screen.getByText(/Alertas activas:/i)).toBeDefined();
-      expect(screen.getByText(/Nivel Crítico \(≤ mín\):/i)).toBeDefined();
-      expect(screen.getByText(/Advertencia \(≤ mín \+ 5\):/i)).toBeDefined();
+      expect(screen.getByText(/Alertas activas/i)).toBeDefined();
+      expect(screen.getByText(/Nivel Crítico \(≤ mín\)/i)).toBeDefined();
+      expect(screen.getByText(/Advertencia \(≤ mín \+ 5\)/i)).toBeDefined();
 
       // Tabla renderiza productos y severidades
       expect(screen.getByText('Tester Fluke 115 Multímetro')).toBeDefined();

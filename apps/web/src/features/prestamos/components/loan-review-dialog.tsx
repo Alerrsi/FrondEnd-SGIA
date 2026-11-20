@@ -114,11 +114,11 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
     >
       <div className="flex flex-col gap-4">
         {loan && (
-          <dl className="grid grid-cols-1 gap-x-4 gap-y-1 rounded-md bg-zinc-50 dark:bg-zinc-950/60 p-2.5 text-xs text-zinc-600 dark:text-zinc-400 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-x-4 gap-y-1 rounded-md bg-zinc-50 p-2.5 text-[13px] text-zinc-600 dark:bg-zinc-950/60 dark:text-zinc-400 sm:grid-cols-2">
             {facts.map(({ label, value, mono }) => (
               <div key={label} className="flex min-w-0 gap-1.5">
-                <dt className="shrink-0 font-semibold text-zinc-700 dark:text-zinc-300">{label}:</dt>
-                <dd className={mono ? 'min-w-0 font-mono tabular-nums' : 'min-w-0'}>{value}</dd>
+                <dt className="shrink-0 font-medium text-zinc-700 dark:text-zinc-300">{label}:</dt>
+                <dd className={mono ? 'min-w-0 font-mono' : 'min-w-0'}>{value}</dd>
               </div>
             ))}
           </dl>
@@ -126,7 +126,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
 
         <div className="flex flex-col gap-3">
           {isLoading && (
-            <div className="flex h-24 items-center justify-center text-xs text-zinc-500" role="status">
+            <div className="flex h-24 items-center justify-center text-[13px] text-zinc-500 dark:text-zinc-400" role="status">
               <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4 animate-spin text-zinc-400" />
               <span>Buscando unidades disponibles…</span>
             </div>
@@ -135,7 +135,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
           {!isLoading && !review && error && (
             <div
               role="alert"
-              className="flex flex-col items-start gap-2 rounded border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/30 p-2.5 text-xs text-rose-700 dark:text-rose-300"
+              className="flex flex-col items-start gap-2 rounded-md bg-danger-bg p-2.5 text-[13px] font-medium text-danger"
             >
               <span>{apiErrorToMessage(error)}</span>
               <Button type="button" variant="outline" size="sm" onClick={() => void refetch()}>
@@ -147,7 +147,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
           {approveNotice && (
             <div
               role="alert"
-              className="flex items-start gap-2 rounded border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/30 p-2.5 text-xs text-amber-800 dark:text-amber-300"
+              className="flex items-start gap-2 rounded-md bg-warn-bg p-2.5 text-[13px] text-warn"
             >
               <AlertTriangle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>{approveNotice}</span>
@@ -161,9 +161,9 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
               className="rounded-md border border-zinc-200 dark:border-zinc-800 p-2.5"
             >
               <header className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">{item.name}</h3>
+                <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{item.name}</h3>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                  <span className="font-mono text-[13px] text-zinc-600 dark:text-zinc-400">
                     Solicitado: {item.quantity} · Disponible: {item.available_quantity}
                   </span>
                   {item.has_units && scanningItemId !== item.item_id && (
@@ -179,7 +179,6 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
                           : undefined
                       }
                       aria-label={`Cambiar elementos de ${item.name}`}
-                      className="h-7 gap-1 px-2 text-xs"
                     >
                       <ScanLine aria-hidden="true" className="h-3.5 w-3.5" />
                       <span>Cambiar elementos</span>
@@ -191,7 +190,7 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
               {item.shortage > 0 && (
                 <p
                   role="alert"
-                  className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-rose-600 dark:text-rose-400"
+                  className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-danger"
                 >
                   <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                   <span>
@@ -226,11 +225,11 @@ export function LoanReviewDialog({ loan, onClose, onReject }: LoanReviewDialogPr
                   </ul>
                 </>
               ) : (
-                <p className="mt-1.5 flex items-center gap-1 text-xs text-zinc-700 dark:text-zinc-300">
+                <p className="mt-1.5 flex items-center gap-1 text-[13px] text-zinc-700 dark:text-zinc-300">
                   <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                   <span>
                     {item.location?.nombre ?? 'Sala sin registrar'} ·{' '}
-                    <span className="font-mono">{item.cajon?.codigo ?? 'Cajón sin registrar'}</span>
+                    <span className="font-code text-xs">{item.cajon?.codigo ?? 'Cajón sin registrar'}</span>
                   </span>
                 </p>
               )}

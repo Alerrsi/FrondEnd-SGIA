@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useBudgetSummary, useDeleteBudget } from '@sgia/api-client';
 import type { BudgetSummaryRow } from '@sgia/types';
-import { AlertCircle, Plus, Wallet } from 'lucide-react';
+import { Plus, Wallet } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -15,7 +15,12 @@ import { EditBudgetDialog } from '@/features/presupuestos/components/edit-budget
 import { careerLabel } from '@/features/presupuestos/lib/budget-label';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { PageHeading } from '@/components/ui/page-heading';
+import { Cell } from '@/components/ui/cell';
+import { CellGrid } from '@/components/ui/cell-grid';
+import { ErrorState } from '@/components/ui/error-state';
+import { Metric } from '@/components/ui/metric';
+import { PageHeader } from '@/components/ui/page-header';
+import { SegmentedFilter } from '@/components/shared/segmented-filter';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -68,97 +73,81 @@ export default function PresupuestosPage() {
     }
   };
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+  const yearOptions = YEARS.map((y) => ({ value: y, label: String(y) }));
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={Wallet} title="Presupuestos anuales">
-            Ejecución por carrera: las compras reservan y las facturas confirmadas consumen.
-          </PageHeading>
-          {canManage && (
-            <Button onClick={() => setCreateOpen(true)} className="text-xs">
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Wallet}
+        title="Presupuestos anuales"
+        description="Ejecución por carrera: las compras reservan y las facturas confirmadas consumen."
+        actions={
+          canManage && (
+            <Button onClick={() => setCreateOpen(true)}>
               <Plus aria-hidden="true" className="h-4 w-4" />
               Nuevo presupuesto
             </Button>
-          )}
-        </div>
-      </div>
+          )
+        }
+      />
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2.5 text-xs shadow-xs">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Carreras:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
-            {rows?.length ?? 0}
-          </span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Inicial:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
-            {formatCLP(totals.initial)}
-          </span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Reservado:</span>
-          <span className="font-mono text-zinc-700 dark:text-zinc-300">
-            {formatCLP(totals.reserved)}
-          </span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Consumido:</span>
-          <span className="font-mono text-zinc-700 dark:text-zinc-300">
-            {formatCLP(totals.consumed)}
-          </span>
-        </div>
-        <div className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 dark:text-zinc-400">Libre:</span>
-          <span className="font-mono font-medium text-zinc-900 dark:text-zinc-100">
-            {formatCLP(totals.free)}
-          </span>
-        </div>
-      </div>
+      <CellGrid columns={4} aria-label={`Totales ${year}`}>
+        <Cell>
+          <Metric
+            label="Inicial"
+            value={formatCLP(totals.initial)}
+            hint={`${rows?.length ?? 0} carreras`}
+          />
+        </Cell>
+        <Cell>
+          <Metric
+            label="Reservado"
+            value={formatCLP(totals.reserved)}
+            hint="Órdenes de compra pendientes"
+          />
+        </Cell>
+        <Cell>
+          <Metric
+            label="Consumido"
+            value={formatCLP(totals.consumed)}
+            hint="Facturas confirmadas"
+          />
+        </Cell>
+        <Cell>
+          <Metric
+            label="Libre"
+            value={formatCLP(totals.free)}
+            hint="Lo que aún se puede gastar"
+            tone={totals.free < 0 ? 'danger' : 'neutral'}
+          />
+        </Cell>
+      </CellGrid>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="flex items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
-          <div className="flex gap-1" role="group" aria-label="Año del presupuesto">
-            {YEARS.map((y) => (
-              <Button
-                key={y}
-                size="sm"
-                variant={year === y ? 'primary' : 'outline'}
-                aria-pressed={year === y}
-                onClick={() => setYear(y)}
-                className="font-mono"
-              >
-                {y}
-              </Button>
-            ))}
-          </div>
-        </div>
+      <section className="flex flex-col gap-3" aria-label="Presupuestos por carrera">
+        <SegmentedFilter
+          label="Año del presupuesto"
+          options={yearOptions}
+          value={year}
+          onChange={setYear}
+          className="self-start font-mono"
+        />
 
         {isLoading ? (
-          <SkeletonList label="Cargando presupuestos…" rows={4} columns={5} />
+          <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+            <SkeletonList label="Cargando presupuestos…" rows={4} columns={5} />
+          </div>
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-            <span>No se pudieron cargar los presupuestos desde el servidor.</span>
-          </div>
+          <ErrorState>No se pudieron cargar los presupuestos desde el servidor.</ErrorState>
         ) : (
-          <div className="bg-zinc-50/60 dark:bg-zinc-950/40 p-3">
-            <BudgetSummaryGrid
-              rows={rows ?? []}
-              canManage={canManage}
-              onOpen={(r) => setSelectedId(r.id)}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          </div>
+          <BudgetSummaryGrid
+            rows={rows ?? []}
+            canManage={canManage}
+            onOpen={(r) => setSelectedId(r.id)}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         )}
-      </div>
+      </section>
 
       {canManage && (
         <>

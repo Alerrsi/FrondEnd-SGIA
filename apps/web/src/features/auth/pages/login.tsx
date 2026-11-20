@@ -117,9 +117,9 @@ export default function LoginPage() {
           {authError && (
             <div
               role="alert"
-              className="mb-4 flex items-start gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-2.5 text-xs text-red-700 dark:text-red-400"
+              className="mb-4 flex items-start gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-2.5 text-xs text-danger"
             >
-              <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
+              <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0 mt-0.5 text-danger" />
               <span>{authError}</span>
             </div>
           )}
@@ -154,7 +154,7 @@ export default function LoginPage() {
                 })}
               />
               {errors.email && (
-                <span className="mt-1 block text-xs text-red-600 dark:text-red-400 font-medium">
+                <span className="mt-1 block text-xs text-danger font-medium">
                   {errors.email.message}
                 </span>
               )}
@@ -196,7 +196,7 @@ export default function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <span className="mt-1 block text-xs text-red-600 dark:text-red-400 font-medium">
+                <span className="mt-1 block text-xs text-danger font-medium">
                   {errors.password.message}
                 </span>
               )}

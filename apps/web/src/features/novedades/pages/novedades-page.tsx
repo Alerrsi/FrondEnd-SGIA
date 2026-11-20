@@ -58,7 +58,7 @@ export default function NovedadesPage() {
         )}
       </div>
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
+      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
         <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 p-2.5">
           <div className="flex gap-1" role="group" aria-label="Filtrar por estado">
             {INCIDENT_STATUS_FILTERS.map((f) => (

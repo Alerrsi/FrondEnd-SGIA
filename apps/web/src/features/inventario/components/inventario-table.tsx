@@ -21,9 +21,7 @@ import {
   MapPin,
   Pencil,
   Power,
-  Search,
   Trash2,
-  X,
 } from 'lucide-react';
 import { useCajones, useLocations } from '@sgia/api-client';
 import type { CajonEntity, LocationEntity, Producto } from '@sgia/types';
@@ -35,7 +33,12 @@ import { cn } from '@/lib/cn';
 import { ProductoUnidadesExpandidas } from './producto-unidades-expandidas';
 import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { MobileRow } from '@/components/ui/mobile-row';
 import { SkeletonRows } from '@/components/ui/skeleton-rows';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import { ICON_BUTTON_CLASS, ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
 
 export const AREAS_INACAP = [
   'Informática',
@@ -185,11 +188,9 @@ export function InventarioTable({
               aria-expanded={expanded}
               aria-label={`${expanded ? 'Ocultar' : 'Ver'} instancias de ${prod.nombre}`}
               title={expanded ? 'Ocultar instancias' : 'Ver instancias'}
-              className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              className={ICON_BUTTON_CLASS}
             >
-              <ChevronRight aria-hidden="true"
-                className={cn('h-4 w-4 transition-transform', expanded && 'rotate-90')}
-              />
+              <ChevronRight aria-hidden="true" className={cn('h-4 w-4', expanded && 'rotate-90')} />
             </button>
           );
         },
@@ -208,10 +209,10 @@ export function InventarioTable({
         cell: (info) => {
           const prod = info.row.original;
           return (
-            <div className="flex flex-col gap-0.5 max-w-xs">
+            <div className="flex min-w-48 max-w-xs flex-col gap-0.5">
               <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug">{prod.nombre}</span>
               {prod.description && (
-                <span className="line-clamp-1 text-xs text-zinc-500 dark:text-zinc-400">{prod.description}</span>
+                <span className="line-clamp-1 text-[13px] text-zinc-500 dark:text-zinc-400">{prod.description}</span>
               )}
             </div>
           );
@@ -226,7 +227,7 @@ export function InventarioTable({
               ? val
               : labelOf(val, 'nombre', 'name') || '—';
           return (
-            <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
+            <span className="text-[13px] text-zinc-600 dark:text-zinc-400">
               {display}
             </span>
           );
@@ -237,11 +238,11 @@ export function InventarioTable({
         cell: (info) => {
           const loc = info.getValue();
           if (!loc) {
-            return <span className="font-mono text-xs text-zinc-400 dark:text-zinc-500">—</span>;
+            return <span className="text-[13px] text-zinc-400 dark:text-zinc-500">—</span>;
           }
           if (typeof loc === 'string') {
             return (
-              <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+              <div className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[13px] text-zinc-600 dark:text-zinc-400">
                 <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                 <span>{loc}</span>
               </div>
@@ -250,7 +251,7 @@ export function InventarioTable({
           const salaStr = labelOf(loc.sala, 'nombre', 'sala');
           const cajonStr = labelOf(loc.cajon, 'codigo', 'nombre');
           return (
-            <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="flex items-center gap-1.5 whitespace-nowrap font-mono text-[13px] text-zinc-600 dark:text-zinc-400">
               <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
               <span>
                 {salaStr || 'Sala —'} · {cajonStr || 'Cajón —'}
@@ -273,25 +274,23 @@ export function InventarioTable({
               <div className="w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden shrink-0">
                 <div
                   className={cn(
-                    'h-full transition-[width] duration-300',
-                    isCritical ? 'bg-rose-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500',
+                    'h-full',
+                    isCritical ? 'bg-danger' : isWarning ? 'bg-warn' : 'bg-ok',
                   )}
                   style={{ width: `${Math.max(ratio, 8)}%` }}
                 />
               </div>
 
               {isCritical ? (
-                <Badge tone="critical">
-                  <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
+                <Badge tone="critical" icon={<AlertTriangle aria-hidden="true" className="h-3 w-3" />}>
                   Stock crítico ({prod.stock} / {prod.stockCritico} mín)
                 </Badge>
               ) : isWarning ? (
-                <Badge tone="warning">
-                  <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
+                <Badge tone="warning" icon={<AlertTriangle aria-hidden="true" className="h-3 w-3" />}>
                   Stock bajo ({prod.stock} / {prod.stockCritico} mín)
                 </Badge>
               ) : (
-                <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
+                <span className="whitespace-nowrap font-mono text-[13px] text-zinc-700 dark:text-zinc-300">
                   {prod.stock} <span className="text-zinc-400 dark:text-zinc-500">(mín {prod.stockCritico})</span>
                 </span>
               )}
@@ -316,73 +315,63 @@ export function InventarioTable({
           return (
             <div className="flex items-center justify-end gap-1">
               {onViewDetail && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  className={ICON_BUTTON_CLASS}
                   title="Ver detalle y código de barras"
                   aria-label={`Ver detalles de ${prod.nombre}`}
                   onClick={() => onViewDetail(prod)}
                 >
                   <Eye aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                </button>
               )}
 
               {onReubicar && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  className={ICON_BUTTON_CLASS}
                   title="Reubicar en pañol"
                   aria-label={`Reubicar ${prod.nombre}`}
                   onClick={() => onReubicar(prod)}
                 >
                   <ArrowRightLeft aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                </button>
               )}
 
               {onEdit && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  className={ICON_BUTTON_CLASS}
                   title="Editar producto"
                   aria-label={`Editar ${prod.nombre}`}
                   onClick={() => onEdit(prod)}
                 >
                   <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                </button>
               )}
 
               {onToggleActivo && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  className={ICON_BUTTON_CLASS}
                   title={prod.activo ? 'Desactivar producto' : 'Activar producto'}
                   aria-label={`${prod.activo ? 'Desactivar' : 'Activar'} ${prod.nombre}`}
                   onClick={() => onToggleActivo(prod)}
                 >
                   <Power aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                </button>
               )}
 
               {canDelete && onDelete && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                  className={ICON_BUTTON_CLASS}
                   title="Eliminar producto"
                   aria-label={`Eliminar ${prod.nombre}`}
                   onClick={() => onDelete(prod)}
                 >
-                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
-                </Button>
+                  <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
+                </button>
               )}
             </div>
           );
@@ -407,257 +396,251 @@ export function InventarioTable({
   const firstShown = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const lastShown = Math.min(currentPage * pageSize, totalRows);
 
-  const controlClasses =
-    FILTER_CONTROL_CLASS;
+  const controlClasses = FILTER_CONTROL_CLASS;
+
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch
+        value={search}
+        onChange={(val) => onSearchChange?.(val)}
+        placeholder="Buscar por nombre, SKU, marca…"
+        label="Buscar productos"
+      />
+
+      <select
+        value={areaFilter}
+        onChange={(e) => onAreaFilterChange?.(e.target.value)}
+        aria-label="Filtrar por área"
+        className={controlClasses}
+      >
+        <option value="">Todas las áreas</option>
+        {AREAS_INACAP.map((a) => (
+          <option key={a} value={a}>
+            {a}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={salaFilter}
+        onChange={(e) => {
+          onSalaFilterChange?.(e.target.value);
+          onCajonFilterChange?.('');
+        }}
+        aria-label="Filtrar por sala"
+        className={controlClasses}
+      >
+        <option value="">Todas las salas</option>
+        {locations.map((loc) => {
+          const label = loc.nombre || loc.sala || `Sala #${loc.id}`;
+          return (
+            <option key={loc.id} value={label}>
+              {label}
+            </option>
+          );
+        })}
+      </select>
+
+      {salaFilter && (
+        <select
+          value={cajonFilter}
+          onChange={(e) => onCajonFilterChange?.(e.target.value)}
+          aria-label="Filtrar por cajón"
+          className={controlClasses}
+        >
+          <option value="">Todos los cajones</option>
+          {cajones.map((c) => (
+            <option key={c.id} value={c.codigo}>
+              {c.codigo} {c.descripcion ? `· ${c.descripcion}` : ''}
+            </option>
+          ))}
+        </select>
+      )}
+
+      <select
+        value={estadoFilter}
+        onChange={(e) => onEstadoFilterChange?.(e.target.value as EstadoFilter)}
+        aria-label="Filtrar por estado"
+        className={controlClasses}
+      >
+        {estadoOptions.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+
+      <label className="flex min-h-8 cursor-pointer select-none items-center gap-1.5 px-1 text-[13px] text-zinc-600 dark:text-zinc-300">
+        <input
+          type="checkbox"
+          checked={criticalOnly}
+          onChange={(e) => onCriticalOnlyChange?.(e.target.checked)}
+          aria-label="Solo stock crítico"
+          className="h-4 w-4 rounded border-zinc-300 accent-accent dark:border-zinc-700"
+        />
+        <span className={criticalOnly ? 'font-medium text-danger' : ''}>Bajo mínimo</span>
+      </label>
+
+      {isFetching && (
+        <div
+          role="progressbar"
+          aria-label="Cargando productos en pañol"
+          className="flex items-center gap-1.5 text-[13px] text-zinc-500 dark:text-zinc-400 sm:ml-auto"
+        >
+          <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
+          <span>Buscando…</span>
+        </div>
+      )}
+    </TableToolbar>
+  );
+
+  const footer = (
+    <>
+      <span className="font-mono">
+        Mostrando {firstShown} a {lastShown} de {totalRows} activos
+      </span>
+
+      <div className="flex items-center gap-3">
+        <label className="flex items-center gap-1.5">
+          <span className="text-zinc-500 dark:text-zinc-400">Filas</span>
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
+            aria-label="Filas por página"
+            className={controlClasses}
+          >
+            {[10, 25, 50, 100].map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange?.(Math.max(1, currentPage - 1))}
+            disabled={currentPage <= 1}
+            aria-label="Página anterior"
+          >
+            <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+          <span className="px-2 font-mono text-zinc-700 dark:text-zinc-300">
+            {totalPages === 0 ? 0 : currentPage} / {totalPages}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange?.(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage >= totalPages}
+            aria-label="Página siguiente"
+          >
+            <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+
+  const mobile =
+    !isLoading && safeProductos.length > 0 ? (
+      <ul>
+        {safeProductos.map((prod) => {
+          const isCritical = prod.stock <= prod.stockCritico;
+          return (
+            <MobileRow
+              key={prod.id}
+              title={prod.nombre}
+              meta={
+                <span className="font-code">{prod.codigoBarras || '—'}</span>
+              }
+              trailing={
+                <Badge tone={isCritical ? 'critical' : prod.activo ? 'available' : 'retired'}>
+                  {isCritical ? `Stock ${prod.stock} / ${prod.stockCritico}` : prod.activo ? `Stock ${prod.stock}` : 'inactivo'}
+                </Badge>
+              }
+              onClick={onViewDetail ? () => onViewDetail(prod) : undefined}
+            />
+          );
+        })}
+      </ul>
+    ) : undefined;
 
   return (
-    <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-      {/* Unified Toolbar with Frame */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
-        <div className="flex flex-1 flex-wrap items-center gap-2">
-          {/* Search box with / kbd shortcut */}
-          <div className="relative min-w-0 flex-1 sm:h-8.5 sm:w-72 sm:flex-none">
-            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => onSearchChange?.(e.target.value)}
-              placeholder="Buscar por nombre, SKU, marca…"
-              aria-label="Buscar productos"
-              className={cn(controlClasses, 'w-full py-1.5 pl-9 pr-9')}
-            />
-            {search ? (
-              <button
-                type="button"
-                onClick={() => onSearchChange?.('')}
-                aria-label="Limpiar búsqueda"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
-              >
-                <X aria-hidden="true" className="h-3.5 w-3.5" />
-              </button>
-            ) : (
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4.5 select-none items-center rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-1 font-mono text-xs text-zinc-400">
-                /
-              </kbd>
-            )}
-          </div>
-
-          {/* Filtro por Área */}
-          <select
-            value={areaFilter}
-            onChange={(e) => onAreaFilterChange?.(e.target.value)}
-            aria-label="Filtrar por área"
-            className={controlClasses}
-          >
-            <option value="">Todas las áreas</option>
-            {AREAS_INACAP.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </select>
-
-          {/* Filtro Dinámico por Sala */}
-          <select
-            value={salaFilter}
-            onChange={(e) => {
-              onSalaFilterChange?.(e.target.value);
-              onCajonFilterChange?.('');
-            }}
-            aria-label="Filtrar por sala"
-            className={controlClasses}
-          >
-            <option value="">Todas las salas</option>
-            {locations.map((loc) => {
-              const label = loc.nombre || loc.sala || `Sala #${loc.id}`;
-              return (
-                <option key={loc.id} value={label}>
-                  {label}
-                </option>
-              );
-            })}
-          </select>
-
-          {/* Filtro Dinámico por Cajón */}
-          {salaFilter && (
-            <select
-              value={cajonFilter}
-              onChange={(e) => onCajonFilterChange?.(e.target.value)}
-              aria-label="Filtrar por cajón"
-              className={controlClasses}
-            >
-              <option value="">Todos los cajones</option>
-              {cajones.map((c) => (
-                <option key={c.id} value={c.codigo}>
-                  {c.codigo} {c.descripcion ? `· ${c.descripcion}` : ''}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Filtro por Estado */}
-          <select
-            value={estadoFilter}
-            onChange={(e) => onEstadoFilterChange?.(e.target.value as EstadoFilter)}
-            aria-label="Filtrar por estado"
-            className={controlClasses}
-          >
-            {estadoOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-
-          {/* Toggle de Stock crítico */}
-          <label className="flex items-center gap-1.5 cursor-pointer text-xs font-mono text-zinc-600 dark:text-zinc-300 ml-1 select-none">
-            <input
-              type="checkbox"
-              checked={criticalOnly}
-              onChange={(e) => onCriticalOnlyChange?.(e.target.checked)}
-              aria-label="Solo stock crítico"
-              className="rounded border-zinc-300 dark:border-zinc-700 text-zinc-900 focus:ring-zinc-400"
-            />
-            <span className={criticalOnly ? 'text-rose-600 dark:text-rose-400 font-semibold' : ''}>
-              Bajo mínimo
-            </span>
-          </label>
-        </div>
-
-        {isFetching && (
-          <div
-            role="progressbar"
-            aria-label="Cargando productos en pañol"
-            className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono"
-          >
-            <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin text-zinc-400" />
-            <span>Buscando…</span>
-          </div>
-        )}
-      </div>
-
-      {/* TanStack Table Container */}
-      <div className="relative overflow-x-auto">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead className={TABLE_HEAD_CLASS}>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const canSort = header.column.getCanSort();
-                  const sorted = header.column.getIsSorted();
-                  return (
-                    <th key={header.id} className="px-4 py-2.5 font-medium">
-                      {header.isPlaceholder ? null : canSort ? (
-                        <button
-                          type="button"
-                          onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100 focus-visible:outline-none"
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {sorted === 'asc' ? (
-                            <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
-                          ) : sorted === 'desc' ? (
-                            <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
-                          ) : (
-                            <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
-                          )}
-                        </button>
-                      ) : (
-                        <span>
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {isLoading ? (
-              <SkeletonRows columns={columns.length} rows={8} label="Buscando y cargando productos en pañol…" />
-            ) : safeProductos.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
-                  No se encontraron productos con los criterios seleccionados.
-                </td>
-              </tr>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <Fragment key={row.id}>
-                  <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-2.5">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
+    <TableFrame toolbar={toolbar} footer={footer} mobile={mobile}>
+      <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
+        <thead className={TABLE_HEAD_CLASS}>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header, index) => {
+                const canSort = header.column.getCanSort();
+                const sorted = header.column.getIsSorted();
+                return (
+                  <th
+                    key={header.id}
+                    className={cn(
+                      TH_CLASS,
+                      header.column.id === 'acciones' && 'text-right',
+                      index === 1 && `${STICKY_COL_CLASS} max-md:bg-zinc-50`,
+                    )}
+                  >
+                    {header.isPlaceholder ? null : canSort ? (
+                      <button
+                        type="button"
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="inline-flex cursor-pointer items-center gap-1 font-medium transition-colors duration-150 hover:text-zinc-900 dark:hover:text-zinc-100"
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {sorted === 'asc' ? (
+                          <ChevronUp aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                        ) : sorted === 'desc' ? (
+                          <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-zinc-900 dark:text-zinc-100" />
+                        ) : (
+                          <ChevronsUpDown aria-hidden="true" className="h-3.5 w-3.5 opacity-40" />
+                        )}
+                      </button>
+                    ) : (
+                      <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
+                    )}
+                  </th>
+                );
+              })}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {isLoading ? (
+            <SkeletonRows columns={columns.length} rows={8} label="Buscando y cargando productos en pañol…" />
+          ) : safeProductos.length === 0 ? (
+            <tr>
+              <td colSpan={columns.length} className={`px-4 py-12 ${STATE_TEXT_CLASS}`}>
+                No se encontraron productos con los criterios seleccionados.
+              </td>
+            </tr>
+          ) : (
+            table.getRowModel().rows.map((row) => (
+              <Fragment key={row.id}>
+                <tr className={ROW_CLASS}>
+                  {row.getVisibleCells().map((cell, index) => (
+                    <td key={cell.id} className={cn(TD_CLASS, index === 1 && STICKY_COL_CLASS)}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+                {expandedIds.has(row.original.id) && (
+                  <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/40">
+                    <td colSpan={columns.length} className="p-0 pl-10">
+                      <ProductoUnidadesExpandidas producto={row.original} />
+                    </td>
                   </tr>
-                  {expandedIds.has(row.original.id) && (
-                    <tr className="bg-zinc-50/60 dark:bg-zinc-950/40">
-                      <td colSpan={columns.length} className="p-0 pl-10">
-                        <ProductoUnidadesExpandidas producto={row.original} />
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Technical Pagination Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 dark:border-zinc-800 p-2.5 text-xs text-zinc-500 dark:text-zinc-400 font-mono bg-zinc-50/30 dark:bg-zinc-900/30">
-        <div>
-          Mostrando {firstShown} a {lastShown} de {totalRows} activos
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="text-zinc-400">Filas:</span>
-            <select
-              value={pageSize}
-              onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-              aria-label="Filas por página"
-              className={cn(controlClasses, 'h-7 py-0 pl-2 pr-6 text-xs')}
-            >
-              {[10, 25, 50, 100].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onPageChange?.(Math.max(1, currentPage - 1))}
-              disabled={currentPage <= 1}
-              aria-label="Página anterior"
-              className="h-7 w-7 p-0"
-            >
-              <ChevronLeft aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-            <span className="px-2 text-zinc-700 dark:text-zinc-300 tabular-nums">
-              {totalPages === 0 ? 0 : currentPage} / {totalPages}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => onPageChange?.(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage >= totalPages}
-              aria-label="Página siguiente"
-              className="h-7 w-7 p-0"
-            >
-              <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+                )}
+              </Fragment>
+            ))
+          )}
+        </tbody>
+      </table>
+    </TableFrame>
   );
 }

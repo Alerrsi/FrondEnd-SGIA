@@ -269,7 +269,7 @@ export default function HistorialPrestamosPage() {
             <div className="flex items-center gap-2">
               <LoanStatusBadge estado={estado} />
               {isOverdue && loan.diasAtraso && (
-                <span className="font-mono text-xs text-rose-600 dark:text-rose-400 font-semibold tabular-nums">
+                <span className="font-mono text-xs text-danger font-semibold tabular-nums">
                   ({loan.diasAtraso}d atraso)
                 </span>
               )}
@@ -338,7 +338,7 @@ export default function HistorialPrestamosPage() {
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >
-              <FileSpreadsheet aria-hidden="true" className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+              <FileSpreadsheet aria-hidden="true" className="h-3.5 w-3.5 text-ok" />
               <span>Exportar Excel</span>
             </Button>
             <Button
@@ -349,7 +349,7 @@ export default function HistorialPrestamosPage() {
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >
-              <FileText aria-hidden="true" className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
+              <FileText aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
               <span>Exportar PDF</span>
             </Button>
           </div>
@@ -357,7 +357,7 @@ export default function HistorialPrestamosPage() {
       </div>
 
       {/* Cinta Métrica Compacta */}
-      <div className="flex flex-wrap items-center divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2 text-xs font-mono shadow-xs">
+      <div className="flex flex-wrap items-center divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2 text-xs font-mono">
         <div className="flex items-center gap-2 pr-4">
           <History aria-hidden="true" className="h-3 w-3 text-zinc-400" />
           <span className="text-zinc-400 dark:text-zinc-500">Total histórico:</span>
@@ -369,7 +369,7 @@ export default function HistorialPrestamosPage() {
         <div className="flex items-center gap-2 px-4">
           <Clock aria-hidden="true" className="h-3 w-3 text-blue-500" />
           <span className="text-zinc-400 dark:text-zinc-500">Activos en sala:</span>
-          <strong className="text-blue-600 dark:text-blue-400 tabular-nums font-semibold">
+          <strong className="text-info tabular-nums font-semibold">
             {activeCount}
           </strong>
         </div>
@@ -383,7 +383,7 @@ export default function HistorialPrestamosPage() {
             className={cn(
               'tabular-nums font-semibold',
               overdueCount > 0
-                ? 'text-rose-600 dark:text-rose-400'
+                ? 'text-danger'
                 : 'text-zinc-700 dark:text-zinc-300',
             )}
           >
@@ -401,7 +401,7 @@ export default function HistorialPrestamosPage() {
       </div>
 
       {/* TanStack Table Frame y Toolbar Unificado */}
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
+      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-zinc-200 dark:border-zinc-800 p-3 bg-zinc-50/50 dark:bg-zinc-900/50">
           <div className="flex flex-1 flex-wrap items-center gap-2">
             {/* Buscador con / shortcut */}
@@ -715,7 +715,7 @@ export default function HistorialPrestamosPage() {
                 <span className="text-xs font-semibold text-zinc-500">
                   Ítems Prestados ({selectedLoan.items?.length ?? 0})
                 </span>
-                <div className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
+                <div className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
                   {selectedLoan.items?.map((item, idx) => (
                     <div
                       key={idx}

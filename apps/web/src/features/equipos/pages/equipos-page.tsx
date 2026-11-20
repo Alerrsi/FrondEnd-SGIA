@@ -18,12 +18,10 @@ import {
   MapPin,
   MoreHorizontal,
   RefreshCw,
-  Search,
 } from 'lucide-react';
-import type { Equipo, EquipmentStatus } from '@sgia/types';
+import type { Equipo } from '@sgia/types';
 import { useDownloadTechnicalSheet, useEquipos } from '@sgia/api-client';
 
-import { Badge, type Tone } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -36,15 +34,26 @@ import { useAuth } from '@/features/auth/context/auth-context';
 import { toast } from '@/lib/toast';
 
 import { EquipmentMetricsStrip } from '../components/equipment-metrics-strip';
+import { EquipoStatusBadge } from '../components/equipo-status-badge';
 import { EquipmentSpecSheet } from '../components/equipment-spec-sheet';
 import { EditSpecsDialog } from '../components/edit-specs-dialog';
 import { calculateEquipmentLifeCycle } from '../utils/lifecycle';
 import { downloadBlob } from '../utils/download';
-import { PageHeading } from '@/components/ui/page-heading';
-import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { ErrorState } from '@/components/ui/error-state';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { MobileRow } from '@/components/ui/mobile-row';
+import { PageHeader } from '@/components/ui/page-header';
 import { SkeletonRows } from '@/components/ui/skeleton-rows';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import { ICON_BUTTON_CLASS, ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { cn } from '@/lib/cn';
 
 const SPECS_API_READY = false;
+
+const equipoCode = (item: Equipo) => item.codigo || item.sku || `EQ-${item.id.toString().padStart(4, '0')}`;
 
 export default function EquiposPage() {
   const { user } = useAuth();
@@ -157,7 +166,7 @@ export default function EquiposPage() {
         header: 'Serial / Rotulado',
         cell: ({ row }) => {
           const item = row.original;
-          const code = item.codigo || item.sku || `EQ-${item.id.toString().padStart(4, '0')}`;
+          const code = equipoCode(item);
           return (
             <div className="flex items-center gap-1.5">
               <span className={CODE_CHIP_CLASS}>
@@ -174,11 +183,11 @@ export default function EquiposPage() {
           const item = row.original;
           return (
             <div className="flex flex-col">
-              <span className="font-semibold text-xs text-zinc-900 dark:text-zinc-100 leading-tight">
+              <span className="font-medium text-sm text-zinc-900 dark:text-zinc-100 leading-tight">
                 {item.nombre}
               </span>
               {(item.marca || item.modelo) && (
-                <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+                <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
                   {[item.marca, item.modelo].filter(Boolean).join(' · ')}
                 </span>
               )}
@@ -194,16 +203,16 @@ export default function EquiposPage() {
           return (
             <div className="flex flex-col gap-0.5">
               {item.categoria ? (
-                <span className="text-xs text-zinc-700 dark:text-zinc-300">
+                <span className="text-[13px] text-zinc-700 dark:text-zinc-300">
                   {item.categoria}
                 </span>
               ) : (
-                <span className="text-xs text-zinc-400">Sin categoría</span>
+                <span className="text-[13px] text-zinc-400">Sin categoría</span>
               )}
               {item.ubicacion && (
-                <span className="flex items-center gap-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
-                  <MapPin aria-hidden="true" className="h-2.5 w-2.5 shrink-0" />
-                  <span className="truncate max-w-[130px]">{item.ubicacion}</span>
+                <span className="flex items-center gap-1 font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
+                  <MapPin aria-hidden="true" className="h-3 w-3 shrink-0" />
+                  <span className="max-w-40 truncate">{item.ubicacion}</span>
                 </span>
               )}
             </div>
@@ -215,26 +224,7 @@ export default function EquiposPage() {
         header: 'Estado Operativo',
         cell: ({ row }) => {
           const item = row.original;
-          const raw = (item.estado ?? item.status ?? 'operativo') as EquipmentStatus;
-          const toneMap: Record<EquipmentStatus, Tone> = {
-            operativo: 'available',
-            en_mantencion: 'maintenance',
-            critico: 'critical',
-            baja: 'retired',
-            en_prestamo: 'loaned',
-          };
-          const labelMap: Record<EquipmentStatus, string> = {
-            operativo: 'Operativo',
-            en_mantencion: 'En mantención',
-            critico: 'Falla crítica',
-            baja: 'De baja',
-            en_prestamo: 'En préstamo',
-          };
-          return (
-            <Badge tone={toneMap[raw] || 'neutral'} dot>
-              {labelMap[raw] || raw}
-            </Badge>
-          );
+          return <EquipoStatusBadge equipo={item} />;
         },
       },
       {
@@ -253,18 +243,18 @@ export default function EquiposPage() {
                 <span className="font-mono text-zinc-500 dark:text-zinc-400">
                   {remainingYears}a rest.
                 </span>
-                <span className="font-mono font-semibold text-zinc-700 dark:text-zinc-300">
+                <span className="font-mono font-medium text-zinc-700 dark:text-zinc-300">
                   {percentUsed}%
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-zinc-200/70 dark:bg-zinc-800 overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-[width] ${
+                  className={`h-full rounded-full ${
                     statusTone === 'critical'
-                      ? 'bg-rose-500'
+                      ? 'bg-danger'
                       : statusTone === 'warning'
-                        ? 'bg-amber-500'
-                        : 'bg-emerald-500'
+                        ? 'bg-warn'
+                        : 'bg-ok'
                   }`}
                   style={{ width: `${percentUsed}%` }}
                 />
@@ -281,7 +271,7 @@ export default function EquiposPage() {
           const manualUrl = item.user_manual_url ?? item.specs?.user_manual_url;
           if (!manualUrl) {
             return (
-              <span className="text-xs text-zinc-400 dark:text-zinc-500 italic">
+              <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
                 Pendiente
               </span>
             );
@@ -292,11 +282,11 @@ export default function EquiposPage() {
               target="_blank"
               rel="noopener noreferrer"
               title="Abrir manual en AWS S3"
-              className="inline-flex items-center gap-1 font-mono text-xs text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:underline"
+              className="inline-flex items-center gap-1 whitespace-nowrap text-[13px] text-accent hover:underline"
             >
-              <FileText aria-hidden="true" className="h-3 w-3 text-red-600" />
+              <FileText aria-hidden="true" className="h-3.5 w-3.5" />
               <span>PDF S3</span>
-              <ExternalLink aria-hidden="true" className="h-2.5 w-2.5" />
+              <ExternalLink aria-hidden="true" className="h-3 w-3" />
             </a>
           );
         },
@@ -313,7 +303,6 @@ export default function EquiposPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleOpenSheet(item)}
-                className="h-7 px-2 text-xs font-medium"
                 aria-label={`Ver ficha de ${item.nombre}`}
               >
                 Ver ficha
@@ -321,15 +310,13 @@ export default function EquiposPage() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
+                  <button
                     type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                    className={ICON_BUTTON_CLASS}
                     aria-label={`Opciones para ${item.nombre}`}
                   >
                     <MoreHorizontal aria-hidden="true" className="h-4 w-4" />
-                  </Button>
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => handleOpenSheet(item)}>
@@ -373,135 +360,142 @@ export default function EquiposPage() {
     },
   });
 
-  return (
-    <div className="flex flex-col gap-4">
-      {/* Cabecera de Página */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeading icon={Cpu} title="Fichas técnicas de equipos">
-          Gestión de especificaciones de hardware, ciclo de vida útil y manuales de activos críticos.
-        </PageHeading>
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch
+        value={globalFilter}
+        onChange={setGlobalFilter}
+        placeholder="Buscar por serial, modelo, marca o ubicación…"
+        label="Buscar equipos"
+      />
+      <select
+        value={categoryFilter}
+        onChange={(e) => setCategoryFilter(e.target.value)}
+        className={FILTER_CONTROL_CLASS}
+        aria-label="Filtrar por categoría"
+      >
+        <option value="todos">Todas las categorías</option>
+        {categories.map((c) => (
+          <option key={c} value={c}>
+            {c}
+          </option>
+        ))}
+      </select>
+      <select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        className={FILTER_CONTROL_CLASS}
+        aria-label="Filtrar por estado operativo"
+      >
+        <option value="todos">Todos los estados</option>
+        <option value="operativo">Operativo</option>
+        <option value="en_mantencion">En mantención</option>
+        <option value="critico">Falla crítica</option>
+        <option value="en_prestamo">En préstamo</option>
+        <option value="baja">De baja</option>
+      </select>
+      <span className="font-mono text-[13px] text-zinc-500 dark:text-zinc-400 sm:ml-auto">
+        {filteredData.length} {filteredData.length === 1 ? 'equipo' : 'equipos'}
+      </span>
+    </TableToolbar>
+  );
 
-        <div className="flex items-center gap-2">
+  const pageRows = table.getRowModel().rows;
+
+  const footer =
+    table.getPageCount() > 1 ? (
+      <>
+        <span>
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <Button variant="secondary" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            Anterior
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            Siguiente
+          </Button>
+        </div>
+      </>
+    ) : undefined;
+
+  const mobile =
+    !isLoading && !isError && pageRows.length > 0 ? (
+      <ul>
+        {pageRows.map((row) => (
+          <MobileRow
+            key={row.id}
+            title={row.original.nombre}
+            meta={<span className="font-code">{equipoCode(row.original)}</span>}
+            trailing={<EquipoStatusBadge equipo={row.original} />}
+            onClick={() => handleOpenSheet(row.original)}
+          />
+        ))}
+      </ul>
+    ) : undefined;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Cpu}
+        title="Fichas técnicas de equipos"
+        description="Especificaciones, ciclo de vida útil y manuales de los equipos del pañol."
+        actions={
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => refetch()}
-            className="h-8 gap-1.5 text-xs"
             aria-label="Actualizar catálogo de equipos"
           >
             <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
-            <span>Actualizar</span>
+            Actualizar
           </Button>
-        </div>
-      </div>
+        }
+      />
 
-      {/* Cinta Métrica Compacta (Metric Strip) */}
       <EquipmentMetricsStrip equipos={equipos} />
 
-      {/* Contenedor Unificado: Toolbar + TanStack Table */}
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs overflow-hidden">
-        {/* Toolbar Unificado */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 p-3 sm:px-4 bg-zinc-50/60 dark:bg-zinc-950/40">
-          <div className="flex flex-1 items-center gap-2.5">
-            <div className="relative flex-1 sm:max-w-xs">
-              <Search aria-hidden="true" className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-400" />
-              <input
-                type="text"
-                placeholder="Buscar por serial, modelo, marca o ubicación…"
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
-                aria-label="Buscar equipos"
-              />
-            </div>
-
-            {/* Filtro por Categoría */}
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none shadow-xs"
-              aria-label="Filtrar por categoría"
-            >
-              <option value="todos">Todas las categorías</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-
-            {/* Filtro por Estado */}
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 focus:outline-none shadow-xs"
-              aria-label="Filtrar por estado operativo"
-            >
-              <option value="todos">Todos los estados</option>
-              <option value="operativo">Operativo</option>
-              <option value="en_mantencion">En mantención</option>
-              <option value="critico">Falla crítica</option>
-              <option value="en_prestamo">En préstamo</option>
-              <option value="baja">De baja</option>
-            </select>
-          </div>
-
-          <div className="flex items-center justify-between sm:justify-end gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-            <span className="font-mono tabular-nums">
-              {filteredData.length} {filteredData.length === 1 ? 'equipo' : 'equipos'}
-            </span>
-          </div>
-        </div>
-
-        {/* Tabla de Alta Densidad */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
+      <TableFrame toolbar={toolbar} footer={footer} mobile={mobile}>
+        {isError ? (
+          <ErrorState className="m-4">Error al cargar los equipos. Por favor, reintenta más tarde.</ErrorState>
+        ) : (
+          <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
+            <thead className={TABLE_HEAD_CLASS}>
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr
-                  key={headerGroup.id}
-                  className={TABLE_HEAD_CLASS}
-                >
-                  {headerGroup.headers.map((header) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header, index) => (
                     <th
                       key={header.id}
-                      className="px-4 py-2.5 font-medium text-xs text-zinc-500 dark:text-zinc-400 select-none"
+                      className={cn(
+                        TH_CLASS,
+                        'select-none',
+                        header.column.id === 'acciones' && 'text-right',
+                        index === 0 && `${STICKY_COL_CLASS} max-md:bg-zinc-50`,
+                      )}
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
                   ))}
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-zinc-200/70 dark:divide-zinc-800">
+            <tbody>
               {isLoading ? (
                 <SkeletonRows columns={columns.length} label="Cargando catálogo de equipamiento técnico…" />
-              ) : isError ? (
-                <tr>
-                  <td colSpan={columns.length} className="py-12 text-center text-rose-500">
-                    Error al cargar los equipos. Por favor, reintenta más tarde.
-                  </td>
-                </tr>
-              ) : table.getRowModel().rows.length === 0 ? (
+              ) : pageRows.length === 0 ? (
                 <tr>
                   <td colSpan={columns.length} className={`py-12 ${STATE_TEXT_CLASS}`}>
                     No se encontraron equipos que coincidan con los filtros aplicados.
                   </td>
                 </tr>
               ) : (
-                table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3 align-middle">
+                pageRows.map((row) => (
+                  <tr key={row.id} className={ROW_CLASS}>
+                    {row.getVisibleCells().map((cell, index) => (
+                      <td key={cell.id} className={cn(TD_CLASS, 'align-middle', index === 0 && STICKY_COL_CLASS)}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
@@ -510,37 +504,8 @@ export default function EquiposPage() {
               )}
             </tbody>
           </table>
-        </div>
-
-        {/* Paginación Compacta */}
-        {table.getPageCount() > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-zinc-200 dark:border-zinc-800 text-xs">
-            <span className="text-zinc-500 dark:text-zinc-400">
-              Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-            </span>
-            <div className="flex items-center gap-1.5">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="h-7 text-xs"
-              >
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="h-7 text-xs"
-              >
-                Siguiente
-              </Button>
-            </div>
-          </div>
         )}
-      </div>
+      </TableFrame>
 
       {/* Drawer Lateral para Inspección de Ficha y Ciclo de Vida */}
       <EquipmentSpecSheet

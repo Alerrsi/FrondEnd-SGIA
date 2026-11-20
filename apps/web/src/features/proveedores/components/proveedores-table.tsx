@@ -1,17 +1,6 @@
 import { useState } from 'react';
 import { SUPPLIER_AREAS, SUPPLIER_AREA_LABELS, type Supplier, type SupplierArea } from '@sgia/types';
-import {
-  Building2,
-  Check,
-  Edit,
-  Mail,
-  MoreHorizontal,
-  Pause,
-  Phone,
-  Search,
-  Tag,
-  Trash2,
-} from 'lucide-react';
+import { Building2, Check, Edit, Mail, MoreHorizontal, Pause, Phone, Tag, Trash2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -22,8 +11,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SupplierAreaBadges } from '@/features/proveedores/components/supplier-area-badges';
-import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { MobileRow } from '@/components/ui/mobile-row';
 import { SkeletonList } from '@/components/ui/skeleton-list';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import {
+  ICON_BUTTON_CLASS,
+  ROW_CLASS,
+  STICKY_COL_CLASS,
+  TD_CLASS,
+  TH_CLASS,
+} from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 
 export interface ProveedoresTableProps {
   suppliers: Supplier[];
@@ -41,10 +42,8 @@ export interface ProveedoresTableProps {
   onSelect?: (supplier: Supplier) => void;
 }
 
-const thClasses =
-  'px-3 py-2 text-left text-xs font-semibold text-zinc-400 dark:text-zinc-500';
-const tdClasses =
-  'px-3 py-2.5 text-sm text-zinc-700 dark:text-zinc-300 whitespace-nowrap';
+const thClasses = TH_CLASS;
+const tdClasses = `${TD_CLASS} whitespace-nowrap`;
 
 export function ProveedoresTable({
   suppliers,
@@ -69,69 +68,75 @@ export function ProveedoresTable({
 
   const categories = [...new Set(suppliers.map((s) => s.category).filter(Boolean))] as string[];
 
-  return (
-    <div className="flex flex-col gap-3">
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2 shadow-xs">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search aria-hidden="true" className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
-          <input
-            type="text"
-            placeholder="Buscar proveedor por nombre, contacto o correo…"
-            value={internalSearch}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="w-full h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 pl-8 pr-3 text-xs text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch
+        value={internalSearch}
+        onChange={handleSearch}
+        placeholder="Buscar proveedor por nombre, contacto o correo…"
+      />
+      {onAreaFilterChange && (
+        <select
+          aria-label="Filtrar por área"
+          value={areaFilter}
+          onChange={(e) => onAreaFilterChange(e.target.value as SupplierArea | '')}
+          className={FILTER_CONTROL_CLASS}
+        >
+          <option value="">Todas las áreas</option>
+          {SUPPLIER_AREAS.map((area) => (
+            <option key={area} value={area}>
+              {SUPPLIER_AREA_LABELS[area]}
+            </option>
+          ))}
+        </select>
+      )}
+      {categories.length > 0 && (
+        <select
+          aria-label="Filtrar por categoría"
+          value={categoryFilter}
+          onChange={(e) => onCategoryFilterChange?.(e.target.value)}
+          className={FILTER_CONTROL_CLASS}
+        >
+          <option value="">Todas las categorías</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      )}
+      {isFetching && <span className="text-[13px] text-zinc-500 dark:text-zinc-400">Buscando…</span>}
+    </TableToolbar>
+  );
+
+  const mobile =
+    !isLoading && suppliers.length > 0 ? (
+      <ul>
+        {suppliers.map((supplier) => (
+          <MobileRow
+            key={supplier.id}
+            title={supplier.name}
+            meta={supplier.contact_name ? `${supplier.contact_name} · ${supplier.email}` : supplier.email}
+            trailing={
+              <Badge tone={supplier.is_active !== false ? 'success' : 'neutral'} dot>
+                {supplier.is_active !== false ? 'activo' : 'suspendido'}
+              </Badge>
+            }
+            onClick={() => onEdit(supplier)}
           />
-        </div>
+        ))}
+      </ul>
+    ) : undefined;
 
-        {onAreaFilterChange && (
-          <select
-            aria-label="Filtrar por área"
-            value={areaFilter}
-            onChange={(e) => onAreaFilterChange(e.target.value as SupplierArea | '')}
-            className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
-          >
-            <option value="">Todas las áreas</option>
-            {SUPPLIER_AREAS.map((area) => (
-              <option key={area} value={area}>
-                {SUPPLIER_AREA_LABELS[area]}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {categories.length > 0 && (
-          <select
-            aria-label="Filtrar por categoría"
-            value={categoryFilter}
-            onChange={(e) => onCategoryFilterChange?.(e.target.value)}
-            className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 text-xs text-zinc-700 dark:text-zinc-300 focus:border-zinc-400 dark:focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600"
-          >
-            <option value="">Todas las categorías</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {isFetching && (
-          <span className="text-xs text-zinc-400 dark:text-zinc-500 font-mono animate-pulse">
-            Buscando…
-          </span>
-        )}
-      </div>
-
-      {/* Table */}
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
+  return (
+    <TableFrame toolbar={toolbar} mobile={mobile}>
         {isLoading ? (
           <SkeletonList label="Cargando catálogo de proveedores…" columns={4} />
         ) : (
-          <table className="w-full">
+          <table className="w-full min-w-[960px]">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
-                <th className={thClasses}>Empresa</th>
+                <th className={`${thClasses} ${STICKY_COL_CLASS} max-md:bg-zinc-50`}>Empresa</th>
                 <th className={thClasses}>Contacto</th>
                 <th className={thClasses}>Correo</th>
                 <th className={thClasses}>Teléfono</th>
@@ -141,7 +146,7 @@ export function ProveedoresTable({
                 <th className={`${thClasses} text-right`}>Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody>
               {suppliers.length === 0 ? (
                 <tr>
                   <td
@@ -153,11 +158,8 @@ export function ProveedoresTable({
                 </tr>
               ) : (
                 suppliers.map((supplier) => (
-                  <tr
-                    key={supplier.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                  >
-                    <td className={tdClasses}>
+                  <tr key={supplier.id} className={ROW_CLASS}>
+                    <td className={`${tdClasses} ${STICKY_COL_CLASS}`}>
                       <div className="flex items-center gap-2">
                         <Building2 aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
                         <span className="font-medium text-zinc-900 dark:text-zinc-100">
@@ -166,18 +168,18 @@ export function ProveedoresTable({
                       </div>
                     </td>
                     <td className={tdClasses}>
-                      <span className="text-xs text-zinc-600 dark:text-zinc-400">
+                      <span className="text-[13px] text-zinc-600 dark:text-zinc-400">
                         {supplier.contact_name || '—'}
                       </span>
                     </td>
                     <td className={tdClasses}>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                      <span className="inline-flex items-center gap-1 text-[13px] text-zinc-600 dark:text-zinc-400">
                         <Mail aria-hidden="true" className="h-3 w-3" />
                         {supplier.email}
                       </span>
                     </td>
                     <td className={tdClasses}>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs text-zinc-500">
+                      <span className="inline-flex items-center gap-1 font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
                         <Phone aria-hidden="true" className="h-3 w-3" />
                         {supplier.phone || '—'}
                       </span>
@@ -191,7 +193,7 @@ export function ProveedoresTable({
                           {supplier.category}
                         </Badge>
                       ) : (
-                        <span className="text-xs text-zinc-400">—</span>
+                        <span className="text-[13px] text-zinc-400">—</span>
                       )}
                     </td>
                     <td className={tdClasses}>
@@ -207,8 +209,9 @@ export function ProveedoresTable({
                         <button
                           type="button"
                           title="Editar proveedor"
+                          aria-label={`Editar ${supplier.name}`}
                           onClick={() => onEdit(supplier)}
-                          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                          className={ICON_BUTTON_CLASS}
                         >
                           <Edit aria-hidden="true" className="h-3.5 w-3.5" />
                         </button>
@@ -218,7 +221,8 @@ export function ProveedoresTable({
                             <button
                               type="button"
                               title="Más acciones"
-                              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                              aria-label={`Más acciones para ${supplier.name}`}
+                              className={ICON_BUTTON_CLASS}
                             >
                               <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
                             </button>
@@ -242,7 +246,7 @@ export function ProveedoresTable({
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                   onClick={() => onDelete(supplier)}
-                                  className="text-red-600 dark:text-red-400"
+                                  className="text-danger focus:text-danger hover:text-danger"
                                 >
                                   <Trash2 aria-hidden="true" className="h-3.5 w-3.5 mr-2" />
                                   Eliminar proveedor
@@ -259,7 +263,6 @@ export function ProveedoresTable({
             </tbody>
           </table>
         )}
-      </div>
-    </div>
+    </TableFrame>
   );
 }

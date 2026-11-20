@@ -99,24 +99,24 @@ export function SendPurchaseRequestDialog({ open, onClose, request }: SendPurcha
           )}
         />
         {errors.areas && (
-          <p className="text-xs text-rose-600 dark:text-rose-400">{errors.areas.message}</p>
+          <p className="text-xs text-danger">{errors.areas.message}</p>
         )}
 
-        <div className="rounded-md border border-zinc-200 bg-zinc-50/60 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-950/40">
-          <p className="text-xs text-zinc-500">
+        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-[13px] dark:border-zinc-800 dark:bg-zinc-950/40">
+          <p className="text-zinc-500 dark:text-zinc-400">
             Destinatarios estimados: {recipients.length}
           </p>
           {areas.length > 0 && recipients.length === 0 && (
-            <p className="mt-1 text-amber-700 dark:text-amber-400">
+            <p className="mt-1 text-warn">
               No hay proveedores activos en esas áreas: el envío será rechazado.
             </p>
           )}
           {recipients.length > 0 && (
             <ul className="mt-2 max-h-32 space-y-0.5 overflow-y-auto">
               {recipients.map((s) => (
-                <li key={s.id} className="flex justify-between gap-2">
+                <li key={s.id} className="flex min-w-0 justify-between gap-2">
                   <span className="truncate text-zinc-700 dark:text-zinc-300">{s.name}</span>
-                  <span className="font-mono text-zinc-500">{s.email}</span>
+                  <span className="truncate text-zinc-500 dark:text-zinc-400">{s.email}</span>
                 </li>
               ))}
             </ul>

@@ -19,7 +19,7 @@ import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 const inputClasses =
   FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = 'mt-1 text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'mt-1 text-xs text-danger';
 const empty: StoreroomFormValues = { name: '', code: '', general_location: '' };
 
 export function StoreroomFormDialog({
@@ -85,21 +85,21 @@ export function StoreroomFormDialog({
           <label htmlFor="sr-name" className={labelClasses}>
             Nombre
           </label>
-          <input id="sr-name" disabled={pending} aria-invalid={Boolean(errors.name) || undefined} className={`${inputClasses} mt-1.5 font-sans`} {...register('name')} />
+          <input id="sr-name" disabled={pending} aria-invalid={Boolean(errors.name) || undefined} className={`${inputClasses} mt-1.5`} {...register('name')} />
           {errors.name && <p className={errorClasses}>{errors.name.message}</p>}
         </div>
         <div>
           <label htmlFor="sr-code" className={labelClasses}>
             Código
           </label>
-          <input id="sr-code" placeholder="PAN-TEMUCO" disabled={pending} aria-invalid={Boolean(errors.code) || undefined} className={`${inputClasses} mt-1.5`} {...register('code')} />
+          <input id="sr-code" placeholder="PAN-TEMUCO" disabled={pending} aria-invalid={Boolean(errors.code) || undefined} className={`${inputClasses} mt-1.5 font-code`} {...register('code')} />
           {errors.code && <p className={errorClasses}>{errors.code.message}</p>}
         </div>
         <div>
           <label htmlFor="sr-loc" className={labelClasses}>
             Ubicación general (opcional)
           </label>
-          <input id="sr-loc" disabled={pending} className={`${inputClasses} mt-1.5 font-sans`} {...register('general_location')} />
+          <input id="sr-loc" disabled={pending} className={`${inputClasses} mt-1.5`} {...register('general_location')} />
           {errors.general_location && <p className={errorClasses}>{errors.general_location.message}</p>}
         </div>
         <DialogFooter>

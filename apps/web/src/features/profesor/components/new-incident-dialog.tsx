@@ -27,7 +27,7 @@ import { FORM_CONTROL_CLASS } from "@/components/ui/form-control";
 const inputClasses =
   FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = "mt-1 text-xs text-rose-600 dark:text-rose-400";
+const errorClasses = "mt-1 text-xs text-danger";
 
 interface NewIncidentDialogProps {
   open: boolean;
@@ -173,7 +173,7 @@ export function NewIncidentDialog({
             {lookupCode && unit.data && (
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                 {unit.data.product?.name ?? "Equipo"} ·{" "}
-                <span className="font-mono">{unit.data.code}</span>
+                <span className="font-code">{unit.data.code}</span>
               </p>
             )}
             {lookupCode && unit.isError && (

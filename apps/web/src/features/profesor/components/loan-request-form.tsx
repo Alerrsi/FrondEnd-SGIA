@@ -24,14 +24,12 @@ import {
 import { apiErrorToMessage, apiFieldErrors } from "@/lib/api-error";
 import { toast } from "@/lib/toast";
 import { SectionTitle } from '@/components/ui/section-title';
-import { TABLE_HEAD_CLASS } from "@/components/ui/typography";
-import { FIELD_LABEL_CLASS } from "@/components/ui/typography";
-import { FORM_CONTROL_CLASS } from "@/components/ui/form-control";
+import { FIELD_LABEL_CLASS, TABLE_HEAD_CLASS } from "@/components/ui/typography";
+import { FORM_CONTROL_BASE_CLASS, FORM_CONTROL_CLASS } from "@/components/ui/form-control";
 
-const inputClasses =
-  FORM_CONTROL_CLASS;
+const inputClasses = FORM_CONTROL_CLASS;
 const labelClasses = FIELD_LABEL_CLASS;
-const errorClasses = "mt-1 text-xs text-rose-600 dark:text-rose-400";
+const errorClasses = "mt-1 text-xs text-danger";
 const toId = (v: unknown) => (v === "" || v == null ? Number.NaN : Number(v));
 
 /** Nueva solicitud remota de préstamo: datos de la actividad, pañol, laboratorio e insumos. */
@@ -138,7 +136,7 @@ export function LoanRequestForm() {
       <form
         onSubmit={onSubmit}
         noValidate
-        className="flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-xs"
+        className="flex min-w-0 flex-col gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
       >
         <SectionTitle>Datos de la actividad</SectionTitle>
 
@@ -226,7 +224,7 @@ export function LoanRequestForm() {
             {errors.due_date ? (
               <p className={errorClasses}>{errors.due_date.message}</p>
             ) : (
-              <p className="mt-1 text-xs text-zinc-400">
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                 Si lo dejas vacío, el mismo día.
               </p>
             )}
@@ -322,33 +320,33 @@ export function LoanRequestForm() {
           </div>
         </div>
 
-        <fieldset className="flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
+        <fieldset className="flex min-w-0 flex-col gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 p-3">
           <legend className={`${labelClasses} px-1`}>Lista de insumos</legend>
           {items.fields.length === 0 ? (
-            <p className="text-xs text-zinc-400">
+            <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
               Agrega productos desde el catálogo.
             </p>
           ) : (
-            <table className="w-full border-collapse text-left text-xs">
+            <table className="w-full border-collapse text-left text-[13px]">
               <thead className={TABLE_HEAD_CLASS}>
                 <tr>
-                  <th className="py-1 font-medium">Producto</th>
-                  <th className="w-24 py-1 font-medium">Cantidad</th>
-                  <th className="w-8" />
+                  <th className="px-2 py-1.5 font-medium">Producto</th>
+                  <th className="w-24 px-2 py-1.5 font-medium">Cantidad</th>
+                  <th className="w-8"><span className="sr-only">Quitar</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                 {items.fields.map((field, index) => {
                   const rowError = errors.items?.[index]?.quantity;
                   return (
                     <tr key={field.id} className="align-top">
-                      <td className="py-1.5 pr-2 text-zinc-800 dark:text-zinc-200">
+                      <td className="px-2 py-1.5 text-zinc-800 dark:text-zinc-200">
                         {field.name}
-                        <span className="ml-1 font-mono text-xs text-zinc-400">
+                        <span className="ml-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
                           ({field.available} disp.)
                         </span>
                       </td>
-                      <td className="py-1.5">
+                      <td className="px-2 py-1.5">
                         <input
                           type="number"
                           min={1}
@@ -386,7 +384,7 @@ export function LoanRequestForm() {
           {shortages.length > 0 && (
             <p
               role="alert"
-              className="text-xs text-amber-600 dark:text-amber-400"
+              className="text-xs text-warn"
             >
               Con este pañol ya no alcanzan: {shortages.join(", ")}. Ajusta las
               cantidades.
@@ -409,7 +407,7 @@ export function LoanRequestForm() {
             {...register("notes")}
             disabled={pending}
             rows={2}
-            className={`${inputClasses} mt-1.5 h-auto py-1.5 font-sans`}
+            className={`${FORM_CONTROL_BASE_CLASS} mt-1.5 py-1.5`}
           />
           {errors.notes && (
             <p className={errorClasses}>{errors.notes.message}</p>

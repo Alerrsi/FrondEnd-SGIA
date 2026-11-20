@@ -1,6 +1,6 @@
 # Rediseño de la interfaz web «Trazo»
 
-**Estado: en implementación (19 nov 2026), fases 1 a 4 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
+**Estado: en implementación (19 nov 2026), fases 1 a 6 hechas.** Rama `feat/rediseno-zed` en `FrondEnd-SGIA`. Solo frontend web (`apps/web`); la app móvil y el backend no cambian. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo»).
 
 Plan escrito con el skill `design-taste-frontend` (tasteskill 2.5). Ese skill está hecho para sitios de empresa; aquí se usan su sistema de tokens, tipografía, botones, formularios, movimiento, accesibilidad y presupuesto de rendimiento. Lo que es solo de páginas de marketing (fotografías, una sección por pantalla, «momentos», efectos de shader) no aplica a un panel de operación y queda fuera (ver «Fuera de alcance»).
 
@@ -189,8 +189,8 @@ Tokens de `references/motion.md` del skill, como variables CSS en `index.css`:
 
 Chart.js se queda (analítica, presupuestos, monitoreo). Nuevo `apps/web/src/lib/chart-theme.ts`, único lugar de estilos de gráfico:
 
-- Colores leídos de las variables CSS (cambian con el tema sin recrear el gráfico): serie principal `--accent`; series secundarias en una rampa neutra; estados con los tonos de la sección 4. Paleta categórica validada con el skill `dataviz` antes de usarla.
-- Rejilla de 1px `--line` solo en el eje de valores; ejes sin línea; ticks 12px Geist Mono.
+- Colores de `lib/chart-theme.ts` según el tema: serie principal en el acento (burdeo; rosa en oscuro), segunda medida en neutro, estados con sus tonos. Paleta categórica de 6 colores (la de referencia del skill `dataviz` sin violeta ni rojo), validada con `validate_palette.js`: CVD ΔE 9,1 claro / 8,4 oscuro, visión normal ΔE 19,6 / 19,3. En claro tres colores quedan bajo 3:1 contra el fondo, así que los gráficos de categorías llevan siempre leyenda y tooltip. Los colores no se reciclan: desde la sexta porción, torta/dona/polar agrupan en «Otros».
+- Rejilla de 1px solo en el eje de valores; ejes sin línea; ticks 12px Geist con cifras tabulares; el área polar sin cifras en los anillos (el valor está en el tooltip).
 - Leyenda arriba a la izquierda; tooltip con fondo `--surface`, borde `--line`, sin sombra fuerte.
 - Animación de 200ms o ninguna con movimiento reducido.
 - Cada gráfico dentro de una celda con título (`SectionTitle`), cifra principal y el botón de ampliar actual (`ChartExpandButton`).
@@ -255,17 +255,17 @@ Una fase = un commit en `feat/rediseno-zed`, con `pnpm typecheck` y `pnpm --filt
 
 ### Fase 5 — Pantallas por módulo
 Cada pantalla: `PageHeading` + acciones, `Metric` en vez de cinta hecha a mano, `DataTable`, modales con el estándar nuevo.
-- [ ] Inventario, Ubicaciones, Equipos, Alertas.
-- [ ] Préstamos: menú, cola, mostrador, historial.
-- [ ] Compras: hub, solicitudes (+ detalle), cotizaciones, órdenes (+ trazabilidad), presupuestos, facturas, proveedores.
-- [ ] Informes, Mantenciones, Estudiantes.
-- [ ] Profesor: catálogo, mis solicitudes, mis informes.
-- [ ] Administración: usuarios, pañoles, auditoría, monitoreo.
-- [ ] Login y pantallas de error.
+- [x] Inventario, Ubicaciones, Equipos, Alertas.
+- [x] Préstamos: menú, cola, mostrador, historial.
+- [x] Compras: hub, solicitudes (+ detalle), cotizaciones, órdenes (+ trazabilidad), presupuestos, facturas, proveedores.
+- [x] Informes, Mantenciones, Estudiantes.
+- [x] Profesor: catálogo, mis solicitudes, mis informes.
+- [x] Administración: usuarios, pañoles, auditoría, monitoreo.
+- [x] Login y pantallas de error.
 
 ### Fase 6 — Gráficos
-- [ ] `chart-theme.ts` y paleta validada con `dataviz`.
-- [ ] Analítica, presupuestos y monitoreo con el tema nuevo; Chart.js en carga diferida.
+- [x] `chart-theme.ts` y paleta validada con `dataviz`.
+- [x] Analítica (cabecera, cinta métrica en celdas, zona de soltado, tarjetas sin celeste ni pulsos), presupuestos y monitoreo con el tema nuevo; Chart.js solo entra con esas pantallas (rutas diferidas).
 
 ### Fase 7 — Responsivo, rendimiento y accesibilidad
 - [ ] Revisión a 320, 390, 768, 1024 y 1440 de cada pantalla, con capturas (`shoot.mjs` del skill sobre el servidor de Vite).

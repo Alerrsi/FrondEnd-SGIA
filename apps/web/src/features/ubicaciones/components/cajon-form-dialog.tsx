@@ -37,7 +37,7 @@ const EMPTY: CajonFormValues = { codigo: '', descripcion: '' };
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="text-xs font-medium text-red-600 dark:text-red-400">{message}</span>;
+  return <span className="text-xs font-medium text-danger">{message}</span>;
 }
 
 /** Alta de un cajón o gaveta en la sala, con la vista previa del código que irá en su etiqueta. */
@@ -122,7 +122,7 @@ export function CajonFormDialog({
               </span>
             )}
             {tooLong ? (
-              <span className="text-xs font-medium text-red-600 dark:text-red-400" role="alert">
+              <span className="text-xs font-medium text-danger" role="alert">
                 El código del cajón tiene {normalized.length} caracteres; el máximo es {CAJON_CODE_MAX}{' '}
                 para que quepa en la etiqueta.
               </span>

@@ -55,20 +55,20 @@ export function LoanRequestDetailSheet({
           <>
             <SheetHeader>
               <SheetTitle>
-                <span className="font-mono">{loan.codigo ?? loan.code}</span>
+                <span className="font-code">{loan.codigo ?? loan.code}</span>
                 <LoanRequestStatusBadge estado={String(loan.estado)} />
               </SheetTitle>
-              <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+              <SheetDescription>
                 Solicitud de{" "}
                 {loan.teacher?.name ?? loan.solicitanteNombre ?? "profesor"}
               </SheetDescription>
             </SheetHeader>
 
-            <dl className="grid grid-cols-2 gap-3">
+            <dl className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
               {rows.map(([label, value]) => (
                 <div key={label}>
                   <dt className={labelClasses}>{label}</dt>
-                  <dd className="text-xs text-zinc-800 dark:text-zinc-200">
+                  <dd className="text-sm text-zinc-900 dark:text-zinc-100">
                     {value}
                   </dd>
                 </div>
@@ -78,7 +78,7 @@ export function LoanRequestDetailSheet({
             {(loan.motivoRechazo ?? loan.rejection_reason) && (
               <p
                 role="alert"
-                className="rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-2.5 text-xs text-rose-700 dark:text-rose-300"
+                className="rounded-md bg-danger-bg p-2.5 text-[13px] text-danger"
               >
                 Motivo del rechazo:{" "}
                 {loan.motivoRechazo ?? loan.rejection_reason}
@@ -87,37 +87,39 @@ export function LoanRequestDetailSheet({
 
             <div>
               <h3 className={labelClasses}>Insumos solicitados</h3>
-              <table className="mt-1 w-full border-collapse text-left text-xs">
+              <div className="mt-1.5 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
+              <table className="w-full border-collapse text-left text-[13px]">
                 <thead className={TABLE_HEAD_CLASS}>
                   <tr>
-                    <th className="py-1.5 font-medium">Producto</th>
-                    <th className="py-1.5 text-right font-medium">Cantidad</th>
+                    <th className="px-3 py-2 font-medium">Producto</th>
+                    <th className="px-3 py-2 text-right font-medium">Cantidad</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                   {loan.items.map((item, index) => (
                     <tr key={item.id ?? index}>
-                      <td className="py-1.5 text-zinc-800 dark:text-zinc-200">
+                      <td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
                         {item.nombre ?? item.productoNombre}
                         {item.codigoBarras && (
-                          <span className="ml-1 font-mono text-xs text-zinc-400">
+                          <span className="ml-1.5 font-code text-xs text-zinc-500 dark:text-zinc-400">
                             {item.codigoBarras}
                           </span>
                         )}
                       </td>
-                      <td className="py-1.5 text-right font-mono tabular-nums">
+                      <td className="px-3 py-2 text-right font-mono">
                         {item.cantidad}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
 
             {(loan.notes ?? loan.observaciones) && (
               <div>
                 <h3 className={labelClasses}>Notas</h3>
-                <p className="text-xs text-zinc-700 dark:text-zinc-300">
+                <p className="text-[13px] text-zinc-700 dark:text-zinc-300">
                   {loan.notes ?? loan.observaciones}
                 </p>
               </div>
@@ -125,7 +127,8 @@ export function LoanRequestDetailSheet({
 
             {canCancelLoanRequest(loan) && (
               <Button
-                variant="ghost" className="self-start text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                variant="secondary"
+                className="self-start"
                 onClick={() => onCancelRequest(loan)}
               >
                 <Trash2 aria-hidden="true" className="h-4 w-4" />

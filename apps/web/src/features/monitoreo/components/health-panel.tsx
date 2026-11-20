@@ -51,7 +51,7 @@ export function HealthPanel() {
           <Skeleton className="h-10" />
         </div>
       ) : isError || !data ? (
-        <p role="alert" className="p-4 text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="p-4 text-xs text-danger">
           No se pudo consultar el estado: {apiErrorToMessage(error)}
         </p>
       ) : (

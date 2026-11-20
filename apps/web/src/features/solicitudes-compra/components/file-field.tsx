@@ -3,6 +3,7 @@ import { FileText, FileUp, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { acceptAttribute } from '@/features/solicitudes-compra/lib/quotation-upload-schema';
+import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
 import { cn } from '@/lib/cn';
 
 interface FileFieldProps {
@@ -37,11 +38,9 @@ export function FileField({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 rounded-md border border-dashed px-3 py-2 text-xs',
-        invalid
-          ? 'border-rose-300 dark:border-rose-800'
-          : 'border-zinc-300 dark:border-zinc-700',
-        'bg-zinc-50/50 dark:bg-zinc-950/40',
+        'flex flex-wrap items-center gap-2 rounded-md border border-dashed px-3 py-2 text-[13px]',
+        invalid ? 'border-danger' : 'border-zinc-300 dark:border-zinc-700',
+        'bg-zinc-50 dark:bg-zinc-950/40',
       )}
     >
       <input
@@ -56,28 +55,28 @@ export function FileField({
       {file ? (
         <>
           <FileText aria-hidden="true" className="h-4 w-4 shrink-0 text-zinc-400" />
-          <span className="flex-1 truncate font-mono text-zinc-800 dark:text-zinc-200">
+          <span className="min-w-0 flex-1 truncate text-zinc-800 dark:text-zinc-200">
             {file.name}
           </span>
-          <span className="font-mono text-zinc-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+          <span className="font-mono text-zinc-500 dark:text-zinc-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
           <button
             type="button"
             aria-label="Quitar archivo"
             onClick={clear}
             disabled={disabled}
-            className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
+            className={ICON_BUTTON_CLASS}
           >
             <X aria-hidden="true" className="h-3.5 w-3.5" />
           </button>
         </>
       ) : (
         <>
-          <span className="flex-1 font-mono text-xs text-zinc-500">
+          <span className="min-w-0 flex-1 text-xs text-zinc-500 dark:text-zinc-400">
             {hint}
           </span>
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="sm"
             disabled={disabled}
             onClick={() => inputRef.current?.click()}

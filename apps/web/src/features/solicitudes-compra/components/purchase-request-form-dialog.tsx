@@ -20,18 +20,20 @@ import {
 } from '@/features/solicitudes-compra/lib/purchase-request-form-schema';
 import { apiErrorToMessage, apiFieldErrors } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { FILTER_CONTROL_CLASS, FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
+import { STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 const inputClasses =
   FORM_CONTROL_CLASS;
 
 const legendClasses =
-  'px-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5';
+  'px-1 text-[13px] font-medium text-zinc-600 dark:text-zinc-300 inline-flex items-center gap-1.5';
 
 const fieldsetClasses =
-  'rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/50';
+  'rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 space-y-3';
 
-const errorClasses = 'text-xs text-rose-600 dark:text-rose-400';
+const errorClasses = 'text-xs text-danger';
 
 interface PurchaseRequestFormDialogProps {
   open: boolean;
@@ -194,12 +196,12 @@ export function PurchaseRequestFormDialog({
                         append({ product_id: p.id, product_name: productName(p), quantity: 1 });
                         setSearch('');
                       }}
-                      className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                      className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[13px] transition-colors duration-150 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                     >
                       <span className="font-medium text-zinc-900 dark:text-zinc-100">
                         {productName(p)}
                       </span>
-                      <span className="font-mono text-xs text-zinc-400">
+                      <span className="shrink-0 font-mono text-xs text-zinc-500 dark:text-zinc-400">
                         Stock {p.stock ?? p.quantity ?? 0}
                       </span>
                     </button>
@@ -210,7 +212,7 @@ export function PurchaseRequestFormDialog({
           </div>
 
           {fields.length === 0 ? (
-            <p className="py-2 text-center text-xs text-zinc-400">
+            <p className={`py-2 ${STATE_TEXT_CLASS}`}>
               Busca y agrega los productos que se van a comprar.
             </p>
           ) : (
@@ -219,8 +221,8 @@ export function PurchaseRequestFormDialog({
                 const qtyError = errors.items?.[index]?.quantity?.message;
                 return (
                   <li key={field.id} className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950">
-                      <span className="flex-1 truncate text-xs font-medium text-zinc-800 dark:text-zinc-200">
+                    <div className="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
+                      <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-zinc-800 dark:text-zinc-200">
                         {field.product_name}
                       </span>
                       <input
@@ -231,7 +233,7 @@ export function PurchaseRequestFormDialog({
                         aria-invalid={Boolean(qtyError) || undefined}
                         disabled={isPending}
                         {...register(`items.${index}.quantity`, { valueAsNumber: true })}
-                        className="h-7 w-20 rounded border border-zinc-200 bg-zinc-50 px-2 text-center font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400 aria-invalid:border-rose-400 dark:border-zinc-700 dark:bg-zinc-900"
+                        className={`${FILTER_CONTROL_CLASS} w-20 text-center font-mono`}
                       />
                       <button
                         type="button"
@@ -239,7 +241,7 @@ export function PurchaseRequestFormDialog({
                         aria-label={`Quitar ${field.product_name}`}
                         onClick={() => remove(index)}
                         disabled={isPending}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800"
+                        className={ICON_BUTTON_CLASS}
                       >
                         <X aria-hidden="true" className="h-3.5 w-3.5" />
                       </button>

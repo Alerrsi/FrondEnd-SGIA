@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDeleteStoreroom, useStorerooms } from '@sgia/api-client';
 import type { Storeroom } from '@sgia/types';
-import { AlertCircle, MoreHorizontal, Plus, Warehouse } from 'lucide-react';
+import { MoreHorizontal, Plus, Warehouse } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -14,8 +14,15 @@ import {
 import { StoreroomFormDialog } from '@/features/administracion/components/storeroom-form-dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
-import { PageHeading } from '@/components/ui/page-heading';
-import { CODE_CHIP_CLASS, STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
+import { TableFrame } from '@/components/ui/table-frame';
+import { TableSearch } from '@/components/ui/table-search';
+import { ICON_BUTTON_CLASS, ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { CODE_CHIP_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
+import { cn } from '@/lib/cn';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
 export default function PanolesPage() {
@@ -39,101 +46,98 @@ export default function PanolesPage() {
     }
   };
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <PageHeading icon={Warehouse} title="Pañoles">
-          Pañoles de la sede, con sus salas y usuarios asignados.
-        </PageHeading>
-        <Button
-          onClick={() => {
-            setEditing(null);
-            setFormOpen(true);
-          }}
-        >
-          <Plus aria-hidden="true" className="h-4 w-4" />
-          Nuevo pañol
-        </Button>
-      </div>
+  const storerooms = data?.data ?? [];
 
-      <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs">
-        <div className="border-b border-zinc-200 dark:border-zinc-800 p-2.5">
-          <input
-            type="search"
-            aria-label="Buscar pañol"
-            placeholder="Nombre o código…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-8 w-full max-w-sm rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-zinc-400"
-          />
-        </div>
+  const toolbar = (
+    <TableToolbar>
+      <TableSearch value={search} onChange={setSearch} placeholder="Nombre o código…" label="Buscar pañol" />
+    </TableToolbar>
+  );
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Warehouse}
+        title="Pañoles"
+        description="Pañoles de la sede, con sus salas y usuarios asignados."
+        actions={
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+          >
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            Nuevo pañol
+          </Button>
+        }
+      />
+
+      <TableFrame toolbar={toolbar}>
         {isLoading ? (
           <SkeletonList label="Cargando pañoles…" rows={4} columns={3} />
         ) : isError ? (
-          <div className="m-3 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700">
-            <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
-            No se pudieron cargar los pañoles.
+          <div className="p-3">
+            <ErrorState>No se pudieron cargar los pañoles.</ErrorState>
           </div>
+        ) : storerooms.length === 0 ? (
+          <EmptyState icon={Warehouse} title="No hay pañoles registrados." />
         ) : (
-          <div className="relative overflow-x-auto">
-            <table className="w-full border-collapse text-left text-xs">
-              <thead className={TABLE_HEAD_CLASS}>
-                <tr>
-                  {['Código', 'Nombre', 'Ubicación', 'Salas', 'Usuarios', ''].map((h) => (
-                    <th key={h || 'actions'} className="px-4 py-2.5 font-medium">
-                      {h || <span className="sr-only">Acciones</span>}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
-                {(data?.data ?? []).length === 0 && (
-                  <tr>
-                    <td colSpan={6} className={`px-4 py-10 ${STATE_TEXT_CLASS}`}>
-                      No hay pañoles registrados.
-                    </td>
-                  </tr>
-                )}
-                {data?.data.map((st) => (
-                  <tr key={String(st.id)} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40">
-                    <td className="px-4 py-2.5">
-                      <span className={CODE_CHIP_CLASS}>
-                        {st.code}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-100">{st.name}</td>
-                    <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400">{st.general_location || '—'}</td>
-                    <td className="px-4 py-2.5 font-mono tabular-nums">{st.locations_count ?? 0}</td>
-                    <td className="px-4 py-2.5 font-mono tabular-nums">{st.users_count ?? 0}</td>
-                    <td className="px-4 py-2.5 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="ghost" aria-label={`Acciones de ${st.code}`}>
-                            <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              setEditing(st);
-                              setFormOpen(true);
-                            }}
-                          >
-                            Editar
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-rose-600 dark:text-rose-400" onSelect={() => setToDelete(st)}>
-                            Eliminar
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </tr>
+          <table className="w-full min-w-[640px] border-collapse text-left">
+            <thead className={TABLE_HEAD_CLASS}>
+              <tr>
+                {['Código', 'Nombre', 'Ubicación', 'Salas', 'Usuarios', ''].map((h, i) => (
+                  <th
+                    key={h || 'actions'}
+                    className={cn(
+                      TH_CLASS,
+                      i === 0 && `${STICKY_COL_CLASS} max-md:bg-zinc-50`,
+                      (h === 'Salas' || h === 'Usuarios') && 'text-right',
+                    )}
+                  >
+                    {h || <span className="sr-only">Acciones</span>}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </tr>
+            </thead>
+            <tbody>
+              {storerooms.map((st) => (
+                <tr key={String(st.id)} className={ROW_CLASS}>
+                  <td className={`${TD_CLASS} ${STICKY_COL_CLASS} whitespace-nowrap`}>
+                    <span className={CODE_CHIP_CLASS}>{st.code}</span>
+                  </td>
+                  <td className={`${TD_CLASS} font-medium text-zinc-900 dark:text-zinc-100`}>{st.name}</td>
+                  <td className={`${TD_CLASS} text-zinc-600 dark:text-zinc-400`}>{st.general_location || '—'}</td>
+                  <td className={`${TD_CLASS} text-right font-mono`}>{st.locations_count ?? 0}</td>
+                  <td className={`${TD_CLASS} text-right font-mono`}>{st.users_count ?? 0}</td>
+                  <td className={`${TD_CLASS} text-right`}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button type="button" aria-label={`Acciones de ${st.code}`} className={ICON_BUTTON_CLASS}>
+                          <MoreHorizontal aria-hidden="true" className="h-3.5 w-3.5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            setEditing(st);
+                            setFormOpen(true);
+                          }}
+                        >
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-danger" onSelect={() => setToDelete(st)}>
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
-      </div>
+      </TableFrame>
 
       <StoreroomFormDialog
         open={formOpen}

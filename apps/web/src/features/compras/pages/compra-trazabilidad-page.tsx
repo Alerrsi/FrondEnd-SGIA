@@ -1,6 +1,6 @@
 import { usePurchaseTrace } from '@sgia/api-client';
 import type { PurchaseRequestStatus, PurchaseTrace } from '@sgia/types';
-import { AlertCircle, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -9,30 +9,32 @@ import { PurchaseRequestStatusBadge } from '@/features/solicitudes-compra/compon
 import { InvoiceIntakeStatusBadge } from '@/features/ingresos-factura/components/invoice-intake-status-badge';
 import { formatCLP, formatDate } from '@/features/compras/lib/format';
 import { movementMeta } from '@/features/presupuestos/lib/movement-labels';
-import { PageHeading } from '@/components/ui/page-heading';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
 import { SectionLabel } from '@/components/ui/section-label';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
 function Step({ title, empty, children }: { title: string; empty?: string; children?: ReactNode }) {
   const hasContent = Array.isArray(children) ? children.length > 0 : Boolean(children);
   return (
-    <li className="relative pl-6">
+    <li className="relative">
       <span
         aria-hidden="true"
-        className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full border border-zinc-400 bg-white dark:bg-zinc-900"
+        className="absolute -left-[22px] top-1 h-2.5 w-2.5 rounded-full border border-zinc-400 bg-white dark:border-zinc-500 dark:bg-zinc-900"
       />
       <SectionLabel as="h2">{title}</SectionLabel>
       {hasContent ? (
         <ul className="mt-1.5 flex flex-col gap-1.5">{children}</ul>
       ) : (
-        <p className="mt-1 text-xs text-zinc-400">{empty ?? 'Sin registros.'}</p>
+        <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">{empty ?? 'Sin registros.'}</p>
       )}
     </li>
   );
 }
 
 const rowClasses =
-  'flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2 text-xs';
+  'flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-700 dark:text-zinc-300';
+const mutedClasses = 'text-zinc-500 dark:text-zinc-400';
 
 const dateTime = (value: string) =>
   value
@@ -42,20 +44,20 @@ const dateTime = (value: string) =>
 function Timeline({ trace }: { trace: PurchaseTrace }) {
   const { purchase } = trace;
   return (
-    <ol className="flex flex-col gap-5 border-l border-zinc-200 dark:border-zinc-800 pl-2">
+    <ol className="ml-1.5 flex flex-col gap-5 border-l border-zinc-200 pl-4 dark:border-zinc-800">
       <Step title="Orden de compra">
         <li className={rowClasses}>
-          <span className="font-mono font-medium">{purchase.code ?? `#${purchase.id}`}</span>
+          <span className="font-code text-xs text-zinc-900 dark:text-zinc-100">{purchase.code ?? `#${purchase.id}`}</span>
           <PurchaseStatusBadge status={purchase.status} />
           <span>{purchase.supplier?.name ?? 'Proveedor sin nombre'}</span>
           <span className="font-mono">{formatCLP(purchase.total_amount)}</span>
-          <span className="text-zinc-500">{formatDate(purchase.created_at)}</span>
+          <span className={mutedClasses}>{formatDate(purchase.created_at)}</span>
         </li>
       </Step>
       {trace.purchase_request && (
         <Step title="Solicitud de compra">
           <li className={rowClasses}>
-            <Link to={`/compras/solicitudes/${trace.purchase_request.id}`} className="font-mono font-medium hover:underline">
+            <Link to={`/compras/solicitudes/${trace.purchase_request.id}`} className="font-code text-xs text-accent underline-offset-2 hover:underline">
               {trace.purchase_request.code}
             </Link>
             <PurchaseRequestStatusBadge status={trace.purchase_request.status as PurchaseRequestStatus} />
@@ -74,10 +76,10 @@ function Timeline({ trace }: { trace: PurchaseTrace }) {
           )),
           ...trace.quotations.map((q) => (
           <li key={q.id} className={rowClasses}>
-            <span className="font-mono font-medium">#{q.id}</span>
+            <span className="font-code text-xs text-zinc-900 dark:text-zinc-100">#{q.id}</span>
             <QuotationStatusBadge estado={q.estado} />
             <span>{q.proveedor ?? 'Múltiples proveedores'}</span>
-            <span className="text-zinc-500">{formatDate(q.created_at)}</span>
+            <span className={mutedClasses}>{formatDate(q.created_at)}</span>
           </li>
           )),
         ]}
@@ -85,10 +87,10 @@ function Timeline({ trace }: { trace: PurchaseTrace }) {
       <Step title="Facturas" empty="Aún no hay facturas asociadas.">
         {trace.invoices.map((i) => (
           <li key={i.id} className={rowClasses}>
-            <span className="font-mono font-medium">{i.document_number ?? `Ingreso #${i.id}`}</span>
+            <span className="font-code text-xs text-zinc-900 dark:text-zinc-100">{i.document_number ?? `Ingreso #${i.id}`}</span>
             <InvoiceIntakeStatusBadge status={i.status} />
             <span className="font-mono">{formatCLP(i.total_deducted)}</span>
-            <span className="text-zinc-500">{formatDate(i.received_at ?? i.created_at)}</span>
+            <span className={mutedClasses}>{formatDate(i.received_at ?? i.created_at)}</span>
           </li>
         ))}
       </Step>
@@ -107,9 +109,9 @@ function Timeline({ trace }: { trace: PurchaseTrace }) {
             <li key={m.id} className={rowClasses}>
               <Badge tone={meta.tone}>{meta.label}</Badge>
               <span className="font-mono">{formatCLP(m.amount)}</span>
-              <span className="text-zinc-500">{dateTime(m.created_at)}</span>
-              {m.user?.name && <span className="text-zinc-500">{m.user.name}</span>}
-              {m.notes && <span className="w-full text-zinc-500">{m.notes}</span>}
+              <span className={mutedClasses}>{dateTime(m.created_at)}</span>
+              {m.user?.name && <span className={mutedClasses}>{m.user.name}</span>}
+              {m.notes && <span className={`w-full ${mutedClasses}`}>{m.notes}</span>}
             </li>
           );
         })}
@@ -125,28 +127,26 @@ export default function CompraTrazabilidadPage() {
   const { data, isLoading, isError } = usePurchaseTrace(purchaseId);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <Link
         to="/compras/ordenes"
-        className="inline-flex w-fit items-center gap-1 rounded text-xs text-zinc-500 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 dark:hover:text-zinc-100"
+        className="-mb-3 inline-flex w-fit items-center gap-1 rounded text-[13px] text-zinc-500 transition-colors duration-150 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
       >
         <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
         Volver a compras
       </Link>
-      <PageHeading
+      <PageHeader
         icon={ShoppingCart}
         title={`Trazabilidad de la orden ${data?.purchase.code ?? (purchaseId ? `#${purchaseId}` : '')}`}
+        description="Todo lo que pasó con la orden: solicitud, cotizaciones, facturas, stock y presupuesto."
       />
       {isLoading && (
-        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <SkeletonList label="Cargando trazabilidad…" rows={5} columns={3} />
         </div>
       )}
       {(isError || (!isLoading && !data)) && (
-        <p role="alert" className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400">
-          <AlertCircle aria-hidden="true" className="h-4 w-4" />
-          No se pudo cargar la trazabilidad de la orden.
-        </p>
+        <ErrorState>No se pudo cargar la trazabilidad de la orden.</ErrorState>
       )}
       {data && <Timeline trace={data} />}
     </div>

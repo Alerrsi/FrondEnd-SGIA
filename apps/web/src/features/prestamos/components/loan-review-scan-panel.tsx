@@ -5,6 +5,7 @@ import { MapPin, ScanLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scanUnit, type ReviewSelection } from '@/features/prestamos/lib/loan-review-selection';
 import { playScannerBeep } from '@/lib/audio';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 interface LoanReviewScanPanelProps {
@@ -50,26 +51,26 @@ export function LoanReviewScanPanel({
   };
 
   return (
-    <div className="mt-2 flex flex-col gap-2 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60 p-2.5">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+    <div className="mt-2 flex flex-col gap-2 rounded-md border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-950/60">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-[13px]">
         <span className="flex items-center gap-1.5 font-medium text-zinc-800 dark:text-zinc-200">
           <ScanLine aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
           Escanea las {item.quantity} unidades que se entregan
         </span>
-        <span aria-live="polite" className="font-mono tabular-nums text-zinc-600 dark:text-zinc-400">
+        <span aria-live="polite" className="font-mono text-zinc-600 dark:text-zinc-400">
           {scanned.length} de {item.quantity}
         </span>
       </div>
 
       {scanned.length > 0 && (
-        <ul className="flex flex-col gap-1 text-xs">
+        <ul className="flex flex-col gap-1 text-[13px]">
           {scanned.map((unit) => (
             <li key={unit.id} className="flex flex-wrap items-center gap-x-2 text-zinc-700 dark:text-zinc-300">
-              <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">{unit.code}</span>
+              <span className="font-code text-xs text-zinc-900 dark:text-zinc-100">{unit.code}</span>
               <span className="flex items-center gap-1">
                 <MapPin aria-hidden="true" className="h-3 w-3 shrink-0 text-zinc-400" />
                 {unit.location?.nombre ?? 'Sala sin registrar'} ·{' '}
-                <span className="font-mono">{unit.cajon?.codigo ?? 'Cajón sin registrar'}</span>
+                <span className="font-code text-xs">{unit.cajon?.codigo ?? 'Cajón sin registrar'}</span>
               </span>
             </li>
           ))}
@@ -95,14 +96,14 @@ export function LoanReviewScanPanel({
               setCode(event.target.value);
               if (error) setError(null);
             }}
-            className="h-8 min-w-0 flex-1 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+            className={`${FORM_CONTROL_CLASS} min-w-0 flex-1 font-code`}
           />
           <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
             Cancelar
           </Button>
         </div>
         {error && (
-          <span id={errorId} role="alert" className="text-xs text-rose-600 dark:text-rose-400">
+          <span id={errorId} role="alert" className="text-xs text-danger">
             {error}
           </span>
         )}

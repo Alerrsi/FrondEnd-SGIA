@@ -81,7 +81,7 @@ export function StudentLookup({
           className={`${inputClasses} mt-1`}
         />
         {invalid && (
-          <p role="alert" className="mt-1 text-xs text-rose-600 dark:text-rose-400">
+          <p role="alert" className="mt-1 text-xs text-danger">
             RUT inválido: revisa el dígito verificador.
           </p>
         )}
@@ -93,12 +93,12 @@ export function StudentLookup({
         </p>
       )}
       {isError && (
-        <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="text-xs text-danger">
           {apiErrorToMessage(error)}
         </p>
       )}
       {student && !student.is_active && (
-        <p role="alert" className="rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/20 p-2 text-xs text-rose-700 dark:text-rose-400">
+        <p role="alert" className="rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/20 p-2 text-xs text-danger">
           {student.full_name || 'El estudiante'} está desactivado y no puede recibir préstamos. Reactívalo en Estudiantes.
         </p>
       )}

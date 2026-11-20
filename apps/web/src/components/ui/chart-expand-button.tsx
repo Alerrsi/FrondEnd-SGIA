@@ -24,7 +24,6 @@ export function ChartExpandButton({ title, description, children, disabled }: Ch
         size="icon"
         onClick={() => setOpen(true)}
         disabled={disabled}
-        className="h-7 w-7 text-zinc-400 hover:text-zinc-700"
         title="Ampliar gráfico"
         aria-label="Ampliar gráfico"
       >

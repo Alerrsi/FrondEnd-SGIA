@@ -19,7 +19,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 px-4 py-3 font-mono text-xs text-zinc-500">
+      <div className="flex items-center gap-2 px-4 py-3 text-[13px] text-zinc-500 dark:text-zinc-400">
         <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
         Cargando instancias…
       </div>
@@ -28,7 +28,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
 
   if (isError) {
     return (
-      <p role="alert" className="px-4 py-3 text-xs text-rose-600 dark:text-rose-400">
+      <p role="alert" className="px-4 py-3 text-[13px] text-danger">
         {apiErrorToMessage(error)}
       </p>
     );
@@ -36,7 +36,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
 
   if (units.length === 0) {
     return (
-      <p className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-400">
+      <p className="px-4 py-3 text-[13px] text-zinc-500 dark:text-zinc-400">
         Este producto no tiene instancias registradas.
       </p>
     );
@@ -64,7 +64,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
                     {unit.code}
                   </span>
                 </td>
-                <td className="py-1.5 pr-3 font-mono text-zinc-600 dark:text-zinc-400">
+                <td className="py-1.5 pr-3 font-code text-zinc-600 dark:text-zinc-400">
                   {unit.serial_number || '—'}
                 </td>
                 <td className="py-1.5 pr-3 font-mono text-zinc-600 dark:text-zinc-400">
@@ -77,7 +77,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
                 <td className="py-1.5 pr-3">
                   <UnidadStatusBadge status={unit.status} />
                 </td>
-                <td className="py-1.5 font-mono text-zinc-500">
+                <td className="py-1.5 font-code text-zinc-500 dark:text-zinc-400">
                   {unit.active_loan?.code ?? '—'}
                 </td>
               </tr>
@@ -86,7 +86,7 @@ export function ProductoUnidadesExpandidas({ producto }: { producto: Producto })
         </tbody>
       </table>
       {total > units.length && (
-        <p className="pt-1 font-mono text-xs text-zinc-500">
+        <p className="pt-1 text-xs text-zinc-500 dark:text-zinc-400">
           Mostrando {units.length} de {total}. Abre el detalle para ver todas.
         </p>
       )}

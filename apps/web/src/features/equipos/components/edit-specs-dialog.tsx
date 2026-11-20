@@ -7,6 +7,8 @@ import { Dialog, DialogCloseButton, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/toast';
 import { SectionLabel } from '@/components/ui/section-label';
+import { FORM_CONTROL_CLASS } from '@/components/ui/form-control';
+import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
 import { FIELD_LABEL_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
 
 interface EditSpecsDialogProps {
@@ -121,7 +123,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Parámetros de Ciclo de Vida y Almacenamiento S3 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-950/50 p-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/50 p-3.5">
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="edit-purchase-date"
@@ -137,7 +139,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setPurchaseDate(e.target.value);
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
+              className={FORM_CONTROL_CLASS}
             />
           </div>
 
@@ -158,12 +160,12 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setLifespanYears(Number(e.target.value));
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
+              className={FORM_CONTROL_CLASS}
             />
           </div>
 
           <div className="sm:col-span-2 flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-1">
               <label
                 htmlFor="edit-manual-url"
                 className={FIELD_LABEL_CLASS}
@@ -175,7 +177,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                   href={manualUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 underline"
+                  className="inline-flex items-center gap-1 text-xs text-accent hover:underline"
                 >
                   <ExternalLink aria-hidden="true" className="h-3 w-3" /> Probar enlace
                 </a>
@@ -190,7 +192,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                 setManualUrl(e.target.value);
                 setIsDirty(true);
               }}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-1.5 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
+              className={FORM_CONTROL_CLASS}
             />
           </div>
         </div>
@@ -203,27 +205,27 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
               type="button"
               variant="outline"
               size="sm"
-              onClick={handleAddRow} className="gap-1"
+              onClick={handleAddRow}
             >
               <Plus aria-hidden="true" className="h-3.5 w-3.5" />
               <span>Agregar parámetro</span>
             </Button>
           </div>
 
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800 shadow-xs">
+          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800">
             {specRows.length === 0 ? (
               <div className={`p-4 ${STATE_TEXT_CLASS}`}>
                 No hay especificaciones definidas. Haz clic en "Agregar parámetro" para registrar características técnicas.
               </div>
             ) : (
               specRows.map((row, idx) => (
-                <div key={idx} className="flex items-center gap-2 p-2">
+                <div key={idx} className="flex flex-col gap-2 p-2 sm:flex-row sm:items-center">
                   <input
                     type="text"
                     placeholder="Parámetro (ej: potencia, puertos)"
                     value={row.key}
                     onChange={(e) => handleRowChange(idx, 'key', e.target.value)}
-                    className="min-w-0 flex-1 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-950/40 px-2.5 py-1 text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none"
+                    className={`${FORM_CONTROL_CLASS} min-w-0 flex-1`}
                     aria-label={`Nombre de parámetro ${idx + 1}`}
                   />
                   <input
@@ -231,7 +233,7 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     placeholder="Valor (ej: 48x GbE PoE+ 370W)"
                     value={row.value}
                     onChange={(e) => handleRowChange(idx, 'value', e.target.value)}
-                    className="min-w-0 flex-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:border-zinc-400 focus:outline-none shadow-xs"
+                    className={`${FORM_CONTROL_CLASS} min-w-0 flex-1`}
                     aria-label={`Valor de parámetro ${idx + 1}`}
                   />
                   <button
@@ -239,9 +241,9 @@ export function EditSpecsDialog({ open, onClose, equipo }: EditSpecsDialogProps)
                     onClick={() => handleRemoveRow(idx)}
                     title="Eliminar parámetro"
                     aria-label={`Eliminar parámetro ${row.key || idx + 1}`}
-                    className="p-1.5 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors"
+                    className={ICON_BUTTON_CLASS}
                   >
-                    <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
+                    <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
                   </button>
                 </div>
               ))

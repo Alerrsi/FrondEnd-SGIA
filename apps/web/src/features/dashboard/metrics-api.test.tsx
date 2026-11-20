@@ -253,15 +253,19 @@ describe('REQ-14: utilidades de gráficos', () => {
     expect(data.datasets[1]?.label).toBe('Stock restante');
   });
 
-  it('cicla colores en dona con más categorías que colores', () => {
+  it('agrupa en «Otros» las porciones que no caben en la paleta (no recicla colores)', () => {
     const many: MetricResult = {
       ...result,
       chartType: 'DOUGHNUT',
       points: Array.from({ length: 12 }, (_, i) => ({ label: `Cat ${i}`, value: i + 1 })),
     };
-    const colors = buildChartData(many, 'DOUGHNUT', 't', false).datasets[0]?.backgroundColor as string[];
-    expect(colors).toHaveLength(12);
-    expect(colors.every(Boolean)).toBe(true);
+    const data = buildChartData(many, 'DOUGHNUT', 't', false);
+    const colors = data.datasets[0]?.backgroundColor as string[];
+    expect(colors).toHaveLength(6);
+    expect(new Set(colors).size).toBe(6);
+    expect(data.labels?.at(-1)).toBe('Otros');
+    // Cat 5 a Cat 11 suman 6+7+…+12 = 63
+    expect(data.datasets[0]?.data.at(-1)).toBe(63);
   });
 
   it('formatea porcentajes y trunca etiquetas largas', () => {

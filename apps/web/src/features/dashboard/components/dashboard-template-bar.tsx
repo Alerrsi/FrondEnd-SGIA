@@ -121,7 +121,7 @@ export function DashboardTemplateBar({ selectedId, onSelect }: DashboardTemplate
             type="button"
             variant="ghost"
             size="icon"
-            className="h-7 w-7 text-zinc-400 hover:text-rose-600"
+            className="h-7 w-7 text-zinc-400 hover:text-danger"
             title="Eliminar plantilla"
             aria-label="Eliminar plantilla"
             onClick={() => setConfirmDelete(true)}

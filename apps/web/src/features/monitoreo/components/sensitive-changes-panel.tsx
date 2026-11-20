@@ -21,7 +21,7 @@ export function SensitiveChangesPanel() {
       {isLoading ? (
         <SkeletonList label="Cargando cambios…" rows={5} columns={3} />
       ) : isError ? (
-        <p role="alert" className="p-4 text-xs text-rose-600 dark:text-rose-400">
+        <p role="alert" className="p-4 text-xs text-danger">
           No se pudieron cargar los cambios.
         </p>
       ) : logs.length === 0 ? (

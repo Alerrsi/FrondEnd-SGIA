@@ -72,7 +72,7 @@ export function CancelInvoiceIntakeDialog({
                 presupuesto (movimiento de reposición).
               </li>
             </ul>
-            <p className="text-zinc-500">La compra ligada no cambia de estado.</p>
+            <p className="text-zinc-500 dark:text-zinc-400">La compra ligada no cambia de estado.</p>
           </>
         ) : (
           <p>El borrador quedará anulado. No se modifica stock ni presupuesto.</p>
@@ -81,7 +81,7 @@ export function CancelInvoiceIntakeDialog({
         {blockedReason && (
           <p
             role="alert"
-            className="flex items-start gap-2 rounded-md border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-2.5 text-rose-800 dark:text-rose-300"
+            className="flex items-start gap-2 rounded-md bg-danger-bg p-2.5 text-danger"
           >
             <AlertTriangle aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             {blockedReason}

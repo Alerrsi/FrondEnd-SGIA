@@ -90,10 +90,10 @@ describe('Componentes base «Trazo»', () => {
     expect(document.activeElement).toBe(other);
   });
 
-  it('TableFrame con vista móvil oculta la tabla bajo 768px y muestra las filas', async () => {
+  it('TableFrame renderiza la tabla en escritorio y solo las filas apiladas en el teléfono', async () => {
     const user = userEvent.setup();
     const onOpen = vi.fn();
-    const { container } = render(
+    const ui = (
       <TableFrame
         mobile={
           <ul>
@@ -108,10 +108,28 @@ describe('Componentes base «Trazo»', () => {
             </tr>
           </tbody>
         </table>
-      </TableFrame>,
+      </TableFrame>
     );
-    expect(container.querySelector('[data-table-scroll]')?.className).toContain('max-md:hidden');
-    await user.click(screen.getByRole('button', { name: /Notebook HP/ }));
-    expect(onOpen).toHaveBeenCalledTimes(1);
+
+    const desktop = render(ui);
+    expect(desktop.container.querySelector('table')).not.toBeNull();
+    expect(desktop.container.querySelector('[data-table-mobile]')).toBeNull();
+    desktop.unmount();
+
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes('max-width: 767px'),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+    try {
+      const phone = render(ui);
+      expect(phone.container.querySelector('table')).toBeNull();
+      await user.click(screen.getByRole('button', { name: /Notebook HP/ }));
+      expect(onOpen).toHaveBeenCalledTimes(1);
+    } finally {
+      window.matchMedia = original;
+    }
   });
 });

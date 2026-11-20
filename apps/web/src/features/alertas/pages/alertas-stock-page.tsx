@@ -1,11 +1,6 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  CheckCircle,
-  Bell,
-  Layers,
-  ShoppingCart,
-} from 'lucide-react';
+import { Bell, Layers, ShoppingCart } from 'lucide-react';
 import { useCriticalStockAlerts, useResolveStockAlert } from '@sgia/api-client';
 import type { CriticalStockAlert, Producto } from '@sgia/types';
 
@@ -23,7 +18,10 @@ import {
   type AlertStatusFilter,
   type AlertTypeFilter,
 } from '../components/alertas-table';
-import { PageHeading } from '@/components/ui/page-heading';
+import { Cell } from '@/components/ui/cell';
+import { CellGrid } from '@/components/ui/cell-grid';
+import { Metric } from '@/components/ui/metric';
+import { PageHeader } from '@/components/ui/page-header';
 
 type RequestItems = PurchaseRequestFormValues['items'];
 
@@ -136,25 +134,20 @@ export default function AlertasStockPage() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Encabezado y Miga Técnica */}
-      <div className="flex flex-col gap-2">
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={Bell} title="Alertas de stock crítico y preventivo">
-            Monitoreo en tiempo real de quiebres y umbrales mínimos de hardware.
-          </PageHeading>
-
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/inventario')}
-              className="text-xs gap-1.5"
-            >
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Bell}
+        title="Alertas de stock crítico y preventivo"
+        description="Productos bajo su stock mínimo o cerca de él, para reponer antes de que falten."
+        actions={
+          <>
+            <Button type="button" variant="secondary" size="sm" onClick={() => navigate('/inventario')}>
               <Layers aria-hidden="true" className="h-3.5 w-3.5" />
-              <span>Ver inventario</span>
+              Ver inventario
+            </Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => navigate('/compras/solicitudes')}>
+              <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
+              Ir a solicitudes de compra
             </Button>
             {canRequest && selected.size > 0 && (
               <Button
@@ -162,59 +155,29 @@ export default function AlertasStockPage() {
                 variant="primary"
                 size="sm"
                 onClick={() => setRequestItems([...selected.values()].map(toRequestItem))}
-                className="text-xs gap-1.5"
               >
                 <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
-                <span>Crear solicitud de compra ({selected.size})</span>
+                Crear solicitud de compra ({selected.size})
               </Button>
             )}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/compras/solicitudes')}
-              className="text-xs gap-1.5"
-            >
-              <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
-              <span>Ir a solicitudes de compra</span>
-            </Button>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      {/* Cinta Métrica Compacta (Metric Strip 36-40px) */}
-      <div className="flex flex-wrap items-center divide-x divide-zinc-200 dark:divide-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-2 text-xs font-mono shadow-xs">
-        <div className="flex items-center gap-2 pr-4">
-          <span className="text-zinc-400 dark:text-zinc-500">Alertas activas:</span>
-          <strong className="text-zinc-900 dark:text-zinc-100 tabular-nums font-semibold">
-            {totalActive}
-          </strong>
-        </div>
-
-        <div className="flex items-center gap-2 px-4">
-          <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
-          <span className="text-zinc-400 dark:text-zinc-500">Nivel crítico (≤ mín):</span>
-          <strong className="text-rose-600 dark:text-rose-400 tabular-nums font-semibold">
-            {criticalCount}
-          </strong>
-        </div>
-
-        <div className="flex items-center gap-2 px-4">
-          <span className="h-2 w-2 rounded-full bg-amber-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Advertencia (≤ mín + 5):</span>
-          <strong className="text-amber-600 dark:text-amber-400 tabular-nums font-semibold">
-            {warningCount}
-          </strong>
-        </div>
-
-        <div className="flex items-center gap-2 pl-4">
-          <CheckCircle aria-hidden="true" className="h-3 w-3 text-emerald-500" />
-          <span className="text-zinc-400 dark:text-zinc-500">Atendidas / resueltas:</span>
-          <strong className="text-zinc-700 dark:text-zinc-300 tabular-nums font-semibold">
-            {totalResolved}
-          </strong>
-        </div>
-      </div>
+      <CellGrid columns={4} aria-label="Resumen de alertas">
+        <Cell>
+          <Metric label="Alertas activas" value={totalActive} />
+        </Cell>
+        <Cell>
+          <Metric label="Nivel crítico (≤ mín)" value={criticalCount} tone={criticalCount > 0 ? 'danger' : 'neutral'} />
+        </Cell>
+        <Cell>
+          <Metric label="Advertencia (≤ mín + 5)" value={warningCount} tone={warningCount > 0 ? 'warning' : 'neutral'} />
+        </Cell>
+        <Cell>
+          <Metric label="Atendidas / resueltas" value={totalResolved} />
+        </Cell>
+      </CellGrid>
 
       {/* Tabla de Alertas */}
       <AlertasTable

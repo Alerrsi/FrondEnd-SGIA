@@ -1,30 +1,33 @@
 import type { ChartData, ChartOptions } from 'chart.js';
+
+import {
+  categoricalColor,
+  categoryAxis,
+  chartAnimation,
+  chartTokens,
+  foldOthers,
+  legendStyle,
+  tooltipStyle,
+  valueAxis,
+  type ChartTokens,
+} from '@/lib/chart-theme';
 import type { ChartType, MetricDataPoint, MetricResult } from '../types/metrics';
 import { isPieLike } from '../types/metrics';
 
-/** Paleta categórica del sistema «Pañol» (derivada de burdeo, navy, slate y crema; legible en claro y oscuro). */
-const CATEGORICAL = [
-  '#798DA6',
-  '#B0415A',
-  '#D9A45B',
-  '#4F8A7B',
-  '#3D5F8C',
-  '#C98B9B',
-  '#8A6E52',
-  '#A9BBD3',
-];
-
-/** Etiquetas con significado fijo en el contrato (metrics.md §4 y §5). */
-const SEMANTIC: Record<string, string> = {
-  crítica: '#C2414F',
-  advertencia: '#D9A45B',
-  atrasado: '#C2414F',
-  activo: '#3D5F8C',
-  'devuelto a tiempo': '#4F8A7B',
-  disponible: '#4F8A7B',
-  'en taller': '#D9A45B',
-  'dado de baja': '#8E9BAE',
+/** Etiquetas con significado fijo en el contrato (metrics.md §4 y §5): usan los colores de estado. */
+const SEMANTIC: Record<string, keyof ChartTokens['status']> = {
+  crítica: 'critical',
+  advertencia: 'warning',
+  atrasado: 'critical',
+  activo: 'info',
+  'devuelto a tiempo': 'good',
+  disponible: 'good',
+  'en taller': 'warning',
+  'dado de baja': 'inactive',
 };
+
+/** Nombre de la porción que agrupa lo que no cabe en la paleta categórica. */
+export const OTHERS_LABEL = 'Otros';
 
 const MAX_TICK_LABEL = 16;
 
@@ -33,12 +36,17 @@ export interface ChartLegendItem {
   color: string;
 }
 
-export function colorAt(index: number): string {
-  return CATEGORICAL[index % CATEGORICAL.length]!;
+function colorForLabel(label: string, fallbackIndex: number, isDark: boolean): string {
+  const status = SEMANTIC[label.trim().toLowerCase()];
+  if (status) return chartTokens(isDark).status[status];
+  if (label === OTHERS_LABEL) return chartTokens(isDark).status.inactive;
+  return categoricalColor(fallbackIndex, isDark);
 }
 
-function colorForLabel(label: string, fallbackIndex: number): string {
-  return SEMANTIC[label.trim().toLowerCase()] ?? colorAt(fallbackIndex);
+/** Puntos a dibujar: en torta, dona y área polar, más de seis porciones se agrupan en «Otros». */
+export function displayPoints(result: MetricResult, chartType: ChartType): MetricDataPoint[] {
+  if (!isPieLike(chartType)) return result.points;
+  return foldOthers(result.points, (value) => ({ label: OTHERS_LABEL, value, secondaryValue: null, category: null }));
 }
 
 export function truncateLabel(label: string, max = MAX_TICK_LABEL): string {
@@ -61,19 +69,19 @@ function hasSecondary(points: MetricDataPoint[]): boolean {
 }
 
 /** Categorías distintas de los puntos, para colorear y armar la leyenda (§6). */
-function categoryColors(points: MetricDataPoint[]): Map<string, string> {
+function categoryColors(points: MetricDataPoint[], isDark: boolean): Map<string, string> {
   const map = new Map<string, string>();
   for (const p of points) {
     if (p.category && !map.has(p.category)) {
-      map.set(p.category, colorForLabel(p.category, map.size));
+      map.set(p.category, colorForLabel(p.category, map.size, isDark));
     }
   }
   return map;
 }
 
-export function buildLegend(result: MetricResult): ChartLegendItem[] {
+export function buildLegend(result: MetricResult, isDark = false): ChartLegendItem[] {
   if (isPieLike(result.chartType)) return [];
-  return [...categoryColors(result.points)].map(([label, color]) => ({ label, color }));
+  return [...categoryColors(result.points, isDark)].map(([label, color]) => ({ label, color }));
 }
 
 export function buildChartData(
@@ -82,10 +90,11 @@ export function buildChartData(
   title: string,
   isDark: boolean,
 ): ChartData {
-  const { points } = result;
+  const points = displayPoints(result, chartType);
   const labels = points.map((p) => p.label);
   const values = points.map((p) => p.value);
-  const surface = isDark ? '#142841' : '#ffffff';
+  const t = chartTokens(isDark);
+  const surface = t.surface;
 
   if (isPieLike(chartType)) {
     return {
@@ -93,7 +102,7 @@ export function buildChartData(
       datasets: [
         {
           data: values,
-          backgroundColor: points.map((p, i) => colorForLabel(p.label, i)),
+          backgroundColor: points.map((p, i) => colorForLabel(p.label, i, isDark)),
           borderColor: surface,
           borderWidth: 2,
         },
@@ -101,9 +110,9 @@ export function buildChartData(
     };
   }
 
-  const primary = isDark ? '#E8A3B1' : '#490B1A';
-  const secondary = isDark ? '#55677E' : '#B9C4D2';
-  const byCategory = categoryColors(points);
+  const primary = t.primary;
+  const secondary = t.secondary;
+  const byCategory = categoryColors(points, isDark);
   const pointColors = points.map((p) =>
     p.category ? (byCategory.get(p.category) ?? primary) : primary,
   );
@@ -116,12 +125,15 @@ export function buildChartData(
           label: title,
           data: values,
           borderColor: primary,
-          backgroundColor: isDark ? 'rgba(232, 163, 177, 0.14)' : 'rgba(73, 11, 26, 0.08)',
+          backgroundColor: t.primaryFill,
+          borderWidth: 2,
           fill: true,
           tension: 0.3,
           pointBackgroundColor: pointColors,
           pointBorderColor: surface,
-          pointRadius: points.length > 24 ? 2 : 4,
+          pointRadius: points.length > 24 ? 0 : 3,
+          pointHoverRadius: 5,
+          pointBorderWidth: 2,
         },
         ...(hasSecondary(points)
           ? [
@@ -171,27 +183,26 @@ export function buildChartOptions(
   isDark: boolean,
 ): ChartOptions {
   const isPercent = result.metric === 'RATE';
-  const textColor = isDark ? '#8E9BAE' : '#55677E';
-  const gridColor = isDark ? 'rgba(185, 196, 210, 0.12)' : '#E6EBF1';
-  const font = { family: "'Schibsted Grotesk', system-ui, sans-serif", size: 11 };
+  const t = chartTokens(isDark);
+  const gridColor = t.grid;
   const pieLike = isPieLike(chartType);
+  const points = displayPoints(result, chartType);
   const showLegend = pieLike || hasSecondary(result.points);
 
   const labelOf = (items: { dataIndex: number }[]): string =>
-    result.points[items[0]?.dataIndex ?? 0]?.label ?? '';
+    points[items[0]?.dataIndex ?? 0]?.label ?? '';
 
   const base: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    animation: { duration: 250 },
+    animation: chartAnimation(),
+    interaction: pieLike ? undefined : { mode: 'index', intersect: false },
     plugins: {
       legend: {
         display: showLegend,
-        position: 'bottom',
+        ...legendStyle(isDark),
         labels: {
-          color: textColor,
-          font,
-          boxWidth: 10,
+          ...legendStyle(isDark).labels,
           generateLabels: pieLike
             ? (chart) =>
                 (chart.data.labels ?? []).map((label, i) => {
@@ -199,6 +210,7 @@ export function buildChartOptions(
                   const colors = dataset?.backgroundColor as string[] | undefined;
                   return {
                     text: truncateLabel(String(label), 22),
+                    fontColor: t.muted,
                     fillStyle: colors?.[i],
                     strokeStyle: colors?.[i],
                     hidden: !chart.getDataVisibility(i),
@@ -209,14 +221,7 @@ export function buildChartOptions(
         },
       },
       tooltip: {
-        backgroundColor: isDark ? '#142841' : '#ffffff',
-        titleColor: isDark ? '#EFEADF' : '#142841',
-        bodyColor: isDark ? '#B9C4D2' : '#2F4058',
-        borderColor: isDark ? '#1E3350' : '#D8DFE8',
-        borderWidth: 1,
-        padding: 8,
-        bodyFont: font,
-        titleFont: { ...font, weight: 'bold' },
+        ...tooltipStyle(isDark),
         callbacks: {
           title: labelOf,
           label: (item) => {
@@ -225,7 +230,7 @@ export function buildChartOptions(
             return `${name}${formatValue(raw, isPercent && item.datasetIndex === 0)}`;
           },
           afterLabel: (item) => {
-            const category = result.points[item.dataIndex]?.category;
+            const category = points[item.dataIndex]?.category;
             return category && item.datasetIndex === 0 ? `Categoría: ${category}` : '';
           },
         },
@@ -241,12 +246,8 @@ export function buildChartOptions(
           r: {
             grid: { color: gridColor },
             angleLines: { color: gridColor },
-            ticks: {
-              color: textColor,
-              backdropColor: 'transparent',
-              font,
-              callback: (v) => formatValue(Number(v), isPercent),
-            },
+            // Sin cifras en los anillos: se encimaban; el valor exacto está en el tooltip.
+            ticks: { display: false },
           },
         },
       };
@@ -258,10 +259,9 @@ export function buildChartOptions(
     ...base,
     scales: {
       x: {
-        grid: { display: false },
+        ...categoryAxis(isDark),
         ticks: {
-          color: textColor,
-          font,
+          ...categoryAxis(isDark).ticks,
           maxRotation: 45,
           autoSkip: true,
           callback(value) {
@@ -270,11 +270,9 @@ export function buildChartOptions(
         },
       },
       y: {
-        beginAtZero: true,
-        grid: { color: gridColor },
+        ...valueAxis(isDark),
         ticks: {
-          color: textColor,
-          font,
+          ...valueAxis(isDark).ticks,
           callback: (v) => formatValue(Number(v), isPercent),
         },
       },

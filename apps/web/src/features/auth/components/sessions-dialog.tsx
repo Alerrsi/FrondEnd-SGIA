@@ -32,7 +32,7 @@ export function SessionsDialog({ open, onClose }: { open: boolean; onClose: () =
     >
       <div className="flex flex-col gap-4 text-zinc-900 dark:text-zinc-100">
         {isLoading && <p className="text-xs text-zinc-500 dark:text-zinc-400">Cargando sesiones…</p>}
-        {isError && <p className="text-xs text-red-600 dark:text-red-400">No se pudieron cargar las sesiones.</p>}
+        {isError && <p className="text-xs text-danger">No se pudieron cargar las sesiones.</p>}
 
         <ul className="divide-y divide-zinc-100 dark:divide-zinc-800/60 rounded-md border border-zinc-200 dark:border-zinc-800">
           {tokens.map((token) => {

@@ -40,7 +40,7 @@ function defaults(location: LocationEntity | null): LocationFormValues {
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="text-xs font-medium text-red-600 dark:text-red-400">{message}</span>;
+  return <span className="text-xs font-medium text-danger">{message}</span>;
 }
 
 /** Alta y edición de una sala. El código se sugiere desde el nombre y no se puede cambiar después de crearla. */
@@ -160,7 +160,7 @@ export function LocationFormDialog({
                 spellCheck={false}
                 aria-invalid={errors.code ? true : undefined}
                 aria-describedby="location-code-hint"
-                className={`${FORM_CONTROL_CLASS} uppercase ${
+                className={`${FORM_CONTROL_CLASS} font-code uppercase ${
                   isEdit ? 'cursor-not-allowed bg-zinc-50 text-zinc-500 dark:bg-zinc-950 dark:text-zinc-400' : ''
                 }`}
               />

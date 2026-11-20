@@ -65,8 +65,10 @@ describe('REQ-06: totales de alertas según el stock real', () => {
       </QueryClientProvider>,
     );
 
-    const strip = screen.getByText('Alertas activas:').parentElement?.parentElement;
-    const figures = Array.from(strip?.querySelectorAll('strong') ?? []).map((n) => n.textContent);
+    // Cada `Metric` muestra su rótulo y, a continuación, la cifra.
+    const figures = ['Alertas activas', 'Nivel crítico (≤ mín)', 'Advertencia (≤ mín + 5)', 'Atendidas / resueltas'].map(
+      (label) => screen.getByText(label).nextElementSibling?.textContent,
+    );
     expect(figures).toEqual(['12', '7', '5', '3']);
   });
 });

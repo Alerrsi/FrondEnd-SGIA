@@ -12,7 +12,7 @@ import type {
   UserQueryParams,
   UsuarioSinPassword,
 } from '@sgia/types';
-import { AlertCircle, Plus, Users } from 'lucide-react';
+import { Plus, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -21,7 +21,8 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { UsuarioFormDialog } from '@/features/usuarios/components/usuario-form-dialog';
 import { UsuariosTable, type EstadoFilter } from '@/features/usuarios/components/usuarios-table';
-import { PageHeading } from '@/components/ui/page-heading';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
@@ -144,9 +145,9 @@ export default function UsuariosPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <Skeleton className="h-8 w-56" />
-        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <SkeletonList label="Cargando directorio de usuarios…" rows={8} columns={5} />
         </div>
       </div>
@@ -155,28 +156,23 @@ export default function UsuariosPage() {
 
   if (isError || !data) {
     return (
-      <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-        <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
-        <span>No se pudo cargar el listado de usuarios desde el servidor.</span>
-      </div>
+      <ErrorState>No se pudo cargar el listado de usuarios desde el servidor.</ErrorState>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Vista y Encabezado con Micro-etiqueta Institucional */}
-      <div className="flex flex-col gap-2">
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={Users} title="Directorio de usuarios">
-            Administración centralizada de cuentas de acceso, roles institucionales y estados de autenticación.
-          </PageHeading>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Users}
+        title="Directorio de usuarios"
+        description="Cuentas de acceso al panel y a la app móvil: rol, pañol, carreras y estado."
+        actions={
           <Button variant="primary" onClick={handleOpenCreate}>
             <Plus aria-hidden="true" className="h-4 w-4" />
             Nuevo usuario
           </Button>
-        </div>
-      </div>
+        }
+      />
 
       <UsuariosTable
         usuarios={data.data}

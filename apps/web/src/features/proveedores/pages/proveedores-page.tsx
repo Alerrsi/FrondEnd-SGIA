@@ -4,7 +4,7 @@ import {
   useSuppliers,
 } from '@sgia/api-client';
 import type { Supplier, SupplierArea } from '@sgia/types';
-import { AlertCircle, Building2, Plus } from 'lucide-react';
+import { Building2, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -12,7 +12,8 @@ import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
 import { ProveedoresTable } from '@/features/proveedores/components/proveedores-table';
 import { SupplierFormDialog } from '@/features/proveedores/components/supplier-form-dialog';
-import { PageHeading } from '@/components/ui/page-heading';
+import { ErrorState } from '@/components/ui/error-state';
+import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
@@ -105,9 +106,9 @@ export default function ProveedoresPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <Skeleton className="h-8 w-56" />
-        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <SkeletonList label="Cargando catálogo de proveedores…" rows={8} columns={4} />
         </div>
       </div>
@@ -116,28 +117,23 @@ export default function ProveedoresPage() {
 
   if (isError || !data) {
     return (
-      <div className="flex items-center gap-2 rounded-md border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/20 p-4 text-xs font-medium text-red-700 dark:text-red-400">
-        <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
-        <span>No se pudo cargar el catálogo de proveedores desde el servidor.</span>
-      </div>
+      <ErrorState>No se pudo cargar el catálogo de proveedores desde el servidor.</ErrorState>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex flex-col gap-2">
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={Building2} title="Catálogo de proveedores">
-            Gestión de empresas proveedoras para cotizaciones y adquisiciones de insumos.
-          </PageHeading>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Building2}
+        title="Proveedores"
+        description="Empresas a las que se envían solicitudes de cotización, con sus áreas y contacto."
+        actions={
           <Button variant="primary" onClick={handleOpenCreate}>
             <Plus aria-hidden="true" className="h-4 w-4" />
             Nuevo proveedor
           </Button>
-        </div>
-      </div>
+        }
+      />
 
       <ProveedoresTable
         suppliers={filteredSuppliers}

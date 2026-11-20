@@ -172,7 +172,7 @@ export function ReubicarProductoModal({
           <div className="flex items-center gap-2.5">
             <MapPin aria-hidden="true" className="h-4 w-4 text-zinc-400" />
             <div>
-              <span className="block text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="block text-[13px] font-medium text-zinc-900 dark:text-zinc-100">
                 Ubicación actual registrada:
               </span>
               <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400">
@@ -200,7 +200,7 @@ export function ReubicarProductoModal({
                 htmlFor="reubicar-sala-select"
                 className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
-                1. Sala o almacén principal <span className="text-red-500">*</span>
+                1. Sala o almacén principal <span className="text-danger">*</span>
               </label>
               <select
                 id="reubicar-sala-select"
@@ -256,7 +256,7 @@ export function ReubicarProductoModal({
                 ))}
               </select>
               {selectedLocationId && cajones.length === 0 && !isLoadingCajones && (
-                <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+                <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">
                   Puedes guardar solo la sala, o cambiar al modo manual para especificar un cajón nuevo.
                 </span>
               )}
@@ -269,7 +269,7 @@ export function ReubicarProductoModal({
                 htmlFor="reubicar-custom-sala"
                 className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
-                Nombre de la sala <span className="text-red-500">*</span>
+                Nombre de la sala <span className="text-danger">*</span>
               </label>
               <input
                 id="reubicar-custom-sala"
@@ -287,7 +287,7 @@ export function ReubicarProductoModal({
                 htmlFor="reubicar-custom-cajon"
                 className={`mb-1.5 block ${FIELD_LABEL_CLASS}`}
               >
-                Código de cajón / estante <span className="text-red-500">*</span>
+                Código de cajón / estante <span className="text-danger">*</span>
               </label>
               <input
                 id="reubicar-custom-cajon"

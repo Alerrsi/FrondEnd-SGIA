@@ -29,13 +29,13 @@ export function CotizacionDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <SheetContent className="w-full sm:max-w-lg">
+      <SheetContent>
         <SheetHeader>
           <SheetTitle>
             <FileText aria-hidden="true" className="h-4 w-4 text-zinc-500" />
-            <span className="font-mono">Cotización {cotizacion.code ?? `#${cotizacion.id}`}</span>
+            <span>Cotización {cotizacion.code ?? `#${cotizacion.id}`}</span>
           </SheetTitle>
-          <SheetDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+          <SheetDescription>
             Historial del flujo anterior: solo lectura.
           </SheetDescription>
         </SheetHeader>
@@ -44,7 +44,7 @@ export function CotizacionDetailSheet({
           {/* Status & date */}
           <div className="flex items-center justify-between">
             <QuotationStatusBadge estado={cotizacion.estado} />
-            <span className="inline-flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 font-mono">
+            <span className="inline-flex items-center gap-1 font-mono text-[13px] text-zinc-500 dark:text-zinc-400">
               <Calendar aria-hidden="true" className="h-3 w-3" />
               {cotizacion.createdAt
                 ? new Date(cotizacion.createdAt).toLocaleDateString('es-CL')
@@ -53,21 +53,21 @@ export function CotizacionDetailSheet({
           </div>
 
           {/* Products */}
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-2">
+          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 space-y-2">
             <SectionLabel icon={Package}>Productos solicitados ({items.length})</SectionLabel>
             {items.length === 0 ? (
-              <p className="text-xs text-zinc-400 py-2">Sin productos registrados.</p>
+              <p className="py-2 text-[13px] text-zinc-500 dark:text-zinc-400">Sin productos registrados.</p>
             ) : (
               <div className="space-y-1">
                 {items.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between rounded border border-zinc-100 dark:border-zinc-800 px-3 py-1.5 text-xs"
+                    className="flex min-w-0 items-center justify-between gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-[13px]"
                   >
                     <span className="text-zinc-700 dark:text-zinc-300 font-medium">
                       {item.name ?? `Producto #${item.productoId ?? item.product_id}`}
                     </span>
-                    <span className="font-mono text-zinc-500">
+                    <span className="font-mono text-zinc-500 dark:text-zinc-400">
                       ×{item.cantidad ?? item.quantity}
                     </span>
                   </div>
@@ -77,10 +77,10 @@ export function CotizacionDetailSheet({
           </div>
 
           {/* Suppliers */}
-          <div className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3 space-y-2">
+          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3 space-y-2">
             <SectionLabel icon={Building2}>Proveedores contactados ({suppliers.length})</SectionLabel>
             {suppliers.length === 0 ? (
-              <p className="text-xs text-zinc-400 py-2">
+              <p className="py-2 text-[13px] text-zinc-500 dark:text-zinc-400">
                 {cotizacion.proveedor ?? 'Sin proveedores registrados.'}
               </p>
             ) : (
@@ -88,12 +88,12 @@ export function CotizacionDetailSheet({
                 {suppliers.map((supplier) => (
                   <div
                     key={supplier.id}
-                    className="flex items-center justify-between rounded border border-zinc-100 dark:border-zinc-800 px-3 py-1.5 text-xs"
+                    className="flex min-w-0 items-center justify-between gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 text-[13px]"
                   >
                     <span className="text-zinc-700 dark:text-zinc-300 font-medium">
                       {supplier.name}
                     </span>
-                    <span className="font-mono text-zinc-400 text-xs">{supplier.email}</span>
+                    <span className="truncate text-zinc-500 dark:text-zinc-400">{supplier.email}</span>
                   </div>
                 ))}
               </div>
@@ -102,9 +102,9 @@ export function CotizacionDetailSheet({
 
           {/* Notes */}
           {(cotizacion.notas ?? cotizacion.notes) && (
-            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 p-3">
+            <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-3">
               <SectionLabel className="mb-1">Notas</SectionLabel>
-              <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
+              <p className="text-[13px] text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
                 {cotizacion.notas ?? cotizacion.notes}
               </p>
             </div>

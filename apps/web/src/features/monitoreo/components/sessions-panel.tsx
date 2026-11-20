@@ -59,7 +59,7 @@ export function SessionsPanel() {
               <SkeletonRows columns={6} rows={5} label="Cargando sesiones…" cellClassName="px-3 py-2" />
             ) : isError ? (
               <tr>
-                <td colSpan={6} role="alert" className="px-3 py-4 text-center text-xs text-rose-600 dark:text-rose-400">
+                <td colSpan={6} role="alert" className="px-3 py-4 text-center text-xs text-danger">
                   No se pudieron cargar las sesiones.
                 </td>
               </tr>

@@ -74,7 +74,7 @@ export function StudentsTable({ rows, onOpen, onEdit, onToggleStatus }: Students
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onSelect={() => onEdit(row.original)}>Editar</DropdownMenuItem>
                 <DropdownMenuItem
-                  className={row.original.is_active ? 'text-rose-600 dark:text-rose-400' : undefined}
+                  className={row.original.is_active ? 'text-danger' : undefined}
                   onSelect={() => onToggleStatus(row.original)}
                 >
                   {row.original.is_active ? 'Desactivar' : 'Activar'}

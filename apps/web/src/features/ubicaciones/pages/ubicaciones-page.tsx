@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import {
   Layers,
   Plus,
-  Search,
   Building2,
   FolderTree,
   Trash2,
@@ -24,8 +23,18 @@ import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { toast } from '@/lib/toast';
 import { apiErrorToMessage } from '@/lib/api-error';
-import { PageHeading } from '@/components/ui/page-heading';
-import { CODE_CHIP_CLASS, STATE_TEXT_CLASS } from '@/components/ui/typography';
+import { Badge } from '@/components/ui/badge';
+import { Cell } from '@/components/ui/cell';
+import { CellGrid } from '@/components/ui/cell-grid';
+import { EmptyState } from '@/components/ui/empty-state';
+import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
+import { PageHeader } from '@/components/ui/page-header';
+import { SectionTitle } from '@/components/ui/section-title';
+import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
+import { TableSearch } from '@/components/ui/table-search';
+import { TableToolbar } from '@/components/ui/table-toolbar';
+import { CODE_CHIP_CLASS } from '@/components/ui/typography';
+import { cn } from '@/lib/cn';
 import { printBlob } from '@/features/equipos/utils/download';
 import { LocationFormDialog } from '@/features/ubicaciones/components/location-form-dialog';
 import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
@@ -131,246 +140,236 @@ export default function UbicacionesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Encabezado Principal */}
-      <div className="flex flex-col gap-2">
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageHeading icon={Layers} title="Gestión de ubicaciones físicas y cajones">
-            Estructura jerárquica de Salas, Talleres, Estanterías y Cajones del pañol.
-          </PageHeading>
-
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => refetch()}
-              className="text-xs gap-1.5"
-            >
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        icon={Layers}
+        title="Gestión de ubicaciones físicas y cajones"
+        description="Salas, talleres y bodegas del pañol con los cajones donde se guarda cada producto."
+        actions={
+          <>
+            <Button type="button" variant="secondary" size="sm" onClick={() => refetch()}>
               <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
-              <span>Actualizar</span>
+              Actualizar
             </Button>
-            <Button
-              type="button"
-              variant="primary"
-              size="sm"
-              onClick={handleOpenCreateLocation} className="gap-1.5 bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-            >
+            <Button type="button" variant="primary" size="sm" onClick={handleOpenCreateLocation}>
               <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-              <span>Nueva sala / pañol</span>
+              Nueva sala / pañol
             </Button>
+          </>
+        }
+      />
+
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+        {/* Salas y recintos */}
+        <section
+          aria-label="Salas y recintos"
+          className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-5"
+        >
+          <div className="flex items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+            <SectionTitle as="h2" icon={Building2}>
+              Salas y recintos
+            </SectionTitle>
+            <span className="font-mono text-[13px] text-zinc-500 dark:text-zinc-400">{locations.length}</span>
           </div>
-        </div>
-      </div>
-
-      {/* Barra de Filtros */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 shadow-xs">
-        <div className="flex flex-1 items-center gap-2 min-w-[240px]">
-          <div className="relative w-full max-w-sm">
-            <Search aria-hidden="true" className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
-            <input
-              type="search"
-              placeholder="Buscar por nombre o descripción…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-md border border-zinc-200 dark:border-zinc-800 pl-8 pr-2 text-xs font-mono h-8 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-400"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <select
-            value={tipoFilter}
-            onChange={(e) => setTipoFilter(e.target.value)}
-            className="h-8 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-2 text-xs font-mono text-zinc-700 dark:text-zinc-300 focus:outline-none"
-          >
-            <option value="">Todos los tipos</option>
-            <option value="sala">Salas</option>
-            <option value="panol">Pañoles</option>
-            <option value="taller">Talleres</option>
-            <option value="bodega">Bodegas</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Grid Split: Lista de Ubicaciones a la izquierda, Cajones/Detalle a la derecha */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-        {/* Columna Izquierda: Salas y Ubicaciones (5 cols) */}
-        <div className="md:col-span-5 flex flex-col gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
-          <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
-            <span className="text-xs font-semibold text-zinc-500">
-              Salas y Recintos ({locations.length})
-            </span>
+          <div className="border-b border-zinc-200 dark:border-zinc-800">
+            <TableToolbar>
+              <TableSearch
+                value={search}
+                onChange={setSearch}
+                placeholder="Buscar por nombre o descripción…"
+              />
+              <select
+                value={tipoFilter}
+                onChange={(e) => setTipoFilter(e.target.value)}
+                aria-label="Filtrar por tipo"
+                className={FILTER_CONTROL_CLASS}
+              >
+                <option value="">Todos los tipos</option>
+                <option value="sala">Salas</option>
+                <option value="panol">Pañoles</option>
+                <option value="taller">Talleres</option>
+                <option value="bodega">Bodegas</option>
+              </select>
+            </TableToolbar>
           </div>
 
           {isLoading ? (
             <SkeletonList label="Cargando ubicaciones…" rows={5} columns={2} />
           ) : locations.length === 0 ? (
-            <div className={`p-6 ${STATE_TEXT_CLASS}`}>
-              No se encontraron salas o ubicaciones registradas.
-            </div>
+            <EmptyState
+              icon={Building2}
+              title="No se encontraron salas o ubicaciones registradas."
+              action={
+                <Button type="button" variant="secondary" size="sm" onClick={handleOpenCreateLocation}>
+                  <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+                  Nueva sala / pañol
+                </Button>
+              }
+            />
           ) : (
-            <div className="flex flex-col gap-1.5 max-h-[600px] overflow-y-auto pr-1">
+            <ul className="max-h-[600px] overflow-y-auto">
               {locations.map((loc) => {
                 const isSelected = activeLocation?.id === loc.id;
                 return (
-                  <div
+                  <li
                     key={loc.id}
                     onClick={() => setSelectedLocation(loc)}
-                    className={`flex items-center justify-between gap-2 p-2.5 rounded border transition-colors cursor-pointer ${
+                    onKeyDown={(e) => {
+                      if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        setSelectedLocation(loc);
+                      }
+                    }}
+                    tabIndex={0}
+                    aria-current={isSelected ? 'true' : undefined}
+                    className={cn(
+                      'relative flex cursor-pointer items-center justify-between gap-2 border-b border-zinc-200 px-4 py-2.5 transition-colors duration-150 last:border-b-0 dark:border-zinc-800',
                       isSelected
-                        ? 'border-zinc-900 bg-zinc-100 dark:border-zinc-100 dark:bg-zinc-800'
-                        : 'border-zinc-200/70 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
-                    }`}
+                        ? 'bg-accent-soft before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-accent'
+                        : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40',
+                    )}
                   >
-                    <div className="flex items-start gap-2.5 min-w-0">
-                      <Building2 aria-hidden="true"
-                        className={`h-4 w-4 mt-0.5 shrink-0 ${
-                          isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400'
-                        }`}
+                    <div className="flex min-w-0 items-start gap-2.5">
+                      <Building2
+                        aria-hidden="true"
+                        className={cn(
+                          'mt-0.5 h-4 w-4 shrink-0',
+                          isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400',
+                        )}
                       />
-                      <div className="flex flex-col min-w-0">
-                        <div className="flex items-center gap-1.5 min-w-0">
+                      <div className="flex min-w-0 flex-col gap-0.5">
+                        <div className="flex min-w-0 items-center gap-1.5">
                           {loc.code && <span className={`${CODE_CHIP_CLASS} shrink-0`}>{loc.code}</span>}
-                          <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                          <span className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                             {loc.nombre}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 dark:text-zinc-400">
-                          <span className="px-1 rounded bg-zinc-200/60 dark:bg-zinc-700/60 font-semibold">
-                            {loc.tipo}
-                          </span>
-                          {loc.descripcion && <span className="truncate max-w-[150px]">{loc.descripcion}</span>}
+                        <div className="flex min-w-0 items-center gap-1.5 text-[13px] text-zinc-500 dark:text-zinc-400">
+                          <Badge>{loc.tipo}</Badge>
+                          {loc.descripcion && <span className="truncate">{loc.descripcion}</span>}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
-                      <Button
+                    <div className="flex shrink-0 items-center gap-1">
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="icon"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenEditLocation(loc);
                         }}
-                        className="h-6 w-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                        className={ICON_BUTTON_CLASS}
                         title="Editar ubicación"
+                        aria-label={`Editar ${loc.nombre}`}
                       >
-                        <Edit2 aria-hidden="true" className="h-3 w-3" />
-                      </Button>
-                      <Button
+                        <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />
+                      </button>
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="icon"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteLocation(loc);
                         }}
-                        className="h-6 w-6 text-zinc-400 hover:text-rose-600"
+                        className={ICON_BUTTON_CLASS}
                         title="Eliminar ubicación"
+                        aria-label={`Eliminar ${loc.nombre}`}
                       >
-                        <Trash2 aria-hidden="true" className="h-3 w-3" />
-                      </Button>
+                        <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
+                      </button>
                     </div>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           )}
-        </div>
+        </section>
 
-        {/* Columna Derecha: Cajones y Gavetas de la sala activa (7 cols) */}
-        <div className="md:col-span-7 flex flex-col gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 shadow-xs">
+        {/* Cajones de la sala activa */}
+        <section
+          aria-label="Cajones de la ubicación"
+          className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-7"
+        >
           {activeLocation ? (
             <>
-              <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2.5">
-                <div className="flex items-center gap-2">
-                  <FolderTree aria-hidden="true" className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
-                  <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
-                    Cajones y Gavetas en "{activeLocation.nombre}" ({cajones.length})
-                  </span>
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleOpenCreateCajon} className="gap-1.5"
-                >
-                  <Plus aria-hidden="true" className="h-3 w-3" />
-                  <span>Nuevo cajón</span>
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+                <SectionTitle as="h2" icon={FolderTree} className="min-w-0">
+                  <span className="truncate">Cajones y gavetas en «{activeLocation.nombre}»</span>
+                  <span className="font-mono font-normal text-zinc-500 dark:text-zinc-400">({cajones.length})</span>
+                </SectionTitle>
+                <Button type="button" variant="secondary" size="sm" onClick={handleOpenCreateCajon}>
+                  <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+                  Nuevo cajón
                 </Button>
               </div>
 
               {isLoadingCajones ? (
                 <SkeletonList label="Cargando compartimientos…" rows={4} columns={3} />
               ) : cajones.length === 0 ? (
-                <div className="p-8 text-center text-xs font-mono text-zinc-400 border border-dashed border-zinc-200 dark:border-zinc-800 rounded">
-                  Esta ubicación no tiene cajones o gavetas configuradas. Pulsa en "Nuevo cajón" para añadir una.
-                </div>
+                <EmptyState
+                  icon={MapPin}
+                  title="Esta ubicación no tiene cajones ni gavetas."
+                  description="Pulsa «Nuevo cajón» para agregar el primero."
+                />
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[600px] overflow-y-auto pr-1">
-                  {cajones.map((cajon) => (
-                    <div
-                      key={cajon.id}
-                      className="flex items-start justify-between gap-2 p-2.5 rounded border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 font-mono text-xs"
-                    >
-                      <div className="flex items-start gap-2 min-w-0">
-                        <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500 mt-0.5 shrink-0" />
-                        <div className="flex flex-col items-start gap-1 min-w-0">
-                          <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate max-w-full">
-                            {cajon.codigo}
-                          </span>
-                          <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
-                          {cajon.descripcion && (
-                            <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate max-w-full">
-                              {cajon.descripcion}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                <div className="max-h-[600px] overflow-y-auto p-4">
+                  <CellGrid columns={2} aria-label="Cajones">
+                    {cajones.map((cajon) => (
+                      <Cell key={cajon.id}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex min-w-0 items-start gap-2">
+                            <MapPin aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-400" />
+                            <div className="flex min-w-0 flex-col items-start gap-1">
+                              <span className="max-w-full truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                {cajon.codigo}
+                              </span>
+                              <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
+                              {cajon.descripcion && (
+                                <span className="max-w-full truncate text-[13px] text-zinc-500 dark:text-zinc-400">
+                                  {cajon.descripcion}
+                                </span>
+                              )}
+                            </div>
+                          </div>
 
-                      <div className="flex items-center gap-1 shrink-0">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => void handlePrintLabel(cajon)}
-                          disabled={labelMutation.isPending && labelMutation.variables === cajon.id}
-                          className="h-6 w-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
-                          title="Imprimir etiqueta"
-                          aria-label={`Imprimir etiqueta de ${cajonCode(cajon)}`}
-                        >
-                          {labelMutation.isPending && labelMutation.variables === cajon.id ? (
-                            <Loader2 aria-hidden="true" className="h-3 w-3 animate-spin" />
-                          ) : (
-                            <Printer aria-hidden="true" className="h-3 w-3" />
-                          )}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteCajon(cajon)}
-                          className="h-6 w-6 text-zinc-400 hover:text-rose-600"
-                          title="Eliminar cajón"
-                          aria-label={`Eliminar cajón ${cajon.codigo}`}
-                        >
-                          <Trash2 aria-hidden="true" className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                          <div className="flex shrink-0 items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => void handlePrintLabel(cajon)}
+                              disabled={labelMutation.isPending && labelMutation.variables === cajon.id}
+                              className={cn(ICON_BUTTON_CLASS, 'disabled:cursor-not-allowed disabled:opacity-50')}
+                              title="Imprimir etiqueta"
+                              aria-label={`Imprimir etiqueta de ${cajonCode(cajon)}`}
+                            >
+                              {labelMutation.isPending && labelMutation.variables === cajon.id ? (
+                                <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Printer aria-hidden="true" className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCajon(cajon)}
+                              className={ICON_BUTTON_CLASS}
+                              title="Eliminar cajón"
+                              aria-label={`Eliminar cajón ${cajon.codigo}`}
+                            >
+                              <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
+                            </button>
+                          </div>
+                        </div>
+                      </Cell>
+                    ))}
+                  </CellGrid>
                 </div>
               )}
             </>
           ) : (
-            <div className={`p-12 ${STATE_TEXT_CLASS}`}>
-              Selecciona o crea una sala en la columna izquierda para gestionar sus cajones.
-            </div>
+            <EmptyState
+              icon={FolderTree}
+              title="Selecciona o crea una sala para gestionar sus cajones."
+            />
           )}
-        </div>
+        </section>
       </div>
 
       <LocationFormDialog

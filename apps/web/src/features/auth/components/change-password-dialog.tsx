@@ -94,7 +94,7 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
               {...register(name)}
             />
             {errors[name]?.message && (
-              <span className="mt-1 block text-xs font-medium text-red-600 dark:text-red-400" role="alert">
+              <span className="mt-1 block text-xs font-medium text-danger" role="alert">
                 {errors[name]?.message}
               </span>
             )}

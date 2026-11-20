@@ -44,7 +44,7 @@ describe('REQ-14: Dashboards Analíticos y Métricas Dinámicas (DashboardPage)'
   it('renders dashboard layout and charts from default template', async () => {
     renderWithClient(<DashboardPage />);
 
-    expect(screen.getByText(/Dashboards Analíticos y Métricas/i)).toBeDefined();
+    expect(screen.getByRole('heading', { level: 1, name: 'Analítica' })).toBeDefined();
     await screen.findByText('Préstamos Diarios por Semana');
     expect(await screen.findByText('Disponibles')).toBeDefined();
     expect(await screen.findByText('En préstamo')).toBeDefined();

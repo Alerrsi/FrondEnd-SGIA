@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useBudgetSpending } from '@sgia/api-client';
 import type { BudgetSpendingGroupBy } from '@sgia/types';
 
-import { Button } from '@/components/ui/button';
+import { SegmentedFilter } from '@/components/shared/segmented-filter';
 import { formatCLP } from '@/features/compras/lib/format';
 import { STATE_TEXT_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { SkeletonRows } from '@/components/ui/skeleton-rows';
@@ -28,34 +28,20 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div
-        className="flex flex-wrap items-center gap-1"
-        role="group"
-        aria-label="Agrupar gasto por"
-      >
-        {GROUPS.map((g) => (
-          <Button
-            key={g.value}
-            size="sm"
-            variant={groupBy === g.value ? 'primary' : 'outline'}
-            aria-pressed={groupBy === g.value}
-            onClick={() => setGroupBy(g.value)}
-          >
-            {g.label}
-          </Button>
-        ))}
-        <span className="ml-auto font-mono text-xs text-zinc-600 dark:text-zinc-300">
+      <div className="flex flex-wrap items-center gap-2">
+        <SegmentedFilter label="Agrupar gasto por" options={GROUPS} value={groupBy} onChange={setGroupBy} />
+        <span className="ml-auto font-mono text-[13px] text-zinc-600 dark:text-zinc-300">
           Total {formatCLP(data?.total ?? 0)}
         </span>
       </div>
       {groupBy === 'supplier' && (
-        <p className="text-xs text-zinc-400">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
           Solo incluye facturas ligadas a una orden de compra.
         </p>
       )}
 
-      <div className="relative overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
-        <table className="w-full border-collapse text-left text-xs">
+      <div className="relative overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <table className="w-full border-collapse text-left text-[13px] text-zinc-700 dark:text-zinc-300">
           <thead className={TABLE_HEAD_CLASS}>
             <tr>
               <th className="px-3 py-2 font-medium">
@@ -68,7 +54,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {isLoading && (
               <SkeletonRows columns={4} rows={4} label="Cargando gasto…" cellClassName="px-3 py-2" />
             )}
@@ -89,7 +75,7 @@ export function BudgetSpendingPanel({ budgetId }: { budgetId: number }) {
                   {formatCLP(row.amount)}
                 </td>
                 <td className="px-3 py-2">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                  <div className="h-1.5 w-full min-w-16 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
                     <div
                       className="h-full rounded-full bg-zinc-700 dark:bg-zinc-300"
                       style={{ width: `${(row.amount / max) * 100}%` }}
