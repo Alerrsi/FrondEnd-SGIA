@@ -23,10 +23,10 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/historial': ['PAN-01', 'DIR-01'],
   '/equipos': ['DIR-01', 'PAN-01'],
   '/alertas': ['DIR-01', 'PAN-01'],
-  // Módulo Compras: el hub lo ve quien vea al menos una de sus páginas.
-  '/compras': ['PAN-01', 'DIR-01'],
-  '/compras/solicitudes': ['DIR-01', 'PAN-01'],
-  '/compras/ordenes': ['PAN-01', 'DIR-01'],
+  // Módulo Compras: solo DIR-01 (el pañol no accede a ninguna página de compras).
+  '/compras': ['DIR-01'],
+  '/compras/solicitudes': ['DIR-01'],
+  '/compras/ordenes': ['DIR-01'],
   '/compras/facturas': ['DIR-01'],
   '/compras/presupuestos': ['DIR-01'],
   '/compras/proveedores': ['DIR-01'],

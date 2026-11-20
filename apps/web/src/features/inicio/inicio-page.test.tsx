@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 
 import { canAccessRoute, getRoleDefaultPath } from '@/features/auth/types/roles';
@@ -45,6 +46,9 @@ vi.mock('@sgia/api-client', () => ({
     isError: false,
   }),
   useLoans: (params: unknown) => mockUseLoans(params),
+  useProducts: ({ search }: { search?: string }) => ({
+    data: { data: search ? [{ id: 1, nombre: 'Notebook Lenovo' }, { id: 2, nombre: 'Notebook HP' }] : [] },
+  }),
   useCriticalStockAlerts: () => page(0),
   usePurchaseRequests: ({ status }: { status: string }) => page(status === 'borrador' ? 2 : 0),
   useAuditLogs: () => ({
@@ -186,5 +190,32 @@ describe('Inicio (/)', () => {
       expect(modules.length).toBeGreaterThan(0);
       for (const m of modules) expect(canAccessRoute(role, m.to)).toBe(true);
     }
+  });
+
+  describe('búsqueda de catálogo del profesor', () => {
+    it('no busca con el campo vacío y avisa', async () => {
+      mockRole = 'PRO-01';
+      renderInicio();
+      await userEvent.setup().click(screen.getByRole('button', { name: 'Buscar' }));
+      expect(screen.getByRole('alert').textContent).toContain('Escribe qué necesitas');
+    });
+
+    it('trata los espacios como vacío', async () => {
+      mockRole = 'PRO-01';
+      renderInicio();
+      const user = userEvent.setup();
+      await user.type(screen.getByRole('searchbox'), '   ');
+      await user.click(screen.getByRole('button', { name: 'Buscar' }));
+      expect(screen.getByRole('alert')).toBeDefined();
+    });
+
+    it('sugiere productos al escribir', async () => {
+      mockRole = 'PRO-01';
+      renderInicio();
+      await userEvent.setup().type(screen.getByRole('searchbox'), 'note');
+      const list = await screen.findByRole('list', { name: 'Sugerencias' });
+      expect(within(list).getByText('Notebook Lenovo')).toBeDefined();
+      expect(within(list).getByText('Notebook HP')).toBeDefined();
+    });
   });
 });

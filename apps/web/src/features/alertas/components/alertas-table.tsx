@@ -54,6 +54,8 @@ export interface AlertasTableProps {
   onRequestQuote?: (alert: CriticalStockAlert) => void;
   /** Muestra casillas para elegir alertas (solo quien puede crear solicitudes de compra). */
   selectable?: boolean;
+  /** Enlaza el código de la solicitud abierta; solo quien accede a Compras (no el pañol). */
+  linkRequests?: boolean;
   /** IDs de producto seleccionados. */
   selectedProductIds?: ReadonlySet<number>;
   onToggleSelect?: (alert: CriticalStockAlert) => void;
@@ -89,6 +91,7 @@ export function AlertasTable({
   onViewProduct,
   onRequestQuote,
   selectable = false,
+  linkRequests = false,
   selectedProductIds,
   onToggleSelect,
   onToggleSelectAll,
@@ -251,12 +254,16 @@ export function AlertasTable({
           if (!request) return <span className="text-[13px] text-zinc-400">—</span>;
           return (
             <div className="flex flex-col items-start gap-1">
-              <Link
-                to={`/compras/solicitudes/${request.id}`}
-                className={`${CODE_CHIP_CLASS} hover:underline`}
-              >
-                {request.code}
-              </Link>
+              {linkRequests ? (
+                <Link
+                  to={`/compras/solicitudes/${request.id}`}
+                  className={`${CODE_CHIP_CLASS} hover:underline`}
+                >
+                  {request.code}
+                </Link>
+              ) : (
+                <span className={CODE_CHIP_CLASS}>{request.code}</span>
+              )}
               <PurchaseRequestStatusBadge status={request.status} />
             </div>
           );
@@ -353,6 +360,7 @@ export function AlertasTable({
       onViewProduct,
       onRequestQuote,
       selectable,
+      linkRequests,
       selectedProductIds,
       onToggleSelect,
       onToggleSelectAll,

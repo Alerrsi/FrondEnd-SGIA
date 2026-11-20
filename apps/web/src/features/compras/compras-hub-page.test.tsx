@@ -49,12 +49,12 @@ describe('ComprasHubPage', () => {
   });
 
   it('lista los módulos según el rol', () => {
-    mockRole = 'PAN-01';
+    mockRole = 'DIR-01';
     renderHub();
 
     expect(screen.getByRole('link', { name: /Solicitudes de compra/ })).toBeDefined();
     expect(screen.getByRole('link', { name: /Órdenes de compra/ })).toBeDefined();
-    expect(screen.queryByRole('link', { name: /Facturas/ })).toBeNull();
-    expect(screen.queryByRole('link', { name: /Presupuestos/ })).toBeNull();
+    expect(screen.getByRole('link', { name: /Facturas/ })).toBeDefined();
+    expect(screen.getByRole('link', { name: /Presupuestos/ })).toBeDefined();
   });
 });

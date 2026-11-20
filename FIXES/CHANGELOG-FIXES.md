@@ -898,3 +898,16 @@
   - Rendimiento (build de producción, login): sin FAIL; JS inicial 253 KiB gzip (WARN).
   - `sgia-design/SKILL.md` y `CLAUDE.md` reescritos con el sistema nuevo.
 - **Verificación:** typecheck web y vitest (508 + 1 omitida) en verde.
+
+---
+
+## FIX-048: Ctrl K en ancho angosto, catálogo del profesor, búsqueda de Inicio y pañolero sin Compras
+
+- **Fecha:** 2026-11-20
+- **Módulo:** Layouts, Inicio y Compras (`apps/web`)
+- **Cambios:**
+  - `Kbd`/`SearchButton`: `Ctrl K` se veía bajo `sm` (la base `pointer-fine:inline-flex` pisaba el `hidden`); ahora `max-sm:pointer-fine:hidden` y `whitespace-nowrap`.
+  - `CatalogPanel`: el `TableSearch` (`sm:flex-1`) se estiraba en la columna y dejaba icono y `/` bajo el campo; se pasa `sm:flex-none`.
+  - `CatalogSearch` (Inicio del profesor): ya no navega con el campo vacío (mensaje «Escribe qué necesitas antes de buscar.», espacios cuentan como vacío) y muestra hasta 5 sugerencias de productos activos al escribir (`useProducts`, 250 ms).
+  - Pañolero (`PAN-01`) sin ningún acceso a Compras: se quitó de `/compras`, `/compras/solicitudes` y `/compras/ordenes` en `ROUTE_PERMISSIONS` (solo `DIR-01`). Desaparece del menú y las rutas lo redirigen. En Alertas de stock se oculta «Ir a solicitudes de compra» y el código de la solicitud abierta deja de ser enlace sin acceso.
+- **Verificación:** typecheck web y vitest (511 + 1 omitida) en verde.
