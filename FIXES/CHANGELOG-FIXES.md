@@ -901,7 +901,7 @@
 
 ---
 
-## FIX-048: Ctrl K en ancho angosto, catálogo del profesor, búsqueda de Inicio y pañolero sin Compras
+## FIX-047: Ctrl K en ancho angosto, catálogo del profesor, búsqueda de Inicio y pañolero sin Compras
 
 - **Fecha:** 2026-11-20
 - **Módulo:** Layouts, Inicio y Compras (`apps/web`)
