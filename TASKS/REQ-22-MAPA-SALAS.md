@@ -13,7 +13,7 @@ Cada sala tiene su propio plano en SVG con muros, zonas y estantes. Se ve un map
 
 ## ✅ Criterios de aceptación
 
-1. Toda ubicación tiene un mapa en `/ubicaciones/mapa/:locationId`; el selector de sala cambia de mapa sin recargar la página.
+1. Toda ubicación tiene un mapa en `/mapa-salas/:locationId`; el selector de sala cambia de mapa sin recargar la página.
 2. El mapa muestra el muro, las zonas con su nombre y los estantes con su código y sus cajones como celdas.
 3. `PAN-01` y `DIR-01` crean un estante desde el mapa; queda en esa sala, aparece seleccionado y se arrastra a su lugar. Al recargar sigue donde se dejó.
 4. Un estante no se puede soltar fuera de los muros ni encima de otro; vuelve a su lugar con un aviso. La API también lo rechaza (`422`).
@@ -65,14 +65,14 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] Tests de servicio y del hook optimista (`features/mapa-salas/room-map-hooks.test.tsx`; `api-client` no tiene runner propio).
 
 ### Fase 3 · Mapa en modo vista (`apps/web/src/features/mapa-salas/`)
-- [ ] `lib/map-geometry.ts` (snap, clamp, rotación, superposición, zona por centro, primer hueco) con tests.
-- [ ] Ruta `/ubicaciones/mapa/:locationId` con `React.lazy`, redirección desde `/ubicaciones/mapa`, permiso en `ROUTE_PERMISSIONS` (`PAN-01`, `DIR-01`, `AD-01`) y entrada «Mapa de salas» en `nav-config.ts`.
-- [ ] `SalaSelector` en el `PageHeader`; última sala vista recordada en local (con `try/catch`).
-- [ ] `SalaSvg`, `SalaWalls`, `ZonaShape`, `EstanteShape` con estilo «Trazo», líneas `non-scaling-stroke` y textos ≥ 12 px en pantalla (`useMapScale`).
-- [ ] `EstanteContenidoDialog` con cajones, productos y unidades por nombre; vacío, carga y error.
-- [ ] Lista alternativa «Estantes de la sala» bajo el mapa.
-- [ ] Acceso «Ver mapa» por sala en `/ubicaciones`.
-- [ ] Tests de dibujo y pop-up.
+- [x] `lib/map-geometry.ts` (snap, clamp, rotación, superposición, zona por centro, primer hueco) con tests.
+- [x] Ruta `/mapa-salas/:locationId` con `React.lazy`, redirección desde `/mapa-salas`, permiso en `ROUTE_PERMISSIONS` (`PAN-01`, `DIR-01`, `AD-01`) y entrada «Mapa de salas» en `nav-config.ts`.
+- [x] `SalaSelector` en el `PageHeader`; última sala vista recordada en local (con `try/catch`).
+- [x] `SalaSvg`, `SalaWalls`, `ZonaShape`, `EstanteShape` con estilo «Trazo», líneas `non-scaling-stroke` y textos ≥ 12 px en pantalla (`useMapScale`).
+- [x] `EstanteContenidoDialog` con cajones, productos y unidades por nombre; vacío, carga y error.
+- [x] Lista alternativa «Estantes de la sala» bajo el mapa.
+- [x] Acceso «Ver mapa» por sala en `/ubicaciones`.
+- [x] Tests de dibujo y pop-up.
 
 ### Fase 4 · Edición
 - [ ] Botón «Editar distribución» (solo `PAN-01`/`DIR-01`), rejilla de 50 cm.
@@ -98,9 +98,9 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 
 ## 🧪 Pruebas requeridas
 
-- [ ] `features/mapa-salas/lib/map-geometry.test.ts`
+- [x] `features/mapa-salas/lib/map-geometry.test.ts`
 - [x] Servicio y hook optimista en `packages/api-client` (`features/mapa-salas/room-map-hooks.test.tsx`)
-- [ ] `features/mapa-salas/sala-svg.test.tsx`
-- [ ] `features/mapa-salas/estante-contenido-dialog.test.tsx`
+- [x] `features/mapa-salas/sala-svg.test.tsx`
+- [x] `features/mapa-salas/estante-contenido-dialog.test.tsx`
 - [ ] `features/mapa-salas/mapa-sala-drag.test.tsx`
 - [ ] `features/mapa-salas/mapa-sala-page.test.tsx`

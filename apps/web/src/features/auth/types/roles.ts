@@ -20,6 +20,8 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/prestamos/mostrador': ['PAN-01'],
   '/prestamos/historial': ['PAN-01', 'DIR-01'],
   '/ubicaciones': ['PAN-01'],
+  // REQ-22: el plano lo editan PAN-01 y DIR-01 (`ACTION_ROLES.editRoomMap`); AD-01 solo lo ve.
+  '/mapa-salas': ['PAN-01', 'DIR-01', 'AD-01'],
   '/historial': ['PAN-01', 'DIR-01'],
   '/equipos': ['DIR-01', 'PAN-01'],
   '/alertas': ['DIR-01', 'PAN-01'],
@@ -54,6 +56,8 @@ export const ACTION_ROLES = {
   authorizeOverBudget: ['DIR-01'],
   scanInvoice: ['DIR-01'],
   deleteProduct: ['DIR-01'],
+  /** Crear, mover y borrar estantes y zonas del mapa de salas; medidas de la sala (REQ-22). */
+  editRoomMap: ['DIR-01', 'PAN-01'],
 } as const satisfies Record<string, readonly WebRoleCode[]>;
 
 export function canDo(role: string | undefined, action: keyof typeof ACTION_ROLES): boolean {

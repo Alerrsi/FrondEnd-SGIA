@@ -17,7 +17,7 @@ Referencia visual (imagen del pedido): «SALA 01» con muro de doble línea, «Z
 | Jerarquía **Sala (`locations`) → Cajón (`cajones`)**. No existe «estante» ni «zona». | Hay que crear dos entidades nuevas en el backend. |
 | El backend ya llama «cajón (estante)» al cajón en algún mensaje y el `barcode` antiguo era `EST-xxxxxxxx`. | El vocabulario se ordena: **estante** = mueble en el plano, **cajón** = compartimiento donde se guarda (lo que se escanea). |
 | `locations` no tiene medidas; `cajones` no tiene posición. | Medidas de sala y posición de estantes son campos nuevos. |
-| `/ubicaciones` es solo de `PAN-01` y `/inventario` de `PAN-01` y `DIR-01` (`features/auth/types/roles.ts`). | El mapa tiene ruta y permiso propios (`/ubicaciones/mapa` gana por prefijo más largo en `rolesForRoute`). «Ver mapa» desde `/ubicaciones` solo lo ve `PAN-01`; `DIR-01` y `AD-01` entran por el menú. |
+| `/ubicaciones` es solo de `PAN-01` y `/inventario` de `PAN-01` y `DIR-01` (`features/auth/types/roles.ts`). | El mapa tiene ruta y permiso propios (`/mapa-salas`). «Ver mapa» desde `/ubicaciones` solo lo ve `PAN-01`; `DIR-01` y `AD-01` entran por el menú. |
 | `/inventario` solo lee `?q=` de la URL. | «Ver en inventario» desde el pop-up necesita que la lista lea `?cajon_id=` (el filtro ya existe en `ProductoParams`). |
 | Hasta octubre `/api/estantes` era un alias de cajones (retirado). | `/api/estantes` vuelve, pero como el mueble del plano. |
 | `packages/types` ya declara un `estante_id?` suelto en el payload de producto, sin uso. | Se reemplaza por el tipo real o se elimina en la fase 2. |
@@ -41,7 +41,7 @@ Referencia visual (imagen del pedido): «SALA 01» con muro de doble línea, «Z
 | 12 | **Superposición entre estantes no se permite**; fuera de los muros tampoco. El cliente lo impide al soltar (vuelve a su lugar con aviso) y la API lo rechaza con `422`. | Plano coherente con el espacio físico. Las zonas sí pueden contener estantes. |
 | 13 | **El `barcode` del cajón no cambia** (`{sala}-{cajón}`). El estante tiene `codigo` propio (`EST-A1`, único por sala) solo para mostrar. | No invalida etiquetas ya impresas. |
 | 14 | **Pop-up = `Dialog` `size="md"`** (hoja inferior bajo 640 px). Contenido cargado al abrir, con prefetch al pasar el puntero o enfocar. | Componente existente del sistema «Trazo». |
-| 15 | **Ruta `/ubicaciones/mapa/:locationId`**, con `/ubicaciones/mapa` que redirige a la última sala vista (preferencia local) o a la primera. Entrada «Mapa de salas» en `nav-config.ts` y acceso «Ver mapa» por sala en `/ubicaciones`. | Un mapa por sala, URL compartible. |
+| 15 | **Ruta `/mapa-salas/:locationId`** (no `/ubicaciones/mapa`: anidada, el menú de `PAN-01` marcaba «Ubicaciones» y «Mapa de salas» a la vez), con `/mapa-salas` que redirige a la última sala vista (preferencia local) o a la primera. Entrada «Mapa de salas» en `nav-config.ts` y acceso «Ver mapa» por sala en `/ubicaciones`. | Un mapa por sala, URL compartible. |
 
 ## 4. Modelo de datos (contrato con el backend)
 
@@ -131,8 +131,8 @@ export interface EstanteContenido { /* estante + cajones[] con productos[] y uni
 
 ```
 pages/
-  mapa-sala-page.tsx            ruta /ubicaciones/mapa/:locationId
-  mapa-sala-index-redirect.tsx  /ubicaciones/mapa → última sala o primera
+  mapa-sala-page.tsx            ruta /mapa-salas/:locationId
+  mapa-sala-index-redirect.tsx  /mapa-salas → última sala o primera
 components/
   sala-selector.tsx             Select de salas en las acciones del PageHeader
   mapa-toolbar.tsx              Editar distribución · Nuevo estante · Nueva zona · zoom

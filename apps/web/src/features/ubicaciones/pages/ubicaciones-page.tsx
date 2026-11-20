@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Layers,
+  Map as MapIcon,
   Plus,
   Building2,
   FolderTree,
@@ -252,6 +254,15 @@ export default function UbicacionesPage() {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-1">
+                      <Link
+                        to={`/mapa-salas/${loc.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className={ICON_BUTTON_CLASS}
+                        title="Ver mapa"
+                        aria-label={`Ver mapa de ${loc.nombre}`}
+                      >
+                        <MapIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                      </Link>
                       <button
                         type="button"
                         onClick={(e) => {

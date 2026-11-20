@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { ApiRequestError } from '@sgia/api-client';
 import type { CajonEntity, LocationEntity } from '@sgia/types';
 import UbicacionesPage from './ubicaciones-page';
@@ -66,7 +67,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   });
 
   it('muestra las salas y cajones con sus códigos', () => {
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     expect(screen.getByText(/Gestión de Ubicaciones Físicas y Cajones/i)).toBeDefined();
     expect(screen.getByText('Pañol Central')).toBeDefined();
@@ -79,7 +80,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   it('sugiere el código de sala desde el nombre hasta que se edita a mano', async () => {
     const user = userEvent.setup();
     mocks.createLocation.mockResolvedValue({ id: 3 });
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: /Nueva sala/i }));
     const nombre = screen.getByLabelText(/Nombre de la sala/i);
@@ -116,7 +117,7 @@ describe('UbicacionesPage (REQ-05)', () => {
         errors: { code: ['El código PCENTRAL ya está en uso.'] },
       }),
     );
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: /Nueva sala/i }));
     await user.type(screen.getByLabelText(/Nombre de la sala/i), 'Pañol Central');
@@ -128,7 +129,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   it('al editar una sala el código queda en solo lectura y no se envía', async () => {
     const user = userEvent.setup();
     mocks.updateLocation.mockResolvedValue({ id: 1 });
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getAllByTitle('Editar ubicación')[0]!);
 
@@ -149,7 +150,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   it('muestra la vista previa del código del cajón y bloquea uno de más de 12 caracteres', async () => {
     const user = userEvent.setup();
     mocks.createCajon.mockResolvedValue({ id: 11 });
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: /Nuevo cajón/i }));
     const codigo = screen.getByLabelText(/Código \/ identificador del cajón/i);
@@ -180,11 +181,19 @@ describe('UbicacionesPage (REQ-05)', () => {
     const user = userEvent.setup();
     const blob = new Blob(['%PDF'], { type: 'application/pdf' });
     mocks.downloadLabel.mockResolvedValue(blob);
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: 'Imprimir etiqueta de PCENTRAL-GAVETA-A-1' }));
 
     expect(mocks.downloadLabel).toHaveBeenCalledWith(10);
     expect(mocks.printBlob).toHaveBeenCalledWith(blob);
+  });
+});
+
+describe('UbicacionesPage · acceso al mapa (REQ-22)', () => {
+  it('cada sala enlaza a su mapa', () => {
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    expect(screen.getByRole('link', { name: 'Ver mapa de Laboratorio 201' }).getAttribute('href')).toBe('/mapa-salas/2');
   });
 });
