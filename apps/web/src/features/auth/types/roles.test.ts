@@ -69,12 +69,13 @@ describe('Role and Route Permissions', () => {
     });
 
     it('uses the most specific rule inside the Compras module', () => {
-      expect(canAccessRoute('PAN-01', '/compras')).toBe(true);
-      expect(canAccessRoute('PAN-01', '/compras/ordenes/4/trazabilidad')).toBe(true);
-      expect(canAccessRoute('PAN-01', '/compras/solicitudes/7')).toBe(true);
-      // Sin la regla del prefijo más largo, `/compras` daría acceso a PAN-01.
-      expect(canAccessRoute('PAN-01', '/compras/facturas')).toBe(false);
-      expect(canAccessRoute('PAN-01', '/compras/presupuestos/2')).toBe(false);
+      expect(canAccessRoute('DIR-01', '/compras')).toBe(true);
+      expect(canAccessRoute('DIR-01', '/compras/ordenes/4/trazabilidad')).toBe(true);
+      expect(canAccessRoute('DIR-01', '/compras/solicitudes/7')).toBe(true);
+      // El pañol no accede a ninguna página de compras.
+      for (const route of ['/compras', '/compras/solicitudes/7', '/compras/ordenes/4/trazabilidad', '/compras/facturas', '/compras/presupuestos/2']) {
+        expect(canAccessRoute('PAN-01', route)).toBe(false);
+      }
       expect(canAccessRoute('PRO-01', '/compras')).toBe(false);
     });
 

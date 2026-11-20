@@ -24,6 +24,8 @@ function normalizeLocation(raw: any): LocationEntity {
     storeroom_id: raw.storeroom_id ?? null,
     building: raw.building ?? null,
     floor: raw.floor ?? null,
+    map_width_cm: raw.map_width_cm ?? null,
+    map_height_cm: raw.map_height_cm ?? null,
     cajones_count: raw.cajones_count ?? (Array.isArray(raw.cajones) ? raw.cajones.length : 0),
     cajones: Array.isArray(raw.cajones) ? raw.cajones.map(normalizeCajon) : undefined,
     created_by: raw.created_by ?? null,
@@ -42,6 +44,8 @@ function normalizeCajon(raw: any): CajonEntity {
     descripcion: raw.descripcion ?? raw.description ?? null,
     location_id: raw.location_id ?? raw.location?.id ?? 0,
     location: raw.location ? normalizeLocation(raw.location) : undefined,
+    estante_id: raw.estante_id ?? null,
+    estante: raw.estante ? { id: raw.estante.id, codigo: raw.estante.codigo ?? '' } : null,
     products_count: raw.products_count ?? 0,
     created_by: raw.created_by ?? null,
     updated_by: raw.updated_by ?? null,
@@ -116,6 +120,8 @@ export async function fetchCajones(
 ): Promise<PaginatedResponse<CajonEntity>> {
   const query = new URLSearchParams();
   if (params?.location_id) query.set('location_id', String(params.location_id));
+  if (params?.estante_id) query.set('estante_id', String(params.estante_id));
+  if (params?.sin_estante) query.set('sin_estante', '1');
   if (params?.search) query.set('search', params.search);
   if (params?.per_page) query.set('per_page', String(params.per_page));
   if (params?.page) query.set('page', String(params.page));

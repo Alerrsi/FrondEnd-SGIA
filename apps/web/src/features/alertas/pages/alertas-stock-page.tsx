@@ -7,7 +7,7 @@ import type { CriticalStockAlert, Producto } from '@sgia/types';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuth } from '@/features/auth/context/auth-context';
-import { canDo } from '@/features/auth/types/roles';
+import { canAccessRoute, canDo } from '@/features/auth/types/roles';
 import { PurchaseRequestFormDialog } from '@/features/solicitudes-compra/components/purchase-request-form-dialog';
 import type { PurchaseRequestFormValues } from '@/features/solicitudes-compra/lib/purchase-request-form-schema';
 import { ProductoDetailDialog } from '@/features/inventario/components/producto-detail-dialog';
@@ -40,6 +40,7 @@ export default function AlertasStockPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const canRequest = canDo(user?.rol, 'managePurchaseRequests');
+  const canViewPurchases = !!user?.rol && canAccessRoute(user.rol, '/compras/solicitudes');
 
   // Estados de paginación y filtros
   const [page, setPage] = useState(1);
@@ -145,10 +146,12 @@ export default function AlertasStockPage() {
               <Layers aria-hidden="true" className="h-3.5 w-3.5" />
               Ver inventario
             </Button>
-            <Button type="button" variant="secondary" size="sm" onClick={() => navigate('/compras/solicitudes')}>
-              <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
-              Ir a solicitudes de compra
-            </Button>
+            {canViewPurchases && (
+              <Button type="button" variant="secondary" size="sm" onClick={() => navigate('/compras/solicitudes')}>
+                <ShoppingCart aria-hidden="true" className="h-3.5 w-3.5" />
+                Ir a solicitudes de compra
+              </Button>
+            )}
             {canRequest && selected.size > 0 && (
               <Button
                 type="button"
@@ -200,6 +203,7 @@ export default function AlertasStockPage() {
         onViewProduct={(product) => setSelectedProduct(product)}
         onRequestQuote={canRequest ? handleRequestOne : undefined}
         selectable={canRequest}
+        linkRequests={canViewPurchases}
         selectedProductIds={selectedProductIds}
         onToggleSelect={toggleSelect}
         onToggleSelectAll={toggleSelectAll}

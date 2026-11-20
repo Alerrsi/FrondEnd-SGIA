@@ -104,12 +104,9 @@ describe('AppLayout Sidebar (REQ-DISEÑO)', () => {
     // NO debe mostrar el código técnico "PAN-01"
     expect(screen.queryByText('PAN-01')).toBeNull();
 
-    // En Compras, PAN-01 solo ve solicitudes y órdenes; presupuestos y facturas son de AD-01 / DIR-01.
-    await userEvent.setup().click(screen.getByRole('button', { name: 'Desplegar Compras' }));
-    expect(screen.getByRole('link', { name: 'Solicitudes de compra' })).toBeDefined();
-    expect(screen.getByRole('link', { name: 'Órdenes de compra' })).toBeDefined();
-    expect(screen.queryByText('Presupuestos')).toBeNull();
-    expect(screen.queryByText('Facturas')).toBeNull();
+    // El pañol no tiene ningún acceso al módulo Compras.
+    expect(screen.queryByRole('button', { name: 'Desplegar Compras' })).toBeNull();
+    expect(screen.queryByText('Compras')).toBeNull();
   });
 
   it('agrupa el flujo de compras de DIR-01 en el desplegable Compras', async () => {

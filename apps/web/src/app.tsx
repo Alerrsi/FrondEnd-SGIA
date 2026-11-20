@@ -40,6 +40,8 @@ const ColaPrestamosPage = lazy(() => import('@/features/prestamos/pages/cola-pre
 const MostradorPrestamosPage = lazy(() => import('@/features/prestamos/pages/mostrador-prestamos-page'));
 const HistorialPrestamosPage = lazy(() => import('@/features/prestamos/pages/historial-prestamos-page'));
 const UbicacionesPage = lazy(() => import('@/features/ubicaciones/pages/ubicaciones-page'));
+const MapaSalaPage = lazy(() => import('@/features/mapa-salas/pages/mapa-sala-page'));
+const MapaSalaIndexRedirect = lazy(() => import('@/features/mapa-salas/pages/mapa-sala-index-redirect'));
 const ProveedoresPage = lazy(() => import('@/features/proveedores/pages/proveedores-page'));
 const UsuariosPage = lazy(() => import('@/features/usuarios/pages/usuarios-page'));
 const CatalogoPage = lazy(() => import('@/features/profesor/pages/catalogo-page'));
@@ -124,6 +126,24 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={rolesForRoute('/ubicaciones') ?? []}>
                   <UbicacionesPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/mapa-salas"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/mapa-salas') ?? []}>
+                  <MapaSalaIndexRedirect />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/mapa-salas/:locationId"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/mapa-salas') ?? []}>
+                  <MapaSalaPage />
                 </RequireRole>
               }
             />

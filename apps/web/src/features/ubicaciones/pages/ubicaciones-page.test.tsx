@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { ApiRequestError } from '@sgia/api-client';
 import type { CajonEntity, LocationEntity } from '@sgia/types';
 import UbicacionesPage from './ubicaciones-page';
@@ -39,6 +40,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
   useUpdateLocation: () => ({ mutateAsync: mocks.updateLocation, isPending: false }),
   useDeleteLocation: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCreateCajon: () => ({ mutateAsync: mocks.createCajon, isPending: false }),
+  useEstantes: () => ({ data: { data: [{ id: 3, codigo: 'EST-A1', nombre: 'Rack' }] }, isLoading: false }),
   useDeleteCajon: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useDownloadCajonLabel: () => ({
     mutateAsync: mocks.downloadLabel,
@@ -50,6 +52,19 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
 vi.mock('@/features/equipos/utils/download', () => ({
   printBlob: mocks.printBlob,
   downloadBlob: vi.fn(),
+}));
+
+vi.mock('@/features/auth/context/auth-context', () => ({
+  useAuth: () => ({ user: { id: 2, name: 'Pañolero', role: 'PAN-01' } }),
+}));
+
+// El plano tiene sus propias pruebas (features/mapa-salas); aquí solo importa qué sala recibe y con qué permisos.
+vi.mock('@/features/mapa-salas/components/sala-mapa-panel', () => ({
+  SalaMapaPanel: (props: { locationId: number; canEdit: boolean; canSeeInventory: boolean; variant?: string }) => (
+    <div data-testid="sala-mapa-panel">
+      {`mapa sala=${props.locationId} editar=${props.canEdit} inventario=${props.canSeeInventory} variante=${props.variant}`}
+    </div>
+  ),
 }));
 
 vi.mock('@/lib/toast', () => ({
@@ -66,7 +81,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   });
 
   it('muestra las salas y cajones con sus códigos', () => {
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     expect(screen.getByText(/Gestión de Ubicaciones Físicas y Cajones/i)).toBeDefined();
     expect(screen.getByText('Pañol Central')).toBeDefined();
@@ -79,7 +94,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   it('sugiere el código de sala desde el nombre hasta que se edita a mano', async () => {
     const user = userEvent.setup();
     mocks.createLocation.mockResolvedValue({ id: 3 });
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: /Nueva sala/i }));
     const nombre = screen.getByLabelText(/Nombre de la sala/i);
@@ -116,7 +131,7 @@ describe('UbicacionesPage (REQ-05)', () => {
         errors: { code: ['El código PCENTRAL ya está en uso.'] },
       }),
     );
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: /Nueva sala/i }));
     await user.type(screen.getByLabelText(/Nombre de la sala/i), 'Pañol Central');
@@ -128,7 +143,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   it('al editar una sala el código queda en solo lectura y no se envía', async () => {
     const user = userEvent.setup();
     mocks.updateLocation.mockResolvedValue({ id: 1 });
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getAllByTitle('Editar ubicación')[0]!);
 
@@ -149,7 +164,7 @@ describe('UbicacionesPage (REQ-05)', () => {
   it('muestra la vista previa del código del cajón y bloquea uno de más de 12 caracteres', async () => {
     const user = userEvent.setup();
     mocks.createCajon.mockResolvedValue({ id: 11 });
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: /Nuevo cajón/i }));
     const codigo = screen.getByLabelText(/Código \/ identificador del cajón/i);
@@ -180,11 +195,44 @@ describe('UbicacionesPage (REQ-05)', () => {
     const user = userEvent.setup();
     const blob = new Blob(['%PDF'], { type: 'application/pdf' });
     mocks.downloadLabel.mockResolvedValue(blob);
-    render(<UbicacionesPage />);
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
 
     await user.click(screen.getByRole('button', { name: 'Imprimir etiqueta de PCENTRAL-GAVETA-A-1' }));
 
     expect(mocks.downloadLabel).toHaveBeenCalledWith(10);
     expect(mocks.printBlob).toHaveBeenCalledWith(blob);
+  });
+});
+
+describe('UbicacionesPage · mapa de la sala (REQ-22)', () => {
+  it('muestra el mapa de la sala elegida junto a la lista, editable por el pañolero', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    expect(screen.getByTestId('sala-mapa-panel').textContent).toBe('mapa sala=1 editar=true inventario=true variante=embedded');
+    expect(screen.queryByRole('link', { name: /Ver mapa/ })).toBeNull();
+
+    await user.click(screen.getByText('Laboratorio 201'));
+    expect(screen.getByTestId('sala-mapa-panel').textContent).toContain('mapa sala=2');
+  });
+
+  it('cada cajón dice en qué estante está', () => {
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    expect(screen.getByText('Sin estante')).toBeDefined();
+  });
+});
+
+describe('UbicacionesPage · cajón en un estante del mapa (REQ-22)', () => {
+  it('el cajón nuevo puede quedar en un estante de la sala', async () => {
+    const user = userEvent.setup();
+    mocks.createCajon.mockResolvedValue({ id: 11 });
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    await user.click(screen.getByRole('button', { name: /Nuevo cajón/i }));
+    await user.type(screen.getByLabelText(/Código \/ identificador del cajón/i), 'R5');
+    await user.selectOptions(screen.getByLabelText('Estante del mapa (opcional)'), '3');
+    await user.click(screen.getByRole('button', { name: 'Guardar cajón' }));
+
+    expect(mocks.createCajon.mock.calls[0]?.[0]).toEqual({ location_id: 1, codigo: 'R5', descripcion: undefined, estante_id: 3 });
   });
 });

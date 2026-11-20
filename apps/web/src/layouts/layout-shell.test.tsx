@@ -51,7 +51,11 @@ describe('nav-config: fuente única del menú', () => {
     expect(dir.map((e) => e.to)).toContain('/compras');
     expect(dir.find((e) => e.to === '/compras')?.children?.map((c) => c.to)).toContain('/compras/facturas');
     expect(navForRole('PRO-01').map((e) => e.to)).toEqual(['/', '/profesor/catalogo', '/profesor/solicitudes', '/profesor/novedades']);
-    expect(screensForRole('AD-01').map((s) => s.to)).toEqual(['/usuarios', '/panoles', '/auditoria', '/monitoreo']);
+    // AD-01 solo ve (no edita) el mapa de salas (REQ-22).
+    expect(screensForRole('AD-01').map((s) => s.to)).toEqual(['/mapa-salas', '/usuarios', '/panoles', '/auditoria', '/monitoreo']);
+    // El pañolero ve el mapa dentro de Ubicaciones, no como pantalla aparte.
+    expect(screensForRole('PAN-01').map((s) => s.to)).not.toContain('/mapa-salas');
+    expect(screensForRole('DIR-01').map((s) => s.to)).toContain('/mapa-salas');
   });
 
   it('las acciones rápidas solo apuntan a pantallas que el rol puede abrir', () => {
@@ -67,6 +71,7 @@ describe('nav-config: fuente única del menú', () => {
     expect(findScreen('/compras/facturas')?.group?.label).toBe('Compras');
     expect(findScreen('/compras/solicitudes/12')?.entry.label).toBe('Solicitudes de compra');
     expect(findScreen('/prestamos/cola')?.entry.label).toBe('Préstamos');
+    expect(findScreen('/mapa-salas/7')?.entry.label).toBe('Mapa de salas');
   });
 });
 

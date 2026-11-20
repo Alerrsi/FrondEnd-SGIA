@@ -20,13 +20,15 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/prestamos/mostrador': ['PAN-01'],
   '/prestamos/historial': ['PAN-01', 'DIR-01'],
   '/ubicaciones': ['PAN-01'],
+  // REQ-22: pantalla aparte del plano para DIR-01 (edita) y AD-01 (solo mira); PAN-01 lo tiene en Ubicaciones.
+  '/mapa-salas': ['DIR-01', 'AD-01'],
   '/historial': ['PAN-01', 'DIR-01'],
   '/equipos': ['DIR-01', 'PAN-01'],
   '/alertas': ['DIR-01', 'PAN-01'],
-  // Módulo Compras: el hub lo ve quien vea al menos una de sus páginas.
-  '/compras': ['PAN-01', 'DIR-01'],
-  '/compras/solicitudes': ['DIR-01', 'PAN-01'],
-  '/compras/ordenes': ['PAN-01', 'DIR-01'],
+  // Módulo Compras: solo DIR-01 (el pañol no accede a ninguna página de compras).
+  '/compras': ['DIR-01'],
+  '/compras/solicitudes': ['DIR-01'],
+  '/compras/ordenes': ['DIR-01'],
   '/compras/facturas': ['DIR-01'],
   '/compras/presupuestos': ['DIR-01'],
   '/compras/proveedores': ['DIR-01'],
@@ -54,6 +56,8 @@ export const ACTION_ROLES = {
   authorizeOverBudget: ['DIR-01'],
   scanInvoice: ['DIR-01'],
   deleteProduct: ['DIR-01'],
+  /** Crear, mover y borrar estantes y zonas del mapa de salas; medidas de la sala (REQ-22). */
+  editRoomMap: ['DIR-01', 'PAN-01'],
 } as const satisfies Record<string, readonly WebRoleCode[]>;
 
 export function canDo(role: string | undefined, action: keyof typeof ACTION_ROLES): boolean {

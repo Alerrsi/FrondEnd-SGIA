@@ -898,3 +898,45 @@
   - Rendimiento (build de producción, login): sin FAIL; JS inicial 253 KiB gzip (WARN).
   - `sgia-design/SKILL.md` y `CLAUDE.md` reescritos con el sistema nuevo.
 - **Verificación:** typecheck web y vitest (508 + 1 omitida) en verde.
+
+---
+
+## FIX-047: Ctrl K en ancho angosto, catálogo del profesor, búsqueda de Inicio y pañolero sin Compras
+
+- **Fecha:** 2026-11-20
+- **Módulo:** Layouts, Inicio y Compras (`apps/web`)
+- **Cambios:**
+  - `Kbd`/`SearchButton`: `Ctrl K` se veía bajo `sm` (la base `pointer-fine:inline-flex` pisaba el `hidden`); ahora `max-sm:pointer-fine:hidden` y `whitespace-nowrap`.
+  - `CatalogPanel`: el `TableSearch` (`sm:flex-1`) se estiraba en la columna y dejaba icono y `/` bajo el campo; se pasa `sm:flex-none`.
+  - `CatalogSearch` (Inicio del profesor): ya no navega con el campo vacío (mensaje «Escribe qué necesitas antes de buscar.», espacios cuentan como vacío) y muestra hasta 5 sugerencias de productos activos al escribir (`useProducts`, 250 ms).
+  - Pañolero (`PAN-01`) sin ningún acceso a Compras: se quitó de `/compras`, `/compras/solicitudes` y `/compras/ordenes` en `ROUTE_PERMISSIONS` (solo `DIR-01`). Desaparece del menú y las rutas lo redirigen. En Alertas de stock se oculta «Ir a solicitudes de compra» y el código de la solicitud abierta deja de ser enlace sin acceso.
+- **Verificación:** typecheck web y vitest (511 + 1 omitida) en verde.
+
+---
+
+## FIX-048: Mapa de salas con zonas y estantes en SVG (REQ-22)
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `apps/web/src/features/mapa-salas/`, `packages/api-client`, `packages/types` — [REQ-22](TASKS/REQ-22-MAPA-SALAS.md), plan en [`docs/mapa-salas.md`](docs/mapa-salas.md)
+- **Qué cambia:**
+  - Ruta `/mapa-salas/:locationId` (y `/mapa-salas`, que abre la última sala vista) para `PAN-01`, `DIR-01` y `AD-01`; entrada «Mapa de salas» en el menú y «Ver mapa» por sala en Ubicaciones.
+  - Plano SVG propio, sin librerías: muro de doble línea, zonas y estantes con una celda por cajón; textos de 12 px o más a cualquier escala; pop-up del estante con insumos y unidades por nombre y estado.
+  - Edición (`PAN-01`, `DIR-01`): crear, editar y borrar estantes y zonas; arrastre con Pointer Events sin renders de React durante el movimiento (`requestAnimationFrame`), ajuste a 10 cm, validación de muros y superposición, zona por el centro y `PATCH` optimista con vuelta atrás; teclado (flechas, `Shift`, `R`, `Escape`) y `MovePad`; medidas de la sala; asignar cajones a un estante.
+  - Zoom por `viewBox` (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo; «Buscar en la sala» por estante, cajón o producto.
+  - Formulario de cajón con estante; inventario acepta `?cajon_id=`; `useProducts` acepta `enabled`.
+- **Verificación:** vitest y typecheck en verde; revisión visual a 320–1440 px en claro y oscuro; recorrido de punta a punta contra la API real con PAN-01, DIR-01 y AD-01 (30/30 comprobaciones). El recorrido detectó un cajón repetido en «Asignar cajones» al refrescar (corregido: se quitan duplicados por id).
+
+---
+
+## FIX-049: Mapa en Ubicaciones, edición en modal y datos de prueba (REQ-22, fase 6)
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `features/ubicaciones`, `features/mapa-salas`, `components/ui/dialog.tsx`; seeder en `BackEnd-SGIA` — plan en [`docs/mapa-salas.md`](docs/mapa-salas.md) §12
+- **Qué cambia:**
+  - Ubicaciones (`PAN-01`): el mapa de la sala elegida va a la derecha de la lista de salas, con los cajones debajo (cada uno dice su estante). Se quitó «Ver mapa» de cada fila.
+  - «Editar distribución» abre un `Dialog size="2xl"` con toda la edición (rejilla, arrastre, teclado, `MovePad`, estantes, zonas, medidas, cajones); el plano de afuera solo se mira. `Escape` cancela un arrastre o quita la selección antes de cerrar (`Dialog` suma `onEscapeKeyDown`); cerrar guarda un movimiento de teclado pendiente.
+  - `/mapa-salas` y su entrada del menú quedan solo para `DIR-01` (edita con el mismo modal) y `AD-01` (solo mira).
+  - `useMapScale` y la rueda del zoom se enganchan aunque el `<svg>` aparezca después de la carga (los textos quedaban a 6 px en Ubicaciones).
+  - Backend: `MapaSalasDemoSeeder` deja las 8 ubicaciones con zonas A/B/C, siete estantes y todos los cajones asignados.
+- **Verificación:** vitest y typecheck en verde; recorrido contra la API real con PAN-01, DIR-01 y AD-01: 27/27.
+

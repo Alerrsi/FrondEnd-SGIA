@@ -74,7 +74,7 @@ export function CatalogPanel({
         onChange={setSearch}
         placeholder="Buscar insumo o equipo…"
         label="Buscar en el catálogo"
-        className="sm:min-w-0"
+        className="sm:min-w-0 sm:flex-none"
       />
 
       {isLoading ? (

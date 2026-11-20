@@ -35,11 +35,12 @@ export const productKeys = {
   location: (id: number) => ['products', 'location', id] as const,
 };
 
-export function useProducts(params?: ProductoParams) {
+export function useProducts(params?: ProductoParams, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: productKeys.list(params),
     queryFn: () => fetchProducts(params),
     placeholderData: keepPreviousData,
+    enabled: options?.enabled ?? true,
   });
 }
 
