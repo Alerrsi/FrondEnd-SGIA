@@ -1,6 +1,6 @@
 # Mapa de salas (plano SVG con estantes arrastrables)
 
-**Estado: plan aprobado para desarrollo (20 nov 2026), sin implementar.** Rama `mapa-salas` en `FrondEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). Contrato de la API: [`TASKS/REQ-22-PROMPT-BACKEND.md`](../TASKS/REQ-22-PROMPT-BACKEND.md). Solo web (`apps/web`); la app móvil no cambia.
+**Estado: plan aprobado para desarrollo (20 nov 2026, revisado el mismo día), sin implementar.** Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
 
 ---
 
@@ -17,7 +17,9 @@ Referencia visual (imagen del pedido): «SALA 01» con muro de doble línea, «Z
 | Jerarquía **Sala (`locations`) → Cajón (`cajones`)**. No existe «estante» ni «zona». | Hay que crear dos entidades nuevas en el backend. |
 | El backend ya llama «cajón (estante)» al cajón en algún mensaje y el `barcode` antiguo era `EST-xxxxxxxx`. | El vocabulario se ordena: **estante** = mueble en el plano, **cajón** = compartimiento donde se guarda (lo que se escanea). |
 | `locations` no tiene medidas; `cajones` no tiene posición. | Medidas de sala y posición de estantes son campos nuevos. |
-| `/ubicaciones` es solo de `PAN-01` (`features/auth/types/roles.ts`). | El mapa tiene ruta y permiso propios. |
+| `/ubicaciones` es solo de `PAN-01` y `/inventario` de `PAN-01` y `DIR-01` (`features/auth/types/roles.ts`). | El mapa tiene ruta y permiso propios (`/ubicaciones/mapa` gana por prefijo más largo en `rolesForRoute`). «Ver mapa» desde `/ubicaciones` solo lo ve `PAN-01`; `DIR-01` y `AD-01` entran por el menú. |
+| `/inventario` solo lee `?q=` de la URL. | «Ver en inventario» desde el pop-up necesita que la lista lea `?cajon_id=` (el filtro ya existe en `ProductoParams`). |
+| Hasta octubre `/api/estantes` era un alias de cajones (retirado). | `/api/estantes` vuelve, pero como el mueble del plano. |
 | `packages/types` ya declara un `estante_id?` suelto en el payload de producto, sin uso. | Se reemplaza por el tipo real o se elimina en la fase 2. |
 | Los productos (insumos) tienen `cajon_id`; las unidades de equipo también. `GET /api/products?cajon_id=` y `GET /api/equipment-units?cajon_id=` existen. | El contenido de un estante se puede calcular, pero conviene un endpoint que lo entregue en una llamada. |
 
@@ -27,7 +29,7 @@ Referencia visual (imagen del pedido): «SALA 01» con muro de doble línea, «Z
 |---|---|---|
 | 1 | **Nueva entidad `Estante`**: Sala → Estante → Cajón. El estante tiene posición y tamaño en el plano; los cajones se asignan a un estante (`cajones.estante_id`, opcional). | Elegido por el usuario. Las celdas del dibujo son los cajones reales del estante. |
 | 2 | **Nueva entidad `Zona`**: rectángulo con nombre dentro de la sala, arrastrable y redimensionable. Un estante pertenece a lo sumo a una zona. | Elegido por el usuario. |
-| 3 | **Roles:** `PAN-01` y `DIR-01` ven y editan; `AD-01` solo ve; `PRO-01` no ve el mapa. | Elegido por el usuario. Coincide con quién puede crear cajones hoy. Ver riesgo R4. |
+| 3 | **Roles:** `PAN-01` y `DIR-01` ven y editan; `AD-01` solo ve; `PRO-01` no ve el mapa. Sin restricción por pañol (igual que salas y cajones). | Elegido por el usuario. Coincide con quién puede crear cajones hoy. Ver riesgo R4. |
 | 4 | **Unidades reales en centímetros enteros.** La sala mide `map_width_cm × map_height_cm`; cada estante y zona tiene `x`, `y`, `width`, `depth` en cm desde la esquina superior izquierda. El `viewBox` del SVG es la sala en cm. | El plano no depende de la pantalla; el mismo dato sirve a futuro para medir pasillos o imprimir a escala. |
 | 5 | **Rejilla de 10 cm** para soltar (snap) y líneas de guía cada 50 cm (solo en modo edición). | Ordena el plano sin pedir precisión al usuario. |
 | 6 | **Rotación 0° o 90°.** | La referencia solo tiene estantes horizontales y verticales; con dos valores la superposición se calcula con rectángulos alineados a los ejes. |
@@ -43,7 +45,7 @@ Referencia visual (imagen del pedido): «SALA 01» con muro de doble línea, «Z
 
 ## 4. Modelo de datos (contrato con el backend)
 
-Detalle completo, validaciones y mensajes en [`TASKS/REQ-22-PROMPT-BACKEND.md`](../TASKS/REQ-22-PROMPT-BACKEND.md).
+Detalle completo, validaciones, respuestas y mensajes en `BackEnd-SGIA/docs/mapa-salas.md`. Resumen:
 
 ```
 locations  + map_width_cm (int, null)  + map_height_cm (int, null)
@@ -115,13 +117,14 @@ export interface EstanteContenido { /* estante + cajones[] con productos[] y uni
 | `GET` | `/api/estantes/{id}/contents` | Auth | Pop-up: cajones del estante con productos y unidades por nombre. |
 | `GET/POST/PATCH/DELETE` | `/api/zonas` | Auth / `DIR-01`, `PAN-01` | Zonas. Borrar una zona deja sus estantes sin zona. |
 | `PATCH` | `/api/cajones/{id}` | `DIR-01`, `PAN-01` | Agrega `estante_id` (de la misma sala). |
+| `GET` | `/api/cajones?estante_id=` / `?sin_estante=1` | Auth | «Asignar cajones» y aviso de cajones sin estante. |
 
 ## 6. Arquitectura en el front
 
 ### Paquetes
 
 - `packages/types/src/mapa-sala.ts`: tipos de la sección 4 y payloads (`CreateEstantePayload`, `UpdateEstantePayload`, `CreateZonaPayload`, `UpdateZonaPayload`). Exportados en `index.ts`. `CajonEntity` suma `estante_id` y `estante`.
-- `packages/api-client/src/services/room-map.ts`: `fetchSalaMapa`, `fetchEstantes`, `createEstante`, `updateEstante`, `deleteEstante`, `fetchEstanteContenido`, `createZona`, `updateZona`, `deleteZona`, con normalizadores tipados (sin `any`).
+- `packages/api-client/src/services/room-map.ts`: `fetchSalaMapa`, `fetchEstantes`, `createEstante`, `updateEstante`, `deleteEstante`, `fetchEstanteContenido`, `createZona`, `updateZona`, `deleteZona`, con normalizadores tipados (sin `any`). `services/locations.ts` suma los filtros `estante_id` y `sin_estante` en `fetchCajones`.
 - `packages/api-client/src/hooks/room-map.ts`: `salaMapaKeys`, `useSalaMapa`, `useEstanteContenido`, `usePrefetchEstanteContenido`, `useCreateEstante`, `useUpdateEstante` (optimista sobre `salaMapaKeys.detail(locationId)` con `onMutate`/`onError`/`onSettled`), `useDeleteEstante` y los equivalentes de zona. Las mutaciones invalidan además `cajonKeys` y `locationKeys`.
 
 ### Pantalla (`apps/web/src/features/mapa-salas/`)
@@ -194,9 +197,9 @@ Un componente o hook por archivo, como exige `CLAUDE.md`.
 - Título «Estante EST-A2» (código en `font-code`) y nombre; descripción con la zona y la sala.
 - Por cada cajón: chip `CODE_CHIP_CLASS` con el `barcode`, descripción y lista de elementos por **nombre**:
   - Insumo: nombre y cantidad (`font-mono`), `Badge` `danger` si está bajo el mínimo.
-  - Equipo o maqueta: nombre y unidades por estado (`Badge`: disponible, en préstamo, en mantención).
+  - Equipo o maqueta: nombre y unidades por estado (`Badge`: disponible, prestado, en reparación; las dadas de baja no vienen).
 - Estante sin cajones o cajones vacíos: `EmptyState`.
-- Pie: «Ver en inventario» (lleva a `/inventario` filtrado por sala y cajón) y, para editores, «Editar estante» y «Asignar cajones». Cerrar con `DialogCloseButton`.
+- Pie: «Ver en inventario» por cajón (lleva a `/inventario?cajon_id=`; solo `PAN-01` y `DIR-01`, que son quienes entran a inventario) y, para editores, «Editar estante» y «Asignar cajones» (lista de `GET /api/cajones?location_id=&sin_estante=1` y un `PATCH /api/cajones/{id}` con `estante_id` por cajón marcado). Cerrar con `DialogCloseButton`.
 - Carga con `Loader2`; error con `ErrorState` y «Reintentar».
 
 ### Rendimiento
@@ -221,10 +224,10 @@ Un componente o hook por archivo, como exige `CLAUDE.md`.
 | Fase | Alcance | Repositorio | Listo cuando |
 |---|---|---|---|
 | **0** | Este plan, `REQ-22`, prompt del backend, índice y referencias. | Front | Commit en `mapa-salas`. |
-| **1** | Migraciones, modelos, endpoints, políticas y tests de la sección 5. | `BackEnd-SGIA` | Tests del backend en verde; `ENDPOINTS.md` actualizado a ✅. |
+| **1** | Migraciones, modelos, `RoomMapService`, endpoints y tests de `BackEnd-SGIA/docs/mapa-salas.md` (casillas en `BackEnd-SGIA/TASKS/Productos.md`, REQ-22). | `BackEnd-SGIA` | Tests del backend en verde; `ENDPOINTS.md` de ambos repos a ✅. |
 | **2** | Tipos, servicios y hooks (con actualización optimista); `CajonEntity.estante_id`; quitar el `estante_id` suelto del payload de producto. Tests de servicios y del hook optimista. | Front | `pnpm typecheck` y tests en verde. |
 | **3** | `map-geometry.ts` con tests; ruta, permiso, menú, selector de sala; dibujo SVG en modo vista; pop-up con contenido; lista alternativa; acceso «Ver mapa» desde `/ubicaciones`. | Front | Un `AD-01` ve el mapa y abre el pop-up; tests de componentes. |
-| **4** | Modo edición: arrastre, teclado, `move-pad`, crear/editar/borrar estante y zona, redimensionar zona, medidas de sala, selector de estante en `cajon-form-dialog`. | Front | `PAN-01` crea un estante y lo arrastra; recarga y queda donde lo dejó. |
+| **4** | Modo edición: arrastre, teclado, `move-pad`, crear/editar/borrar estante y zona, redimensionar zona, medidas de sala, selector de estante en `cajon-form-dialog`, «Asignar cajones» y `?cajon_id=` en `/inventario`. | Front | `PAN-01` crea un estante y lo arrastra; recarga y queda donde lo dejó. |
 | **5** | Zoom y desplazamiento, marcador de búsqueda y stock crítico, revisión a 320/390/768/1024/1440 en claro y oscuro, prueba con 200 estantes, `CHANGELOG-FIXES`, cierre de `REQ-22`. | Front | Checklist de `REQ-22` completo. |
 
 Cada fase termina con `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web test` en verde y un commit en español.
@@ -250,6 +253,7 @@ Cada fase termina con `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web t
 | R4 | `AD-01` hoy no entra a inventario ni a ubicaciones («recorte de AD-01»); darle lectura del mapa abre un acceso nuevo. | Elegido así; es una línea en `ROUTE_PERMISSIONS` si se decide quitarlo. |
 | R5 | Salas muy grandes o estantes muy chicos dejan textos ilegibles. | Ocultar textos que no caben y usar zoom; el `aria-label` y la lista alternativa siempre tienen el dato. |
 | R6 | La app móvil no muestra el mapa. | Fuera de alcance: el móvil es solo de `PRO-01`, que no ve el mapa. |
+| R7 | `PAN-01` de un pañol puede editar el mapa de salas de otro pañol. | Igual que salas y cajones hoy; si se limita, se hace para las tres entidades a la vez. |
 
 ## 10. Fuera de alcance
 

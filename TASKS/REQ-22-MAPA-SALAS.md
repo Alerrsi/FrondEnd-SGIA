@@ -3,7 +3,7 @@
 > **Código:** `REQ-22` | **Módulo:** `FU-02` (Gestión de Inventario y Activos) — amplía [REQ-05](./REQ-05-UBICACION-FISICA.md)
 > **Plataforma:** Web (`apps/web`)
 > **Roles:** Pañolero (`PAN-01`) y Director (`DIR-01`) ven y editan; Administrador (`AD-01`) solo ve
-> **Plan:** [`docs/mapa-salas.md`](../docs/mapa-salas.md) · **Backend:** [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md) · **Rama:** `mapa-salas`
+> **Plan:** [`docs/mapa-salas.md`](../docs/mapa-salas.md) · **Contrato API:** `BackEnd-SGIA/docs/mapa-salas.md` · **Prompt backend:** [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md) · **Rama:** `mapa-salas` (ambos repos)
 
 ---
 
@@ -17,7 +17,7 @@ Cada sala tiene su propio plano en SVG con muros, zonas y estantes. Se ve un map
 2. El mapa muestra el muro, las zonas con su nombre y los estantes con su código y sus cajones como celdas.
 3. `PAN-01` y `DIR-01` crean un estante desde el mapa; queda en esa sala, aparece seleccionado y se arrastra a su lugar. Al recargar sigue donde se dejó.
 4. Un estante no se puede soltar fuera de los muros ni encima de otro; vuelve a su lugar con un aviso. La API también lo rechaza (`422`).
-5. Clic, toque o `Enter` sobre un estante abre un pop-up con los productos y unidades de cada cajón, por nombre.
+5. Clic, toque o `Enter` sobre un estante abre un pop-up con los productos y unidades de cada cajón, por nombre (unidades por estado: disponible, prestado, en reparación).
 6. `AD-01` ve el mapa y el pop-up, pero no los controles de edición. `PRO-01` no tiene acceso.
 7. Arrastrar con 200 estantes en la sala se mantiene fluido (sin renders de React durante el movimiento).
 8. Funciona de 320 a 1440 px, en claro y oscuro, con teclado y con puntero táctil.
@@ -26,7 +26,7 @@ Cada sala tiene su propio plano en SVG con muros, zonas y estantes. Se ve un map
 
 ## 📡 Endpoints del Backend
 
-Contrato completo en [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md).
+Contrato completo en `BackEnd-SGIA/docs/mapa-salas.md`.
 
 | Método | Endpoint | Roles | Descripción | Estado API |
 |---|---|---|---|:---:|
@@ -39,6 +39,7 @@ Contrato completo en [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md).
 | `GET` | `/api/estantes/{id}/contents` | Auth | Cajones con productos y unidades por nombre. | ⏳ Pendiente |
 | `GET/POST/PATCH/DELETE` | `/api/zonas` | Auth / `DIR-01`, `PAN-01` | Zonas de la sala. | ⏳ Pendiente |
 | `PATCH` | `/api/cajones/{id}` | `DIR-01`, `PAN-01` | Suma `estante_id`. | ⏳ Pendiente |
+| `GET` | `/api/cajones` | Auth | Filtros `estante_id` y `sin_estante=1`. | ⏳ Pendiente |
 
 ---
 
@@ -47,18 +48,19 @@ Contrato completo en [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md).
 ### Fase 0 · Documentación
 - [x] Plan en `docs/mapa-salas.md` con decisiones, arquitectura, fases y pruebas.
 - [x] Este requisito y el prompt del backend.
-- [x] Índice `TASKS/README.md`, `CLAUDE.md`, `AGENTS.md` y sección pendiente en `ENDPOINTS.md`.
+- [x] Índice `TASKS/README.md`, `CLAUDE.md`, `AGENTS.md` y filas en «Endpoints Pendientes» de `ENDPOINTS.md`.
+- [x] Revisión contra el código: estados de unidad reales, conteo sin duplicar equipos, sin restricción por pañol, `?cajon_id=` en inventario, rutas por rol.
+- [x] Contrato en `BackEnd-SGIA/docs/mapa-salas.md`, casillas en `BackEnd-SGIA/TASKS/Productos.md`, nota en `BackEnd-SGIA/TASKS/front-end.md` y rama `mapa-salas` en el backend.
 
 ### Fase 1 · Backend (`BackEnd-SGIA`)
-- [ ] Migraciones: medidas en `locations`, tablas `zonas` y `estantes`, `cajones.estante_id`.
-- [ ] Modelos, resources, form requests (límites, superposición, misma sala) y políticas por rol.
-- [ ] Endpoints de la tabla y tests de feature.
-- [ ] `ENDPOINTS.md` (front) actualizado a ✅.
+Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
+- [ ] Migraciones, modelos, `RoomMapService`, form requests y endpoints con tests de feature.
+- [ ] `ENDPOINTS.md` de ambos repos a ✅.
 
 ### Fase 2 · Tipos y cliente (`packages/`)
 - [ ] `packages/types/src/mapa-sala.ts` (`Zona`, `Estante`, `EstanteRotation`, `SalaMapa`, `EstanteContenido`, payloads) exportados en `index.ts`.
 - [ ] `CajonEntity` con `estante_id` y `estante`; quitar el `estante_id` sin uso del payload de producto.
-- [ ] `services/room-map.ts` con normalizadores tipados (sin `any`).
+- [ ] `services/room-map.ts` con normalizadores tipados (sin `any`); filtros `estante_id` y `sin_estante` en `fetchCajones`.
 - [ ] `hooks/room-map.ts`: `useSalaMapa`, `useEstanteContenido`, `usePrefetchEstanteContenido`, mutaciones de estante y zona; `useUpdateEstante` optimista con vuelta atrás.
 - [ ] Tests de servicio y del hook optimista.
 
@@ -81,6 +83,8 @@ Contrato completo en [`REQ-22-PROMPT-BACKEND.md`](./REQ-22-PROMPT-BACKEND.md).
 - [ ] Mover y redimensionar zonas.
 - [ ] `SalaDimensionesDialog` y aviso de sala sin medidas.
 - [ ] Selector de estante en `cajon-form-dialog.tsx` y aviso de cajones sin estante.
+- [ ] «Asignar cajones» desde el pop-up (cajones sin estante de la sala).
+- [ ] `/inventario` lee `?cajon_id=` para «Ver en inventario» (solo `PAN-01`/`DIR-01`).
 - [ ] Tests de arrastre, teclado y roles.
 
 ### Fase 5 · Pulido y cierre

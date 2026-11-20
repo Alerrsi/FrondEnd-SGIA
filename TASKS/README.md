@@ -23,7 +23,7 @@ Este directorio contiene las especificaciones detalladas para cada módulo funci
 | [REQ-14](./REQ-14-DASHBOARDS-ANALITICA.md) | `REQ-14` | Analítica y Dashboards Ejecutivos | Web | DIR-01, AD-01 | 🟡 Casi completo — GraphQL real conectado (`/api/metrics`); falta previsualización en vivo en el menú |
 | [REQ-16-17](./REQ-16-REQ-17-PRESUPUESTOS-INGRESO-FACTURAS.md) | `REQ-16`, `REQ-17` | Presupuestos Anuales e Ingreso de Facturas | Web | DIR-01, AD-01 | 🟢 Completado — `features/presupuestos/` y `features/ingresos-factura/` con tests; probado contra la API real |
 | [REQ-21](./REQ-21-PROFESOR-WEB.md) | `REQ-21` | Interfaces Web del Profesor y Atajo de Login Dev | Web | PRO-01 | 🟢 Casi completo (63/64) — acceso, menú, solicitud de préstamo, Mis solicitudes y Novedades del profesor; queda una limitación del catálogo; sin probar contra el backend real |
-| [REQ-22](./REQ-22-MAPA-SALAS.md) | `REQ-22` | Mapa de Salas (zonas y estantes en SVG) | Web | PAN-01, DIR-01 (edición), AD-01 (lectura) | ⚪ Planificado — plan en `docs/mapa-salas.md`; backend pendiente ([prompt](./REQ-22-PROMPT-BACKEND.md)) |
+| [REQ-22](./REQ-22-MAPA-SALAS.md) | `REQ-22` | Mapa de Salas (zonas y estantes en SVG) | Web | PAN-01, DIR-01 (edición), AD-01 (lectura) | ⚪ Planificado — plan en `docs/mapa-salas.md`; contrato en `BackEnd-SGIA/docs/mapa-salas.md`; backend pendiente ([prompt](./REQ-22-PROMPT-BACKEND.md)) |
 | [REQ-CONFIG](./REQ-CONFIG.md) | `REQ-CONFIG` | Configuración de Sistema y Paletas de Color | Web | Todos | 🟢 Completado (8/8) |
 | [REQ-NF](./REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md) | `REQ-NF` | Accesibilidad AA, Performance y Offline | Web + Mobile | Todos | 🟡 En Progreso (17%) — 5/29 tareas |
 
