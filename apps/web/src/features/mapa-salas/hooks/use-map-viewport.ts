@@ -49,20 +49,28 @@ export function useMapViewport(svgRef: RefObject<SVGSVGElement | null>, width: n
   const zoomOut = useCallback(() => zoomBy(1 / ZOOM_STEP), [zoomBy]);
   const fit = useCallback(() => setView(base), [base]);
 
-  // `Ctrl`/`⌘` + rueda: la rueda sola sigue desplazando la página.
+  // `Ctrl`/`⌘` + rueda: la rueda sola sigue desplazando la página. El `<svg>` puede montarse después del primer
+  // render (esqueleto de carga): en cada render se comprueba si cambió y se vuelve a enganchar.
+  const zoomByRef = useRef(zoomBy);
+  zoomByRef.current = zoomBy;
+  const wheelTarget = useRef<{ svg: SVGSVGElement; off: () => void } | null>(null);
   useEffect(() => {
     const svg = svgRef.current;
+    if (svg === (wheelTarget.current?.svg ?? null)) return;
+    wheelTarget.current?.off();
+    wheelTarget.current = null;
     if (!svg) return;
     const onWheel = (event: WheelEvent) => {
       if (!event.ctrlKey && !event.metaKey) return;
       event.preventDefault();
       const matrix = svg.getScreenCTM?.();
       const anchor = toSvgPoint(event.clientX, event.clientY, matrix ? matrix.inverse() : IDENTITY);
-      zoomBy(event.deltaY < 0 ? 1.2 : 1 / 1.2, anchor);
+      zoomByRef.current(event.deltaY < 0 ? 1.2 : 1 / 1.2, anchor);
     };
     svg.addEventListener('wheel', onWheel, { passive: false });
-    return () => svg.removeEventListener('wheel', onWheel);
-  }, [svgRef, zoomBy]);
+    wheelTarget.current = { svg, off: () => svg.removeEventListener('wheel', onWheel) };
+  });
+  useEffect(() => () => wheelTarget.current?.off(), []);
 
   /** `onPointerDown` del `<svg>`: con zoom, arrastrar el fondo desplaza la vista. */
   const onPanStart = useCallback(
