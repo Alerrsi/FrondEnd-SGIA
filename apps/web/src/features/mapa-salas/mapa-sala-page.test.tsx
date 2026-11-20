@@ -164,6 +164,8 @@ describe('MapaSalaPage · edición y roles (REQ-22)', () => {
     apiState.cajones = [
       { id: 21, codigo: 'R9', barcode: 'L206-R9', location_id: 7, estante_id: null },
       { id: 11, codigo: 'R1', barcode: 'L206-R1', location_id: 7, estante_id: 1 },
+      // Suelto, pero de otra sala: no se ofrece.
+      { id: 31, codigo: 'R1', barcode: 'PCENTRAL-R1', location_id: 8, estante_id: null },
     ];
     apiState.updateCajon.mockResolvedValue({});
     renderPage();
@@ -171,6 +173,8 @@ describe('MapaSalaPage · edición y roles (REQ-22)', () => {
     await userEvent.click(screen.getByRole('button', { name: /^Estante EST-A1,/ }));
     await userEvent.click(await screen.findByRole('button', { name: 'Asignar cajones' }));
     const dialog = await screen.findByRole('dialog', { name: 'Cajones del estante EST-A1' });
+    expect(within(dialog).getAllByRole('checkbox')).toHaveLength(2);
+    expect(within(dialog).queryByText('PCENTRAL-R1')).toBeNull();
     await userEvent.click(within(dialog).getByRole('checkbox', { name: /L206-R9/ }));
     await userEvent.click(within(dialog).getByRole('checkbox', { name: /L206-R1/ }));
     await userEvent.click(within(dialog).getByRole('button', { name: 'Guardar' }));

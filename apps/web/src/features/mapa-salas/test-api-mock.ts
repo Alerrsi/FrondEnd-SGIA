@@ -57,8 +57,14 @@ export function buildApiMock() {
       data: options?.enabled === false ? undefined : { data: apiState.products },
       isFetching: false,
     }),
-    useCajones: (params?: { estante_id?: number; sin_estante?: boolean }) => ({
-      data: { data: apiState.cajones.filter((cajon) => (params?.sin_estante ? !cajon.estante_id : cajon.estante_id === params?.estante_id)) },
+    useCajones: (params?: { location_id?: number; estante_id?: number; sin_estante?: boolean }) => ({
+      data: {
+        data: apiState.cajones.filter(
+          (cajon) =>
+            (params?.location_id === undefined || cajon.location_id === params.location_id) &&
+            (params?.sin_estante ? !cajon.estante_id : cajon.estante_id === params?.estante_id),
+        ),
+      },
       isLoading: false,
     }),
   };

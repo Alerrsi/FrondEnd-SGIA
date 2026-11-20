@@ -17,10 +17,13 @@ export interface AsignarCajonesDialogProps {
   estante: { id: number; codigo: string } | null;
 }
 
-/** Marca qué cajones de la sala van en el estante: los suyos y los que aún no tienen estante. */
+/**
+ * Marca qué cajones van en el estante. Solo se ofrecen cajones de la sala del estante (los suyos y los sueltos);
+ * la API además rechaza un estante de otra sala (`422` en `estante_id`).
+ */
 export function AsignarCajonesDialog({ open, onClose, locationId, estante }: AsignarCajonesDialogProps) {
   const enabled = open && estante !== null;
-  const asignados = useCajones(enabled ? { estante_id: estante?.id, per_page: 100 } : undefined);
+  const asignados = useCajones(enabled ? { location_id: locationId, estante_id: estante?.id, per_page: 100 } : undefined);
   const sueltos = useCajones(enabled ? { location_id: locationId, sin_estante: true, per_page: 100 } : undefined);
   const updateCajon = useUpdateCajon();
   const [checked, setChecked] = useState<Set<number>>(new Set());
