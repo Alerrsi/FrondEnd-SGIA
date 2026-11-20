@@ -18,9 +18,9 @@ export interface MapaToolbarProps {
 export function MapaToolbar({ canEdit, editing, onToggleEdit, onNewEstante, onNewZona, onDimensions, children }: MapaToolbarProps) {
   return (
     <div role="toolbar" aria-label="Herramientas del mapa" className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">{children}</div>
       {canEdit && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center">
           {editing && (
             <>
               <Button size="sm" variant="secondary" onClick={onDimensions}>

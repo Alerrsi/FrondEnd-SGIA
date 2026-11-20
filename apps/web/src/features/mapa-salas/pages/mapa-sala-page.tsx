@@ -17,6 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { canAccessRoute, canDo } from '@/features/auth/types/roles';
 import { apiErrorToMessage } from '@/lib/api-error';
+import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
 import { AsignarCajonesDialog } from '../components/asignar-cajones-dialog';
 import { EstanteContenidoDialog } from '../components/estante-contenido-dialog';
@@ -29,12 +30,16 @@ import { MapaToolbar } from '../components/mapa-toolbar';
 import { MovePad } from '../components/move-pad';
 import { SalaDimensionesDialog } from '../components/sala-dimensiones-dialog';
 import { SalaSelector } from '../components/sala-selector';
-import { initialViewBox, SalaSvg } from '../components/sala-svg';
+import { SalaSearch } from '../components/sala-search';
+import { SalaSvg } from '../components/sala-svg';
 import { ZonaFormDialog } from '../components/zona-form-dialog';
+import { ZoomControls } from '../components/zoom-controls';
 import { applyZonaRect, ZonaShape } from '../components/zona-shape';
 import { useEstanteKeyboard } from '../hooks/use-estante-keyboard';
 import { useLastSala } from '../hooks/use-last-sala';
 import { useMapScale } from '../hooks/use-map-scale';
+import { useMapViewport } from '../hooks/use-map-viewport';
+import { useSalaSearch } from '../hooks/use-sala-search';
 import { useSvgDrag } from '../hooks/use-svg-drag';
 import {
   center,
@@ -45,6 +50,7 @@ import {
   roomRect,
   snap,
   zonaAt,
+  zonaLabelAtBottom,
   zonaRect,
   type Rect,
 } from '../lib/map-geometry';
@@ -79,8 +85,8 @@ export default function MapaSalaPage() {
   const width = mapa.data?.location.map_width_cm ?? 1000;
   const height = mapa.data?.location.map_height_cm ?? 600;
   const room = useMemo(() => roomRect(width, height), [width, height]);
-  const viewBox = useMemo(() => initialViewBox(width, height), [width, height]);
-  const pxPerCm = useMapScale(svgRef, viewBox.w);
+  const viewport = useMapViewport(svgRef, width, height);
+  const pxPerCm = useMapScale(svgRef, viewport.view.w);
   const startDrag = useSvgDrag(svgRef);
 
   const [openId, setOpenId] = useState<number | null>(null);
@@ -93,6 +99,8 @@ export default function MapaSalaPage() {
 
   const estantes = useMemo(() => mapa.data?.estantes ?? [], [mapa.data?.estantes]);
   const zonas = useMemo(() => mapa.data?.zonas ?? [], [mapa.data?.zonas]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const search = useSalaSearch(salaId, estantes, searchTerm);
 
   useEffect(() => {
     if (mapa.data) remember(mapa.data.location.id);
@@ -102,6 +110,7 @@ export default function MapaSalaPage() {
     setEditing(false);
     setSelectedId(null);
     setOpenId(null);
+    setSearchTerm('');
   }, [salaId]);
 
   const zonaNombre = useMemo(() => new Map(zonas.map((zona) => [zona.id, zona.nombre])), [zonas]);
@@ -210,7 +219,23 @@ export default function MapaSalaPage() {
             onNewEstante={() => setEstanteForm({ open: true, estante: null })}
             onNewZona={() => setZonaForm({ open: true, zona: null })}
             onDimensions={() => setDimsOpen(true)}
-          />
+          >
+            <ZoomControls
+              zoom={viewport.zoom}
+              canZoomIn={viewport.canZoomIn}
+              canZoomOut={viewport.canZoomOut}
+              onZoomIn={viewport.zoomIn}
+              onZoomOut={viewport.zoomOut}
+              onFit={viewport.fit}
+            />
+            <SalaSearch
+              value={searchTerm}
+              onChange={setSearchTerm}
+              active={search.active}
+              matches={search.marked.size}
+              isSearching={search.isSearching}
+            />
+          </MapaToolbar>
 
           {!sala.has_dimensions && (
             <MapNotice
@@ -232,9 +257,10 @@ export default function MapaSalaPage() {
               label={sala.nombre}
               width={width}
               height={height}
-              viewBox={viewBox}
+              viewBox={viewport.view}
               pxPerCm={pxPerCm}
-              className="mx-auto block h-auto max-h-[70vh] w-full select-none"
+              onPointerDown={viewport.onPanStart}
+              className={cn('mx-auto block h-auto max-h-[70vh] w-full touch-pan-y select-none', viewport.zoom > 1 && 'cursor-grab touch-none')}
               background={
                 <>
                   {editing && <MapGridPattern width={width} height={height} />}
@@ -247,6 +273,7 @@ export default function MapaSalaPage() {
                       handleSize={14 / pxPerCm}
                       onDragStart={handleZonaDrag}
                       onEdit={editZona}
+                      labelAtBottom={zonaLabelAtBottom(zona, estantes, ZONE_LABEL_PX / pxPerCm)}
                     />
                   ))}
                 </>
@@ -262,6 +289,7 @@ export default function MapaSalaPage() {
                     zonaNombre={estante.zona_id ? (zonaNombre.get(estante.zona_id) ?? null) : null}
                     pxPerCm={pxPerCm}
                     selected={editing ? estante.id === selectedId : estante.id === openId}
+                    marked={search.marked.has(estante.id)}
                     editable={editing}
                     onActivate={openEstante}
                     onPrefetch={prefetchEstante}

@@ -137,3 +137,9 @@ export function firstFreeSlot(area: Rect, w: number, h: number, obstacles: Rect[
 export function estimateTextWidth(text: string, fontSize: number): number {
   return text.length * fontSize * 0.6;
 }
+
+/** ¿Algún estante pisa la franja superior donde va el nombre de la zona? Entonces el nombre va abajo. */
+export function zonaLabelAtBottom(zona: Zona, estantes: Estante[], fontSize: number): boolean {
+  const band: Rect = { x: zona.x, y: zona.y, w: zona.width, h: fontSize * 2.4 };
+  return estantes.some((estante) => intersects(band, estanteRect(estante)));
+}

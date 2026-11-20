@@ -179,3 +179,41 @@ describe('MapaSalaPage · edición y roles (REQ-22)', () => {
     expect(apiState.updateCajon).toHaveBeenCalledWith({ id: 21, payload: { estante_id: 1 } });
   });
 });
+
+describe('MapaSalaPage · zoom y búsqueda (REQ-22)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetApiState();
+    state.role = 'AD-01';
+  });
+
+  it('acerca, aleja y ajusta cambiando el viewBox', async () => {
+    renderPage();
+    const svg = screen.getByRole('group', { name: 'Plano de Laboratorio 206' });
+    const initial = svg.getAttribute('viewBox');
+
+    expect((screen.getByRole('button', { name: 'Alejar' }) as HTMLButtonElement).disabled).toBe(true);
+    await userEvent.click(screen.getByRole('button', { name: 'Acercar' }));
+    expect(svg.getAttribute('viewBox')).not.toBe(initial);
+    expect(screen.getByText('150 %')).toBeDefined();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Ajustar' }));
+    expect(svg.getAttribute('viewBox')).toBe(initial);
+  });
+
+  it('marca los estantes por código, cajón o producto que guardan', async () => {
+    const { container } = renderPage();
+
+    await userEvent.type(screen.getByRole('searchbox', { name: 'Buscar en la sala' }), 'est-b');
+    await screen.findByText('1 estante con coincidencias');
+    expect(container.querySelector('[data-estante-id="3"] rect.fill-accent-soft')).not.toBeNull();
+    expect(screen.getByRole('button', { name: /^Estante EST-B1,.*coincide con la búsqueda$/ })).toBeDefined();
+
+    // Un producto en el cajón 12 (EST-A1 y EST-A2 comparten la fixture de cajones) marca esos estantes.
+    apiState.products = [{ id: 40, cajon_id: 12 }];
+    await userEvent.clear(screen.getByRole('searchbox', { name: 'Buscar en la sala' }));
+    await userEvent.type(screen.getByRole('searchbox', { name: 'Buscar en la sala' }), 'guantes');
+    await screen.findByText('2 estantes con coincidencias');
+    expect(container.querySelectorAll('rect.fill-accent-soft')).toHaveLength(2);
+  });
+});

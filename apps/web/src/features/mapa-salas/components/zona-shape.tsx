@@ -14,6 +14,8 @@ export interface ZonaShapeProps {
   handleSize?: number;
   onDragStart?: (event: PointerEvent<SVGGElement>, zona: Zona, mode: 'move' | 'resize') => void;
   onEdit?: (zona: Zona) => void;
+  /** Nombre abajo cuando un estante ocupa la franja de arriba (como «Zona B» en la referencia). */
+  labelAtBottom?: boolean;
 }
 
 /** Escribe el rectángulo de una zona en el DOM durante el arrastre (sin pasar por React). */
@@ -24,7 +26,12 @@ export function applyZonaRect(element: SVGGElement, rect: Rect, invalid: boolean
   frame?.setAttribute('width', String(rect.w));
   frame?.setAttribute('height', String(rect.h));
   element.querySelector('[data-zona-handle]')?.setAttribute('transform', `translate(${rect.w} ${rect.h})`);
-  element.querySelector('[data-zona-label]')?.setAttribute('x', String(rect.w / 2));
+  const label = element.querySelector('[data-zona-label]');
+  label?.setAttribute('x', String(rect.w / 2));
+  if (label?.getAttribute('data-bottom') === 'true') {
+    const offset = Number(label.getAttribute('data-offset')) || 0;
+    label.setAttribute('y', String(rect.h - offset));
+  }
 }
 
 /** Zona de la sala: rectángulo de 1 px con su nombre arriba al centro. */
@@ -35,6 +42,7 @@ export const ZonaShape = memo(function ZonaShape({
   handleSize = 14,
   onDragStart,
   onEdit,
+  labelAtBottom = false,
 }: ZonaShapeProps) {
   const fits = zona.nombre.length * fontSize * 0.6 < zona.width;
   return (
@@ -60,8 +68,10 @@ export const ZonaShape = memo(function ZonaShape({
       {fits && (
         <text
           data-zona-label
+          data-bottom={labelAtBottom}
+          data-offset={fontSize * 0.8}
           x={zona.width / 2}
-          y={fontSize * 1.6}
+          y={labelAtBottom ? zona.depth - fontSize * 0.8 : fontSize * 1.6}
           textAnchor="middle"
           fontSize={fontSize}
           className="pointer-events-none fill-zinc-500 select-none dark:fill-zinc-400"

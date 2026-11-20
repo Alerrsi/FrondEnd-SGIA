@@ -11,7 +11,7 @@ export interface EstanteShapeProps {
   /** Píxeles de pantalla por cm: textos, radios y marcadores miden lo mismo a cualquier escala. */
   pxPerCm: number;
   selected?: boolean;
-  /** Contiene lo buscado en «Buscar en la sala». */
+  /** Contiene lo buscado en «Buscar en la sala»: fondo burdeo suave (el punto rojo queda para stock crítico). */
   marked?: boolean;
   /** Modo edición: el puntero arrastra en vez de abrir. */
   editable?: boolean;
@@ -50,7 +50,7 @@ export const EstanteShape = memo(function EstanteShape({
   const radius = Math.min(4 / pxPerCm, shortSide / 4);
   const dot = DOT_PX / pxPerCm;
   const cells = estante.cajones.length;
-  const label = estanteAriaLabel(estante, zonaNombre);
+  const label = `${estanteAriaLabel(estante, zonaNombre)}${marked ? ', coincide con la búsqueda' : ''}`;
 
   const handleKeyDown = (event: KeyboardEvent<SVGGElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -85,8 +85,10 @@ export const EstanteShape = memo(function EstanteShape({
         height={h}
         rx={radius}
         className={cn(
-          'fill-white transition-colors dark:fill-zinc-900',
-          'group-hover:fill-zinc-50 dark:group-hover:fill-zinc-800',
+          'transition-colors',
+          marked
+            ? 'fill-accent-soft'
+            : 'fill-white group-hover:fill-zinc-50 dark:fill-zinc-900 dark:group-hover:fill-zinc-800',
           selected ? 'stroke-accent' : 'stroke-zinc-400 dark:stroke-zinc-600',
           'group-focus-visible:stroke-accent group-data-[invalid=true]:stroke-danger',
         )}
@@ -131,7 +133,6 @@ export const EstanteShape = memo(function EstanteShape({
           )}
         </>
       )}
-      {marked && <circle cx={dot * 2} cy={dot * 2} r={dot} className="fill-accent" />}
       {estante.has_critical_stock && <circle cx={w - dot * 2} cy={dot * 2} r={dot} className="fill-danger" />}
     </g>
   );

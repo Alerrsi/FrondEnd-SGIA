@@ -88,11 +88,11 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] Tests de arrastre, teclado y roles.
 
 ### Fase 5 · Pulido y cierre
-- [ ] Zoom (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo.
-- [ ] Marcador de búsqueda («Buscar en la sala») y de stock crítico.
-- [ ] Revisión a 320, 390, 768, 1024 y 1440 px en claro y oscuro.
-- [ ] Prueba de fluidez con 200 estantes.
-- [ ] Entrada en `FIXES/CHANGELOG-FIXES.md` y estado final en `TASKS/README.md`.
+- [x] Zoom (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo (`use-map-viewport.ts`, `lib/map-viewport.test.ts`).
+- [x] Marcador de búsqueda («Buscar en la sala»: fondo burdeo suave por código, cajón o producto) y de stock crítico (punto rojo).
+- [x] Revisión a 320, 390, 768, 1024 y 1440 px en claro y oscuro (componentes reales con datos de prueba y Chromium con emulación de dispositivo; sin sesión contra la API real).
+- [x] Prueba de fluidez con 200 estantes (`mapa-sala-performance.test.tsx`: ningún render de React mientras se mueve el puntero).
+- [x] Entrada en `FIXES/CHANGELOG-FIXES.md` (FIX-048) y estado final en `TASKS/README.md`.
 
 ---
 

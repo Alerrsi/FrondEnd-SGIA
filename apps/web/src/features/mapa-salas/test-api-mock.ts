@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import type { CajonEntity, LocationEntity, SalaMapa } from '@sgia/types';
+import type { CajonEntity, LocationEntity, Producto, SalaMapa } from '@sgia/types';
 
 import { CONTENIDO, makeMapa } from './test-fixtures';
 
@@ -8,6 +8,7 @@ import { CONTENIDO, makeMapa } from './test-fixtures';
 export const apiState = {
   mapa: makeMapa() as SalaMapa | undefined,
   cajones: [] as CajonEntity[],
+  products: [] as Pick<Producto, 'id' | 'cajon_id'>[],
   updateEstante: vi.fn(),
   updateZona: vi.fn(),
   createEstante: vi.fn(),
@@ -20,6 +21,7 @@ export const apiState = {
 export function resetApiState() {
   apiState.mapa = makeMapa();
   apiState.cajones = [];
+  apiState.products = [];
   for (const key of ['updateEstante', 'updateZona', 'createEstante', 'createZona', 'updateLocation', 'updateCajon', 'prefetch'] as const) {
     apiState[key].mockReset();
   }
@@ -51,6 +53,10 @@ export function buildApiMock() {
     useDeleteZona: () => mutation(vi.fn()),
     useUpdateLocation: () => mutation(apiState.updateLocation),
     useUpdateCajon: () => mutation(apiState.updateCajon),
+    useProducts: (_params?: unknown, options?: { enabled?: boolean }) => ({
+      data: options?.enabled === false ? undefined : { data: apiState.products },
+      isFetching: false,
+    }),
     useCajones: (params?: { estante_id?: number; sin_estante?: boolean }) => ({
       data: { data: apiState.cajones.filter((cajon) => (params?.sin_estante ? !cajon.estante_id : cajon.estante_id === params?.estante_id)) },
       isLoading: false,

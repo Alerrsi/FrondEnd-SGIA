@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from 'react';
+import type { PointerEvent, ReactNode, Ref } from 'react';
 
 import { SalaWalls } from './sala-walls';
 
@@ -21,10 +21,12 @@ export interface SalaSvgProps {
   background?: ReactNode;
   children: ReactNode;
   className?: string;
+  /** Desplazar la vista arrastrando el fondo (con zoom). */
+  onPointerDown?: (event: PointerEvent<SVGSVGElement>) => void;
 }
 
 /** `<svg>` raíz del plano: el `viewBox` es la sala en cm; el zoom cambia el `viewBox`, no el CSS. */
-export function SalaSvg({ ref, label, width, height, viewBox, pxPerCm, background, children, className }: SalaSvgProps) {
+export function SalaSvg({ ref, label, width, height, viewBox, pxPerCm, background, children, className, onPointerDown }: SalaSvgProps) {
   return (
     <svg
       ref={ref}
@@ -34,6 +36,7 @@ export function SalaSvg({ ref, label, width, height, viewBox, pxPerCm, backgroun
       preserveAspectRatio="xMidYMid meet"
       className={className}
       style={{ aspectRatio: `${viewBox.w} / ${viewBox.h}` }}
+      onPointerDown={onPointerDown}
     >
       <SalaWalls width={width} height={height} thickness={6 / pxPerCm} />
       {background}

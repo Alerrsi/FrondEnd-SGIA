@@ -911,3 +911,18 @@
   - `CatalogSearch` (Inicio del profesor): ya no navega con el campo vacío (mensaje «Escribe qué necesitas antes de buscar.», espacios cuentan como vacío) y muestra hasta 5 sugerencias de productos activos al escribir (`useProducts`, 250 ms).
   - Pañolero (`PAN-01`) sin ningún acceso a Compras: se quitó de `/compras`, `/compras/solicitudes` y `/compras/ordenes` en `ROUTE_PERMISSIONS` (solo `DIR-01`). Desaparece del menú y las rutas lo redirigen. En Alertas de stock se oculta «Ir a solicitudes de compra» y el código de la solicitud abierta deja de ser enlace sin acceso.
 - **Verificación:** typecheck web y vitest (511 + 1 omitida) en verde.
+
+---
+
+## FIX-048: Mapa de salas con zonas y estantes en SVG (REQ-22)
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `apps/web/src/features/mapa-salas/`, `packages/api-client`, `packages/types` — [REQ-22](TASKS/REQ-22-MAPA-SALAS.md), plan en [`docs/mapa-salas.md`](docs/mapa-salas.md)
+- **Qué cambia:**
+  - Ruta `/mapa-salas/:locationId` (y `/mapa-salas`, que abre la última sala vista) para `PAN-01`, `DIR-01` y `AD-01`; entrada «Mapa de salas» en el menú y «Ver mapa» por sala en Ubicaciones.
+  - Plano SVG propio, sin librerías: muro de doble línea, zonas y estantes con una celda por cajón; textos de 12 px o más a cualquier escala; pop-up del estante con insumos y unidades por nombre y estado.
+  - Edición (`PAN-01`, `DIR-01`): crear, editar y borrar estantes y zonas; arrastre con Pointer Events sin renders de React durante el movimiento (`requestAnimationFrame`), ajuste a 10 cm, validación de muros y superposición, zona por el centro y `PATCH` optimista con vuelta atrás; teclado (flechas, `Shift`, `R`, `Escape`) y `MovePad`; medidas de la sala; asignar cajones a un estante.
+  - Zoom por `viewBox` (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo; «Buscar en la sala» por estante, cajón o producto.
+  - Formulario de cajón con estante; inventario acepta `?cajon_id=`; `useProducts` acepta `enabled`.
+- **Verificación:** vitest (561 + 1 omitida, 95 archivos) y typecheck en verde; revisión visual a 320–1440 px en claro y oscuro con datos de prueba.
+

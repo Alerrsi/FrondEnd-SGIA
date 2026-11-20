@@ -1,6 +1,6 @@
 # Mapa de salas (plano SVG con estantes arrastrables)
 
-**Estado: fase 1 (backend) implementada (20 nov 2026); fases 2 a 5 (esta pantalla) pendientes.** Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
+**Estado: implementado (20 nov 2026), fases 1 a 5.** Ver «Diferencias con lo planificado» al final. Rama `mapa-salas` en `FrondEnd-SGIA` y en `BackEnd-SGIA`. Requisito: [`TASKS/REQ-22-MAPA-SALAS.md`](../TASKS/REQ-22-MAPA-SALAS.md). **Contrato de la API (fuente de verdad): `BackEnd-SGIA/docs/mapa-salas.md`**; este documento cubre la pantalla. Solo web (`apps/web`); la app móvil no cambia.
 
 ---
 
@@ -168,7 +168,7 @@ Un componente o hook por archivo, como exige `CLAUDE.md`.
 | Zona | `fill-zinc-50 dark:fill-zinc-950`, borde 1 px `stroke-zinc-200 dark:stroke-zinc-800`, nombre 13 px `fill-zinc-500` en tipo oración («Zona A») |
 | Estante | `fill-white dark:fill-zinc-900`, borde 1 px `stroke-zinc-400 dark:stroke-zinc-600`, radio 4 px; celdas = cajones con líneas `stroke-zinc-200`; código en `font-code` |
 | Estante seleccionado / foco | borde 2 px `stroke-accent` (burdeo, rosa en oscuro). El naranja de la referencia se traduce al acento único. |
-| Punto marcador | `fill-accent` para el estante que contiene lo buscado; `fill-danger` si algún producto del estante está en stock crítico (siempre con texto en el pop-up y en el `aria-label`) |
+| Marcadores | Fondo `fill-accent-soft` para el estante que contiene lo buscado; punto `fill-danger` si algún insumo del estante está en stock crítico (siempre con texto en el pop-up, la lista y el `aria-label`) |
 | Estante que no cabe al soltar | borde `stroke-danger` mientras se arrastra sobre un lugar inválido |
 | Rejilla de edición | líneas de 1 px `stroke-zinc-200/60` cada 50 cm |
 
@@ -258,3 +258,20 @@ Cada fase termina con `pnpm typecheck`, `pnpm lint` y `pnpm --filter @sgia/web t
 ## 10. Fuera de alcance
 
 Formas no rectangulares de sala, puertas y ventanas, rotaciones libres, varios pisos en un mismo plano, etiqueta imprimible del estante, edición simultánea en tiempo real y el mapa en la app móvil.
+
+## 11. Diferencias con lo planificado (implementación, 20 nov 2026)
+
+| Plan | Implementado | Motivo |
+|---|---|---|
+| Ruta `/ubicaciones/mapa/:locationId` | `/mapa-salas/:locationId` | Anidada, el menú de `PAN-01` marcaba «Ubicaciones» y «Mapa de salas» a la vez. |
+| Punto `fill-accent` para lo buscado | Fondo `fill-accent-soft` | El punto burdeo y el rojo de stock crítico no se distinguían. |
+| Búsqueda en la sala | Código o nombre del estante, código del cajón y productos por `GET /api/products?search=&location_id=` (su cajón registrado) | No hay endpoint de búsqueda por sala; una unidad de equipo guardada en otra sala que la de su producto no se encuentra por nombre. `useProducts` suma `enabled`. |
+| Nombre de la zona arriba | Arriba, o abajo si un estante ocupa la franja superior | Como «Zona B» en la referencia. |
+| Mover una zona | La zona se mueve sola; sus estantes quedan donde están | Es un rectángulo de referencia; la API no relaciona posición de zona y estante. Al soltar un estante se recalcula su zona. |
+| «Ver en inventario» filtrado por sala y cajón | `/inventario?cajon_id=` (`fetchProducts` ahora envía `cajon_id`) | El filtro por cajón alcanza; el chip «Quitar filtro» lo limpia. |
+| `AD-01` en el menú | `AD-01` ve «Mapa de salas» (solo lectura) | Decisión 3; `layout-shell.test.tsx` actualizado. |
+
+**Archivos:** `apps/web/src/features/mapa-salas/` (`components/`, `hooks/`, `lib/`, `pages/`, tests), `packages/api-client/src/{services,hooks}/room-map.ts`, `packages/types/src/mapa-sala.ts`; cambios menores en `ubicaciones-page.tsx` («Ver mapa»), `cajon-form-dialog.tsx` (estante), `productos-list-page.tsx` (`?cajon_id=`), `roles.ts`, `nav-config.ts` y `app.tsx`.
+
+**Verificación:** 95 archivos de test (561 + 1 omitida) en verde; typecheck y lint de web sin errores. Revisión visual a 320, 390, 768, 1024 y 1440 px en claro y oscuro con datos de prueba (Chromium con emulación de dispositivo). No se probó con sesión contra la API real.
+
