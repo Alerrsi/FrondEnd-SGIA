@@ -90,7 +90,8 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 ### Fase 5 · Pulido y cierre
 - [x] Zoom (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo (`use-map-viewport.ts`, `lib/map-viewport.test.ts`).
 - [x] Marcador de búsqueda («Buscar en la sala»: fondo burdeo suave por código, cajón o producto) y de stock crítico (punto rojo).
-- [x] Revisión a 320, 390, 768, 1024 y 1440 px en claro y oscuro (componentes reales con datos de prueba y Chromium con emulación de dispositivo; sin sesión contra la API real).
+- [x] Revisión a 320, 390, 768, 1024 y 1440 px en claro y oscuro (componentes reales con datos de prueba y Chromium con emulación de dispositivo).
+- [x] Recorrido de punta a punta contra la API real con PAN-01, DIR-01 y AD-01 (30/30).
 - [x] Prueba de fluidez con 200 estantes (`mapa-sala-performance.test.tsx`: ningún render de React mientras se mueve el puntero).
 - [x] Entrada en `FIXES/CHANGELOG-FIXES.md` (FIX-048) y estado final en `TASKS/README.md`.
 

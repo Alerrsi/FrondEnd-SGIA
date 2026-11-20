@@ -924,5 +924,5 @@
   - Edición (`PAN-01`, `DIR-01`): crear, editar y borrar estantes y zonas; arrastre con Pointer Events sin renders de React durante el movimiento (`requestAnimationFrame`), ajuste a 10 cm, validación de muros y superposición, zona por el centro y `PATCH` optimista con vuelta atrás; teclado (flechas, `Shift`, `R`, `Escape`) y `MovePad`; medidas de la sala; asignar cajones a un estante.
   - Zoom por `viewBox` (botones, `Ctrl` + rueda, «Ajustar») y desplazamiento del fondo; «Buscar en la sala» por estante, cajón o producto.
   - Formulario de cajón con estante; inventario acepta `?cajon_id=`; `useProducts` acepta `enabled`.
-- **Verificación:** vitest (561 + 1 omitida, 95 archivos) y typecheck en verde; revisión visual a 320–1440 px en claro y oscuro con datos de prueba.
+- **Verificación:** vitest y typecheck en verde; revisión visual a 320–1440 px en claro y oscuro; recorrido de punta a punta contra la API real con PAN-01, DIR-01 y AD-01 (30/30 comprobaciones). El recorrido detectó un cajón repetido en «Asignar cajones» al refrescar (corregido: se quitan duplicados por id).
 

@@ -32,8 +32,12 @@ export function AsignarCajonesDialog({ open, onClose, locationId, estante }: Asi
   // Clave por ids: el arreglo puede cambiar de referencia sin cambiar de contenido (refetch); así no se pierden las marcas.
   const assignedKey = (asignados.data?.data ?? []).map((cajon) => cajon.id).join(',');
   const assignedIds = useMemo(() => (assignedKey ? assignedKey.split(',').map(Number) : []), [assignedKey]);
+  // Por id: tras guardar, mientras las dos listas se refrescan, un cajón puede venir en ambas.
   const cajones: CajonEntity[] = useMemo(
-    () => [...(asignados.data?.data ?? []), ...(sueltos.data?.data ?? [])].sort((a, b) => a.codigo.localeCompare(b.codigo)),
+    () =>
+      [...new Map([...(sueltos.data?.data ?? []), ...(asignados.data?.data ?? [])].map((cajon) => [cajon.id, cajon])).values()].sort(
+        (a, b) => a.codigo.localeCompare(b.codigo),
+      ),
     [asignados.data, sueltos.data],
   );
 
