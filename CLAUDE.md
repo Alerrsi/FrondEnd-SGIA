@@ -18,7 +18,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 ## Estructura
 
 - `apps/web/` — panel administrativo (React 19, Vite, Tailwind, Radix/Shadcn). Roles AD-01, DIR-01, PAN-01 y PRO-01 (profesor, menú reducido en `/profesor/*`, REQ-21).
-- `apps/mobile/` — app Expo / React Native. Solo rol PRO-01 (profesor).
+- `apps/mobile/` — app Expo / React Native. Solo rol PRO-01 (profesor). Mismo sistema «Trazo»: tokens en `src/theme/` (desde `@sgia/design-tokens`), componentes en `src/components/ui/` y menú inferior en barra de iconos (`components/icon-tab-bar.tsx`).
 - `packages/api-client/` — cliente HTTP tipado y hooks de TanStack Query. Único lugar donde se llama a la API.
 - `packages/types/` — tipos compartidos (Producto, Préstamo, Cotización, Usuario, Equipo). Fuente única de verdad de entidades.
 - `packages/design-tokens/` — colores y tipografía compartidos.
@@ -28,7 +28,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - `FIXES/CHANGELOG-FIXES.md` — historial de correcciones; registrar ahí los cambios importantes.
 - `.claude/skills/sgia-design/` — skill con la especificación de diseño de UI (se carga sola). Leer antes de crear o modificar componentes visuales.
 - `AGENTS.md` — contexto de negocio y arquitectura completo. Consultarlo para tareas de dominio.
-- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones. `docs/mapa-salas.md`: mapa SVG por sala con zonas y estantes arrastrables (rama `mapa-salas`, REQ-22, implementado). `docs/rediseno-movil.md`: sistema «Trazo» en la app móvil (plan, sin implementar).
+- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones. `docs/mapa-salas.md`: mapa SVG por sala con zonas y estantes arrastrables (rama `mapa-salas`, REQ-22, implementado). `docs/rediseno-movil.md`: sistema «Trazo» en la app móvil (rama `feat/rediseno-movil`, implementado).
 
 ## Reglas duras
 

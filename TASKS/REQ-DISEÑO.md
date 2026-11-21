@@ -28,12 +28,12 @@ Plan completo: `docs/rediseno-interfaz.md` (estado: plan, sin implementar). Refe
 
 ## Rediseño «Trazo» en móvil (rama `feat/rediseno-movil`)
 
-Plan completo: `docs/rediseno-movil.md` (estado: plan, sin implementar). Solo `apps/mobile` y `packages/design-tokens`.
+Plan completo: `docs/rediseno-movil.md` (estado: implementado). Solo `apps/mobile` y `packages/design-tokens`.
 
 - [x] Fase 0 — Base: dependencias instaladas (typecheck móvil en verde) y tokens claro/oscuro en `design-tokens`
-- [ ] Fase 1 — Tema `src/theme/`, Geist y Geist Mono, tema de navegación
-- [ ] Fase 2 — Componentes (`ThemedText`, `Button`, `Badge`, `CodeChip`, `Section`, `TextField`, `EmptyState`, `ScreenHeader`) y campos reestilizados
-- [ ] Fase 3 — Marco: barra de iconos inferior estilo riel del sidebar web, splash SGIA
-- [ ] Fase 4 — Pantallas: login, Solicitar, Mis préstamos, Novedades
-- [ ] Fase 5 — Limpieza de plantilla, auditoría y capturas claro/oscuro a 375 px
-- [ ] Fase 6 — Cierre: `sgia-design`, `CLAUDE.md`, changelog
+- [x] Fase 1 — Tema `src/theme/`, Geist y Geist Mono, tema de navegación
+- [x] Fase 2 — Componentes (`ThemedText`, `Button`, `Badge`, `CodeChip`, `Section`, `TextField`, `EmptyState`, `ScreenHeader`) y campos reestilizados
+- [x] Fase 3 — Marco: barra de iconos inferior estilo riel del sidebar web, splash SGIA
+- [x] Fase 4 — Pantallas: login, Solicitar, Mis préstamos, Novedades
+- [x] Fase 5 — Limpieza de plantilla, auditoría y capturas claro/oscuro a 375 px
+- [x] Fase 6 — Cierre: `sgia-design`, `CLAUDE.md`, changelog

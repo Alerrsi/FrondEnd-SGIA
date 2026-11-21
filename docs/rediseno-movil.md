@@ -1,6 +1,6 @@
 # Rediseño «Trazo» en la app móvil
 
-**Estado: plan, sin implementar.** Rama: `feat/rediseno-movil`. Solo `apps/mobile` y `packages/design-tokens`. No cambian el backend, la API, la navegación ni el comportamiento. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo en móvil»).
+**Estado: implementado (20 nov 2026), fases 0 a 6 hechas.** Rama: `feat/rediseno-movil`. Solo `apps/mobile` y `packages/design-tokens`. No cambian el backend, la API, la navegación ni el comportamiento. Seguimiento en `TASKS/REQ-DISEÑO.md` (sección «Rediseño Trazo en móvil»).
 
 ## 1. Problema
 
@@ -78,12 +78,12 @@ Equivalentes móviles de los del web, con el contrato variante / tamaño / estad
 ## 5. Fases
 
 - [x] **Fase 0 — Base.** `pnpm install` para que `expo-notifications` resuelva y el typecheck móvil pase. Ampliar `tokens.json` e `index.ts` de `design-tokens` con claro/oscuro, estados y `tag`. Dependencias nuevas: `@expo-google-fonts/geist`, `@expo-google-fonts/geist-mono`, `lucide-react-native`.
-- [ ] **Fase 1 — Tema y fuentes.** `src/theme/`, `useTheme`, carga de Geist y Geist Mono, tema de React Navigation (`ThemeProvider`) con los colores Trazo, `StatusBar` según el modo. Borrar `constants/theme.ts` y `global.css` al terminar la migración.
-- [ ] **Fase 2 — Componentes.** Los de §4, reestilizar `select-field`, `multi-select-field`, `date-field`, `photo-field` y `signature-pad` (trazo en tinta, no en negro puro).
-- [ ] **Fase 3 — Marco de la app.** Barra de iconos inferior (`components/icon-tab-bar.tsx`) con `lucide-react-native` (`ClipboardPlus` Solicitar, `CalendarClock` Mis préstamos, `FileWarning` Novedades), indicador animado con Reanimated (150–240 ms, sin rebote, quieto con «reducir movimiento»); se borran `app-tabs.web.tsx` y los iconos `tabIcons/`; splash con la marca SGIA (icono `Boxes` del web) sobre papel/grafito en `animated-icon.tsx` y `app.json`; fondo del icono adaptativo de Android al papel.
-- [ ] **Fase 4 — Pantallas.** Login, Solicitar (`index.tsx`: pañol, catálogo, carrito, datos de la solicitud, modal de éxito), Mis préstamos (`explore.tsx`), Novedades (lista, formulario y detalle). Estados de solicitud e informe con `Badge` y los tonos del web.
-- [ ] **Fase 5 — Limpieza y verificación.** Borrar archivos de plantilla sin uso. Auditoría por grep: cero hex fuera de `src/theme/`, cero `fontWeight` 700, cero `fontSize` bajo 12, cero `textTransform: 'uppercase'`. `pnpm typecheck` y `pnpm lint` en verde. Capturas en web de Expo a 375 px en claro y oscuro de cada pantalla, contra la API real con el login de PRO-01.
-- [ ] **Fase 6 — Cierre.** Sección «Móvil» en `.claude/skills/sgia-design/SKILL.md`, `CLAUDE.md`, `FIXES/CHANGELOG-FIXES.md`, este plan a «implementado».
+- [x] **Fase 1 — Tema y fuentes.** `src/theme/`, `useTheme`, carga de Geist y Geist Mono, tema de React Navigation (`ThemeProvider`) con los colores Trazo, `StatusBar` según el modo. Borrar `constants/theme.ts` y `global.css` al terminar la migración.
+- [x] **Fase 2 — Componentes.** Los de §4, reestilizar `select-field`, `multi-select-field`, `date-field`, `photo-field` y `signature-pad` (trazo en tinta, no en negro puro).
+- [x] **Fase 3 — Marco de la app.** Barra de iconos inferior (`components/icon-tab-bar.tsx`) con `lucide-react-native` (`ClipboardPlus` Solicitar, `CalendarClock` Mis préstamos, `FileWarning` Novedades), indicador animado con Reanimated (150–240 ms, sin rebote, quieto con «reducir movimiento»); se borran `app-tabs.web.tsx` y los iconos `tabIcons/`; splash con la marca SGIA (icono `Boxes` del web) sobre papel/grafito en `brand-splash.tsx` (reemplaza `animated-icon.tsx`) y `app.json` (`splash-icon.png` y `splash-icon-dark.png` dibujados desde el SVG de Lucide); fondo del icono adaptativo de Android al papel.
+- [x] **Fase 4 — Pantallas.** Login, Solicitar (`index.tsx`: pañol, catálogo, carrito, datos de la solicitud, modal de éxito), Mis préstamos (`explore.tsx`), Novedades (lista, formulario y detalle). Estados de solicitud e informe con `Badge` y los tonos del web.
+- [x] **Fase 5 — Limpieza y verificación.** Borrar archivos de plantilla sin uso. Auditoría por grep: cero hex fuera de `src/theme/`, cero `fontWeight` 700, cero `fontSize` bajo 12, cero `textTransform: 'uppercase'`. `pnpm typecheck` y `pnpm lint` en verde. Capturas en web de Expo a 390 px en claro y oscuro de cada pantalla, contra la API real con el login de PRO-01.
+- [x] **Fase 6 — Cierre.** Sección «Móvil» en `.claude/skills/sgia-design/SKILL.md`, `CLAUDE.md`, `FIXES/CHANGELOG-FIXES.md`, este plan a «implementado».
 
 Un commit por fase verificada.
 
@@ -93,3 +93,15 @@ Un commit por fase verificada.
 - Rediseñar el arte del icono de la app (solo cambia el color de fondo del adaptativo y el splash).
 - Cambios en la web o en el backend.
 - Interruptor de tema dentro de la app.
+
+## 7. Resultado
+
+- **Tema:** `apps/mobile/src/theme/` (`colors`, `spacing`, `radius`, `typography`, `motion`, `fonts`). `useTheme()` y `useThemeName()` en `hooks/use-theme.ts`. Se borraron `constants/theme.ts`, `global.css` y `types/css.d.ts`.
+- **Componentes:** `components/ui/` suma `button`, `badge`, `code-chip`, `section`, `row`, `field`, `text-field`, `state-message`, `screen`, `screen-header`, `sheet-header` y `control-style` (estilo único de campo). `ThemedText` usa `variant` (escala del web) y `tone` (color de la paleta).
+- **Menú:** `components/icon-tab-bar.tsx` + `app-tabs.tsx` con `Tabs` de `expo-router/ui`, una implementación para iOS, Android y web.
+- **Estados de préstamo** alineados con `LoanStatusBadge` del web: el backend devuelve `procesado` y `rechazado` (masculino), que antes salían en crudo.
+- **Firma:** siempre papel blanco y tinta grafito (`signaturePaper`), también en oscuro, porque se guarda como imagen.
+- **Arreglo aparte:** `use-push-notifications.web.ts` vacío. En web `useLastNotificationResponse` lanzaba `UnavailabilityError` y la app no abría.
+- **Verificación:** `pnpm typecheck` en verde; `expo lint` sin errores nuevos (quedan los 3 `import/no-unresolved` de `expo-notifications`, previos); auditoría por grep limpia; capturas a 390 px en claro y oscuro de login, Solicitar, Mis préstamos, Novedades, nuevo informe y detalle, con PRO-01 contra la API de desarrollo.
+- **Pendiente fuera de alcance:** el icono de la app (`icon.png`, `expo.icon`, adaptativo de Android) sigue siendo el de la plantilla de Expo.
+
