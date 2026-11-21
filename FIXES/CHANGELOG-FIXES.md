@@ -940,3 +940,27 @@
   - Backend: `MapaSalasDemoSeeder` deja las 8 ubicaciones con zonas A/B/C, siete estantes y todos los cajones asignados.
 - **Verificación:** vitest y typecheck en verde; recorrido contra la API real con PAN-01, DIR-01 y AD-01: 27/27.
 
+---
+
+## FIX-050: Compras siempre visible en el header
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `apps/web/src/layouts/header-nav.tsx`
+- **Qué cambia:** los grupos (Compras) ya no cuentan para el límite de 5 ítems de la barra ni caen en «Más». En DIR-01, Compras pasaba al sexto lugar y sus 6 páginas se mezclaban dentro de «Más».
+- **Verificación:** test nuevo en `layout-shell.test.tsx`; captura a 1024 y 1280 px con DIR-01 contra la API real.
+
+---
+
+## FIX-051: Sistema «Trazo» en la app móvil del profesor
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `apps/mobile`, `packages/design-tokens` — plan en [`docs/rediseno-movil.md`](docs/rediseno-movil.md), [REQ-DISEÑO](TASKS/REQ-DISEÑO.md)
+- **Qué cambia:**
+  - Paletas claro/oscuro de `tokens.json` compartidas con el web; tema único `src/theme/`; Geist y Geist Mono.
+  - Componentes base móviles (`Button`, `Badge`, `CodeChip`, `Section`, `Row`, `Field`, `TextField`, `StateMessage`, `Screen`, `ScreenHeader`, `SheetHeader`) y campos de selección y fecha reestilizados.
+  - Menú inferior en barra de iconos al estilo del riel del sidebar web encogido, en vez de `NativeTabs`.
+  - Login, Solicitar, Mis préstamos y Novedades (lista, formulario, detalle) migradas; estados con los tonos y nombres del web (`procesado`/`rechazado` ya no salen en crudo).
+  - Splash SGIA sobre papel/grafito; fuera los restos de la plantilla de Expo (logos, iconos de pestaña, `reset-project`).
+  - Web: `use-push-notifications.web.ts` vacío; antes la app no abría en navegador por `UnavailabilityError`.
+- **Verificación:** `pnpm typecheck` 5/5; vitest web 568 en verde; `expo lint` sin errores nuevos; capturas a 390 px en claro y oscuro con PRO-01 contra la API de desarrollo.
+

@@ -1,10 +1,12 @@
 import { useEffect, useEffectEvent, useRef, useState, type ComponentRef } from 'react';
-import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { Eraser } from 'lucide-react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { captureRef } from 'react-native-view-shot';
 
-import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/use-theme';
+import { radius, signaturePaper, spacing } from '@/theme';
 
 interface SignaturePadProps {
   /** Recibe la firma como `data:image/png;base64,…`, o `''` si se borró o no se pudo capturar. */
@@ -91,7 +93,7 @@ export function SignaturePad({ onChange, onDrawingChange, invalid }: SignaturePa
         accessibilityLabel="Área para dibujar la firma"
         style={[
           styles.surface,
-          { borderColor: invalid ? '#b91c1c' : theme.backgroundSelected },
+          { borderColor: invalid ? theme.danger : theme.lineStrong },
         ]}
         {...responder.panHandlers}
       >
@@ -100,7 +102,7 @@ export function SignaturePad({ onChange, onDrawingChange, invalid }: SignaturePa
             <Path
               key={index}
               d={d}
-              stroke="#111111"
+              stroke={signaturePaper.ink}
               strokeWidth={2.5}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -109,27 +111,27 @@ export function SignaturePad({ onChange, onDrawingChange, invalid }: SignaturePa
           ))}
         </Svg>
       </View>
-      <Pressable onPress={clear} accessibilityRole="button" hitSlop={8} style={styles.clear}>
-        <ThemedText type="small" themeColor="textSecondary">
-          Borrar firma
-        </ThemedText>
-      </Pressable>
+      <Button
+        title="Borrar firma"
+        variant="ghost"
+        size="sm"
+        onPress={clear}
+        icon={(color) => <Eraser size={16} color={color} aria-hidden />}
+        style={styles.clear}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 6,
-  },
+  container: { gap: spacing.xs },
   surface: {
     height: 150,
     borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
+    borderRadius: radius.md,
+    borderCurve: 'continuous',
+    backgroundColor: signaturePaper.paper,
     overflow: 'hidden',
   },
-  clear: {
-    alignSelf: 'flex-end',
-  },
+  clear: { alignSelf: 'flex-end' },
 });

@@ -94,3 +94,14 @@ Todo gráfico toma de ahí colores, fuente, ejes, leyenda, tooltip y animación.
 - Controles de 44 px con puntero táctil (`pointer-coarse:`), ya incluidos en `Button`, campos e íconos de fila.
 - Foco visible: anillo burdeo de 2 px, sin transición. Enlace «Saltar al contenido». Un h1 por pantalla, títulos en orden. Todo botón de icono con `aria-label`; íconos decorativos `aria-hidden`.
 - Texto que se lee: 4,5:1 como mínimo (`zinc-400` en claro es solo decorativo).
+
+## 7. App móvil (`apps/mobile`, solo PRO-01)
+
+Mismo lenguaje que el web (color, tipo, líneas de 1 px, radios), con controles nativos donde corresponde. Plan e historia: `docs/rediseno-movil.md`.
+
+- **Tokens:** `src/theme/` lee las paletas claro/oscuro de `@sgia/design-tokens` (`themes`). Se usan con `useTheme()`; ningún archivo fuera de `src/theme/` escribe un hex, un `fontSize` ni un radio. Modo oscuro según el sistema.
+- **Tipo:** Geist y Geist Mono con `@expo-google-fonts` (el peso va en `fontFamily`, nunca `fontWeight`). `ThemedText variant` = `hero`, `title`, `subtitle`, `section`, `label`, `body`, `bodyMedium`, `secondary`, `caption`, `metric`, `code`, `codeSmall`; `tone` = color de la paleta.
+- **Componentes (`src/components/ui/`):** `Screen` + `ScreenHeader` en cada pestaña; `Section` (superficie, borde 1 px, radio 8, sin sombra) con `Row` para listas; `Field` + `TextField`/`SelectField`/`MultiSelectField`/`DateField` (estilo único `controlStyle`); `Button` en pastilla de 44 px (`primary` uno por pantalla); `Badge tone`; `CodeChip` para códigos; `StateMessage` para carga/vacío/error; `SheetHeader` en las hojas (`Modal` `pageSheet`).
+- **Menú:** barra de iconos inferior (`icon-tab-bar.tsx`) con el lenguaje del riel del sidebar encogido: pozo en superficie con borde de 1 px y radio 16, indicador `surfaceAlt` con borde que se desliza (240 ms, sin rebote, quieto con «reducir movimiento»). Solo iconos Lucide con `accessibilityLabel`; el nombre de la pantalla va en su `ScreenHeader`.
+- **Firma:** siempre papel blanco con tinta grafito (`signaturePaper`), también en oscuro.
+

@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Check, ChevronDown } from 'lucide-react-native';
+
 import { ThemedText } from '@/components/themed-text';
+import { controlStyle, dropdownStyle } from '@/components/ui/control-style';
 import { useTheme } from '@/hooks/use-theme';
+import { spacing, TOUCH } from '@/theme';
 
 export interface SelectOption<T extends string | number> {
   value: T;
@@ -38,28 +42,21 @@ export function SelectField<T extends string | number>({
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={selected ? `Seleccionado: ${selected.label}` : placeholder}
         accessibilityState={{ expanded: open }}
-        style={[
-          styles.trigger,
-          { borderColor: theme.backgroundSelected, backgroundColor: theme.background },
-        ]}
+        style={[controlStyle(theme, { focused: open }), styles.trigger]}
       >
-        <ThemedText
-          style={styles.triggerText}
-          themeColor={selected ? 'text' : 'textSecondary'}
-          numberOfLines={1}
-        >
+        <ThemedText style={styles.text} tone={selected ? 'ink' : 'inkFaint'} numberOfLines={1}>
           {selected?.label ?? placeholder}
         </ThemedText>
-        <ThemedText themeColor="textSecondary">{open ? '▴' : '▾'}</ThemedText>
+        <ChevronDown
+          size={16}
+          color={theme.inkMuted}
+          style={open ? styles.chevronOpen : undefined}
+          aria-hidden
+        />
       </Pressable>
 
       {open && (
-        <View
-          style={[
-            styles.list,
-            { borderColor: theme.backgroundSelected, backgroundColor: theme.background },
-          ]}
-        >
+        <View style={dropdownStyle(theme)}>
           {options.map((option, index) => {
             const isSelected = option.value === value;
             return (
@@ -73,17 +70,14 @@ export function SelectField<T extends string | number>({
                 accessibilityState={{ selected: isSelected }}
                 style={({ pressed }) => [
                   styles.option,
-                  index > 0 && {
-                    borderTopWidth: StyleSheet.hairlineWidth,
-                    borderTopColor: theme.backgroundSelected,
-                  },
-                  (isSelected || pressed) && { backgroundColor: theme.backgroundSelected },
+                  index > 0 && { borderTopWidth: 1, borderTopColor: theme.line },
+                  (isSelected || pressed) && { backgroundColor: theme.surfaceAlt },
                 ]}
               >
-                <ThemedText style={[styles.optionText, isSelected && styles.optionTextSelected]}>
+                <ThemedText variant={isSelected ? 'bodyMedium' : 'body'} style={styles.text}>
                   {option.label}
                 </ThemedText>
-                {isSelected && <ThemedText style={styles.optionTextSelected}>✓</ThemedText>}
+                {isSelected && <Check size={16} color={theme.accent} aria-hidden />}
               </Pressable>
             );
           })}
@@ -95,40 +89,20 @@ export function SelectField<T extends string | number>({
 
 const styles = StyleSheet.create({
   trigger: {
-    minHeight: 44,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: spacing.sm,
   },
-  triggerText: {
-    flex: 1,
-    fontSize: 13,
-  },
-  list: {
-    marginTop: 4,
-    borderWidth: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
+  chevronOpen: { transform: [{ rotate: '180deg' }] },
   option: {
-    minHeight: 44,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    minHeight: TOUCH,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: spacing.sm,
   },
-  optionText: {
-    flex: 1,
-    fontSize: 13,
-  },
-  optionTextSelected: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
+  text: { flex: 1 },
 });

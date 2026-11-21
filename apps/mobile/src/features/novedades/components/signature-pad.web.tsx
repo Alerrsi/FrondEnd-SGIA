@@ -1,7 +1,10 @@
 import { useEffect, useRef, type PointerEvent } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Eraser } from 'lucide-react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
+import { useTheme } from '@/hooks/use-theme';
+import { radius, signaturePaper, spacing } from '@/theme';
 
 interface SignaturePadProps {
   /** Recibe la firma como `data:image/png;base64,…`, o `''` si se borró. */
@@ -15,15 +18,16 @@ const HEIGHT = 300;
 
 /** En web la firma se dibuja en un `<canvas>`; la captura nativa no está disponible. */
 export function SignaturePad({ onChange, onDrawingChange, invalid }: SignaturePadProps) {
+  const theme = useTheme();
   const canvas = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
 
   const paintBackground = () => {
     const context = canvas.current?.getContext('2d');
     if (!context) return;
-    context.fillStyle = '#ffffff';
+    context.fillStyle = signaturePaper.paper;
     context.fillRect(0, 0, WIDTH, HEIGHT);
-    context.strokeStyle = '#111111';
+    context.strokeStyle = signaturePaper.ink;
     context.lineWidth = 4;
     context.lineCap = 'round';
     context.lineJoin = 'round';
@@ -79,32 +83,27 @@ export function SignaturePad({ onChange, onDrawingChange, invalid }: SignaturePa
           boxSizing: 'border-box',
           borderWidth: 1,
           borderStyle: 'solid',
-          borderColor: invalid ? '#b91c1c' : '#c7c9ce',
-          borderRadius: 8,
+          borderColor: invalid ? theme.danger : theme.lineStrong,
+          borderRadius: radius.md,
           touchAction: 'none',
         }}
       />
-      <Pressable
+      <Button
+        title="Borrar firma"
+        variant="ghost"
+        size="sm"
         onPress={() => {
           paintBackground();
           onChange('');
         }}
-        accessibilityRole="button"
+        icon={(color) => <Eraser size={16} color={color} aria-hidden />}
         style={styles.clear}
-      >
-        <ThemedText type="small" themeColor="textSecondary">
-          Borrar firma
-        </ThemedText>
-      </Pressable>
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 6,
-  },
-  clear: {
-    alignSelf: 'flex-end',
-  },
+  container: { gap: spacing.xs },
+  clear: { alignSelf: 'flex-end' },
 });

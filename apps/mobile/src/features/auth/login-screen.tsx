@@ -1,21 +1,16 @@
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { Boxes } from 'lucide-react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ApiRequestError } from '@sgia/api-client';
 import { Controller, useForm } from 'react-hook-form';
 
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { Button } from '@/components/ui/button';
+import { Field } from '@/components/ui/field';
+import { TextField } from '@/components/ui/text-field';
 import { useTheme } from '@/hooks/use-theme';
+import { radius, spacing } from '@/theme';
 import { useAuth } from './auth-context';
 
 interface LoginFormValues {
@@ -53,100 +48,100 @@ export function LoginScreen() {
     }
   });
 
-  const inputStyle = [
-    styles.input,
-    { color: theme.text, borderColor: theme.backgroundSelected, backgroundColor: theme.background },
-  ];
-
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
       <KeyboardAvoidingView
         style={styles.safeArea}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <ThemedText type="code" style={styles.tag}>
-            INACAP SEDE TEMUCO · PAÑOL TI
-          </ThemedText>
-          <ThemedText type="title" style={styles.title}>
-            Iniciar sesión
-          </ThemedText>
-          <ThemedText themeColor="textSecondary">Acceso para docentes.</ThemedText>
-
-          <View style={styles.field}>
-            <ThemedText type="small">Correo</ThemedText>
-            <Controller
-              control={control}
-              name="email"
-              rules={{ required: 'Ingresa tu correo.' }}
-              render={({ field }) => (
-                <TextInput
-                  {...field}
-                  onChangeText={field.onChange}
-                  style={inputStyle}
-                  editable={!isSubmitting}
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  placeholder="nombre@inacap.cl"
-                  placeholderTextColor="#888"
-                />
-              )}
-            />
-            {errors.email && <ThemedText type="small" style={styles.error}>{errors.email.message}</ThemedText>}
-          </View>
-
-          <View style={styles.field}>
-            <ThemedText type="small">Contraseña</ThemedText>
-            <Controller
-              control={control}
-              name="password"
-              rules={{ required: 'Ingresa tu contraseña.' }}
-              render={({ field }) => (
-                <TextInput
-                  {...field}
-                  onChangeText={field.onChange}
-                  style={inputStyle}
-                  editable={!isSubmitting}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoComplete="current-password"
-                  textContentType="password"
-                  onSubmitEditing={() => void onSubmit()}
-                  placeholderTextColor="#888"
-                />
-              )}
-            />
-            {errors.password && (
-              <ThemedText type="small" style={styles.error}>{errors.password.message}</ThemedText>
-            )}
-            <Pressable
-              onPress={() => setShowPassword((v) => !v)}
-              accessibilityRole="button"
-              hitSlop={8}>
-              <ThemedText type="small" themeColor="textSecondary">
-                {showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          {/* Marca, como en el login web */}
+          <View style={styles.brand}>
+            <View style={[styles.mark, { borderColor: theme.line, backgroundColor: theme.surface }]}>
+              <Boxes size={24} color={theme.ink} aria-hidden />
+            </View>
+            <View style={[styles.sede, { backgroundColor: theme.accentSoft }]}>
+              <View style={[styles.sedeDot, { backgroundColor: theme.accent }]} />
+              <ThemedText variant="caption" tone="accent">
+                Sede Temuco · Pañol TI
               </ThemedText>
-            </Pressable>
+            </View>
+            <ThemedText variant="hero">SGIA</ThemedText>
+            <ThemedText variant="secondary" style={styles.center}>
+              Sistema de Gestión de Inventario y Activos
+            </ThemedText>
           </View>
 
-          {authError && (
-            <ThemedText type="small" style={styles.error} accessibilityRole="alert">
-              {authError}
-            </ThemedText>
-          )}
+          <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.line }]}>
+            <View style={[styles.cardHead, { borderBottomColor: theme.line }]}>
+              <ThemedText variant="section" accessibilityRole="header">
+                Iniciar sesión
+              </ThemedText>
+              <ThemedText variant="secondary">Acceso para docentes.</ThemedText>
+            </View>
 
-          <Pressable
-            onPress={() => void onSubmit()}
-            disabled={isSubmitting}
-            accessibilityRole="button"
-            style={[styles.button, { backgroundColor: theme.text }, isSubmitting && { opacity: 0.6 }]}>
-            {isSubmitting ? (
-              <ActivityIndicator color={theme.background} />
-            ) : (
-              <ThemedText style={[styles.buttonText, { color: theme.background }]}>Entrar</ThemedText>
+            <Field label="Correo" error={errors.email?.message}>
+              <Controller
+                control={control}
+                name="email"
+                rules={{ required: 'Ingresa tu correo.' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChangeText={field.onChange}
+                    invalid={Boolean(errors.email)}
+                    editable={!isSubmitting}
+                    autoCapitalize="none"
+                    autoComplete="email"
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
+                    placeholder="nombre@inacap.cl"
+                    accessibilityLabel="Correo"
+                  />
+                )}
+              />
+            </Field>
+
+            <Field label="Contraseña" error={errors.password?.message}>
+              <Controller
+                control={control}
+                name="password"
+                rules={{ required: 'Ingresa tu contraseña.' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    onChangeText={field.onChange}
+                    invalid={Boolean(errors.password)}
+                    editable={!isSubmitting}
+                    secureTextEntry={!showPassword}
+                    autoCapitalize="none"
+                    autoComplete="current-password"
+                    textContentType="password"
+                    onSubmitEditing={() => void onSubmit()}
+                    accessibilityLabel="Contraseña"
+                  />
+                )}
+              />
+              <Pressable
+                onPress={() => setShowPassword((v) => !v)}
+                accessibilityRole="button"
+                hitSlop={12}
+                style={styles.toggle}>
+                <ThemedText variant="secondary">
+                  {showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                </ThemedText>
+              </Pressable>
+            </Field>
+
+            {authError && (
+              <View style={[styles.alert, { backgroundColor: theme.dangerBg }]}>
+                <ThemedText variant="secondary" tone="danger" accessibilityRole="alert">
+                  {authError}
+                </ThemedText>
+              </View>
             )}
-          </Pressable>
+
+            <Button title="Entrar" onPress={() => void onSubmit()} loading={isSubmitting} />
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -158,17 +153,41 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     justifyContent: 'center',
-    gap: Spacing.three,
-    padding: Spacing.four,
+    gap: spacing.xl,
+    padding: spacing.lg,
     width: '100%',
-    maxWidth: 420,
+    maxWidth: 400,
     alignSelf: 'center',
   },
-  tag: { fontSize: 10, letterSpacing: 0.5, color: '#d9232a' },
-  title: { fontSize: 28, lineHeight: 34 },
-  field: { gap: 4 },
-  input: { height: 44, borderWidth: 1, borderRadius: 8, paddingHorizontal: 12, fontSize: 14 },
-  error: { color: '#d9232a' },
-  button: { height: 48, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  buttonText: { fontSize: 14, fontWeight: '700' },
+  brand: { alignItems: 'center', gap: spacing.sm },
+  mark: {
+    width: 48,
+    height: 48,
+    borderWidth: 1,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xs,
+  },
+  sede: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs + 2,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+    borderRadius: radius.full,
+  },
+  sedeDot: { width: 6, height: 6, borderRadius: radius.full },
+  center: { textAlign: 'center' },
+  card: {
+    borderWidth: 1,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
+    padding: spacing.xl,
+    gap: spacing.lg,
+  },
+  cardHead: { gap: spacing.xxs, paddingBottom: spacing.md, borderBottomWidth: 1 },
+  toggle: { alignSelf: 'flex-start', minHeight: 24, justifyContent: 'center' },
+  alert: { borderRadius: radius.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
 });

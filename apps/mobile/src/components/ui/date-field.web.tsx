@@ -1,4 +1,5 @@
 import { useTheme } from '@/hooks/use-theme';
+import { fonts, radius } from '@/theme';
 
 interface DateFieldProps {
   /** Nombre del campo para lectores de pantalla. */
@@ -38,13 +39,16 @@ export function DateField({
         boxSizing: 'border-box',
         borderWidth: 1,
         borderStyle: 'solid',
-        borderRadius: 8,
+        borderRadius: radius.md,
         paddingLeft: 12,
         paddingRight: 12,
-        fontSize: 13,
-        color: theme.text,
-        borderColor: theme.backgroundSelected,
-        backgroundColor: theme.background,
+        fontSize: 14,
+        fontFamily: fonts.regular,
+        fontVariantNumeric: 'tabular-nums',
+        color: theme.ink,
+        borderColor: theme.line,
+        backgroundColor: theme.surface,
+        accentColor: theme.accent,
       }}
     />
   );

@@ -1,27 +1,34 @@
 import { useIncidentReport } from '@sgia/api-client';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { CodeChip } from '@/components/ui/code-chip';
+import { Row } from '@/components/ui/row';
+import { Section } from '@/components/ui/section';
+import { SheetHeader } from '@/components/ui/sheet-header';
+import { StateMessage } from '@/components/ui/state-message';
 import { IncidentStatusBadge } from '@/features/novedades/components/incident-status-badge';
 import { useTheme } from '@/hooks/use-theme';
 import { formatIsoDate } from '@/lib/dates';
+import { MAX_CONTENT_WIDTH, spacing } from '@/theme';
 
 interface IncidentDetailProps {
   reportId: number;
   onClose: () => void;
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+/** Dato de la ficha: rótulo a la izquierda y valor a la derecha, con línea entre filas. */
+function DataRow({ label, value, divider, code = false }: { label: string; value: string; divider: boolean; code?: boolean }) {
   return (
-    <View style={styles.row}>
-      <ThemedText type="code" style={styles.label}>
+    <Row divider={divider} style={styles.dataRow}>
+      <ThemedText variant="secondary" style={styles.dataLabel}>
         {label}
       </ThemedText>
-      <ThemedText style={styles.value}>{value}</ThemedText>
-    </View>
+      <View style={styles.dataValue}>
+        {code ? <CodeChip code={value} /> : <ThemedText variant="body">{value}</ThemedText>}
+      </View>
+    </Row>
   );
 }
 
@@ -32,63 +39,53 @@ export function IncidentDetail({ reportId, onClose }: IncidentDetailProps) {
   const date = report?.report_date ?? report?.created_at;
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
-      <View style={styles.header}>
-        <ThemedText type="subtitle" style={styles.title}>
-          {report?.code ?? 'Informe'}
-        </ThemedText>
-        <Pressable onPress={onClose} accessibilityRole="button" hitSlop={8}>
-          <ThemedText type="small" themeColor="textSecondary">
-            Cerrar
-          </ThemedText>
-        </Pressable>
-      </View>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
+      <SheetHeader title="Informe de novedades" onClose={onClose} />
 
       {isLoading ? (
-        <ActivityIndicator style={styles.loader} />
+        <StateMessage kind="loading" />
       ) : isError || !report ? (
-        <Pressable onPress={() => void refetch()} accessibilityRole="button" style={styles.message}>
-          <ThemedText type="small" themeColor="textSecondary">
-            No se pudo cargar el informe. Toca para reintentar.
-          </ThemedText>
-        </Pressable>
+        <StateMessage
+          kind="error"
+          title="No se pudo cargar el informe."
+          actionLabel="Reintentar"
+          onAction={() => void refetch()}
+        />
       ) : (
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.statusRow}>
+          <View style={styles.top}>
+            <CodeChip code={report.code ?? `#${report.id}`} />
             <IncidentStatusBadge status={report.status} />
           </View>
 
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <Row label="ASIGNATURA" value={report.subject ?? report.title ?? '—'} />
-            <Row label="FECHA" value={date ? formatIsoDate(date.slice(0, 10)) : '—'} />
-            <Row label="LABORATORIO O PAÑOL" value={report.location?.nombre ?? '—'} />
+          <Section flush>
+            <DataRow divider={false} label="Asignatura" value={report.subject ?? report.title ?? '—'} />
+            <DataRow divider label="Fecha" value={date ? formatIsoDate(date.slice(0, 10)) : '—'} />
+            <DataRow divider label="Laboratorio o pañol" value={report.location?.nombre ?? '—'} />
             {report.equipment_unit && (
-              <Row label="EQUIPO" value={report.equipment_unit.code} />
+              <DataRow divider label="Equipo" value={report.equipment_unit.code} code />
             )}
-            <Row label="FOTO" value={report.has_evidence_photo ? 'Adjunta' : 'Sin foto'} />
-            <Row label="FIRMA" value={report.has_signature ? 'Registrada' : 'Sin firma'} />
-          </ThemedView>
+            <DataRow divider label="Foto" value={report.has_evidence_photo ? 'Adjunta' : 'Sin foto'} />
+            <DataRow divider label="Firma" value={report.has_signature ? 'Registrada' : 'Sin firma'} />
+          </Section>
 
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="code" style={styles.label}>
-              PROBLEMAS
-            </ThemedText>
+          <Section title="Problemas">
             {(report.problems ?? []).length === 0 ? (
-              <ThemedText style={styles.value}>{report.description ?? '—'}</ThemedText>
+              <ThemedText variant="body">{report.description ?? '—'}</ThemedText>
             ) : (
               report.problems?.map((problem) => (
                 <View key={problem.type} style={styles.problem}>
-                  <ThemedText type="smallBold">{problem.label ?? problem.type}</ThemedText>
-                  <ThemedText style={styles.value}>{problem.description}</ThemedText>
+                  <ThemedText variant="bodyMedium">{problem.label ?? problem.type}</ThemedText>
+                  <ThemedText variant="secondary">{problem.description}</ThemedText>
                 </View>
               ))
             )}
-          </ThemedView>
+          </Section>
 
           {report.suggestion && (
-            <ThemedView type="backgroundElement" style={styles.card}>
-              <Row label="SUGERENCIA" value={report.suggestion} />
-            </ThemedView>
+            <Section title="Sugerencia">
+              <ThemedText variant="body">{report.suggestion}</ThemedText>
+            </Section>
           )}
         </ScrollView>
       )}
@@ -97,55 +94,18 @@ export function IncidentDetail({ reportId, onClose }: IncidentDetailProps) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.three,
-  },
-  title: {
-    fontSize: 20,
-    lineHeight: 26,
-    fontWeight: '700',
-  },
-  loader: {
-    marginTop: 40,
-  },
-  message: {
-    padding: Spacing.four,
-  },
+  safeArea: { flex: 1 },
   content: {
-    paddingHorizontal: Spacing.four,
-    paddingBottom: Spacing.six,
-    gap: Spacing.three,
-    maxWidth: MaxContentWidth,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
+    gap: spacing.lg,
+    maxWidth: MAX_CONTENT_WIDTH,
     alignSelf: 'center',
     width: '100%',
   },
-  statusRow: {
-    flexDirection: 'row',
-  },
-  card: {
-    borderRadius: Spacing.three,
-    padding: Spacing.four,
-    gap: Spacing.two,
-  },
-  row: {
-    gap: 2,
-  },
-  label: {
-    fontSize: 10,
-    color: '#888',
-  },
-  value: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  problem: {
-    gap: 2,
-  },
+  top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm },
+  dataRow: { alignItems: 'baseline' },
+  dataLabel: { width: 120 },
+  dataValue: { flex: 1 },
+  problem: { gap: spacing.xxs },
 });

@@ -15,6 +15,13 @@ export const palette = {
   danger: raw.colors.danger,
 } as const;
 
+/**
+ * Paletas «Trazo» por modo (mismos valores que `apps/web/src/index.css`). La app móvil las lee con `useTheme()`.
+ */
+export type ThemeName = 'light' | 'dark';
+export type ThemePalette = typeof raw.themes.light;
+export const themes: Record<ThemeName, ThemePalette> = raw.themes;
+
 export const fonts = {
   sans: raw.fontFamily.sans,
   mono: raw.fontFamily.mono,

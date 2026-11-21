@@ -2,8 +2,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
+import { CalendarDays } from 'lucide-react-native';
+
 import { ThemedText } from '@/components/themed-text';
-import { useTheme } from '@/hooks/use-theme';
+import { controlStyle } from '@/components/ui/control-style';
+import { useTheme, useThemeName } from '@/hooks/use-theme';
+import { spacing } from '@/theme';
 import { formatIsoDate, parseIsoDate, toIsoDate } from '@/lib/dates';
 
 interface DateFieldProps {
@@ -27,6 +31,7 @@ export function DateField({
   maximumDate,
 }: DateFieldProps) {
   const theme = useTheme();
+  const scheme = useThemeName();
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,19 +42,20 @@ export function DateField({
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={`Fecha seleccionada: ${formatIsoDate(value)}`}
         accessibilityState={{ expanded: open }}
-        style={[
-          styles.trigger,
-          { borderColor: theme.backgroundSelected, backgroundColor: theme.background },
-        ]}
+        style={[controlStyle(theme, { focused: open }), styles.trigger]}
       >
-        <ThemedText style={styles.text}>{formatIsoDate(value)}</ThemedText>
-        <ThemedText themeColor="textSecondary">📅</ThemedText>
+        <ThemedText variant="body" style={styles.mono}>
+          {formatIsoDate(value)}
+        </ThemedText>
+        <CalendarDays size={16} color={theme.inkMuted} aria-hidden />
       </Pressable>
 
       {open && (
         <DateTimePicker
           mode="date"
           display={Platform.OS === 'ios' ? 'inline' : 'default'}
+          accentColor={theme.accent}
+          themeVariant={scheme}
           value={parseIsoDate(value)}
           minimumDate={minimumDate ? parseIsoDate(minimumDate) : undefined}
           maximumDate={maximumDate ? parseIsoDate(maximumDate) : undefined}
@@ -66,16 +72,11 @@ export function DateField({
 
 const styles = StyleSheet.create({
   trigger: {
-    minHeight: 44,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: spacing.sm,
   },
-  text: {
-    fontSize: 13,
-  },
+  // Fecha con cifras tabulares (`font-mono` del web).
+  mono: { fontVariant: ['tabular-nums'] },
 });
