@@ -964,3 +964,16 @@
   - Web: `use-push-notifications.web.ts` vacío; antes la app no abría en navegador por `UnavailabilityError`.
 - **Verificación:** `pnpm typecheck` 5/5; vitest web 568 en verde; `expo lint` sin errores nuevos; capturas a 390 px en claro y oscuro con PRO-01 contra la API de desarrollo.
 
+---
+
+## FIX-052: Inicio del profesor en la app móvil
+
+- **Fecha:** 2026-11-20
+- **Módulo:** `apps/mobile/src/features/inicio`, `src/app/(app)` — plan en [`docs/inicio-movil.md`](docs/inicio-movil.md), [REQ-09](TASKS/REQ-09-PRESTAMOS-REMOTOS.md)
+- **Qué cambia:**
+  - Pestaña Inicio (`/`): saludo con «Solicitar equipo», «Reportar una falla» y «Mis préstamos»; búsqueda del catálogo con sugerencias; «Lo que te toca hoy» (en revisión, para retirar, atrasadas); próximas clases; informes abiertos.
+  - Solicitar se mueve a `/solicitar` y recibe la búsqueda (`?q=`); Novedades abre el formulario con `?nuevo=`.
+  - Estado de los préstamos según la máquina del backend: `en_proceso` = lista para retirar; `procesado` = en préstamo hasta `returned_at`; atraso por `diasAtraso`.
+- **Verificación:** typecheck 5/5; capturas a 390 px en claro y oscuro y recorrido de búsqueda, sugerencias y accesos con PRO-01 contra la API de desarrollo.
+- **Pendiente (web):** el Inicio web de PRO-01 cuenta estados que el backend no devuelve («Listas para retirar» y «Atrasadas» siempre en cero) y `LoanStatusBadge` muestra `procesado` como «Devuelto».
+

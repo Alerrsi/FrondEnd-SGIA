@@ -1,10 +1,10 @@
-import { CalendarClock, ClipboardPlus, FileWarning } from 'lucide-react-native';
+import { CalendarClock, ClipboardPlus, FileWarning, House } from 'lucide-react-native';
 import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
 import { StyleSheet } from 'react-native';
 
 import { IconTabBar, IconTabButton } from '@/components/icon-tab-bar';
 
-/** Las tres pantallas del profesor con el menú inferior en barra de iconos (mismos iconos que el web). */
+/** Las cuatro pantallas del profesor con el menú inferior en barra de iconos (mismos iconos que el web). */
 export default function AppTabs() {
   return (
     <Tabs style={styles.root}>
@@ -12,7 +12,10 @@ export default function AppTabs() {
       <TabList asChild>
         <IconTabBar>
           <TabTrigger name="index" href="/" asChild>
-            <IconTabButton tabKey="index" label="Solicitar equipo" icon={ClipboardPlus} />
+            <IconTabButton tabKey="index" label="Inicio" icon={House} />
+          </TabTrigger>
+          <TabTrigger name="solicitar" href="/solicitar" asChild>
+            <IconTabButton tabKey="solicitar" label="Solicitar equipo" icon={ClipboardPlus} />
           </TabTrigger>
           <TabTrigger name="explore" href="/explore" asChild>
             <IconTabButton tabKey="explore" label="Mis préstamos" icon={CalendarClock} />
