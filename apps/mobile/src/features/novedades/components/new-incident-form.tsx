@@ -7,24 +7,18 @@ import {
 } from '@sgia/types';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
 import { DateField } from '@/components/ui/date-field';
+import { Field } from '@/components/ui/field';
 import { MultiSelectField } from '@/components/ui/multi-select-field';
+import { Section } from '@/components/ui/section';
 import { SelectField } from '@/components/ui/select-field';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { SheetHeader } from '@/components/ui/sheet-header';
+import { StateMessage } from '@/components/ui/state-message';
+import { TextField } from '@/components/ui/text-field';
 import { PhotoField } from '@/features/novedades/components/photo-field';
 import { SignaturePad } from '@/features/novedades/components/signature-pad';
 import {
@@ -37,16 +31,12 @@ import {
 import { useTheme } from '@/hooks/use-theme';
 import { todayIso } from '@/lib/dates';
 import { requestErrorMessage } from '@/lib/request-error';
+import { fonts, MAX_CONTENT_WIDTH, spacing } from '@/theme';
 
 const PROBLEM_OPTIONS = PROBLEM_TYPES.map((type) => ({
   value: type,
   label: INCIDENT_PROBLEM_LABELS[type],
 }));
-
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null;
-  return <ThemedText style={styles.error}>{message}</ThemedText>;
-}
 
 interface NewIncidentFormProps {
   onClose: () => void;
@@ -69,15 +59,6 @@ export function NewIncidentForm({ onClose }: NewIncidentFormProps) {
   });
 
   const problems = useWatch({ control, name: 'problems' });
-  const inputStyle = [
-    styles.input,
-    {
-      color: theme.text,
-      borderColor: theme.backgroundSelected,
-      backgroundColor: theme.background,
-    },
-  ];
-
   const onSubmit = handleSubmit(async (values) => {
     try {
       const report = await create.mutateAsync(toIncidentPayload(values));
@@ -91,22 +72,13 @@ export function NewIncidentForm({ onClose }: NewIncidentFormProps) {
   const problemsError = errors.problems?.message ?? errors.problems?.root?.message;
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
-      <View style={styles.header}>
-        <ThemedText type="subtitle" style={styles.title}>
-          Nuevo informe
-        </ThemedText>
-        <Pressable
-          onPress={onClose}
-          disabled={create.isPending}
-          accessibilityRole="button"
-          hitSlop={8}
-        >
-          <ThemedText type="small" themeColor="textSecondary">
-            Cancelar
-          </ThemedText>
-        </Pressable>
-      </View>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
+      <SheetHeader
+        title="Nuevo informe"
+        onClose={onClose}
+        closeLabel="Cancelar informe"
+        disabled={create.isPending}
+      />
 
       <KeyboardAvoidingView
         style={styles.safeArea}
@@ -117,209 +89,182 @@ export function NewIncidentForm({ onClose }: NewIncidentFormProps) {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.content}
         >
-          <View style={styles.group}>
-            <ThemedText type="small">Asignatura *</ThemedText>
-            <Controller
-              control={control}
-              name="subject"
-              render={({ field }) => (
-                <TextInput
-                  value={field.value}
-                  onChangeText={field.onChange}
-                  onBlur={field.onBlur}
-                  maxLength={100}
-                  accessibilityLabel="Asignatura"
-                  placeholder="Ej. Redes y Comunicaciones II"
-                  placeholderTextColor="#888"
-                  style={inputStyle}
-                />
-              )}
-            />
-            <FieldError message={errors.subject?.message} />
-          </View>
-
-          <View style={styles.group}>
-            <ThemedText type="small">Fecha *</ThemedText>
-            <Controller
-              control={control}
-              name="report_date"
-              render={({ field }) => (
-                <DateField
-                  accessibilityLabel="Fecha del informe"
-                  value={field.value}
-                  onChange={field.onChange}
-                  maximumDate={todayIso()}
-                />
-              )}
-            />
-            <FieldError message={errors.report_date?.message} />
-          </View>
-
-          <View style={styles.group}>
-            <ThemedText type="small">Laboratorio o pañol *</ThemedText>
-            {locations.isLoading ? (
-              <ActivityIndicator style={styles.loader} />
-            ) : locations.isError ? (
-              <Pressable onPress={() => void locations.refetch()} accessibilityRole="button">
-                <ThemedText type="small" themeColor="textSecondary">
-                  No se pudieron cargar las ubicaciones. Toca para reintentar.
-                </ThemedText>
-              </Pressable>
-            ) : (
+          <Section title="Clase">
+            <Field label="Asignatura" required error={errors.subject?.message}>
               <Controller
                 control={control}
-                name="location_id"
+                name="subject"
                 render={({ field }) => (
-                  <SelectField
-                    accessibilityLabel="Laboratorio o pañol"
-                    placeholder="Selecciona el laboratorio o pañol"
-                    options={(locations.data?.data ?? [])
-                      .filter((location) => INCIDENT_LOCATION_TYPES.includes(location.tipo))
-                      .map((location) => ({ value: location.id, label: location.nombre }))}
-                    value={Number.isNaN(field.value) ? null : field.value}
-                    onChange={field.onChange}
+                  <TextField
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    invalid={Boolean(errors.subject)}
+                    maxLength={100}
+                    accessibilityLabel="Asignatura"
+                    placeholder="Ej. Redes y Comunicaciones II"
                   />
                 )}
               />
-            )}
-            <FieldError message={errors.location_id?.message} />
-          </View>
+            </Field>
 
-          <View style={styles.group}>
-            <ThemedText type="small">Código del equipo (opcional)</ThemedText>
-            <Controller
-              control={control}
-              name="equipment_code"
-              render={({ field }) => (
-                <TextInput
-                  value={field.value}
-                  onChangeText={field.onChange}
-                  onBlur={field.onBlur}
-                  autoCapitalize="characters"
-                  autoCorrect={false}
-                  maxLength={100}
-                  accessibilityLabel="Código del equipo"
-                  placeholder="EQP-AP-000003"
-                  placeholderTextColor="#888"
-                  style={[...inputStyle, { fontFamily: 'monospace' }]}
+            <Field label="Fecha" required error={errors.report_date?.message}>
+              <Controller
+                control={control}
+                name="report_date"
+                render={({ field }) => (
+                  <DateField
+                    accessibilityLabel="Fecha del informe"
+                    value={field.value}
+                    onChange={field.onChange}
+                    maximumDate={todayIso()}
+                  />
+                )}
+              />
+            </Field>
+
+            <Field label="Laboratorio o pañol" required error={errors.location_id?.message}>
+              {locations.isLoading ? (
+                <ActivityIndicator style={styles.loader} color={theme.inkMuted} />
+              ) : locations.isError ? (
+                <StateMessage
+                  kind="error"
+                  title="No se pudieron cargar las ubicaciones."
+                  actionLabel="Reintentar"
+                  onAction={() => void locations.refetch()}
                 />
-              )}
-            />
-            <FieldError message={errors.equipment_code?.message} />
-          </View>
-
-          <View style={styles.group}>
-            <ThemedText type="small">Problemas *</ThemedText>
-            <Controller
-              control={control}
-              name="problems"
-              render={({ field }) => (
-                <MultiSelectField<IncidentProblemType>
-                  accessibilityLabel="Problemas"
-                  options={PROBLEM_OPTIONS}
-                  values={field.value.filter((p) => p.checked).map((p) => p.type)}
-                  onChange={(types) =>
-                    field.onChange(
-                      field.value.map((p) => ({ ...p, checked: types.includes(p.type) })),
-                    )
-                  }
-                />
-              )}
-            />
-            <FieldError message={problemsError} />
-          </View>
-
-          {problems.map((problem, index) =>
-            problem.checked ? (
-              <View key={problem.type} style={styles.group}>
-                <ThemedText type="small">{INCIDENT_PROBLEM_LABELS[problem.type]} *</ThemedText>
+              ) : (
                 <Controller
                   control={control}
-                  name={`problems.${index}.description`}
+                  name="location_id"
                   render={({ field }) => (
-                    <TextInput
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      multiline
-                      maxLength={1000}
-                      accessibilityLabel={`Descripción: ${INCIDENT_PROBLEM_LABELS[problem.type]}`}
-                      placeholder="Describe lo ocurrido"
-                      placeholderTextColor="#888"
-                      style={[...inputStyle, styles.multiline]}
+                    <SelectField
+                      accessibilityLabel="Laboratorio o pañol"
+                      placeholder="Selecciona el laboratorio o pañol"
+                      options={(locations.data?.data ?? [])
+                        .filter((location) => INCIDENT_LOCATION_TYPES.includes(location.tipo))
+                        .map((location) => ({ value: location.id, label: location.nombre }))}
+                      value={Number.isNaN(field.value) ? null : field.value}
+                      onChange={field.onChange}
                     />
                   )}
                 />
-                <FieldError message={errors.problems?.[index]?.description?.message} />
-              </View>
-            ) : null,
-          )}
-
-          <View style={styles.group}>
-            <ThemedText type="small">Sugerencia (opcional)</ThemedText>
-            <Controller
-              control={control}
-              name="suggestion"
-              render={({ field }) => (
-                <TextInput
-                  value={field.value}
-                  onChangeText={field.onChange}
-                  onBlur={field.onBlur}
-                  multiline
-                  maxLength={2000}
-                  accessibilityLabel="Sugerencia"
-                  placeholderTextColor="#888"
-                  style={[...inputStyle, styles.multiline]}
-                />
               )}
-            />
-            <FieldError message={errors.suggestion?.message} />
-          </View>
+            </Field>
 
-          <View style={styles.group}>
-            <ThemedText type="small">Foto de evidencia (opcional)</ThemedText>
-            <Controller
-              control={control}
-              name="evidence_photo"
-              render={({ field }) => <PhotoField value={field.value} onChange={field.onChange} />}
-            />
-            <FieldError message={errors.evidence_photo?.message} />
-          </View>
+            <Field label="Código del equipo (opcional)" error={errors.equipment_code?.message}>
+              <Controller
+                control={control}
+                name="equipment_code"
+                render={({ field }) => (
+                  <TextField
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    invalid={Boolean(errors.equipment_code)}
+                    autoCapitalize="characters"
+                    autoCorrect={false}
+                    maxLength={100}
+                    accessibilityLabel="Código del equipo"
+                    placeholder="EQP-AP-000003"
+                    style={styles.code}
+                  />
+                )}
+              />
+            </Field>
+          </Section>
 
-          <View style={styles.group}>
-            <ThemedText type="small">Firma *</ThemedText>
-            <Controller
-              control={control}
-              name="signature"
-              render={({ field }) => (
-                <SignaturePad
-                  onChange={field.onChange}
-                  onDrawingChange={setDrawing}
-                  invalid={Boolean(errors.signature)}
-                />
-              )}
-            />
-            <FieldError message={errors.signature?.message} />
-          </View>
+          <Section title="Problemas">
+            <Field label="Qué ocurrió" required error={problemsError}>
+              <Controller
+                control={control}
+                name="problems"
+                render={({ field }) => (
+                  <MultiSelectField<IncidentProblemType>
+                    accessibilityLabel="Problemas"
+                    options={PROBLEM_OPTIONS}
+                    values={field.value.filter((p) => p.checked).map((p) => p.type)}
+                    onChange={(types) =>
+                      field.onChange(
+                        field.value.map((p) => ({ ...p, checked: types.includes(p.type) })),
+                      )
+                    }
+                  />
+                )}
+              />
+            </Field>
 
-          <Pressable
-            onPress={() => void onSubmit()}
-            disabled={create.isPending}
-            accessibilityRole="button"
-            style={({ pressed }) => [
-              styles.submit,
-              { backgroundColor: theme.text },
-              (pressed || create.isPending) && styles.submitMuted,
-            ]}
-          >
-            {create.isPending ? (
-              <ActivityIndicator color={theme.background} />
-            ) : (
-              <ThemedText style={[styles.submitText, { color: theme.background }]}>
-                Enviar informe
-              </ThemedText>
+            {problems.map((problem, index) =>
+              problem.checked ? (
+                <Field
+                  key={problem.type}
+                  label={INCIDENT_PROBLEM_LABELS[problem.type]}
+                  required
+                  error={errors.problems?.[index]?.description?.message}
+                >
+                  <Controller
+                    control={control}
+                    name={`problems.${index}.description`}
+                    render={({ field }) => (
+                      <TextField
+                        value={field.value}
+                        onChangeText={field.onChange}
+                        onBlur={field.onBlur}
+                        invalid={Boolean(errors.problems?.[index]?.description)}
+                        multiline
+                        maxLength={1000}
+                        accessibilityLabel={`Descripción: ${INCIDENT_PROBLEM_LABELS[problem.type]}`}
+                        placeholder="Describe lo ocurrido"
+                      />
+                    )}
+                  />
+                </Field>
+              ) : null,
             )}
-          </Pressable>
+
+            <Field label="Sugerencia (opcional)" error={errors.suggestion?.message}>
+              <Controller
+                control={control}
+                name="suggestion"
+                render={({ field }) => (
+                  <TextField
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    multiline
+                    maxLength={2000}
+                    accessibilityLabel="Sugerencia"
+                  />
+                )}
+              />
+            </Field>
+          </Section>
+
+          <Section title="Evidencia y firma">
+            <Field label="Foto de evidencia (opcional)" error={errors.evidence_photo?.message}>
+              <Controller
+                control={control}
+                name="evidence_photo"
+                render={({ field }) => <PhotoField value={field.value} onChange={field.onChange} />}
+              />
+            </Field>
+
+            <Field label="Firma" required error={errors.signature?.message}>
+              <Controller
+                control={control}
+                name="signature"
+                render={({ field }) => (
+                  <SignaturePad
+                    onChange={field.onChange}
+                    onDrawingChange={setDrawing}
+                    invalid={Boolean(errors.signature)}
+                  />
+                )}
+              />
+            </Field>
+          </Section>
+
+          <Button title="Enviar informe" onPress={() => void onSubmit()} loading={create.isPending} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -327,64 +272,16 @@ export function NewIncidentForm({ onClose }: NewIncidentFormProps) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.three,
-  },
-  title: {
-    fontSize: 20,
-    lineHeight: 26,
-    fontWeight: '700',
-  },
+  safeArea: { flex: 1 },
   content: {
-    paddingHorizontal: Spacing.four,
-    paddingBottom: Spacing.six,
-    gap: Spacing.three,
-    maxWidth: MaxContentWidth,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
+    gap: spacing.lg,
+    maxWidth: MAX_CONTENT_WIDTH,
     alignSelf: 'center',
     width: '100%',
   },
-  group: {
-    gap: 4,
-  },
-  input: {
-    minHeight: 44,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 13,
-  },
-  multiline: {
-    minHeight: 76,
-    paddingVertical: 10,
-    textAlignVertical: 'top',
-  },
-  loader: {
-    paddingVertical: 8,
-  },
-  error: {
-    fontSize: 11,
-    lineHeight: 16,
-    color: '#b91c1c',
-  },
-  submit: {
-    height: 48,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  submitMuted: {
-    opacity: 0.7,
-  },
-  submitText: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
+  loader: { alignSelf: 'flex-start', paddingVertical: spacing.sm },
+  // Identificador: Geist Mono (`font-code` del web).
+  code: { fontFamily: fonts.code },
 });

@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Check, ChevronDown } from 'lucide-react-native';
+
 import { ThemedText } from '@/components/themed-text';
+import { controlStyle, dropdownStyle } from '@/components/ui/control-style';
 import type { SelectOption } from '@/components/ui/select-field';
 import { useTheme } from '@/hooks/use-theme';
+import { radius, spacing, TOUCH } from '@/theme';
 
 interface MultiSelectFieldProps<T extends string | number> {
   /** Nombre del campo para lectores de pantalla. */
@@ -52,29 +56,21 @@ export function MultiSelectField<T extends string | number>({
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={text}
         accessibilityState={{ expanded: open }}
-        style={[
-          styles.row,
-          styles.trigger,
-          { borderColor: theme.backgroundSelected, backgroundColor: theme.background },
-        ]}
+        style={[controlStyle(theme, { focused: open }), styles.row]}
       >
-        <ThemedText
-          style={styles.text}
-          themeColor={values.length > 0 ? 'text' : 'textSecondary'}
-          numberOfLines={1}
-        >
+        <ThemedText style={styles.text} tone={values.length > 0 ? 'ink' : 'inkFaint'} numberOfLines={1}>
           {text}
         </ThemedText>
-        <ThemedText themeColor="textSecondary">{open ? '▴' : '▾'}</ThemedText>
+        <ChevronDown
+          size={16}
+          color={theme.inkMuted}
+          style={open ? styles.chevronOpen : undefined}
+          aria-hidden
+        />
       </Pressable>
 
       {open && (
-        <View
-          style={[
-            styles.list,
-            { borderColor: theme.backgroundSelected, backgroundColor: theme.background },
-          ]}
-        >
+        <View style={dropdownStyle(theme)}>
           {options.map((option, index) => {
             const isSelected = values.includes(option.value);
             return (
@@ -86,17 +82,23 @@ export function MultiSelectField<T extends string | number>({
                 style={({ pressed }) => [
                   styles.row,
                   styles.option,
-                  index > 0 && {
-                    borderTopWidth: StyleSheet.hairlineWidth,
-                    borderTopColor: theme.backgroundSelected,
-                  },
-                  (isSelected || pressed) && { backgroundColor: theme.backgroundSelected },
+                  index > 0 && { borderTopWidth: 1, borderTopColor: theme.line },
+                  pressed && { backgroundColor: theme.surfaceAlt },
                 ]}
               >
-                <ThemedText style={[styles.text, isSelected && styles.selectedText]}>
+                <ThemedText variant={isSelected ? 'bodyMedium' : 'body'} style={styles.text}>
                   {option.label}
                 </ThemedText>
-                <ThemedText style={styles.selectedText}>{isSelected ? '☑' : '☐'}</ThemedText>
+                <View
+                  style={[
+                    styles.box,
+                    isSelected
+                      ? { backgroundColor: theme.accent, borderColor: theme.accent }
+                      : { borderColor: theme.lineStrong },
+                  ]}
+                >
+                  {isSelected && <Check size={12} strokeWidth={3} color={theme.accentInk} aria-hidden />}
+                </View>
               </Pressable>
             );
           })}
@@ -108,33 +110,24 @@ export function MultiSelectField<T extends string | number>({
 
 const styles = StyleSheet.create({
   row: {
-    minHeight: 44,
+    minHeight: TOUCH,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: spacing.sm,
   },
-  trigger: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-  },
-  list: {
-    marginTop: 4,
-    borderWidth: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
+  chevronOpen: { transform: [{ rotate: '180deg' }] },
   option: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
-  text: {
-    flex: 1,
-    fontSize: 13,
-  },
-  selectedText: {
-    fontSize: 13,
-    fontWeight: '700',
+  text: { flex: 1 },
+  box: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderRadius: radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

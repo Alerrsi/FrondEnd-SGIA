@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Check, Minus, Plus, Search } from 'lucide-react-native';
+import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, View } from 'react-native';
 import {
   createLoanRequest,
   fetchCareers,
@@ -20,15 +11,23 @@ import {
 import type { Career, Producto } from '@sgia/types';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/components/ui/button';
+import { CodeChip } from '@/components/ui/code-chip';
 import { DateField } from '@/components/ui/date-field';
+import { Field } from '@/components/ui/field';
+import { Row } from '@/components/ui/row';
+import { Screen } from '@/components/ui/screen';
+import { ScreenHeader } from '@/components/ui/screen-header';
+import { Section } from '@/components/ui/section';
 import { SelectField } from '@/components/ui/select-field';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { StateMessage } from '@/components/ui/state-message';
+import { TextField } from '@/components/ui/text-field';
 import { useAuth } from '@/features/auth/auth-context';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useTheme } from '@/hooks/use-theme';
 import { todayIso } from '@/lib/dates';
 import { requestErrorMessage } from '@/lib/request-error';
+import { radius, scrim, spacing, TOUCH } from '@/theme';
 
 const TIME_BLOCKS = [
   { label: 'Bloque 1-2: 08:30 - 10:00', start: '08:30', end: '10:00' },
@@ -237,43 +236,25 @@ export default function NuevaSolicitudScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
-      <ScrollView
-        contentContainerStyle={[styles.contentContainer, { paddingBottom: BottomTabInset + 40 }]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Cabecera institucional */}
-        <ThemedView style={styles.header}>
-          <View style={styles.badgeRow}>
-            <View style={styles.indicatorDot} />
-            <ThemedText type="code" style={styles.institutionTag}>
-              INACAP SEDE TEMUCO · PAÑOL TI
-            </ThemedText>
-          </View>
-          <ThemedText type="title" style={styles.mainTitle}>
-            Solicitud de Préstamo
-          </ThemedText>
-          <ThemedText style={styles.subtitle} themeColor="textSecondary">
-            Pre-reserva remota de insumos y equipos para clases prácticas.
-          </ThemedText>
-        </ThemedView>
+    <>
+      <Screen>
+        <ScreenHeader
+          title="Solicitar equipo"
+          description="Pre-reserva de insumos y equipos para tus clases prácticas."
+        />
 
-        {/* Sección 1: Pañol que prepara la solicitud */}
-        <ThemedView type="backgroundElement" style={styles.sectionCard}>
-          <ThemedText type="smallBold" style={styles.sectionTitle}>
-            1. PAÑOL A SOLICITAR
-          </ThemedText>
-
-          <View style={styles.formGroup}>
-            <ThemedText type="small">Pañol *</ThemedText>
+        {/* 1. Pañol que prepara la solicitud */}
+        <Section title="Pañol" description="Define las existencias del catálogo y los laboratorios.">
+          <Field label="Pañol a solicitar" required>
             {storerooms.isLoading ? (
-              <ActivityIndicator style={{ paddingVertical: 8 }} color="#d9232a" />
+              <ActivityIndicator style={styles.inlineLoader} color={theme.inkMuted} />
             ) : storerooms.isError ? (
-              <Pressable onPress={() => void storerooms.refetch()} accessibilityRole="button">
-                <ThemedText type="small" themeColor="textSecondary">
-                  No se pudieron cargar los pañoles. Toca para reintentar.
-                </ThemedText>
-              </Pressable>
+              <StateMessage
+                kind="error"
+                title="No se pudieron cargar los pañoles."
+                actionLabel="Reintentar"
+                onAction={() => void storerooms.refetch()}
+              />
             ) : (
               <SelectField
                 accessibilityLabel="Pañol a solicitar"
@@ -286,134 +267,103 @@ export default function NuevaSolicitudScreen() {
                 onChange={handleStoreroomChange}
               />
             )}
+          </Field>
+        </Section>
+
+        {/* 2. Catálogo */}
+        <Section title="Equipos e insumos" flush>
+          <View style={styles.searchBox}>
+            {storeroomId === null && (
+              <ThemedText variant="secondary">
+                Elige un pañol para ver sus existencias y agregar productos.
+              </ThemedText>
+            )}
+            <View>
+              <TextField
+                value={search}
+                onChangeText={setSearch}
+                placeholder="Buscar multímetro, router, cable UTP…"
+                accessibilityLabel="Buscar en el catálogo"
+                returnKeyType="search"
+                style={styles.searchInput}
+              />
+              <Search size={16} color={theme.inkMuted} style={styles.searchIcon} aria-hidden />
+            </View>
           </View>
-        </ThemedView>
-
-        {/* Sección 2: Búsqueda y Selección de Catálogo */}
-        <ThemedView type="backgroundElement" style={styles.sectionCard}>
-          <ThemedText type="smallBold" style={styles.sectionTitle}>
-            2. SELECCIONAR EQUIPOS O INSUMOS
-          </ThemedText>
-
-          {storeroomId === null && (
-            <ThemedText type="small" themeColor="textSecondary">
-              Elige un pañol para ver sus existencias y agregar productos.
-            </ThemedText>
-          )}
-
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Buscar multímetro, router, cable UTP…"
-            placeholderTextColor="#888"
-            style={[
-              styles.input,
-              {
-                color: theme.text,
-                borderColor: theme.backgroundElement,
-                backgroundColor: theme.background,
-              },
-            ]}
-          />
 
           {catalog.isLoading ? (
-            <ActivityIndicator style={{ paddingVertical: 16 }} color="#d9232a" />
+            <StateMessage kind="loading" />
           ) : catalog.isError ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              No se pudo cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.
-            </ThemedText>
+            <StateMessage
+              kind="error"
+              title="No se pudo cargar el catálogo."
+              description="Revisa tu conexión e inténtalo de nuevo."
+              actionLabel="Reintentar"
+              onAction={() => void catalog.refetch()}
+            />
           ) : productos.length === 0 ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              No hay productos que coincidan con tu búsqueda.
-            </ThemedText>
+            <StateMessage kind="empty" title="Sin resultados" description="No hay productos que coincidan con tu búsqueda." />
           ) : (
-            <View style={styles.productList}>
-              {productos.map((prod) => {
+            <View>
+              {productos.map((prod, index) => {
                 const inCart = cart.find((it) => it.producto.id === prod.id);
                 const disponible = existenciasDe(prod);
                 const sinStock = catalogoActualizado && disponible <= 0;
                 const alTope = catalogoActualizado && inCart && inCart.cantidad >= disponible;
                 const puedeAgregar = catalogoActualizado && !sinStock && !alTope;
                 return (
-                  <View
-                    key={prod.id}
-                    style={[styles.productRow, { borderColor: theme.backgroundElement }]}
-                  >
-                    <View style={{ flex: 1, paddingRight: 8 }}>
-                      <ThemedText type="default" style={styles.productName}>
-                        {prod.nombre}
-                      </ThemedText>
-                      <ThemedText type="code" style={styles.productMeta}>
-                        SKU: {prod.codigoBarras || 'N/A'}
-                      </ThemedText>
+                  <Row key={prod.id} divider={index > 0}>
+                    <View style={styles.rowText}>
+                      <ThemedText variant="bodyMedium">{prod.nombre}</ThemedText>
+                      <CodeChip code={prod.codigoBarras || 'Sin SKU'} />
                       {storeroomId !== null && (
-                        <ThemedText type="code" style={styles.productMeta}>
+                        <ThemedText variant="secondary" style={styles.tabular}>
                           {catalogoActualizado
                             ? `Existencias en ${storeroomName ?? 'el pañol'}: ${disponible}`
                             : 'Actualizando existencias…'}
                         </ThemedText>
                       )}
                     </View>
-
-                    <Pressable
+                    <Button
+                      title={sinStock ? 'Sin stock' : inCart ? `Agregado (${inCart.cantidad})` : 'Agregar'}
+                      variant="secondary"
+                      size="sm"
                       onPress={() => addToCart(prod)}
                       disabled={!puedeAgregar}
-                      accessibilityRole="button"
-                      accessibilityState={{ disabled: !puedeAgregar }}
-                      accessibilityLabel={`Agregar ${prod.nombre}`}
-                      style={({ pressed }) => [
-                        styles.addButton,
-                        pressed && { opacity: 0.8 },
-                        inCart && styles.addButtonActive,
-                        !puedeAgregar && styles.addButtonDisabled,
-                      ]}
-                    >
-                      <ThemedText style={styles.addButtonText}>
-                        {sinStock ? 'Sin stock' : inCart ? `+ (${inCart.cantidad})` : '+ Agregar'}
-                      </ThemedText>
-                    </Pressable>
-                  </View>
+                      accessibilityHint={`Agrega ${prod.nombre} a la solicitud`}
+                      icon={(color) =>
+                        inCart ? <Check size={14} color={color} aria-hidden /> : sinStock ? null : <Plus size={14} color={color} aria-hidden />
+                      }
+                    />
+                  </Row>
                 );
               })}
               {totalProductos > productos.length && (
-                <ThemedText type="small" themeColor="textSecondary">
+                <ThemedText variant="secondary" style={styles.more}>
                   Mostrando {productos.length} de {totalProductos}. Escribe para buscar el resto.
                 </ThemedText>
               )}
             </View>
           )}
-        </ThemedView>
+        </Section>
 
-        {/* Sección 3: Carrito de ítems seleccionados */}
+        {/* 3. Carrito */}
         {cart.length > 0 && (
-          <ThemedView type="backgroundElement" style={styles.sectionCard}>
-            <View style={styles.cartHeader}>
-              <ThemedText type="smallBold" style={styles.sectionTitle}>
-                3. ÍTEMS EN TU SOLICITUD ({cart.length})
-              </ThemedText>
-              <Pressable onPress={() => setCart([])}>
-                <ThemedText type="code" style={{ color: '#d9232a' }}>
-                  Vaciar
-                </ThemedText>
-              </Pressable>
-            </View>
-
-            {cart.map((item) => {
+          <Section
+            title={`En tu solicitud (${cart.length})`}
+            flush
+            action={<Button title="Vaciar" variant="ghost" size="sm" onPress={() => setCart([])} />}
+          >
+            {cart.map((item, index) => {
               const { producto, cantidad } = item;
               const disponible = existenciasEnCarrito(item);
               const excede = disponible !== null && cantidad > disponible;
               const alTope = disponible !== null && cantidad >= disponible;
               return (
-                <View
-                  key={producto.id}
-                  style={[styles.cartRow, { borderColor: theme.backgroundElement }]}
-                >
-                  <View style={{ flex: 1, paddingRight: 8 }}>
-                    <ThemedText type="default">{producto.nombre}</ThemedText>
-                    <ThemedText
-                      type="code"
-                      style={[styles.productMeta, excede && styles.shortageText]}
-                    >
+                <Row key={producto.id} divider={index > 0}>
+                  <View style={styles.rowText}>
+                    <ThemedText variant="bodyMedium">{producto.nombre}</ThemedText>
+                    <ThemedText variant="secondary" tone={excede ? 'danger' : undefined} style={styles.tabular}>
                       {disponible === null
                         ? 'Existencias por confirmar con este pañol'
                         : excede
@@ -422,16 +372,16 @@ export default function NuevaSolicitudScreen() {
                     </ThemedText>
                   </View>
 
-                  <View style={styles.qtyControls}>
+                  <View style={[styles.stepper, { borderColor: theme.line }]}>
                     <Pressable
                       onPress={() => updateCartQty(producto.id, -1)}
                       accessibilityRole="button"
                       accessibilityLabel={`Quitar una unidad de ${producto.nombre}`}
-                      style={styles.qtyBtn}
+                      style={({ pressed }) => [styles.stepBtn, pressed && { backgroundColor: theme.surfaceAlt }]}
                     >
-                      <ThemedText type="smallBold">-</ThemedText>
+                      <Minus size={16} color={theme.ink} aria-hidden />
                     </Pressable>
-                    <ThemedText type="code" style={styles.qtyText}>
+                    <ThemedText variant="bodyMedium" style={[styles.qty, styles.tabular]}>
                       {cantidad}
                     </ThemedText>
                     <Pressable
@@ -440,29 +390,28 @@ export default function NuevaSolicitudScreen() {
                       accessibilityRole="button"
                       accessibilityState={{ disabled: alTope }}
                       accessibilityLabel={`Agregar una unidad de ${producto.nombre}`}
-                      style={[styles.qtyBtn, alTope && styles.addButtonDisabled]}
+                      style={({ pressed }) => [
+                        styles.stepBtn,
+                        pressed && { backgroundColor: theme.surfaceAlt },
+                        alTope && styles.disabled,
+                      ]}
                     >
-                      <ThemedText type="smallBold">+</ThemedText>
+                      <Plus size={16} color={theme.ink} aria-hidden />
                     </Pressable>
                   </View>
-                </View>
+                </Row>
               );
             })}
-          </ThemedView>
+          </Section>
         )}
 
-        {/* Sección 4: Datos de Clase y Taller */}
-        <ThemedView type="backgroundElement" style={styles.sectionCard}>
-          <ThemedText type="smallBold" style={styles.sectionTitle}>
-            4. DATOS DE AULA Y HORARIO
-          </ThemedText>
-
-          <View style={styles.formGroup}>
-            <ThemedText type="small">Carrera *</ThemedText>
+        {/* 4. Clase y horario */}
+        <Section title="Clase y horario">
+          <Field label="Carrera" required>
             {loadingCareers ? (
-              <ActivityIndicator style={{ paddingVertical: 8 }} color="#d9232a" />
+              <ActivityIndicator style={styles.inlineLoader} color={theme.inkMuted} />
             ) : careers.length === 0 ? (
-              <ThemedText type="small" themeColor="textSecondary">
+              <ThemedText variant="secondary" tone="danger">
                 No se pudieron cargar las carreras. Vuelve a abrir la pantalla para reintentar.
               </ThemedText>
             ) : (
@@ -474,44 +423,31 @@ export default function NuevaSolicitudScreen() {
                 onChange={setCareerId}
               />
             )}
-          </View>
+          </Field>
 
-          <View style={styles.formGroup}>
-            <ThemedText type="small">Asignatura *</ThemedText>
-            <TextInput
+          <Field label="Asignatura" required>
+            <TextField
               value={subject}
               onChangeText={setSubject}
               placeholder="Ej. Redes y Comunicaciones II"
-              placeholderTextColor="#888"
-              style={[
-                styles.input,
-                {
-                  color: theme.text,
-                  borderColor: theme.backgroundElement,
-                  backgroundColor: theme.background,
-                },
-              ]}
+              accessibilityLabel="Asignatura"
             />
-          </View>
+          </Field>
 
-          <View style={styles.formGroup}>
-            <ThemedText type="small">Laboratorio *</ThemedText>
+          <Field label="Laboratorio" required>
             {storeroomId === null ? (
-              <ThemedText type="small" themeColor="textSecondary">
-                Elige primero el pañol.
-              </ThemedText>
+              <ThemedText variant="secondary">Elige primero el pañol.</ThemedText>
             ) : locations.isError ? (
-              <Pressable onPress={() => void locations.refetch()} accessibilityRole="button">
-                <ThemedText type="small" themeColor="textSecondary">
-                  No se pudieron cargar los laboratorios. Toca para reintentar.
-                </ThemedText>
-              </Pressable>
+              <StateMessage
+                kind="error"
+                title="No se pudieron cargar los laboratorios."
+                actionLabel="Reintentar"
+                onAction={() => void locations.refetch()}
+              />
             ) : locations.isLoading || locations.isPlaceholderData ? (
-              <ActivityIndicator style={{ paddingVertical: 8 }} color="#d9232a" />
+              <ActivityIndicator style={styles.inlineLoader} color={theme.inkMuted} />
             ) : laboratorios.length === 0 ? (
-              <ThemedText type="small" themeColor="textSecondary">
-                Este pañol no tiene laboratorios registrados.
-              </ThemedText>
+              <ThemedText variant="secondary">Este pañol no tiene laboratorios registrados.</ThemedText>
             ) : (
               <SelectField
                 accessibilityLabel="Laboratorio"
@@ -521,284 +457,99 @@ export default function NuevaSolicitudScreen() {
                 onChange={setLocationId}
               />
             )}
-          </View>
+          </Field>
 
-          <View style={styles.formGroup}>
-            <ThemedText type="small">Fecha Requerida *</ThemedText>
+          <Field label="Fecha requerida" required>
             <DateField
               accessibilityLabel="Fecha requerida"
               value={loanDate}
               onChange={setLoanDate}
               minimumDate={todayIso()}
             />
-          </View>
+          </Field>
 
-          <View style={styles.formGroup}>
-            <ThemedText type="small">Bloque Horario *</ThemedText>
+          <Field label="Bloque horario" required>
             <SelectField
               accessibilityLabel="Bloque horario"
               options={TIME_BLOCK_OPTIONS}
               value={timeBlock}
               onChange={setTimeBlock}
             />
-          </View>
-        </ThemedView>
+          </Field>
+        </Section>
 
-        {/* Botón Principal Culminante */}
-        <Pressable
-          onPress={handleSendRequest}
-          disabled={submitting}
-          style={({ pressed }) => [
-            styles.submitButton,
-            pressed && { opacity: 0.85 },
-            submitting && { opacity: 0.6 },
-          ]}
-        >
-          {submitting ? (
-            <ActivityIndicator color="#ffffff" />
-          ) : (
-            <ThemedText style={styles.submitButtonText}>
-              Enviar Solicitud a Pañol
-            </ThemedText>
-          )}
-        </Pressable>
-      </ScrollView>
+        <Button title="Enviar solicitud al pañol" onPress={handleSendRequest} loading={submitting} />
+      </Screen>
 
-      {/* Modal de Éxito / Confirmación */}
-      <Modal visible={successModalVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <ThemedView style={styles.modalContent}>
-            <View style={styles.successIconWrapper}>
-              <ThemedText style={styles.successCheck}>✓</ThemedText>
+      {/* Confirmación */}
+      <Modal
+        visible={successModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSuccessModalVisible(false)}
+      >
+        <View style={[styles.overlay, { backgroundColor: scrim }]}>
+          <View
+            accessibilityViewIsModal
+            style={[styles.dialog, { backgroundColor: theme.surface, borderColor: theme.line }]}
+          >
+            <View style={[styles.successIcon, { backgroundColor: theme.okBg }]}>
+              <Check size={24} color={theme.ok} aria-hidden />
             </View>
-
-            <ThemedText type="subtitle" style={styles.modalTitle}>
-              Solicitud Enviada
+            <ThemedText variant="section" accessibilityRole="header" style={styles.center}>
+              Solicitud enviada
             </ThemedText>
-
-            <ThemedText type="code" style={styles.loanCodeBadge}>
-              Código: {createdLoanCode}
+            <CodeChip code={createdLoanCode} />
+            <ThemedText variant="secondary" style={styles.center}>
+              El pañolero preparará los insumos antes de tu bloque horario. Sigue el estado en «Mis
+              préstamos».
             </ThemedText>
-
-            <ThemedText style={styles.modalMessage} themeColor="textSecondary">
-              El pañolero preparará los insumos antes del inicio de tu bloque horario. Puedes seguir
-              el estado en la pestaña &quot;Mis Préstamos&quot;.
-            </ThemedText>
-
-            <Pressable
-              onPress={() => setSuccessModalVisible(false)}
-              style={styles.modalButton}
-            >
-              <ThemedText style={styles.modalButtonText}>Entendido</ThemedText>
-            </Pressable>
-          </ThemedView>
+            <Button title="Entendido" onPress={() => setSuccessModalVisible(false)} style={styles.full} />
+          </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-    maxWidth: MaxContentWidth,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  header: {
-    paddingTop: Spacing.three,
-    gap: Spacing.one,
-  },
-  badgeRow: {
+  inlineLoader: { alignSelf: 'flex-start', paddingVertical: spacing.sm },
+  searchBox: { gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.sm },
+  // El icono de búsqueda va dentro del campo, a la izquierda.
+  searchInput: { paddingHorizontal: 0, paddingLeft: spacing.xxl + spacing.xs, paddingRight: spacing.md },
+  searchIcon: { position: 'absolute', left: spacing.md, top: (TOUCH - 16) / 2 },
+  rowText: { flex: 1, gap: spacing.xs },
+  tabular: { fontVariant: ['tabular-nums'] },
+  more: { paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
+  stepper: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-  },
-  indicatorDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#d9232a',
-  },
-  institutionTag: {
-    fontSize: 10,
-    color: '#d9232a',
-    letterSpacing: 0.5,
-  },
-  mainTitle: {
-    fontSize: 26,
-    fontWeight: '700',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  sectionCard: {
-    borderRadius: Spacing.three,
-    padding: Spacing.four,
-    gap: Spacing.three,
-  },
-  sectionTitle: {
-    fontSize: 11,
-    letterSpacing: 0.8,
-    color: '#888',
-  },
-  input: {
-    height: 42,
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 13,
+    borderRadius: radius.full,
+    overflow: 'hidden',
   },
-  productList: {
-    gap: 8,
-    marginTop: 4,
-  },
-  productRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  productName: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  productMeta: {
-    fontSize: 11,
-    color: '#888',
-    marginTop: 2,
-  },
-  addButton: {
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  addButtonActive: {
-    backgroundColor: '#fee2e2',
-  },
-  addButtonDisabled: {
-    opacity: 0.45,
-  },
-  shortageText: {
-    color: '#b91c1c',
-  },
-  addButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#d9232a',
-  },
-  cartHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cartRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  qtyControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  qtyBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    backgroundColor: '#e5e7eb',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  qtyText: {
-    fontSize: 13,
-    minWidth: 16,
-    textAlign: 'center',
-  },
-  formGroup: {
-    gap: 4,
-  },
-  submitButton: {
-    backgroundColor: '#d9232a',
-    height: 48,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  submitButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  modalContent: {
+  stepBtn: { width: TOUCH, height: TOUCH, alignItems: 'center', justifyContent: 'center' },
+  qty: { minWidth: 20, textAlign: 'center' },
+  disabled: { opacity: 0.4 },
+  overlay: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
+  dialog: {
     width: '100%',
     maxWidth: 360,
-    borderRadius: 16,
-    padding: 24,
+    borderWidth: 1,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
+    padding: spacing.xl,
     alignItems: 'center',
-    gap: 12,
+    gap: spacing.md,
+    boxShadow: '0 8px 24px rgba(19, 18, 16, 0.18)',
   },
-  successIconWrapper: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: '#10b981',
+  successIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.full,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  successCheck: {
-    color: '#ffffff',
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  loanCodeBadge: {
-    fontSize: 13,
-    fontWeight: '700',
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  modalMessage: {
-    fontSize: 12,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  modalButton: {
-    backgroundColor: '#d9232a',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 8,
-    width: '100%',
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    color: '#ffffff',
-    fontSize: 13,
-    fontWeight: '700',
-  },
+  center: { textAlign: 'center' },
+  full: { alignSelf: 'stretch', marginTop: spacing.xs },
 });

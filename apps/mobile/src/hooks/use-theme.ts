@@ -1,14 +1,11 @@
-/**
- * Learn more about light and dark modes:
- * https://docs.expo.dev/guides/color-schemes/
- */
-
-import { Colors } from '@/constants/theme';
+import { palettes, type ThemeName, type ThemePalette } from '@/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export function useTheme() {
-  const scheme = useColorScheme();
-  const theme = scheme === 'dark' ? 'dark' : 'light';
+/** Paleta «Trazo» del modo del sistema (sin interruptor propio en la app). */
+export function useTheme(): ThemePalette {
+  return palettes[useThemeName()];
+}
 
-  return Colors[theme];
+export function useThemeName(): ThemeName {
+  return useColorScheme() === 'dark' ? 'dark' : 'light';
 }
