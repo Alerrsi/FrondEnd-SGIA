@@ -30,9 +30,9 @@ import { SkeletonList } from '@/components/ui/skeleton-list';
 
 const STATUS_FILTERS: Array<{ value: string; label: string }> = [
   { value: "", label: "Todas" },
-  { value: "pendiente", label: "Pendientes" },
-  { value: "en_proceso", label: "En proceso" },
-  { value: "procesado", label: "Procesadas" },
+  { value: "pendiente", label: "En revisión" },
+  { value: "en_proceso", label: "Para retirar" },
+  { value: "procesado", label: "Entregadas" },
   { value: "rechazado", label: "Rechazadas" },
 ];
 
@@ -93,7 +93,7 @@ export default function MisSolicitudesPage() {
             key={loan.id}
             title={loan.subject ?? loan.asignatura ?? loanCareer(loan)}
             meta={`${formatDateOnly(loan.loan_date ?? loan.fechaSolicitada)} · ${loanSchedule(loan)} · ${loanLaboratory(loan)}`}
-            trailing={<LoanRequestStatusBadge estado={String(loan.estado)} />}
+            trailing={<LoanRequestStatusBadge loan={loan} />}
             onClick={() => setDetail(loan)}
           />
         ))}
@@ -161,7 +161,7 @@ export default function MisSolicitudesPage() {
                   <td className={TD_CLASS}>{loanLaboratory(loan)}</td>
                   <td className={TD_CLASS}>{loan.storeroom?.name ?? "—"}</td>
                   <td className={TD_CLASS}>
-                    <LoanRequestStatusBadge estado={String(loan.estado)} />
+                    <LoanRequestStatusBadge loan={loan} />
                   </td>
                   <td className={`${TD_CLASS} text-right`}>
                     {canCancelLoanRequest(loan) && (

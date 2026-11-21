@@ -608,7 +608,7 @@ export default function MostradorPrestamosPage() {
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className={CODE_CHIP_CLASS}>{loan.codigo ?? `#${loan.id}`}</span>
-                        <LoanStatusBadge estado={loan.estado} />
+                        <LoanStatusBadge loan={loan} />
                       </div>
                       <p className="mt-1.5 truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                         {loan.solicitanteNombre}

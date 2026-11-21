@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react';
+import { loanDisplayState, type LoanDisplayState, type LoanStateFields } from '@sgia/api-client/loan-state';
 import { PurchaseStatus, QuotationStatus } from '@sgia/types';
 
 import { cn } from '@/lib/cn';
@@ -92,50 +93,26 @@ export function Badge({
   );
 }
 
-export function LoanStatusBadge({ estado }: { estado: string }) {
-  let tone: Tone = 'neutral';
-  let label = estado;
+const LOAN_STATE_META: Record<Exclude<LoanDisplayState, 'otro'>, { tone: Tone; label: string }> = {
+  pendiente: { tone: 'warning', label: 'Pendiente' },
+  preparado: { tone: 'accent', label: 'Preparado' },
+  en_prestamo: { tone: 'loaned', label: 'En préstamo' },
+  atrasado: { tone: 'critical', label: 'Atrasado' },
+  devuelto: { tone: 'available', label: 'Devuelto' },
+  rechazado: { tone: 'danger', label: 'Rechazado' },
+};
 
-  const normalized = String(estado).toLowerCase();
-  switch (normalized) {
-    case 'pendiente':
-    case 'en_proceso':
-      tone = 'warning';
-      label = 'Pendiente';
-      break;
-    case 'preparado':
-      tone = 'accent';
-      label = 'Preparado';
-      break;
-    case 'entregado':
-    case 'activo':
-      tone = 'loaned';
-      label = 'En préstamo';
-      break;
-    case 'devuelto':
-    case 'procesada':
-    case 'finalizado':
-      tone = 'available';
-      label = 'Devuelto';
-      break;
-    case 'atrasado':
-      tone = 'critical';
-      label = 'Atrasado';
-      break;
-    case 'rechazada':
-    case 'rechazado':
-    case 'cancelado':
-      tone = 'danger';
-      label = 'Rechazado';
-      break;
-    default:
-      tone = 'neutral';
-      break;
-  }
+/**
+ * Estado de un préstamo. Con `loan` distingue entregado, atrasado y devuelto (`returned_at`, `diasAtraso`);
+ * solo con `estado`, un préstamo `procesado` se muestra «En préstamo».
+ */
+export function LoanStatusBadge({ estado, loan }: { estado?: string; loan?: LoanStateFields }) {
+  const state = loanDisplayState(loan ?? { status: estado });
+  const meta = state === 'otro' ? { tone: 'neutral' as Tone, label: String(loan?.status ?? loan?.estado ?? estado ?? '—') } : LOAN_STATE_META[state];
 
   return (
-    <Badge tone={tone} dot>
-      {label}
+    <Badge tone={meta.tone} dot>
+      {meta.label}
     </Badge>
   );
 }

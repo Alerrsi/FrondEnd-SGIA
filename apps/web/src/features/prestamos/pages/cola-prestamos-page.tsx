@@ -245,7 +245,7 @@ export default function ColaPrestamosPage() {
                         <span className="font-mono">{fechaStr}</span>
                       </div>
                     </div>
-                    <LoanStatusBadge estado={String(loan.estado)} />
+                    <LoanStatusBadge loan={loan} />
                   </div>
 
                   {/* Datos del Solicitante */}

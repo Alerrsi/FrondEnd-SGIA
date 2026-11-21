@@ -975,5 +975,19 @@
   - Solicitar se mueve a `/solicitar` y recibe la búsqueda (`?q=`); Novedades abre el formulario con `?nuevo=`.
   - Estado de los préstamos según la máquina del backend: `en_proceso` = lista para retirar; `procesado` = en préstamo hasta `returned_at`; atraso por `diasAtraso`.
 - **Verificación:** typecheck 5/5; capturas a 390 px en claro y oscuro y recorrido de búsqueda, sugerencias y accesos con PRO-01 contra la API de desarrollo.
-- **Pendiente (web):** el Inicio web de PRO-01 cuenta estados que el backend no devuelve («Listas para retirar» y «Atrasadas» siempre en cero) y `LoanStatusBadge` muestra `procesado` como «Devuelto».
+- **Web:** corregido en FIX-053.
+
+---
+
+## FIX-053: Estados de préstamo según el backend en web y móvil
+
+- **Fecha:** 2026-11-21
+- **Módulo:** `packages/api-client` (`services/loan-state.ts`, subruta `@sgia/api-client/loan-state`; `normalizePrestamo`), `apps/web` (`LoanStatusBadge`, `LoanRequestStatusBadge`, `MyLoanRequestsTasks`, filtro de Mis solicitudes), `apps/mobile` (`loan-status.ts`, `loan-summary.ts`)
+- **Problema:** el backend solo tiene `pendiente` → `en_proceso` (aprobada y preparada) → `procesado` (entregada) y `rechazado`; la devolución es `returned_at` y el atraso `diasAtraso`. El Inicio web del docente contaba `preparado` y `atrasado` por estado (siempre cero), `LoanStatusBadge` mostraba `procesado` crudo o como «Devuelto», `en_proceso` salía «Pendiente» y `normalizePrestamo` descartaba `returned_at`. El test del Inicio pasaba porque su mock usaba `preparado`.
+- **Qué cambia:**
+  - Regla única `loanDisplayState(loan)` → `pendiente`, `preparado`, `en_prestamo`, `atrasado`, `devuelto`, `rechazado` y `summarizeTeacherLoans(loans)`; acepta los nombres antiguos. Va en una subruta para que los `vi.mock('@sgia/api-client')` de los tests no la oculten.
+  - `normalizePrestamo` conserva `returned_at`.
+  - `LoanStatusBadge loan={…}` en cola, mostrador, check-in, historial y ficha de estudiante; el badge del docente dice «En revisión», «Lista para retirar», «En préstamo», «Atrasada», «Devuelta», «Rechazada»; filtros de Mis solicitudes con los mismos nombres.
+  - La app móvil usa la misma regla.
+- **Verificación:** vitest 573 en verde (tests nuevos de la regla, el normalizador y el badge; mock del Inicio con estados reales); typecheck 5/5. Contra la API de desarrollo con PRO-01 (1 pendiente, 2 en proceso, 1 procesado devuelto, 1 rechazado): web y móvil muestran 1 en revisión, 2 para retirar, 0 atrasadas y los badges correctos; historial de PAN-01 ya distingue «Devuelto» de «En préstamo».
 

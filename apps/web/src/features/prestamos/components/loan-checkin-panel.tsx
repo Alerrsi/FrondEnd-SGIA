@@ -145,7 +145,7 @@ export function LoanCheckinPanel({ loan, soundEnabled, onCancel, onDone }: LoanC
             {loan.solicitanteRun ? <span className="font-code text-xs">({loan.solicitanteRun})</span> : ''}
           </span>
         </div>
-        <LoanStatusBadge estado={loan.estado} />
+        <LoanStatusBadge loan={loan} />
       </div>
 
       {/* Escaneo por pares: producto y luego cajón */}

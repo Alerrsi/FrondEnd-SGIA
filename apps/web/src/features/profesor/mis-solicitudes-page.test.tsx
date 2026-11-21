@@ -65,7 +65,8 @@ describe("MisSolicitudesPage", () => {
     expect(screen.getByText("REM-2026-AAA111")).toBeDefined();
     expect(screen.getAllByText("Informática").length).toBe(3);
     expect(screen.getAllByText("08:30 - 10:00").length).toBe(3);
-    expect(screen.getByText("Procesada")).toBeDefined();
+    // `procesado` sin `returned_at`: entregada, aún en préstamo.
+    expect(screen.getByText("En préstamo")).toBeDefined();
     expect(screen.getByText("Rechazada")).toBeDefined();
     expect(screen.getAllByText("Laboratorio 3").length).toBe(3);
     expect(screen.getAllByText("Pañol Temuco").length).toBe(3);
@@ -115,7 +116,7 @@ describe("MisSolicitudesPage", () => {
   it("el filtro de estado consulta con ese estado", async () => {
     const user = userEvent.setup();
     renderPage();
-    await user.click(screen.getByRole("button", { name: "Pendientes" }));
+    await user.click(screen.getByRole("button", { name: "En revisión" }));
     expect(requestsSpy).toHaveBeenLastCalledWith({
       status: "pendiente",
       per_page: 50,

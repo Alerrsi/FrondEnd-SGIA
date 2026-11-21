@@ -267,7 +267,7 @@ export default function HistorialPrestamosPage() {
 
           return (
             <div className="flex items-center gap-2">
-              <LoanStatusBadge estado={estado} />
+              <LoanStatusBadge loan={loan} />
               {isOverdue && loan.diasAtraso && (
                 <span className="font-mono text-xs text-danger font-semibold tabular-nums">
                   ({loan.diasAtraso}d atraso)
@@ -647,7 +647,7 @@ export default function HistorialPrestamosPage() {
                   <span className="font-mono text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                     {selectedLoan.codigo ?? `#${selectedLoan.id}`}
                   </span>
-                  <LoanStatusBadge estado={selectedLoan.estado} />
+                  <LoanStatusBadge loan={selectedLoan} />
                 </div>
                 <SheetTitle>
                   {loanTeacher(selectedLoan)}
