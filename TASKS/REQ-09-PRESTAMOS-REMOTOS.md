@@ -53,9 +53,9 @@ Permitir a los docentes (`PRO-01`) solicitar insumos, herramientas y equipos con
   - [x] Botón para cancelar solicitud si aún está `pendiente` (`DELETE /api/loans/requests/{id}`).
 
 #### Inicio móvil (plan: `docs/inicio-movil.md`, rama `feat/inicio-movil`)
-- [ ] Pestaña Inicio (`/`) y Solicitar en `/solicitar` (acepta `?q=`); Novedades abre el formulario con `?nuevo=1`.
-- [ ] Saludo con acción principal, búsqueda del catálogo, «Lo que te toca hoy» (en revisión, listas para retirar, atrasadas), próximas clases e informes abiertos.
-- [ ] Verificado contra la API de desarrollo en claro y oscuro.
+- [x] Pestaña Inicio (`/`) y Solicitar en `/solicitar` (acepta `?q=`); Novedades abre el formulario con `?nuevo=1`.
+- [x] Saludo con acción principal, búsqueda del catálogo, «Lo que te toca hoy» (en revisión, listas para retirar, atrasadas), próximas clases e informes abiertos.
+- [x] Verificado contra la API de desarrollo en claro y oscuro.
 
 ### 2. Panel Web Pañol (`apps/web`)
 - [x] **Notificación de Solicitudes Entrantes:**

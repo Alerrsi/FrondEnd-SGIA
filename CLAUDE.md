@@ -28,7 +28,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - `FIXES/CHANGELOG-FIXES.md` — historial de correcciones; registrar ahí los cambios importantes.
 - `.claude/skills/sgia-design/` — skill con la especificación de diseño de UI (se carga sola). Leer antes de crear o modificar componentes visuales.
 - `AGENTS.md` — contexto de negocio y arquitectura completo. Consultarlo para tareas de dominio.
-- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones. `docs/mapa-salas.md`: mapa SVG por sala con zonas y estantes arrastrables (rama `mapa-salas`, REQ-22, implementado). `docs/rediseno-movil.md`: sistema «Trazo» en la app móvil (rama `feat/rediseno-movil`, implementado). `docs/inicio-movil.md`: Inicio del profesor en la app móvil (plan, sin implementar).
+- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones. `docs/mapa-salas.md`: mapa SVG por sala con zonas y estantes arrastrables (rama `mapa-salas`, REQ-22, implementado). `docs/rediseno-movil.md`: sistema «Trazo» en la app móvil (rama `feat/rediseno-movil`, implementado). `docs/inicio-movil.md`: Inicio del profesor en la app móvil (rama `feat/inicio-movil`, implementado).
 
 ## Reglas duras
 
