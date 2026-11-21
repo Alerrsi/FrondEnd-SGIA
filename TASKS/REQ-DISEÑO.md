@@ -30,7 +30,7 @@ Plan completo: `docs/rediseno-interfaz.md` (estado: plan, sin implementar). Refe
 
 Plan completo: `docs/rediseno-movil.md` (estado: plan, sin implementar). Solo `apps/mobile` y `packages/design-tokens`.
 
-- [ ] Fase 0 — Base: dependencias instaladas (typecheck móvil en verde) y tokens claro/oscuro en `design-tokens`
+- [x] Fase 0 — Base: dependencias instaladas (typecheck móvil en verde) y tokens claro/oscuro en `design-tokens`
 - [ ] Fase 1 — Tema `src/theme/`, Geist y Geist Mono, tema de navegación
 - [ ] Fase 2 — Componentes (`ThemedText`, `Button`, `Badge`, `CodeChip`, `Section`, `TextField`, `EmptyState`, `ScreenHeader`) y campos reestilizados
 - [ ] Fase 3 — Marco: barra de iconos inferior estilo riel del sidebar web, splash SGIA

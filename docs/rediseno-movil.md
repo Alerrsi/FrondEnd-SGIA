@@ -77,7 +77,7 @@ Equivalentes móviles de los del web, con el contrato variante / tamaño / estad
 
 ## 5. Fases
 
-- [ ] **Fase 0 — Base.** `pnpm install` para que `expo-notifications` resuelva y el typecheck móvil pase. Ampliar `tokens.json` e `index.ts` de `design-tokens` con claro/oscuro, estados y `tag`.
+- [x] **Fase 0 — Base.** `pnpm install` para que `expo-notifications` resuelva y el typecheck móvil pase. Ampliar `tokens.json` e `index.ts` de `design-tokens` con claro/oscuro, estados y `tag`. Dependencias nuevas: `@expo-google-fonts/geist`, `@expo-google-fonts/geist-mono`, `lucide-react-native`.
 - [ ] **Fase 1 — Tema y fuentes.** `src/theme/`, `useTheme`, carga de Geist y Geist Mono, tema de React Navigation (`ThemeProvider`) con los colores Trazo, `StatusBar` según el modo. Borrar `constants/theme.ts` y `global.css` al terminar la migración.
 - [ ] **Fase 2 — Componentes.** Los de §4, reestilizar `select-field`, `multi-select-field`, `date-field`, `photo-field` y `signature-pad` (trazo en tinta, no en negro puro).
 - [ ] **Fase 3 — Marco de la app.** Barra de iconos inferior (`components/icon-tab-bar.tsx`) con `lucide-react-native` (`ClipboardPlus` Solicitar, `CalendarClock` Mis préstamos, `FileWarning` Novedades), indicador animado con Reanimated (150–240 ms, sin rebote, quieto con «reducir movimiento»); se borran `app-tabs.web.tsx` y los iconos `tabIcons/`; splash con la marca SGIA (icono `Boxes` del web) sobre papel/grafito en `animated-icon.tsx` y `app.json`; fondo del icono adaptativo de Android al papel.
