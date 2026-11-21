@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/cn';
 import type { NavEntry, NavLinkEntry } from './nav-config';
 
-/** Ítems visibles en la barra; el resto pasa a «Más». */
+/** Enlaces sueltos visibles en la barra; el resto pasa a «Más». Los grupos (Compras) siempre quedan a la vista. */
 const VISIBLE = 5;
 
 const itemClass = (active: boolean) =>
@@ -58,11 +58,13 @@ function GroupMenu({ label, links, active }: { label: string; links: NavLinkEntr
 /** Menú horizontal del layout con header (desde 1024px). Compras y «Más» abren un panel. */
 export function HeaderNav({ entries }: { entries: NavEntry[] }) {
   const { pathname } = useLocation();
-  const visible = entries.slice(0, VISIBLE);
-  const overflow = entries.slice(VISIBLE);
-  const overflowLinks: NavLinkEntry[] = overflow.flatMap((e) =>
-    e.children ? e.children : [{ to: e.to, label: e.label, description: e.description, icon: e.icon }],
-  );
+  // Los grupos no cuentan para el límite ni caen en «Más»: Compras sigue siendo su propio menú.
+  const links = entries.filter((e) => !e.children);
+  const visibleLinks = new Set(links.slice(0, VISIBLE));
+  const visible = entries.filter((e) => e.children || visibleLinks.has(e));
+  const overflowLinks: NavLinkEntry[] = links
+    .slice(VISIBLE)
+    .map(({ to, label, description, icon }) => ({ to, label, description, icon }));
 
   return (
     <nav aria-label="Navegación principal" className="hidden min-w-0 items-center lg:flex">

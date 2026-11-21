@@ -99,6 +99,19 @@ describe('Layouts sidebar y header', () => {
     expect(screen.getByRole('button', { name: 'Cuenta de Diana Muñoz' })).toBeDefined();
   });
 
+  it('en el header Compras queda como su propio menú y no se mezcla en «Más»', async () => {
+    const user = userEvent.setup();
+    localStorage.setItem('sgia-layout', 'header');
+    renderShell('/inventario');
+    const nav = screen.getByRole('navigation', { name: 'Navegación principal' });
+    const buttons = within(nav).getAllByRole('button').map((b) => b.textContent);
+    expect(buttons).toEqual(['Compras', 'Más']);
+    await user.click(within(nav).getByRole('button', { name: /Más/ }));
+    const menu = screen.getByRole('menu');
+    expect(within(menu).queryByRole('menuitem', { name: /Facturas/ })).toBeNull();
+    expect(within(menu).getByRole('menuitem', { name: /Informes/ })).toBeDefined();
+  });
+
   it('cambiar la navegación en Ajustes cambia de layout y se guarda', async () => {
     const user = userEvent.setup();
     renderShell('/');
