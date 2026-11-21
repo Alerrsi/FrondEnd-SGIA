@@ -22,7 +22,9 @@ const mockUseLoans = vi.fn((params: unknown) => {
   return page(3);
 });
 
-vi.mock('@sgia/api-client', () => ({
+vi.mock('@sgia/api-client', async (importOriginal) => ({
+  // Las funciones puras (estado de un préstamo, cuentas del docente) son las reales.
+  ...(await importOriginal<typeof import('@sgia/api-client')>()),
   usePendingLoans: () => ({
     data: {
       data: [{ id: 41, items: [{ id: 1 }, { id: 2 }], user: { nombre: 'Pedro Soto' } }],
@@ -69,10 +71,14 @@ vi.mock('@sgia/api-client', () => ({
   }),
   useMyLoanRequests: () => ({
     data: [
-      { id: 1, estado: 'pendiente' },
-      { id: 2, estado: 'pendiente' },
-      { id: 3, estado: 'preparado' },
-      { id: 4, estado: 'devuelto' },
+      // Estados reales del backend: pendiente → en_proceso → procesado; el atraso es `diasAtraso`.
+      { id: 1, status: 'pendiente', estado: 'pendiente' },
+      { id: 2, status: 'pendiente', estado: 'pendiente' },
+      { id: 3, status: 'en_proceso', estado: 'en_proceso' },
+      { id: 4, status: 'procesado', estado: 'procesado', returned_at: '2026-11-10T12:00:00Z' },
+      { id: 5, status: 'procesado', estado: 'procesado', returned_at: null, diasAtraso: 2 },
+      { id: 6, status: 'procesado', estado: 'procesado', returned_at: null, diasAtraso: 0 },
+      { id: 7, status: 'rechazado', estado: 'rechazado' },
     ],
     isLoading: false,
   }),
@@ -175,7 +181,7 @@ describe('Inicio (/)', () => {
     expect(todayLinks()).toEqual([
       ['En revisión: 2 esperando al pañol', '/profesor/solicitudes'],
       ['Listas para retirar: 1 por retirar', '/profesor/solicitudes'],
-      ['Atrasadas: al día', '/profesor/solicitudes'],
+      ['Atrasadas: 1 por devolver', '/profesor/solicitudes'],
     ]);
     expect(getInicioModules('PRO-01').map((m) => m.to)).toEqual([
       '/profesor/catalogo',

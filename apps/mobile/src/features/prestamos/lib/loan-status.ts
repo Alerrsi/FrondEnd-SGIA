@@ -1,39 +1,19 @@
-import type { Prestamo } from '@sgia/types';
+import { loanDisplayState, type LoanDisplayState, type LoanStateFields } from '@sgia/api-client/loan-state';
 
 import type { Tone } from '@/theme';
 
-/**
- * Estado de una solicitud con tono y nombre, siempre con texto. Máquina del backend (`LoanStateMachine`):
- * `pendiente` → `en_proceso` (aprobada y preparada) → `procesado` (entregada), con salida a `rechazado`.
- * La devolución no es un estado: es `returned_at`; el atraso es `diasAtraso`.
- */
-export function loanStatusMeta(loan: Pick<Prestamo, 'status' | 'estado' | 'returned_at' | 'diasAtraso'>): {
-  tone: Tone;
-  label: string;
-} {
-  const state = String(loan.status ?? loan.estado ?? '').toLowerCase();
-  switch (state) {
-    case 'pendiente':
-      return { tone: 'warn', label: 'Pendiente en pañol' };
-    case 'en_proceso':
-    case 'preparado':
-      return { tone: 'accent', label: 'Lista para retirar' };
-    case 'procesado':
-    case 'procesada':
-    case 'entregado':
-    case 'activo':
-    case 'atrasado':
-      if (loan.returned_at) return { tone: 'ok', label: 'Devuelto' };
-      if (state === 'atrasado' || (loan.diasAtraso ?? 0) > 0) return { tone: 'danger', label: 'Atrasado' };
-      return { tone: 'info', label: 'En préstamo' };
-    case 'devuelto':
-    case 'finalizado':
-      return { tone: 'ok', label: 'Devuelto' };
-    case 'rechazado':
-    case 'rechazada':
-    case 'cancelado':
-      return { tone: 'danger', label: 'Rechazado' };
-    default:
-      return { tone: 'neutral', label: state || 'Sin estado' };
-  }
+/** Nombre y tono de cada fase para el docente (misma regla que el web: `loanDisplayState`). */
+const TEACHER_STATE: Record<Exclude<LoanDisplayState, 'otro'>, { tone: Tone; label: string }> = {
+  pendiente: { tone: 'warn', label: 'En revisión' },
+  preparado: { tone: 'accent', label: 'Lista para retirar' },
+  en_prestamo: { tone: 'info', label: 'En préstamo' },
+  atrasado: { tone: 'danger', label: 'Atrasada' },
+  devuelto: { tone: 'ok', label: 'Devuelta' },
+  rechazado: { tone: 'danger', label: 'Rechazada' },
+};
+
+export function loanStatusMeta(loan: LoanStateFields): { tone: Tone; label: string } {
+  const state = loanDisplayState(loan);
+  if (state === 'otro') return { tone: 'neutral', label: String(loan.status ?? loan.estado ?? 'Sin estado') };
+  return TEACHER_STATE[state];
 }

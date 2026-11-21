@@ -74,7 +74,7 @@ export function StudentDetailSheet({
                       {loan.items.map((i) => i.nombre).join(', ') || 'Sin ítems'}
                     </p>
                   </div>
-                  <LoanStatusBadge estado={String(loan.status ?? loan.estado)} />
+                  <LoanStatusBadge loan={loan} />
                 </li>
               ))}
             </ul>

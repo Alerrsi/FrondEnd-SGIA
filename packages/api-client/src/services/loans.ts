@@ -109,6 +109,8 @@ export function normalizePrestamo(raw: any): Prestamo {
     teacher: raw.teacher ?? null,
     fechaDevolucion: raw.fechaDevolucion ?? raw.return_date ?? null,
     return_date: raw.return_date ?? raw.fechaDevolucion ?? null,
+    // Devolución registrada: sin ella un préstamo `procesado` sigue «En préstamo» (`loanDisplayState`).
+    returned_at: raw.returned_at ?? null,
     fechaEntrega: raw.fechaEntrega ?? raw.delivery_date ?? null,
     motivoRechazo: raw.motivoRechazo ?? raw.rejection_reason ?? null,
     rejection_reason: raw.rejection_reason ?? raw.motivoRechazo ?? null,

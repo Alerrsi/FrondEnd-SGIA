@@ -150,6 +150,8 @@ export {
   exportLoans,
   normalizePrestamo,
 } from './services/loans';
+export { loanDisplayState, summarizeTeacherLoans } from './services/loan-state';
+export type { LoanDisplayState, LoanStateFields, TeacherLoanSummary } from './services/loan-state';
 export {
   loanKeys,
   useLoans,

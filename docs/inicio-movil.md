@@ -15,7 +15,7 @@ La app abre directo en el formulario «Solicitar equipo». El docente no ve de u
    - **Lo que te toca hoy:** tres celdas que comparten bordes (como `CellGrid`), cada una lleva a Mis préstamos: «En revisión» (`pendiente`), «Para retirar» (`en_proceso`: aprobada, stock descontado y preparada según `LoanStateMachine`) y «Atrasadas» (`diasAtraso > 0` y sin devolver). Con pendientes, cifra grande y barra burdeo arriba; sin pendientes, «Al día».
    - **Próximas clases:** hasta tres solicitudes con fecha de hoy en adelante (no rechazadas), con código, fecha, bloque, asignatura, laboratorio y estado.
    - **Informes abiertos:** cuántos informes de novedades siguen sin cerrar (`reportado`, `en_revision`, `en_reparacion`); lleva a Novedades.
-3. **Estados de los préstamos con los valores reales del backend** (`pendiente`, `en_proceso`, `procesado`, `rechazado`; el atraso es `diasAtraso`). El Inicio web cuenta `preparado` y `atrasado` por estado, que el backend no devuelve: esas celdas quedan siempre en cero. Se anota como hallazgo; el web no se toca en esta tarea.
+3. **Estados de los préstamos con los valores reales del backend** (`pendiente`, `en_proceso`, `procesado`, `rechazado`; el atraso es `diasAtraso` y la devolución `returned_at`).
 4. **«Reportar una falla»** abre directamente el formulario de Novedades (`/novedades?nuevo=1`).
 5. **Datos:** `useMyLoanRequests({ per_page: 100 })` y `useMyIncidentReports({ per_page: 100 })` de `@sgia/api-client`; tirar para recargar. Los cuatro estados (carga, error, vacío, datos) en cada bloque.
 6. **Diseño «Trazo» móvil** (`.claude/skills/sgia-design/SKILL.md` §7): `Screen`, `Section`, `Row`, `Button`, `Badge`, `CodeChip`, `TextField`; el saludo usa `variant="hero"`.
@@ -38,7 +38,6 @@ La app abre directo en el formulario «Solicitar equipo». El docente no ve de u
 
 ## 5. Fuera de alcance
 
-- Corregir el Inicio web (decisión 3).
 - Notificaciones en el Inicio (las push ya llevan a Mis préstamos).
 - Endpoints de totales por estado: con más de 100 solicitudes las cuentas son de las 100 más recientes (igual que en la web).
 
@@ -47,5 +46,5 @@ La app abre directo en el formulario «Solicitar equipo». El docente no ve de u
 - `src/features/prestamos/lib/loan-status.ts` reemplaza el mapa de estados de Mis préstamos: `procesado` es «En préstamo» (entregada) hasta que trae `returned_at` («Devuelto»), o «Atrasado» con `diasAtraso > 0`. Antes Mis préstamos mostraba `procesado` como «Devuelto».
 - `Section` sin espacio sobrante bajo el título en listas (`flush`), y `TextField` sin el contorno negro del navegador en web.
 - **Verificación:** `pnpm typecheck` 5/5; `expo lint` sin errores nuevos; capturas a 390 px en claro y oscuro con PRO-01 contra la API de desarrollo. Probado: búsqueda vacía muestra el aviso; «cable» sugiere dos productos; tocar una sugerencia o «Buscar» abre Solicitar con la búsqueda escrita; «Reportar una falla» abre el formulario de Novedades; las celdas, «Ver todas» y «Informes abiertos» navegan a su pestaña.
-- **Hallazgo en el web (sin corregir):** `MyLoanRequestsTasks` cuenta `preparado` y `atrasado` por estado, que el backend nunca devuelve; «Listas para retirar» y «Atrasadas» quedan siempre en cero. `LoanStatusBadge` además muestra `procesado` como «Devuelto».
+- **Hallazgo en el web (corregido en FIX-053):** `MyLoanRequestsTasks` contaba `preparado` y `atrasado` por estado, que el backend nunca devuelve, y `LoanStatusBadge` mostraba `procesado` como «Devuelto». Ahora web y móvil usan la misma regla, `@sgia/api-client/loan-state` (`loanDisplayState`, `summarizeTeacherLoans`).
 

@@ -56,7 +56,7 @@ export function LoanRequestDetailSheet({
             <SheetHeader>
               <SheetTitle>
                 <span className="font-code">{loan.codigo ?? loan.code}</span>
-                <LoanRequestStatusBadge estado={String(loan.estado)} />
+                <LoanRequestStatusBadge loan={loan} />
               </SheetTitle>
               <SheetDescription>
                 Solicitud de{" "}

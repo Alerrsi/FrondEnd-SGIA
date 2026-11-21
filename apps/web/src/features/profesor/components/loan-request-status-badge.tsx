@@ -1,18 +1,24 @@
-import { Badge, LoanStatusBadge, type Tone } from "@/components/ui/badge";
+import { loanDisplayState, type LoanDisplayState, type LoanStateFields } from '@sgia/api-client/loan-state';
 
-const REQUEST_STATUS: Record<string, { label: string; tone: Tone }> = {
-  pendiente: { label: "Pendiente", tone: "warning" },
-  en_proceso: { label: "En proceso", tone: "loaned" },
-  procesado: { label: "Procesada", tone: "success" },
-  procesada: { label: "Procesada", tone: "success" },
-  rechazado: { label: "Rechazada", tone: "danger" },
-  rechazada: { label: "Rechazada", tone: "danger" },
+import { Badge, type Tone } from '@/components/ui/badge';
+
+/** Nombres pensados para el docente: qué tiene que hacer él con su solicitud. */
+const TEACHER_STATE: Record<Exclude<LoanDisplayState, 'otro'>, { label: string; tone: Tone }> = {
+  pendiente: { label: 'En revisión', tone: 'warning' },
+  preparado: { label: 'Lista para retirar', tone: 'accent' },
+  en_prestamo: { label: 'En préstamo', tone: 'loaned' },
+  atrasado: { label: 'Atrasada', tone: 'critical' },
+  devuelto: { label: 'Devuelta', tone: 'available' },
+  rechazado: { label: 'Rechazada', tone: 'danger' },
 };
 
-/** Estado de una solicitud remota; los estados de préstamo (preparado, entregado…) usan el badge común. */
-export function LoanRequestStatusBadge({ estado }: { estado: string }) {
-  const meta = REQUEST_STATUS[String(estado).toLowerCase()];
-  if (!meta) return <LoanStatusBadge estado={estado} />;
+/** Estado de una solicitud remota del docente (`returned_at` y `diasAtraso` distinguen entregada, atrasada y devuelta). */
+export function LoanRequestStatusBadge({ loan }: { loan: LoanStateFields }) {
+  const state = loanDisplayState(loan);
+  const meta =
+    state === 'otro'
+      ? { label: String(loan.status ?? loan.estado ?? '—'), tone: 'neutral' as Tone }
+      : TEACHER_STATE[state];
   return (
     <Badge tone={meta.tone} dot>
       {meta.label}
