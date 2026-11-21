@@ -23,7 +23,7 @@ export function Section({ title, description, action, flush = false, children, s
   return (
     <View style={[styles.panel, { backgroundColor: theme.surface, borderColor: theme.line }, style]}>
       {hasHead && (
-        <View style={[styles.head, flush && styles.padded]}>
+        <View style={[styles.head, action ? styles.headWithAction : null]}>
           <View style={styles.headText}>
             {title && (
               <ThemedText variant="section" accessibilityRole="header">
@@ -35,7 +35,7 @@ export function Section({ title, description, action, flush = false, children, s
           {action}
         </View>
       )}
-      <View style={[styles.body, !flush && styles.padded, flush && hasHead && styles.flushBody]}>{children}</View>
+      <View style={[styles.body, !flush && styles.padded, flush && (hasHead ? styles.flushBody : styles.flushBare)]}>{children}</View>
     </View>
   );
 }
@@ -55,8 +55,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
   },
+  // Con acción (botón de 44 px) el título se centra con ella y el borde superior se acorta.
+  headWithAction: { alignItems: 'center', paddingTop: spacing.sm },
   headText: { flex: 1, gap: spacing.xxs },
   padded: { paddingHorizontal: spacing.lg, paddingBottom: spacing.lg },
   body: { gap: spacing.md, paddingTop: spacing.md },
   flushBody: { paddingTop: spacing.sm },
+  flushBare: { paddingTop: 0 },
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextInput, type TextInputProps } from 'react-native';
+import { Platform, TextInput, type TextInputProps } from 'react-native';
 
 import { controlStyle } from '@/components/ui/control-style';
 import { useTheme } from '@/hooks/use-theme';
@@ -29,6 +29,8 @@ export function TextField({ invalid = false, multiline, style, onFocus, onBlur, 
         controlStyle(theme, { focused, invalid }),
         type.body,
         { color: theme.ink },
+        // En web el foco ya se ve en el borde burdeo: sin el contorno negro del navegador.
+        Platform.OS === 'web' && { outlineWidth: 0 },
         multiline && { minHeight: 96, paddingVertical: spacing.sm + 2, textAlignVertical: 'top' },
         style,
       ]}

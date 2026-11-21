@@ -1,5 +1,6 @@
 import { useMyIncidentReports } from '@sgia/api-client';
 import type { IncidentReport } from '@sgia/types';
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, FileWarning, Plus } from 'lucide-react-native';
 import { FlatList, Modal, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
@@ -23,6 +24,13 @@ export default function NovedadesScreen() {
   const theme = useTheme();
   const [page, setPage] = useState(1);
   const [formOpen, setFormOpen] = useState(false);
+  // «Reportar una falla» desde Inicio abre el formulario (`/novedades?nuevo=<marca>`); cada toque trae otra marca.
+  const { nuevo } = useLocalSearchParams<{ nuevo?: string }>();
+  const [lastNuevo, setLastNuevo] = useState<string | undefined>(undefined);
+  if (nuevo !== lastNuevo) {
+    setLastNuevo(nuevo);
+    if (nuevo) setFormOpen(true);
+  }
   const [openId, setOpenId] = useState<number | null>(null);
   const { data, isLoading, isError, isRefetching, refetch } = useMyIncidentReports({
     page,

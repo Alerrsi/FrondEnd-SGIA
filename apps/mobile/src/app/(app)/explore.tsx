@@ -13,34 +13,8 @@ import { ScreenHeader } from '@/components/ui/screen-header';
 import { StateMessage } from '@/components/ui/state-message';
 import { useAuth } from '@/features/auth/auth-context';
 import { useTheme } from '@/hooks/use-theme';
-import { MAX_CONTENT_WIDTH, radius, spacing, type Tone } from '@/theme';
-
-/** Estado de la solicitud con el tono y el nombre del web (`LoanStatusBadge`), siempre con texto. */
-function loanStatusMeta(estado: string): { tone: Tone; label: string } {
-  switch (String(estado).toLowerCase()) {
-    case 'pendiente':
-    case 'en_proceso':
-      return { tone: 'warn', label: 'Pendiente en pañol' };
-    case 'preparado':
-      return { tone: 'accent', label: 'Insumos preparados' };
-    case 'entregado':
-    case 'activo':
-      return { tone: 'info', label: 'En préstamo' };
-    case 'devuelto':
-    case 'procesada':
-    case 'procesado':
-    case 'finalizado':
-      return { tone: 'ok', label: 'Devuelto' };
-    case 'atrasado':
-      return { tone: 'danger', label: 'Atrasado' };
-    case 'rechazada':
-    case 'rechazado':
-    case 'cancelado':
-      return { tone: 'danger', label: 'Rechazado' };
-    default:
-      return { tone: 'neutral', label: estado };
-  }
-}
+import { loanStatusMeta } from '@/features/prestamos/lib/loan-status';
+import { MAX_CONTENT_WIDTH, radius, spacing } from '@/theme';
 
 export default function MisSolicitudesScreen() {
   const theme = useTheme();
@@ -101,7 +75,7 @@ export default function MisSolicitudesScreen() {
   };
 
   const renderItem = ({ item }: { item: Prestamo }) => {
-    const status = loanStatusMeta(item.estado);
+    const status = loanStatusMeta(item);
     const isPending = item.estado === LoanStatus.PENDIENTE; // la API solo cancela en pendiente
     const isCanceling = cancelingId === item.id;
     const total = item.items.reduce((acc, it) => acc + it.cantidad, 0);
