@@ -10,6 +10,8 @@ export interface ApiClientOptions {
   baseUrl: string;
   tokenStorage?: TokenStorage;
   onUnauthorized?: () => void;
+  /** Solo en desarrollo: registra en consola los errores que `apiErrorToMessage` oculta al usuario. */
+  debug?: boolean;
 }
 
 const defaultOptions: ApiClientOptions = {
@@ -46,15 +48,38 @@ export class ApiRequestError extends Error {
   readonly body: ApiError | null;
 
   constructor(status: number, body: ApiError | null) {
-    super(body?.message ?? `Error ${status}`);
+    super(body?.message ?? `Error HTTP ${status}`);
+    this.name = 'ApiRequestError';
     this.status = status;
     this.body = body;
   }
 }
 
-/** Mensaje para el usuario: el primer error de validación o, si no hay, el del servidor. */
+const SERVER_ERROR_MESSAGE = 'Ocurrió un error en el servidor. Intenta nuevamente o contacta al administrador.';
+const NETWORK_ERROR_MESSAGE = 'No se pudo conectar con el servidor. Revisa tu conexión e intenta nuevamente.';
+const UNEXPECTED_ERROR_MESSAGE = 'Ocurrió un error inesperado. Intenta nuevamente.';
+
+const STATUS_MESSAGES: Record<number, string> = {
+  401: 'Tu sesión expiró. Inicia sesión nuevamente.',
+  403: 'No tienes permisos para realizar esta acción.',
+  404: 'Recurso no encontrado.',
+  413: 'El archivo es demasiado grande.',
+  429: 'Demasiadas solicitudes. Espera un momento e intenta de nuevo.',
+};
+
+/**
+ * Mensaje para el usuario: el primer error de validación o, si no hay, el del servidor.
+ *
+ * Auditoría de seguridad (BackEnd-SGIA/docs/auditoria-seguridad.md, F1): nunca muestra el cuerpo de un 5xx
+ * (con APP_DEBUG trae SQL y trazas) ni el texto de errores de JavaScript o de red (`Failed to fetch`,
+ * `Unexpected token '<'`, `Cannot read properties of undefined`); esos van a la consola solo en desarrollo.
+ */
 export function apiErrorToMessage(error: unknown): string {
   if (error instanceof ApiRequestError) {
+    if (error.status >= 500) {
+      logInDev(error);
+      return SERVER_ERROR_MESSAGE;
+    }
     if (error.body?.errors && typeof error.body.errors === 'object') {
       const firstKey = Object.keys(error.body.errors)[0];
       const errorList = firstKey ? (error.body.errors as Record<string, unknown>)[firstKey] : null;
@@ -62,12 +87,24 @@ export function apiErrorToMessage(error: unknown): string {
         return errorList[0];
       }
     }
-    return error.body?.message ?? `Error ${error.status}`;
+    const message = error.body?.message;
+    if (typeof message === 'string' && message.trim() !== '') return message;
+    return STATUS_MESSAGES[error.status] ?? 'No se pudo completar la solicitud.';
   }
-  if (error instanceof Error) {
+  if (error instanceof TypeError && /fetch|network|load failed/i.test(error.message)) {
+    logInDev(error);
+    return NETWORK_ERROR_MESSAGE;
+  }
+  if (error instanceof Error && error.constructor === Error && error.message.trim() !== '') {
+    // Errores propios (`throw new Error('…')`) con texto pensado para el usuario.
     return error.message;
   }
-  return 'Error inesperado';
+  logInDev(error);
+  return UNEXPECTED_ERROR_MESSAGE;
+}
+
+function logInDev(error: unknown): void {
+  if (clientOptions.debug) console.warn('[api] error no mostrado al usuario:', error);
 }
 
 /**

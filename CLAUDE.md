@@ -51,3 +51,4 @@ Componentes base en `apps/web/src/components/ui/` (`PageHeader`, `Metric`, `Cell
 - Antes de crear un archivo nuevo, buscar si ya existe uno equivalente.
 - Registrar en `FIXES/CHANGELOG-FIXES.md` los cambios importantes.
 - Idioma: la documentación y los mensajes de commit van en español.
+- Errores al usuario: siempre con `apiErrorToMessage` (web) o `requestErrorMessage` (móvil), nunca `error.message` ni `error.body.message` directo: un 5xx puede traer SQL o trazas (auditoría de seguridad, FIX-054). Nada de `document.write`/`innerHTML` con datos del usuario sin escapar.

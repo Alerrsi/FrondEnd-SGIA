@@ -32,6 +32,11 @@ export interface ProductoDetailDialogProps {
   onReubicar?: (producto: Producto) => void;
 }
 
+/** El código se escribe en el HTML de la ventana de impresión: se escapa (auditoría de seguridad, XSS). */
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
+}
+
 export function ProductoDetailDialog({
   open,
   onClose,
@@ -80,7 +85,7 @@ export function ProductoDetailDialog({
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${barcode}</title>
+          <title>${escapeHtml(barcode)}</title>
           <style>
             @page { size: 50mm 30mm; margin: 0; }
             html, body { width: 50mm; height: 30mm; margin: 0; padding: 0; overflow: hidden; background: #fff; color: #000; }
@@ -91,7 +96,7 @@ export function ProductoDetailDialog({
         </head>
         <body>
           <div class="barcode-svg">${svgContent}</div>
-          <div class="code-text">${barcode}</div>
+          <div class="code-text">${escapeHtml(barcode)}</div>
           <script>
             window.onload = function() {
               window.print();

@@ -11,7 +11,7 @@ export const tokenStorage: TokenStorage = {
 
 const apiUrl = (import.meta.env.SGIA_API_URL as string | undefined) ?? '/api';
 
-configureApiClient({ baseUrl: apiUrl, tokenStorage });
+configureApiClient({ baseUrl: apiUrl, tokenStorage, debug: import.meta.env.DEV });
 
 export const queryClient = createSgiaQueryClient();
 

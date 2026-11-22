@@ -23,6 +23,7 @@ export const tokenStorage = Platform.OS === 'web' ? webStorage : nativeStorage;
 configureApiClient({
   baseUrl: process.env.EXPO_PUBLIC_SGIA_API_URL ?? 'http://localhost:8000/api',
   tokenStorage,
+  debug: __DEV__,
 });
 
 export const queryClient = createSgiaQueryClient();

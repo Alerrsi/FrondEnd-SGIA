@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an unhandled error:', error, errorInfo);
+    if (import.meta.env.DEV) console.error('ErrorBoundary caught an unhandled error:', error, errorInfo);
   }
 
   handleReset = () => {
@@ -48,9 +48,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           <h2 className="text-base font-medium text-zinc-900 dark:text-zinc-100">
             Esta pantalla no se pudo mostrar
           </h2>
-          <p className="mt-1 max-w-md font-code text-xs text-zinc-500 dark:text-zinc-400">
-            {this.state.error?.message || 'Error desconocido'}
+          <p className="mt-1 max-w-md text-xs text-zinc-500 dark:text-zinc-400">
+            Ocurrió un error inesperado. Intenta de nuevo o recarga la página.
           </p>
+          {/* El detalle técnico solo en desarrollo (auditoría de seguridad, F1). */}
+          {import.meta.env.DEV && this.state.error?.message ? (
+            <p className="mt-1 max-w-md font-code text-xs text-zinc-400">{this.state.error.message}</p>
+          ) : null}
 
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
             <Button

@@ -212,7 +212,8 @@ export function mockMetricsApi(options: MetricsApiMockOptions = {}) {
       return json({ message: 'Sin permisos' }, options.status);
     }
     if (options.graphqlError) {
-      return json({ errors: [{ message: options.graphqlError }] });
+      // Como el backend: los UserError de un resolver traen `path`.
+      return json({ errors: [{ message: options.graphqlError, path: ['customMetric'] }] });
     }
     if (body.query.includes('executiveKpis')) {
       return json({ data: { executiveKpis: KPIS } });

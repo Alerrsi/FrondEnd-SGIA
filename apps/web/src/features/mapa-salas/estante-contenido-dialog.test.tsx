@@ -70,7 +70,7 @@ describe('Pop-up del estante (REQ-22)', () => {
     };
     renderDialog();
 
-    expect(screen.getByRole('alert').textContent).toContain('Error del servidor.');
+    expect(screen.getByRole('alert').textContent).toContain('Ocurrió un error en el servidor.');
     await userEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
     expect(state.refetch).toHaveBeenCalled();
   });

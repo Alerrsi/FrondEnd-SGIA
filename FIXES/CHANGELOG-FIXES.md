@@ -991,3 +991,19 @@
   - La app móvil usa la misma regla.
 - **Verificación:** vitest 573 en verde (tests nuevos de la regla, el normalizador y el badge; mock del Inicio con estados reales); typecheck 5/5. Contra la API de desarrollo con PRO-01 (1 pendiente, 2 en proceso, 1 procesado devuelto, 1 rechazado): web y móvil muestran 1 en revisión, 2 para retirar, 0 atrasadas y los badges correctos; historial de PAN-01 ya distingue «Devuelto» de «En préstamo».
 
+
+---
+
+## FIX-054: Auditoría de seguridad — mensajes de error sin detalles internos y XSS en la etiqueta
+
+- **Fecha:** 2026-11-22
+- **Módulo:** `packages/api-client` (`http.ts`, `services/metrics.ts`), `apps/web` (`ErrorBoundary`, `producto-detail-dialog.tsx`, `config/api.ts`), `apps/mobile` (`login-screen.tsx`, `config/api.ts`) — plan y hallazgos en `BackEnd-SGIA/docs/auditoria-seguridad.md` (H-02 a H-05, H-10)
+- **Problema:** con el backend en `APP_DEBUG=true`, un 500 traía el SQL, el host y la base de datos, y la web lo mostraba tal cual: en el barrido con 500 inyectados, `/monitoreo` (AD-01), `/mapa-salas` (AD-01, DIR-01) y `/analitica` (DIR-01) mostraban `SQLSTATE[22P02] … SQL: select * from "products" …`. También se mostraban errores de JavaScript (`ErrorBoundary`), de red (`Failed to fetch`) y del motor GraphQL en inglés. La impresión de etiqueta escribía `barcode` sin escapar con `document.write` (XSS almacenado con acceso al token).
+- **Qué cambia:**
+  - `apiErrorToMessage`: un 5xx muestra siempre «Ocurrió un error en el servidor…»; errores de red → «No se pudo conectar con el servidor…»; `TypeError`/`SyntaxError` y otros internos → texto genérico; solo los `Error` planos con texto propio pasan. Sin cuerpo, texto por estado (401, 403, 404, 413, 429). `configureApiClient({ debug })` registra lo oculto en consola solo en desarrollo.
+  - `graphQLErrorMessage`: solo pasan los errores de resolver (`path`, los `UserError` en español del backend).
+  - `ErrorBoundary`: texto fijo; el detalle técnico solo con `import.meta.env.DEV`.
+  - Etiqueta: `escapeHtml` del código antes de `document.write` (el backend además limita `barcode` a `[A-Za-z0-9._-]`).
+  - Móvil: el login usa `apiErrorToMessage` y no muestra errores internos.
+  - `zod` ^4.6.7 en web y móvil (aviso de DoS en ≤4.6.5).
+- **Verificación:** vitest 578 en verde (tests nuevos de `apiErrorToMessage` y `graphQLErrorMessage`); typecheck 5/5. Barrido en Chromium de 44 rutas × 4 roles contra la API de desarrollo, con y sin 500 inyectados: sin textos técnicos en pantalla.

@@ -348,6 +348,7 @@ export {
 
 export {
   executeGraphQL,
+  graphQLErrorMessage,
   fetchExecutiveKpis,
   fetchCustomMetric,
   buildMetricInput,

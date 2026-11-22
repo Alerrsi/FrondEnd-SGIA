@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Boxes } from 'lucide-react-native';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ApiRequestError } from '@sgia/api-client';
+import { ApiRequestError, apiErrorToMessage } from '@sgia/api-client';
 import { Controller, useForm } from 'react-hook-form';
 
 import { ThemedText } from '@/components/themed-text';
@@ -22,9 +22,11 @@ function errorMessage(error: unknown): string {
   if (error instanceof ApiRequestError) {
     if (error.status === 401 || error.status === 422) return 'Correo o contraseña incorrectos.';
     if (error.status === 429) return 'Demasiados intentos. Espera un minuto.';
-    return error.body?.message ?? `Error ${error.status}`;
+    if (error.status === 403) return error.body?.message ?? 'Tu cuenta no tiene acceso.';
+    return apiErrorToMessage(error);
   }
-  return error instanceof Error ? error.message : 'No se pudo conectar con el servidor.';
+  // Errores propios (p. ej. «Acceso restringido…» de auth-context); el resto, de red o internos, sin detalle.
+  return error instanceof Error && error.constructor === Error ? error.message : 'No se pudo conectar con el servidor.';
 }
 
 export function LoginScreen() {

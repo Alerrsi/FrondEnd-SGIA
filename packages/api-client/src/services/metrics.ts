@@ -3,7 +3,7 @@ import { post } from '../http';
 
 interface GraphQLResponse<TData> {
   data?: TData;
-  errors?: Array<{ message: string }>;
+  errors?: Array<{ message: string; path?: unknown[] }>;
 }
 
 const EXECUTIVE_KPIS_QUERY = `
@@ -40,6 +40,19 @@ const CUSTOM_METRIC_QUERY = `
 `;
 
 /**
+ * Texto visible de un error de GraphQL. Solo los de un resolver (`path`, los `UserError` en español del
+ * backend) llegan al usuario; los de sintaxis o validación del motor ("Cannot query field…", en inglés) y el
+ * "Internal server error" se reemplazan (auditoría de seguridad, F1).
+ */
+export function graphQLErrorMessage(error: { message?: string; path?: unknown[] } | undefined): string {
+  const message = error?.message?.trim();
+  if (message && Array.isArray(error?.path) && error.path.length > 0 && message !== 'Internal server error') {
+    return message;
+  }
+  return 'No se pudieron cargar las métricas. Intenta nuevamente.';
+}
+
+/**
  * Ejecutor autenticado de consultas GraphQL sobre el endpoint unificado /api/metrics.
  * Los errores de consulta llegan con HTTP 200 en `errors`; 401 y 403 los lanza `post`.
  */
@@ -53,7 +66,7 @@ export async function executeGraphQL<TData = unknown>(
   >('/metrics', { query, variables });
 
   if (response.errors && response.errors.length > 0) {
-    throw new Error(response.errors[0]?.message ?? 'Error en la consulta GraphQL');
+    throw new Error(graphQLErrorMessage(response.errors[0]));
   }
 
   if (!response.data) {
