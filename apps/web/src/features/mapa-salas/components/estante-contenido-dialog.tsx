@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Archive, Loader2 } from 'lucide-react';
 import { useEstanteContenido } from '@sgia/api-client';
-import type { EstanteContenidoCajon, EstanteContenidoUnidades } from '@sgia/types';
+import type { EstanteContenidoCajon } from '@sgia/types';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { ErrorState } from '@/components/ui/error-state';
 import { CODE_CHIP_CLASS, SECTION_LABEL_CLASS } from '@/components/ui/typography';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { plural } from '../lib/map-labels';
+import { CajonElementos } from './cajon-elementos';
 import { CajonLlenoButton } from './cajon-lleno-button';
 
 export interface EstanteContenidoDialogProps {
@@ -25,17 +26,6 @@ export interface EstanteContenidoDialogProps {
   /** Acciones de edición (solo editores). */
   onEdit?: () => void;
   onAssign?: () => void;
-}
-
-function UnidadesBadges({ unidades }: { unidades: EstanteContenidoUnidades }) {
-  const { disponible, prestado, en_reparacion } = unidades.by_status;
-  return (
-    <span className="flex flex-wrap justify-end gap-1">
-      {disponible > 0 && <Badge tone="available">{plural(disponible, 'disponible', 'disponibles')}</Badge>}
-      {prestado > 0 && <Badge tone="loaned">{plural(prestado, 'prestado', 'prestados')}</Badge>}
-      {en_reparacion > 0 && <Badge tone="maintenance">{`${en_reparacion} en reparación`}</Badge>}
-    </span>
-  );
 }
 
 function CajonSection({
@@ -63,30 +53,7 @@ function CajonSection({
           {canMarkFull && <CajonLlenoButton cajonId={cajon.id} codigo={cajon.barcode ?? cajon.codigo} lleno={cajon.lleno} />}
         </span>
       </header>
-      {empty ? (
-        <p className="px-3 py-2 text-[13px] text-zinc-500 dark:text-zinc-400">Cajón vacío.</p>
-      ) : (
-        <ul className="divide-y divide-zinc-200 dark:divide-zinc-800">
-          {cajon.productos.map((producto) => (
-            <li key={`p-${producto.id}`} className="flex items-center gap-3 px-3 py-2 text-sm">
-              <span className="min-w-0 flex-1 text-zinc-900 dark:text-zinc-100">{producto.name}</span>
-              {producto.is_critical && <Badge tone="danger">Bajo el mínimo</Badge>}
-              <span className="font-mono text-[13px] text-zinc-600 dark:text-zinc-300">{producto.quantity} u.</span>
-            </li>
-          ))}
-          {cajon.unidades.map((unidades) => (
-            <li key={`u-${unidades.product_id}`} className="flex flex-wrap items-center gap-3 px-3 py-2 text-sm">
-              <span className="min-w-0 flex-1 text-zinc-900 dark:text-zinc-100">
-                {unidades.product_name}
-                <span className="ml-1.5 text-[13px] text-zinc-500 dark:text-zinc-400">
-                  {unidades.type === 'maqueta' ? 'Maqueta' : 'Equipo'}
-                </span>
-              </span>
-              <UnidadesBadges unidades={unidades} />
-            </li>
-          ))}
-        </ul>
-      )}
+      <CajonElementos productos={cajon.productos} unidades={cajon.unidades} />
     </section>
   );
 }
