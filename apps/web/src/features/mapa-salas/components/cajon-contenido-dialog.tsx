@@ -71,9 +71,13 @@ export function CajonContenidoDialog({ cajon, onClose, canSeeInventory, canMarkF
     if (!cajon) return null;
     if (cajon.estanteId !== null) {
       const encontrado = contenido.data?.cajones.find((c) => c.id === cajon.id);
-      return encontrado ? { productos: encontrado.productos, unidades: encontrado.unidades } : null;
+      return encontrado
+        ? { productos: encontrado.productos, unidades: encontrado.unidades, lleno: encontrado.lleno }
+        : null;
     }
-    return productos.data ? { productos: productos.data.data.map(toContenido), unidades: NO_UNITS } : null;
+    return productos.data
+      ? { productos: productos.data.data.map(toContenido), unidades: NO_UNITS, lleno: Boolean(cajon.lleno) }
+      : null;
   }, [cajon, contenido.data, productos.data]);
 
   const query = conEstante ? contenido : productos;
@@ -100,14 +104,14 @@ export function CajonContenidoDialog({ cajon, onClose, canSeeInventory, canMarkF
           <>
             <div className="flex flex-wrap items-center gap-2">
               <p className={SECTION_LABEL_CLASS}>{plural(total, 'elemento', 'elementos')}</p>
-              {cajon.lleno && <Badge tone="loaned">Lleno</Badge>}
+              {elementos.lleno && <Badge tone="loaned">Lleno</Badge>}
               <span className="ml-auto flex items-center gap-3">
                 {canSeeInventory && total > 0 && (
                   <Link to={`/inventario?cajon_id=${cajon.id}`} className="text-[13px] font-medium text-accent hover:underline">
                     Ver en inventario
                   </Link>
                 )}
-                {canMarkFull && <CajonLlenoButton cajonId={cajon.id} codigo={cajon.code} lleno={Boolean(cajon.lleno)} />}
+                {canMarkFull && <CajonLlenoButton cajonId={cajon.id} codigo={cajon.code} lleno={elementos.lleno} />}
               </span>
             </div>
             <div className="rounded-md border border-zinc-200 dark:border-zinc-800">

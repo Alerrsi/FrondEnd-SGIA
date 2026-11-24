@@ -22,12 +22,15 @@ import { LocationFormDialog } from '@/features/ubicaciones/components/location-f
 import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
 import { SalasList } from '@/features/ubicaciones/components/salas-list';
 import { SalaSelect } from '@/features/ubicaciones/components/sala-select';
-import { UbicacionPanel, type PanelTab } from '@/features/ubicaciones/components/ubicacion-panel';
+import { EstantesPanel } from '@/features/ubicaciones/components/estantes-panel';
+import type { CajonVista } from '@/features/ubicaciones/components/cajon-row';
+import type { GroupKey } from '@/features/ubicaciones/lib/estante-groups';
 import { usePanelPreference } from '@/features/ubicaciones/hooks/use-panel-preference';
 import { cajonFullCode } from '@/features/ubicaciones/lib/location-code';
 import { useWorkspaceMode } from '@/features/ubicaciones/hooks/use-workspace-mode';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { canAccessRoute, canDo } from '@/features/auth/types/roles';
+import { CajonContenidoDialog, type CajonContenidoTarget } from '@/features/mapa-salas/components/cajon-contenido-dialog';
 import { SalaMapaPanel } from '@/features/mapa-salas/components/sala-mapa-panel';
 import { useElementSize } from '@/features/mapa-salas/hooks/use-element-size';
 
@@ -57,10 +60,11 @@ export default function UbicacionesPage() {
   const [dockedOpen, setDockedOpen] = usePanelPreference();
   const [sheetOpen, setSheetOpen] = useState(false);
   const panelOpen = docked ? dockedOpen : sheetOpen;
-  const [panelTab, setPanelTab] = useState<PanelTab>('cajones');
-  const [estanteFilter, setEstanteFilter] = useState<number | null>(null);
+  // Estante desplegado en el panel (uno a la vez), estante bajo el puntero y pop-ups de contenido.
+  const [openKey, setOpenKey] = useState<GroupKey | null>(null);
   const [hoverEstante, setHoverEstante] = useState<number | null>(null);
   const [contentEstanteId, setContentEstanteId] = useState<number | null>(null);
+  const [cajonAbierto, setCajonAbierto] = useState<CajonContenidoTarget | null>(null);
 
   // Modales
   const [locationModalOpen, setLocationModalOpen] = useState(false);
@@ -68,7 +72,7 @@ export default function UbicacionesPage() {
   const [cajonModalOpen, setCajonModalOpen] = useState(false);
   // Confirmaciones de eliminación (modal estándar en vez del confirm() del navegador).
   const [locationToDelete, setLocationToDelete] = useState<LocationEntity | null>(null);
-  const [cajonToDelete, setCajonToDelete] = useState<CajonEntity | null>(null);
+  const [cajonToDelete, setCajonToDelete] = useState<Pick<CajonEntity, 'id' | 'codigo'> | null>(null);
 
   // Queries
   const { data: locationsData, isLoading, refetch } = useLocations({
@@ -87,22 +91,25 @@ export default function UbicacionesPage() {
   }, [selectedLocation, locations]);
   const activeId = activeLocation?.id ?? null;
 
+  // La API pagina de a 15: se piden hasta 100 (máximo de la API). Los cajones de cada estante salen del plano,
+  // que viene completo; esta lista aporta descripciones y los cajones sin estante.
   const { data: cajonesData, isLoading: isLoadingCajones } = useCajones(
-    activeLocation ? { location_id: activeLocation.id } : undefined,
+    activeLocation ? { location_id: activeLocation.id, per_page: 100 } : undefined,
   );
 
   const cajones: CajonEntity[] = cajonesData?.data ?? [];
 
-  // Estantes y zonas de la sala para la pestaña Estantes (misma consulta que el plano: ya en caché).
+  // Estantes y zonas de la sala para el panel (misma consulta que el plano: ya en caché).
   const mapa = useSalaMapa(activeId ?? undefined);
   const estantes = useMemo(() => mapa.data?.estantes ?? [], [mapa.data?.estantes]);
   const zonas = useMemo(() => mapa.data?.zonas ?? [], [mapa.data?.zonas]);
 
   // Al cambiar de sala, el filtro y los resaltados son de la anterior.
   useEffect(() => {
-    setEstanteFilter(null);
+    setOpenKey(null);
     setHoverEstante(null);
     setContentEstanteId(null);
+    setCajonAbierto(null);
   }, [activeId]);
 
   // Si la ventana se ensancha con la hoja abierta, el panel pasa a la columna y la hoja se cierra.
@@ -111,8 +118,8 @@ export default function UbicacionesPage() {
   }, [docked]);
 
   const highlightEstanteIds = useMemo(
-    () => [estanteFilter, hoverEstante].filter((id): id is number => id !== null),
-    [estanteFilter, hoverEstante],
+    () => [openKey, hoverEstante].filter((id): id is number => typeof id === 'number'),
+    [openKey, hoverEstante],
   );
 
   // Mutations
@@ -130,21 +137,26 @@ export default function UbicacionesPage() {
     else setSheetOpen((open) => !open);
   };
 
-  /** Tocar un estante del plano filtra el panel a sus cajones (y lo abre). */
+  /** Tocar un estante del plano lo despliega en el panel (y abre el panel o la hoja). */
   const handleEstanteClick = useCallback(
     (estante: Estante) => {
-      setEstanteFilter(estante.id);
-      setPanelTab('cajones');
+      setOpenKey(estante.id);
       openPanel();
     },
     [openPanel],
   );
 
-  const handleShowContent = (id: number) => {
-    // Como hoja, el panel se cierra para que el pop-up no quede debajo de otra capa.
-    if (!docked) setSheetOpen(false);
-    setContentEstanteId(id);
-  };
+  /** Clic en un cajón del panel: pop-up con sus elementos (la hoja sigue abierta debajo). */
+  const handleOpenCajon = (cajon: CajonVista) =>
+    setCajonAbierto({
+      id: cajon.id,
+      codigo: cajon.codigo,
+      code: cajon.code,
+      estanteId: cajon.estanteId,
+      estanteCodigo: cajon.estanteCodigo,
+      descripcion: cajon.descripcion,
+      lleno: cajon.lleno,
+    });
 
   const handleOpenCreateLocation = () => {
     setEditingLocation(null);
@@ -181,11 +193,12 @@ export default function UbicacionesPage() {
 
   /** Código completo del cajón; si la API aún no lo trae, se arma con el de la sala. */
   const cajonCode = useCallback(
-    (cajon: CajonEntity) => cajon.barcode || cajonFullCode(cajon.location?.code ?? activeLocation?.code ?? '', cajon.codigo),
+    (cajon: Pick<CajonEntity, 'barcode' | 'codigo' | 'location'>) =>
+      cajon.barcode || cajonFullCode(cajon.location?.code ?? activeLocation?.code ?? '', cajon.codigo),
     [activeLocation?.code],
   );
 
-  const handlePrintLabel = async (cajon: CajonEntity) => {
+  const handlePrintLabel = async (cajon: Pick<CajonEntity, 'id'>) => {
     try {
       printBlob(await labelMutation.mutateAsync(cajon.id));
     } catch (error) {
@@ -193,7 +206,7 @@ export default function UbicacionesPage() {
     }
   };
 
-  const handleDeleteCajon = (cajon: CajonEntity) => setCajonToDelete(cajon);
+  const handleDeleteCajon = (cajon: Pick<CajonEntity, 'id' | 'codigo'>) => setCajonToDelete({ id: cajon.id, codigo: cajon.codigo });
 
   const confirmDeleteCajon = async () => {
     const cajon = cajonToDelete;
@@ -208,17 +221,16 @@ export default function UbicacionesPage() {
   };
 
   const panel = activeLocation ? (
-    <UbicacionPanel
+    <EstantesPanel
       id={docked ? PANEL_ID : undefined}
-      cajones={cajones}
-      isLoadingCajones={isLoadingCajones}
       estantes={estantes}
       zonas={zonas}
-      tab={panelTab}
-      onTabChange={setPanelTab}
-      estanteFilter={estanteFilter}
-      onEstanteFilterChange={setEstanteFilter}
-      onShowContent={handleShowContent}
+      cajones={cajones}
+      isLoading={isLoadingCajones || mapa.isLoading}
+      openKey={openKey}
+      onOpenKeyChange={setOpenKey}
+      onShowEstante={setContentEstanteId}
+      onOpenCajon={handleOpenCajon}
       onCreateCajon={handleOpenCreateCajon}
       canMarkFull={canMarkFull}
       cajonCode={cajonCode}
@@ -244,7 +256,7 @@ export default function UbicacionesPage() {
       ) : (
         <PanelRightOpen aria-hidden="true" className="h-4 w-4" />
       )}
-      Cajones <span className="font-mono">({cajones.length})</span>
+      Estantes <span className="font-mono">({estantes.length})</span>
     </Button>
   );
 
@@ -348,7 +360,7 @@ export default function UbicacionesPage() {
             <div className="flex min-h-0 min-w-0 flex-1 flex-col p-3 sm:p-4">{map}</div>
             {docked && panelOpen && panel && (
               <aside
-                aria-label="Cajones y estantes de la sala"
+                aria-label="Estantes y cajones de la sala"
                 className={cn('flex shrink-0 flex-col border-l border-zinc-200 dark:border-zinc-800', roomy ? 'w-80' : 'w-72')}
               >
                 {panel}
@@ -362,12 +374,19 @@ export default function UbicacionesPage() {
         <Sheet open={sheetOpen && panel !== null} onOpenChange={setSheetOpen}>
           {sheetOpen && panel && (
             <SheetContent side="right" className="gap-0 sm:max-w-sm!" aria-describedby={undefined}>
-              <SheetTitle className="sr-only">Cajones y estantes de «{activeLocation?.nombre}»</SheetTitle>
+              <SheetTitle className="sr-only">Estantes y cajones de «{activeLocation?.nombre}»</SheetTitle>
               {panel}
             </SheetContent>
           )}
         </Sheet>
       )}
+
+      <CajonContenidoDialog
+        cajon={cajonAbierto}
+        onClose={() => setCajonAbierto(null)}
+        canSeeInventory={role ? canAccessRoute(role, '/inventario') : false}
+        canMarkFull={canMarkFull}
+      />
 
       <LocationFormDialog
         open={locationModalOpen}
