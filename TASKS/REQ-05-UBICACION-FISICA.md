@@ -65,6 +65,13 @@ Garantizar la trazabilidad y rápida localización física de cada activo o insu
 - [x] Códigos visibles en salas y cajones (`font-mono`) y botón «Imprimir etiqueta» por cajón.
 - [x] Tests de componentes de la sugerencia, la vista previa y la etiqueta (`features/ubicaciones/pages/ubicaciones-page.test.tsx`) y unitarios de la regla (`features/ubicaciones/lib/location-code.test.ts`).
 
+### 3. Ubicaciones de un vistazo (plan en `docs/ubicaciones-distribucion.md`)
+- [ ] Modos por ancho del área de trabajo: angosto (< 720 px, apilado), medio (720–1079 px, salas + plano) y ancho (≥ 1080 px, salas + plano + panel acoplado); sin desplazar la página en medio y ancho.
+- [ ] Columna de salas con filas de una línea (editar y eliminar al pasar el mouse, con foco o en táctil) y selector de sala en modo angosto.
+- [ ] Panel lateral «Cajones (N)» con pestañas Cajones y Estantes, acoplado o como hoja, abierto/cerrado recordado en `localStorage`.
+- [ ] Tocar un estante filtra el panel a sus cajones («Ver productos» abre el contenido de siempre); pasar por un cajón resalta su estante.
+- [ ] Tests de la página y del panel del mapa, y recorrido en Chromium a 1440, 1280, 1024, 768 y 390 px.
+
 ---
 
 ## 🧪 Pruebas Requeridas
