@@ -18,7 +18,7 @@
 | 2 | **Responsivo por el ancho del área de trabajo** (no por el de la ventana, porque el menú lateral puede estar abierto, encogido o como cajón): <br>• **Angosto** (< 640 px): todo apilado y la página se desplaza; la sala se elige en un selector arriba del plano (con editar y eliminar al lado); el panel se abre como hoja (`Sheet`). <br>• **Medio** (640–939 px): columna de salas y plano; el panel se abre como hoja sobre el plano. <br>• **Ancho** (≥ 940 px): salas, plano y panel acoplado como tercera columna. <br>Para bajar de distribución el ancho debe quedar 24 px bajo el umbral (histéresis). Umbrales ajustados en la prueba real: con 720/1080 px un notebook de 1280 × 720 con el menú abierto (958 px de área) no veía el panel, y justo en 720 px la barra de desplazamiento hacía alternar las dos distribuciones. |
 | 3 | En los modos medio y ancho, la pantalla ocupa el alto de la ventana (`100dvh` menos la barra superior de 56 px y el margen del marco), con un mínimo de 560 px: en ventanas más bajas la página se desplaza en vez de aplastar el plano. |
 | 4 | **Panel**: en modo ancho parte **abierto** y recuerda lo que eligió el usuario (`localStorage` `sgia-ubicaciones-panel`); como hoja (medio y angosto) parte cerrado. El botón dice «Cajones (N)», con `aria-expanded` y `aria-controls`. |
-| 5 | **Salas en una línea**: chip con el código y nombre; tipo y descripción en el `title` y en el texto para lector de pantalla. Editar y eliminar aparecen al pasar el mouse, con foco dentro de la fila, en la sala elegida y siempre en pantallas táctiles (`pointer-coarse`); ocultos no ocupan sitio, así el nombre usa todo el ancho. Búsqueda y filtro de tipo apilados en la columna. Columnas laterales de 208 y 288 px bajo 1200 px de área y de 240 y 320 px desde ahí. |
+| 5 | **Salas en una línea**: chip con el código y nombre; tipo y descripción en el `title` y en el texto para lector de pantalla. Editar y eliminar aparecen al pasar el mouse, con foco dentro de la fila, en la sala elegida y siempre en pantallas táctiles (`pointer-coarse`); ocultos no ocupan sitio, así el nombre usa todo el ancho. Búsqueda y filtro de tipo apilados en la columna. Columnas laterales de 208 y 288 px bajo 1100 px de área y de 240 y 320 px desde ahí. |
 | 6 | **Plano que se ajusta solo**: el `<svg>` toma el mayor tamaño que cabe en su caja manteniendo la proporción de la sala (se mide la caja con `ResizeObserver`), así se ve la sala completa al elegirla o al cambiar el tamaño de la ventana y la escala de textos (`useMapScale`) vuelve a ser exacta. Zoom, «Ajustar» y «Buscar en la sala» siguen igual. En modo angosto la caja tiene la proporción de la sala con un máximo de 60 % del alto de la ventana. |
 | 7 | **Tocar un estante filtra el panel** a sus cajones (y lo abre si estaba cerrado), en vez de abrir la ventana emergente. El estante queda resaltado en el plano. Arriba del panel aparece el estante con zona, cajones y elementos, y los botones **«Ver productos»** (abre la misma ventana de contenido de siempre, con «Editar» y «Asignar cajones») y **«Quitar filtro»**. En `/mapa-salas` el clic sigue abriendo la ventana emergente. |
 | 8 | **Panel con dos pestañas** (Radix Tabs): **Cajones** (filtro de texto, una fila compacta por cajón: chip con el código completo, «Lleno», estante y descripción en la segunda línea, y las acciones marcar lleno, imprimir etiqueta y eliminar; «Nuevo cajón» al pie) y **Estantes** (la lista que hoy queda bajo el plano; tocar uno filtra la pestaña Cajones). La lista «Estantes de la sala» desaparece de debajo del plano en Ubicaciones. |
@@ -87,7 +87,7 @@ Sin desplazamiento lateral en ningún caso. Interacciones con mouse real (29/29)
 
 ## Cambio: panel solo de estantes desplegables (2026-11-24)
 
-**Estado: plan, sin implementar.** Rama `feat/ubicaciones-estantes-desplegables`. Lo pidió el usuario tras ver el panel con pestañas: «en vez de haber menú de cajones y de estantes, que salgan solo los estantes y al hacer clic en uno se desplieguen los cajones; los cajones sin hacer clic deben mostrar la cantidad de elementos y al hacer clic, un pop-up con la lista de elementos».
+**Estado: implementado (noviembre 2026).** Rama `feat/ubicaciones-estantes-desplegables`. Lo pidió el usuario tras ver el panel con pestañas: «en vez de haber menú de cajones y de estantes, que salgan solo los estantes y al hacer clic en uno se desplieguen los cajones; los cajones sin hacer clic deben mostrar la cantidad de elementos y al hacer clic, un pop-up con la lista de elementos».
 
 | # | Decisión (reemplaza la 8 y ajusta la 7) |
 |---|---|
@@ -98,10 +98,18 @@ Sin desplazamiento lateral en ningún caso. Interacciones con mouse real (29/29)
 | 15 | El botón de la barra del plano pasa a **«Estantes (N)»**. El filtro de texto del panel busca en estantes y cajones; con texto, se despliegan todos los estantes con coincidencias. |
 
 Fases:
-1. [ ] Plan (esta sección) y `TASKS/REQ-05`.
-2. [ ] `CajonContenidoDialog` y la lista de elementos compartida con el pop-up del estante; tests.
-3. [ ] Panel de estantes desplegables, botón «Estantes (N)», tocar en el plano despliega; tests.
-4. [ ] Prueba en Chromium contra la API de desarrollo (ancho, medio y teléfono).
+1. [x] Plan (esta sección) y `TASKS/REQ-05`.
+2. [x] `CajonContenidoDialog` y la lista de elementos compartida con el pop-up del estante (`cajon-elementos.tsx`); tests.
+3. [x] Panel de estantes desplegables (`estantes-panel.tsx`, `lib/estante-groups.ts`), botón «Estantes (N)», tocar en el plano despliega; tests.
+4. [x] Prueba en Chromium contra la API de desarrollo (ancho, medio y teléfono).
+
+Notas de implementación:
+- «Elementos» de un cajón = insumos activos + unidades no dadas de baja (`Estante::scopeForMap` del backend: los equipos y maquetas se cuentan por unidad). Comparado con Postgres en los cinco cajones con contenido de PCENTRAL (8, 18, 13, 18 y 1): la fila y el total del pop-up coinciden con la base.
+- La API pagina `GET /cajones` de a 15: la lista anterior se cortaba en salas con más de 15 cajones. Ahora los cajones de cada estante salen del plano (completo) y la lista se pide con `per_page=100` (máximo de la API) solo para descripciones y cajones sin estante.
+- Radix devuelve el foco solo a su `Dialog.Trigger`; los modales y hojas abiertos desde código lo dejaban en `<body>`. `lib/use-return-focus.ts` lo devuelve a quien los abrió (en `Dialog` y `SheetContent`, para toda la app).
+- El pop-up del cajón se abre encima de la hoja (teléfono y modo medio) y al cerrarlo la hoja sigue abierta en el mismo estante.
+- Columnas laterales anchas desde 1100 px de área (antes 1200) para que el código completo del cajón quepa en el panel a 1440 px.
+- Prueba real (26/26 + teclado 5/5): sin pestañas, uno a la vez, conteos contra la base, pop-up con su total, tocar en el plano despliega y resalta sin pop-up, «Ver todo el estante», Enter/Espacio/Tab y foco de vuelta al cerrar, hoja a 390 y 1024 px con el pop-up encima, sin desplazamiento lateral; códigos de cajón sin cortar a 1440, 1366, 1280 y 390 px.
 
 ## Fuera de alcance
 

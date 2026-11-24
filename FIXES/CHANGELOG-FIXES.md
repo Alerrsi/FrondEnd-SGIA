@@ -1079,3 +1079,14 @@
   - Distribución por el ancho del área de trabajo (no de la ventana): angosta < 640 px (selector de sala, plano con su proporción, panel como hoja), media 640–939 px (salas + plano, panel como hoja) y ancha ≥ 940 px (panel acoplado); 24 px de histéresis para no alternar en el umbral.
   - Tocar un estante filtra el panel a sus cajones y lo resalta en el plano («Ver productos» abre el contenido de siempre, con editar y asignar); pasar por un cajón resalta su estante. `/mapa-salas` no cambia.
 - **Verificación:** vitest en verde (`ubicaciones-page.test.tsx` con distribución ancha y angosta, `workspace-mode.test.ts`, `fit-size.test.ts`, `sala-mapa-panel.test.tsx`); typecheck; lint. Recorrido en Chromium contra la API de desarrollo como PAN-01 en 12 combinaciones (1440 a 320 px, claro y oscuro, menú abierto y encogido, barra superior): plano siempre dentro de su caja, sin desplazamiento lateral y sin desplazar la página en las distribuciones media y ancha; 29/29 interacciones con mouse real.
+
+## FIX-063: Ubicaciones: panel solo de estantes desplegables y pop-up por cajón
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`features/ubicaciones/components/estantes-panel.tsx`, `cajon-row.tsx`, `lib/estante-groups.ts`, `pages/ubicaciones-page.tsx`; `features/mapa-salas/components/cajon-contenido-dialog.tsx`, `cajon-elementos.tsx`; `components/ui/dialog.tsx`, `sheet.tsx`, `lib/use-return-focus.ts`) — `docs/ubicaciones-distribucion.md`, «Cambio: panel solo de estantes desplegables»
+- **Qué cambia:**
+  - El panel lateral deja las pestañas Cajones/Estantes: lista solo los estantes (zona, cajones, elementos, stock crítico) y cada uno se despliega (uno a la vez) mostrando sus cajones; los cajones sin estante van al final. El botón del plano pasa a «Estantes (N)».
+  - Cada cajón muestra **cuántos elementos guarda** sin hacer clic (insumos activos + unidades, la misma regla del backend) y al hacer clic abre un **pop-up con la lista** (productos con cantidad, equipos y maquetas con unidades por estado, «Ver en inventario» y marcar lleno). Tocar un estante en el plano lo despliega en el panel y lo resalta; «Ver todo el estante» abre el pop-up del estante de siempre.
+  - Los cajones de cada estante salen del plano (completo): antes la lista de cajones se cortaba en 15 porque la API pagina de a 15.
+  - Modales y hojas abiertos desde código devuelven el foco a quien los abrió al cerrarse (antes quedaba en `<body>`), en toda la app.
+- **Verificación:** vitest en verde (630); typecheck; lint. Recorrido en Chromium contra la API de desarrollo como PAN-01: 26/26 (conteos iguales a Postgres en los cinco cajones con contenido de PCENTRAL, pop-up encima de la hoja a 390 y 1024 px, sin desplazamiento lateral) y teclado 5/5 (Enter/Espacio despliegan, Tab al cajón, Enter abre el pop-up y el foco vuelve al cerrar).
