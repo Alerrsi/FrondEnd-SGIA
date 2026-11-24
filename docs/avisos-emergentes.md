@@ -1,6 +1,6 @@
 # Avisos emergentes propios (toasts)
 
-**Estado: implementado (noviembre 2026).** Rama `feat/avisos-emergentes`. Solo frontend. Relacionado: `BackEnd-SGIA/docs/exportaciones-y-campana.md` (campana).
+**Estado: implementado (noviembre 2026); rediseño con el aspecto de sileo en curso (rama `feat/avisos-estilo-sileo`).** Rama `feat/avisos-emergentes`. Solo frontend. Relacionado: `BackEnd-SGIA/docs/exportaciones-y-campana.md` (campana).
 
 ## Problema
 
@@ -36,6 +36,18 @@
 - Radix difiere el «clic fuera» del modal hasta el `click`, cuando React ya quitó el aviso del DOM: `lib/is-toaster-event.ts` reconoce también el aviso desprendido (`[data-toast]`). Sin esto, quitar un aviso cerraba el modal (lo encontró la prueba en Chromium; el test unitario con happy-dom no).
 - El rojo usa `hover:` de Tailwind, que va dentro de `@media (hover: hover)`: en pantallas táctiles no hay hover y el clic igual quita el aviso. El Chromium headless declara que no hay mouse; para medir la transición se lanzó con `--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4`.
 - Prueba real (12/12): aviso al marcar un cajón lleno, texto en tipo oración, dos tonos, fondo y basurero medidos a mitad de la transición, pausa con el mouse encima, clic para quitar, con el pop-up del estante abierto (el modal sigue abierto), se va solo a los 4 s, 390 px en oscuro a ancho completo. Los cajones de prueba quedaron sin «lleno».
+
+## Rediseño con el aspecto de sileo (2026-11-23)
+
+El usuario pidió que los avisos se vean como antes con sileo, conservando sonido, rojo al pasar el mouse y clic para quitar.
+
+| # | Decisión |
+|---|---|
+| 9 | **Píldora** de 40 px de alto, ancho según el contenido y alineada a la derecha, con los colores de sileo: fondo `#1a1a1a` en claro y `#f2f2f2` en oscuro; ícono en un círculo de 24 px con el color del estado al 20 %; título de 13,2 px en el color del estado (los `oklch` de sileo: verde, rojo, amarillo, celeste). |
+| 10 | Con descripción, la píldora se abre en una tarjeta del mismo color (radio 20 px) con la descripción debajo, como sileo expandido. |
+| 11 | Entrada con el resorte de sileo (opacidad, `translateY(-6px)`, `scale(.95)` y desenfoque del contenido); sin movimiento con `prefers-reduced-motion`. |
+| 12 | **Hover y foco**: la píldora pasa a rojo de forma gradual (300 ms), el texto a blanco y el ícono del estado se convierte en un basurero dentro del mismo círculo (sin cambiar el ancho). Clic, Enter o Espacio la quitan. |
+| 13 | Los títulos se mantienen en tipo oración (sileo los pasaba a «Tipo Título»; la web no usa ese estilo). |
 
 ## Fuera de alcance
 
