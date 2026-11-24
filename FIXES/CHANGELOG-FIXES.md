@@ -1057,3 +1057,14 @@
 - **Módulo:** `apps/web` (`components/ui/toast-card.tsx`, `toaster.tsx`, `index.css`) — `docs/avisos-emergentes.md` §9–13
 - **Qué cambia:** los avisos propios (FIX-059) vuelven a verse como con sileo: píldora de 40 px oscura en claro (`#1a1a1a`) y clara en oscuro (`#f2f2f2`), ícono del estado en un círculo tintado y título en el color del estado (los `oklch` de sileo), tarjeta de radio 20 px cuando hay descripción, alineados a la derecha con 12 px entre avisos y entrada con su resorte y desenfoque. Se conservan el sonido, el rojo gradual al pasar el mouse (ahora toda la píldora, con el ícono convertido en basurero) y el clic para quitar sin cerrar modales. Títulos en tipo oración.
 - **Verificación:** `toaster.test.tsx` (píldora/tarjeta, color del estado, hover rojo, clic, temporizador, modal); recorrido en Chromium contra la API de desarrollo 12/12 y capturas en claro y oscuro.
+
+## FIX-061: Centro de préstamos: cada número dice qué cuenta
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`features/prestamos/pages/prestamos-menu-page.tsx`) — REQ-10 / REQ-11
+- **Problema:** el aviso «2 pendientes» de la tarjeta «Cola de solicitudes remotas» contaba todos los préstamos en estado `pendiente` (también un presencial), pero la cola (`GET /api/loans/pending`) solo lista los remotos: al abrirla aparecía 1. Además, «Préstamos en curso» y «atrasados» se superponían sin decirlo, y «Despachos listos para entrega» era un texto fijo sin número.
+- **Qué cambia:**
+  - Mostrador: «Entregados sin devolver: N · M vencidos» (procesados con `returned_at` nulo; los vencidos en `text-danger`).
+  - Cola: el aviso «N por revisar» usa `usePendingLoans` (la misma consulta que la cola) y el detalle pasa a «Aprobadas, esperando retiro: N» (remotas en `en_proceso`).
+  - Historial: el aviso dice «N vencidos sin devolver».
+- **Verificación:** números cruzados contra Postgres para el Pañol Central Temuco (4 sin devolver, 4 vencidos, 1 remota pendiente, 2 aprobadas por retirar) y vistos iguales en Chromium como PAN-01 contra la API de desarrollo, claro y oscuro; `prestamos-menu-page.test.tsx` (4 tests); typecheck; lint.
