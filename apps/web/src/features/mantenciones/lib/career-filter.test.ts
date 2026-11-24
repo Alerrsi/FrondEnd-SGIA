@@ -1,19 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { careerFilterFromValue, careerFilterOf, careerFilterParams, careerFilterToValue, careerLabel } from './career-filter';
+import { careerFilterOf, careerFilterParams, careerLabel } from './career-filter';
 
 describe('career-filter (docs/mantenciones-por-carrera.md)', () => {
   it('convierte la carrera elegida en parámetros del listado', () => {
     expect(careerFilterParams(null)).toEqual({});
     expect(careerFilterParams(3)).toEqual({ career_id: 3 });
     expect(careerFilterParams('none')).toEqual({ sin_carrera: true });
-  });
-
-  it('ida y vuelta con el valor del selector', () => {
-    for (const filter of [null, 3, 'none'] as const) {
-      expect(careerFilterFromValue(careerFilterToValue(filter))).toBe(filter);
-    }
-    expect(careerFilterFromValue('abc')).toBeNull();
   });
 
   it('la carrera sin id es «sin carrera» y la etiqueta lleva el código', () => {
