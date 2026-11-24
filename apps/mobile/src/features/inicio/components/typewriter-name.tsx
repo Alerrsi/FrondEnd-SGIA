@@ -17,7 +17,7 @@ export function TypewriterName({ name }: { name: string }) {
 
   if (reduced) return <Text>{name}</Text>;
   return (
-    <Text accessibilityElementsHidden importantForAccessibility="no-hide-descendants" testID="typewriter-name">
+    <Text aria-hidden testID="typewriter-name">
       {shown}
       <Text style={{ color: theme.accent, opacity: caretOn ? 1 : 0 }}>_</Text>
       <Text style={{ opacity: 0 }}>{name.slice(shown.length)}</Text>
