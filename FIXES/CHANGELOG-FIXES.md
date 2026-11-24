@@ -1109,3 +1109,11 @@
   - Tocar una carrera filtra la bandeja (`aria-pressed`; tocarla de nuevo o «Ver todas las carreras» lo quita); la bandeja suma un selector de carrera y su título dice la carrera elegida. En pantallas angostas la bandeja se lleva a la vista.
   - Aviso de vencidas con tokens `warn` y chips de código. Bandeja en `TableFrame` (estado como control segmentado, tipo y carrera), filas 13–14 px y `MobileRow` en el teléfono.
 - **Verificación:** vitest en verde (639); typecheck; lint; backend `MaintenanceRecordTest` (filtro por carrera, combinado con estado, sin carrera y `422`), suite completa (699), Pint y Larastan. Recorrido en Chromium contra la API como PAN-01 y DIR-01: 28/28, celdas iguales a Postgres y filtros que devuelven exactamente las mantenciones de cada carrera.
+
+## FIX-066: Mantenciones más compacto y con la paleta del sitio
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`features/mantenciones/components/maintenance-career-list.tsx`, `maintenance-metrics.tsx`, `maintenance-due-notice.tsx`, `maintenance-inbox.tsx`, `pages/mantenciones-page.tsx`) — `BackEnd-SGIA/docs/mantenciones-por-carrera.md`, «Revisión compacta»
+- **Problema:** el usuario no quedó conforme con FIX-065: las tarjetas por carrera ocupaban mucho y las barras y cifras en verde y amarillo desentonaban con el sitio.
+- **Qué cambia:** las carreras pasan a una columna de filas de dos líneas (código, nombre, total; barra delgada y «N en curso») junto a la bandeja desde 1024 px, con «Todas las carreras» arriba y la elegida marcada como en el menú; barras en burdeo (en curso) y grises (finalizadas, anuladas); cifras sin color en una franja de 4 (2 × 2 en el teléfono); aviso de vencidas en una franja neutra de una línea; la bandeja junta «Tipo y ejecución» y deja el selector de carrera a la lista.
+- **Verificación:** vitest en verde (637); typecheck; lint. Recorrido en Chromium contra la API (PAN-01 y DIR-01) 32/32: filas iguales a Postgres, filtro por carrera exacto, sin verde ni amarillo en lista y cifras, tabla sin desplazamiento lateral a 1280 × 720 con el menú abierto, 390 px en oscuro y teclado.
