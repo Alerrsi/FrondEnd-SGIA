@@ -1097,3 +1097,15 @@
 - **Módulo:** `apps/web` (`lib/notification-sound.ts`, `assets/sounds/notificacion.mp3`) — `docs/avisos-emergentes.md`
 - **Qué cambia:** los avisos emergentes y las alertas nuevas de la campana suenan con el mp3 que envió el usuario («New Notification 010» de Universfield, licencia de Pixabay) en vez de los dos tonos generados con Web Audio. Un solo `<audio>` reutilizado a volumen 0,6 que vuelve a empezar si llegan varias seguidas; si el navegador bloquea el sonido, falla en silencio.
 - **Verificación:** `notification-sound.test.ts` (archivo, volumen, reinicio, bloqueo), `toaster.test.tsx` y `notification-bell.test.tsx`; typecheck; lint; build de producción con el mp3 empaquetado; prueba real en Chromium: al marcar un cajón lleno aparece el aviso y el mp3 suena sin errores (el cajón quedó como estaba).
+
+## FIX-065: Mantenciones: carreras de un vistazo y bandeja filtrable por carrera
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`features/mantenciones/*`), `packages/types` (`MaintenanceRecordQueryParams`); backend `GET /api/maintenance-records?career_id=` / `sin_carrera=1` — plan en `BackEnd-SGIA/docs/mantenciones-por-carrera.md` (REQ-18)
+- **Problema:** la tabla por carrera repetía números (unidades y total), su barra gris no distinguía en curso de finalizadas y en el teléfono se cortaba con desplazamiento lateral; las carreras no se conectaban con la bandeja; cifras, aviso de vencidas (ámbar a mano), tablas en 12 px y pesos 600 fuera del sistema «Trazo».
+- **Qué cambia:**
+  - Cifras con `Metric` en `CellGrid` (En curso, Vencidas sin enviar, Finalizadas, Unidades atendidas); 2 × 2 en el teléfono.
+  - Una celda por carrera con código, nombre completo, total, barra apilada por estado (en curso `warn`, finalizadas `ok`, anuladas neutro; largo proporcional a la carrera con más mantenciones), desglose en texto y leyenda; las carreras sin mantenciones en una línea al pie.
+  - Tocar una carrera filtra la bandeja (`aria-pressed`; tocarla de nuevo o «Ver todas las carreras» lo quita); la bandeja suma un selector de carrera y su título dice la carrera elegida. En pantallas angostas la bandeja se lleva a la vista.
+  - Aviso de vencidas con tokens `warn` y chips de código. Bandeja en `TableFrame` (estado como control segmentado, tipo y carrera), filas 13–14 px y `MobileRow` en el teléfono.
+- **Verificación:** vitest en verde (639); typecheck; lint; backend `MaintenanceRecordTest` (filtro por carrera, combinado con estado, sin carrera y `422`), suite completa (699), Pint y Larastan. Recorrido en Chromium contra la API como PAN-01 y DIR-01: 28/28, celdas iguales a Postgres y filtros que devuelven exactamente las mantenciones de cada carrera.
