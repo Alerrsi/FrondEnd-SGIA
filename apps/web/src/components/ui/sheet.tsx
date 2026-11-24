@@ -3,6 +3,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
+import { isToasterEvent } from '@/lib/is-toaster-event';
 
 export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
@@ -30,7 +31,7 @@ export const SheetContent = React.forwardRef<
     side?: 'left' | 'right' | 'center';
     overlayClassName?: string;
   }
->(({ side = 'right', className, overlayClassName, children, ...props }, ref) => (
+>(({ side = 'right', className, overlayClassName, children, onInteractOutside, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay className={overlayClassName} />
     <DialogPrimitive.Content
@@ -47,6 +48,11 @@ export const SheetContent = React.forwardRef<
           'ui-sheet-center inset-0 h-dvh w-full sm:inset-y-0 sm:left-0 sm:right-0 sm:mx-auto sm:w-[90vw] sm:border-x border-zinc-200 dark:border-zinc-800',
         className,
       )}
+      onInteractOutside={(e) => {
+        // Quitar un aviso con clic no cierra la hoja (docs/avisos-emergentes.md).
+        if (isToasterEvent(e)) e.preventDefault();
+        onInteractOutside?.(e);
+      }}
       {...props}
     >
       {children}

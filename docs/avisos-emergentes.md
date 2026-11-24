@@ -1,6 +1,6 @@
 # Avisos emergentes propios (toasts)
 
-**Estado: plan, sin implementar (noviembre 2026).** Rama `feat/avisos-emergentes`. Solo frontend. Relacionado: `BackEnd-SGIA/docs/exportaciones-y-campana.md` (campana).
+**Estado: implementado (noviembre 2026).** Rama `feat/avisos-emergentes`. Solo frontend. Relacionado: `BackEnd-SGIA/docs/exportaciones-y-campana.md` (campana).
 
 ## Problema
 
@@ -25,10 +25,17 @@
 
 ## Fases
 
-1. [ ] Plan y documentos (este archivo, `CLAUDE.md`, skill `sgia-design`, `TASKS/REQ-DISEÑO.md`, `TASKS/REQ-06`).
-2. [ ] Campana como antes (con sonido) y su test.
-3. [ ] `lib/toast.ts` + `Toaster` propio, sin `sileo`; `Dialog`/`Sheet` ignoran clics en avisos; tests.
-4. [ ] Prueba en Chromium contra la API real: aviso al marcar un cajón lleno, sonido, transición medida, clic para quitar, con y sin modal abierto, claro/oscuro y 390 px.
+1. [x] Plan y documentos (este archivo, `CLAUDE.md`, skill `sgia-design`, `TASKS/REQ-DISEÑO.md`, `TASKS/REQ-06`).
+2. [x] Campana como antes (con sonido) y su test.
+3. [x] `lib/toast.ts` + `Toaster` propio, sin `sileo`; `Dialog`/`Sheet` ignoran clics en avisos; tests.
+4. [x] Prueba en Chromium contra la API real: aviso al marcar un cajón lleno, sonido, transición medida, clic para quitar, con y sin modal abierto, claro/oscuro y 390 px.
+
+## Notas de implementación
+
+- `lib/toast.ts` guarda los avisos en un store simple (`useSyncExternalStore`); `components/ui/toaster.tsx` los dibuja y `toast-card.tsx` es cada aviso. Se quitó `sileo` (dependencia, CSS y su `z-index`).
+- Radix difiere el «clic fuera» del modal hasta el `click`, cuando React ya quitó el aviso del DOM: `lib/is-toaster-event.ts` reconoce también el aviso desprendido (`[data-toast]`). Sin esto, quitar un aviso cerraba el modal (lo encontró la prueba en Chromium; el test unitario con happy-dom no).
+- El rojo usa `hover:` de Tailwind, que va dentro de `@media (hover: hover)`: en pantallas táctiles no hay hover y el clic igual quita el aviso. El Chromium headless declara que no hay mouse; para medir la transición se lanzó con `--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4`.
+- Prueba real (12/12): aviso al marcar un cajón lleno, texto en tipo oración, dos tonos, fondo y basurero medidos a mitad de la transición, pausa con el mouse encima, clic para quitar, con el pop-up del estante abierto (el modal sigue abierto), se va solo a los 4 s, 390 px en oscuro a ancho completo. Los cajones de prueba quedaron sin «lleno».
 
 ## Fuera de alcance
 

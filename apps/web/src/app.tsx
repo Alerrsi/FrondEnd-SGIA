@@ -1,11 +1,11 @@
 import { lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Toaster } from 'sileo';
 
+import { Toaster } from '@/components/ui/toaster';
 import AppLayout from '@/layouts/app-layout';
 import LoginPage from '@/features/auth/pages/login';
 import { AuthProvider } from '@/features/auth/context/auth-context';
-import { ThemeProvider, useTheme } from '@/contexts/theme-context';
+import { ThemeProvider } from '@/contexts/theme-context';
 import { LayoutPreferenceProvider } from '@/contexts/layout-context';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import {
@@ -65,11 +65,9 @@ function LegacyRedirect({ from, to }: { from: string; to: string }) {
 }
 
 function AppContent() {
-  const { resolvedTheme } = useTheme();
-
   return (
     <>
-      <Toaster position="top-right" theme={resolvedTheme} />
+      <Toaster />
       <BrowserRouter>
         <Routes>
           {/* Public login route */}

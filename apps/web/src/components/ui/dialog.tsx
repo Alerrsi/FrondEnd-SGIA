@@ -4,6 +4,7 @@ import { AlertTriangle, X } from 'lucide-react';
 
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
+import { isToasterEvent } from '@/lib/is-toaster-event';
 
 interface DialogContextValue {
   attemptClose: () => void;
@@ -137,7 +138,11 @@ export function Dialog({
               SIZE_CLASSES[size],
               className,
             )}
+            onInteractOutside={(e) => {
+              if (isToasterEvent(e)) e.preventDefault();
+            }}
             onPointerDownOutside={(e) => {
+              if (isToasterEvent(e)) return;
               if (checkHasChanges()) {
                 e.preventDefault();
                 setShowExitConfirm(true);
