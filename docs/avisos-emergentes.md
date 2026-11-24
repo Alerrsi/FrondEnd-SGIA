@@ -1,6 +1,6 @@
 # Avisos emergentes propios (toasts)
 
-**Estado: implementado (noviembre 2026); rediseño con el aspecto de sileo en curso (rama `feat/avisos-estilo-sileo`).** Rama `feat/avisos-emergentes`. Solo frontend. Relacionado: `BackEnd-SGIA/docs/exportaciones-y-campana.md` (campana).
+**Estado: implementado (noviembre 2026), con el aspecto de sileo (rama `feat/avisos-estilo-sileo`).** Rama `feat/avisos-emergentes`. Solo frontend. Relacionado: `BackEnd-SGIA/docs/exportaciones-y-campana.md` (campana).
 
 ## Problema
 
@@ -48,6 +48,8 @@ El usuario pidió que los avisos se vean como antes con sileo, conservando sonid
 | 11 | Entrada con el resorte de sileo (opacidad, `translateY(-6px)`, `scale(.95)` y desenfoque del contenido); sin movimiento con `prefers-reduced-motion`. |
 | 12 | **Hover y foco**: la píldora pasa a rojo de forma gradual (300 ms), el texto a blanco y el ícono del estado se convierte en un basurero dentro del mismo círculo (sin cambiar el ancho). Clic, Enter o Espacio la quitan. |
 | 13 | Los títulos se mantienen en tipo oración (sileo los pasaba a «Tipo Título»; la web no usa ese estilo). |
+
+Verificación: capturas de los cuatro tipos con y sin descripción en claro y oscuro, hover rojo en ambos temas y el recorrido real 12/12 (sonido, transición medida de `#1a1a1a` a rojo, basurero, clic con modal abierto, se va solo, 390 px alineado a la derecha). Ojo: el rojo va con `hover:` sobre el propio botón; `group-hover:` solo aplica a los hijos.
 
 ## Fuera de alcance
 

@@ -529,8 +529,15 @@
 .ui-sheet-center[data-state='open'] { animation: ui-fade-in var(--m-panel) var(--ease); }
 .ui-sheet-center[data-state='closed'] { animation: ui-fade-out var(--m-close) var(--ease); }
 .ui-menu[data-state='open'] { animation: ui-drop-in var(--m-panel) var(--ease); }
-/* Aviso emergente (docs/avisos-emergentes.md): entra desde arriba; el rojo del hover es una transición de color. */
-.ui-toast { animation: ui-drop-in var(--m-panel) var(--ease); }
+/* Aviso emergente con la entrada de sileo (docs/avisos-emergentes.md §11): resorte en escala y posición, y el
+   contenido de la píldora aparece desenfocado. El rojo del hover es una transición de color. */
+.ui-toast {
+  --toast-spring: linear(0, 0.007 1.2%, 0.026 2.4%, 0.06 3.8%, 0.157 6.6%, 0.467 13.7%, 0.631 17.7%, 0.771 21.8%, 0.874 25.8%, 0.952 30.1%, 1.01 35.7%, 1.034 41.6%, 1.035 50.1%, 1.012 64.2%, 0.999 83.7%, 1);
+  animation: ui-toast-in 400ms var(--toast-spring) both;
+}
+.ui-toast-head { animation: ui-toast-blur 600ms var(--toast-spring) both; }
+@keyframes ui-toast-in { from { opacity: 0; transform: translateY(-6px) scale(0.95); } to { opacity: 1; transform: none; } }
+@keyframes ui-toast-blur { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: blur(0); } }
 .ui-menu[data-state='closed'] { animation: ui-fade-out var(--m-close) var(--ease); }
 .ui-tip[data-state='delayed-open'],
 .ui-tip[data-state='instant-open'] { animation: ui-fade-in var(--m-in) var(--ease); }
