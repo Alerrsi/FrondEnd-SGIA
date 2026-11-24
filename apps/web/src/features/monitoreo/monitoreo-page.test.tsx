@@ -7,7 +7,6 @@ import { fetchLoginActivity, revokeSession } from '@sgia/api-client';
 import MonitoreoPage from './pages/monitoreo-page';
 import { timeAgo } from './lib/monitoring-format';
 
-vi.mock('react-chartjs-2', () => ({ Bar: () => <div data-testid="chart-bar" /> }));
 vi.mock('@/contexts/theme-context', () => ({ useTheme: () => ({ theme: 'light', resolvedTheme: 'light' }) }));
 vi.mock('@/lib/toast', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
@@ -81,7 +80,7 @@ describe('Monitoreo (AD-01)', () => {
     expect(screen.getByText('2 pendientes · 3 fallidos')).toBeDefined();
     expect(screen.getAllByText('Con fallas')).toHaveLength(1);
     expect(screen.getByText(/bloqueados por exceso de intentos/).textContent).toContain('2');
-    expect(screen.getByTestId('chart-bar')).toBeDefined();
+    expect(screen.getByRole('img', { name: /Inicios de sesión por hora/ })).toBeDefined();
     expect(screen.getAllByText('victima@sgia.cl').length).toBeGreaterThan(0);
     expect(screen.getByText('Bloqueado por exceso de intentos')).toBeDefined();
     expect(screen.getByText('Sesión cerrada por administración')).toBeDefined();

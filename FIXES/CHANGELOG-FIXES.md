@@ -1007,3 +1007,14 @@
   - Móvil: el login usa `apiErrorToMessage` y no muestra errores internos.
   - `zod` ^4.6.7 en web y móvil (aviso de DoS en ≤4.6.5).
 - **Verificación:** vitest 578 en verde (tests nuevos de `apiErrorToMessage` y `graphQLErrorMessage`); typecheck 5/5. Barrido en Chromium de 44 rutas × 4 roles contra la API de desarrollo, con y sin 500 inyectados: sin textos técnicos en pantalla.
+
+## FIX-055: Gráficos con TanStack Charts en vez de Chart.js
+
+- **Fecha:** 2026-11-23
+- **Módulo:** `apps/web` (`lib/chart-theme.ts`, `components/ui/chart-legend.tsx`, `features/dashboard`, `features/presupuestos/components/budget-monthly-chart.tsx`, `features/monitoreo/components/login-activity-chart.tsx`, `index.css`) — plan en `docs/graficos-tanstack-charts.md`, [REQ-14](TASKS/REQ-14-DASHBOARDS-ANALITICA.md)
+- **Problema:** los gráficos se dibujaban en `<canvas>` con Chart.js: sin foco por teclado ni texto por punto, y los tests mockeaban `react-chartjs-2`, así que no probaban nada del gráfico.
+- **Qué cambia:**
+  - `@tanstack/charts` 1.5 (renderer SVG) en analítica (barras, línea, dona, área polar), presupuesto mensual (barras agrupadas) y monitoreo (barras apiladas). Se quitan `chart.js` y `react-chartjs-2`.
+  - Mismo tema «Trazo»: tokens y paleta de `lib/chart-theme.ts`, con helpers nuevos (`chartTheme`, `categoryAxis`, `valueAxis`, `valueGrid`, `integerTicks`); tooltip con las variables `--ts-chart-tooltip-*`; leyenda HTML (`ChartLegend`) arriba a la izquierda, también en el pop-up ampliado.
+  - Monitoreo: marcas del eje en enteros (antes `precision: 0`).
+- **Verificación:** vitest en verde con `metric-chart.test.tsx` (geometría real de los 4 tipos en happy-dom) y `chart-theme.test.ts`; typecheck 5/5; lint. Revisión en Chromium contra la API de desarrollo: analítica en claro, oscuro y 390 px, tooltip, pop-up ampliado, presupuesto mensual y monitoreo, sin errores de consola.

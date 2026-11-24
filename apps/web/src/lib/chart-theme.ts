@@ -1,6 +1,8 @@
+import type { ChartAxisPresentationOptions, ChartGuideLineStyle, ChartTheme, ChartValue } from '@tanstack/charts';
+
 /*
- * Tema único de gráficos (rediseño «Trazo», docs/rediseno-interfaz.md §8). Todo gráfico de Chart.js toma de
- * aquí sus colores, fuente, rejilla, tooltip y animación, para que analítica, presupuestos y monitoreo se lean
+ * Tema único de gráficos (rediseño «Trazo», docs/rediseno-interfaz.md §8). Todo gráfico (TanStack Charts, docs/graficos-tanstack-charts.md)
+ * toma de aquí sus colores, rejilla, ejes y animación; el tooltip se estila con variables CSS en `index.css`, para que analítica, presupuestos y monitoreo se lean
  * como un solo sistema en claro y en oscuro.
  *
  * Paleta categórica: la de referencia del skill `dataviz` sin violeta (prohibido en el sistema) ni rojo
@@ -70,65 +72,52 @@ export function categoricalColor(index: number, isDark: boolean): string {
   return t.categorical[index] ?? t.status.inactive;
 }
 
-/** Fuente de ejes, leyenda y tooltip: Geist 12px con cifras tabulares. */
-export const CHART_FONT = { family: "'Geist Variable', ui-sans-serif, system-ui, sans-serif", size: 12 } as const;
+/** Tema de escena de TanStack Charts: tinta, texto secundario y rejilla del sistema; paleta categórica en orden fijo. */
+export function chartTheme(isDark: boolean): ChartTheme {
+  const t = chartTokens(isDark);
+  return {
+    foreground: t.text,
+    muted: t.muted,
+    grid: t.grid,
+    background: 'transparent',
+    palette: t.categorical,
+    focusRing: { stroke: t.primary, strokeWidth: 2 },
+  };
+}
 
-/** 200 ms al entrar; nada con movimiento reducido. */
-export function chartAnimation(): { duration: number } {
+/** 200 ms al entrar o cambiar; nada con movimiento reducido. */
+export function chartAnimation(): boolean {
   const reduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  return { duration: reduced ? 0 : 200 };
+  return !reduced;
 }
 
-/** Tooltip común: superficie con línea de 1px, sin sombra fuerte. */
-export function tooltipStyle(isDark: boolean) {
-  const t = chartTokens(isDark).tooltip;
-  return {
-    backgroundColor: t.background,
-    titleColor: t.title,
-    bodyColor: t.body,
-    borderColor: t.border,
-    borderWidth: 1,
-    padding: 10,
-    cornerRadius: 6,
-    boxPadding: 4,
-    titleFont: { ...CHART_FONT, weight: 500 as const },
-    bodyFont: CHART_FONT,
-  };
+/** Rejilla de 1px del eje de valores (el único con rejilla). */
+export function valueGrid(isDark: boolean): ChartGuideLineStyle {
+  return { stroke: chartTokens(isDark).grid, strokeOpacity: 1, strokeWidth: 1 };
 }
 
-/** Leyenda común: arriba a la izquierda, marcas redondas de 8px, texto en tinta secundaria. */
-export function legendStyle(isDark: boolean) {
-  return {
-    position: 'top' as const,
-    align: 'start' as const,
-    labels: {
-      color: chartTokens(isDark).muted,
-      font: CHART_FONT,
-      boxWidth: 8,
-      boxHeight: 8,
-      usePointStyle: true,
-      padding: 14,
-    },
-  };
+/** Eje de categorías (x): sin línea ni marcas, etiquetas que se ralean solas si no caben. */
+export function categoryAxis<T extends ChartValue = string>(format?: (value: T) => string): ChartAxisPresentationOptions<T> {
+  return { line: false, ticks: { line: false, size: 0, padding: 8, ...(format ? { format } : {}) }, tickLabels: { thin: true } };
 }
 
-/** Eje de categorías (x): sin rejilla ni línea. */
-export function categoryAxis(isDark: boolean) {
-  return {
-    grid: { display: false },
-    border: { display: false },
-    ticks: { color: chartTokens(isDark).muted, font: CHART_FONT },
-  };
+/** Eje de valores (y): sin línea ni marcas, hasta `count` cifras formateadas (o las `values` exactas). */
+export function valueAxis(
+  format: (value: number) => string,
+  count = 6,
+  values?: readonly number[],
+): ChartAxisPresentationOptions<number> {
+  return { line: false, ticks: { line: false, size: 0, padding: 8, format, ...(values ? { values } : { count }) } };
 }
 
-/** Eje de valores (y): rejilla de 1px, sin línea de eje. */
-export function valueAxis(isDark: boolean) {
-  return {
-    beginAtZero: true,
-    grid: { color: chartTokens(isDark).grid },
-    border: { display: false },
-    ticks: { color: chartTokens(isDark).muted, font: CHART_FONT, maxTicksLimit: 6 },
-  };
+/** Marcas enteras para conteos (0, 1, 2… o de a 2, 5…), sin cifras repetidas al redondear fracciones. */
+export function integerTicks(max: number, target = 5): number[] {
+  const top = Math.max(1, Math.ceil(max));
+  const raw = top / target;
+  const magnitude = 10 ** Math.floor(Math.log10(Math.max(1, raw)));
+  const step = [1, 2, 5, 10].map((m) => m * magnitude).find((s) => s >= raw) ?? 10 * magnitude;
+  const last = Math.ceil(top / step) * step;
+  return Array.from({ length: last / step + 1 }, (_, i) => i * step);
 }
 
 /** Agrupa en «Otros» todo lo que pase de `MAX_CATEGORIES` (los colores no se reciclan). */

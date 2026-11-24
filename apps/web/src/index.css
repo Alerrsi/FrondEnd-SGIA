@@ -161,6 +161,21 @@
 }
 
 @layer components {
+  /* Gráficos (TanStack Charts, lib/chart-theme.ts): cifras tabulares y tooltip «Trazo»:
+     superficie, línea de 1px, radio 6px y sombra suave, como el de Chart.js que reemplaza. */
+  .ts-chart-host {
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    color: var(--ink-muted);
+    --ts-chart-tooltip-background: var(--surface);
+    --ts-chart-tooltip-color: var(--ink);
+    --ts-chart-tooltip-border: 1px solid var(--line);
+    --ts-chart-tooltip-border-radius: 6px;
+    --ts-chart-tooltip-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+    --ts-chart-tooltip-padding: 8px 10px;
+    --ts-chart-tooltip-font: 400 12px/1.45 var(--font-sans);
+  }
+
   .font-display {
     font-family: var(--font-display);
   }

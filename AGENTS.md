@@ -114,7 +114,7 @@ Sistema «Pañol»: paleta burdeo `#490b1a`, navy `#142841`, slate `#798da6` y c
   - React Hook Form + Zod.
   - Sileo para notificaciones y alertas de escaneo.
   - Lucide React para iconografía consistente.
-  - Chart.js / react-chartjs-2 para analítica FU-06.
+  - TanStack Charts (`@tanstack/charts`, SVG) para analítica FU-06, presupuestos y monitoreo (`docs/graficos-tanstack-charts.md`).
   - Tesseract para OCR y escanero de documentos
 - **Mobile (`apps/mobile`):**
   - React Native con Expo.

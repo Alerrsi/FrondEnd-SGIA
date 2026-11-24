@@ -152,9 +152,9 @@ DISCLAIMER: DE MOMENTO NO ESTA PROGRAMADA LA API DE EL BACKEND
   - [x] Componente envolvente genérico `DynamicChartCard` que recibe `MetricResult` y lo traduce a configuración de `react-chartjs-2`.
 
 ### 3b. Migración a TanStack Charts (plan en `docs/graficos-tanstack-charts.md`)
-- [ ] `MetricChart` (barras, línea, dona, área polar) con `@tanstack/charts` (SVG) y el tema de `lib/chart-theme.ts`.
-- [ ] Presupuestos (`BudgetMonthlyChart`) y monitoreo (`LoginActivityChart`) migrados.
-- [ ] Tests sin mock de `react-chartjs-2` (renderizan el SVG); `chart.js` y `react-chartjs-2` fuera de `package.json`.
+- [x] `MetricChart` (barras, línea, dona, área polar) con `@tanstack/charts` (SVG) y el tema de `lib/chart-theme.ts` (`metric-chart.test.tsx`).
+- [x] Presupuestos (`BudgetMonthlyChart`) y monitoreo (`LoginActivityChart`) migrados (`monitoreo-page.test.tsx`, revisión en Chromium).
+- [x] Tests sin mock de `react-chartjs-2` (renderizan el SVG); `chart.js` y `react-chartjs-2` fuera de `package.json`.
 
 ### 4. Sistema de Plantillas y Dashboards Dinámicos
 - [x] **Selector de Plantillas Predefinidas (3 Plantillas por Defecto):**

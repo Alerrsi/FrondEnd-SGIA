@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { ChartExpandButton } from '@/components/ui/chart-expand-button';
 import { useTheme } from '@/contexts/theme-context';
 import { apiErrorToMessage } from '@/lib/api-error';
-import { buildLegend } from '../lib/chart-format';
 import {
   CHART_TYPE_LABELS,
   TIME_RANGE_LABELS,
@@ -72,7 +71,6 @@ export function DynamicChartCard({
 
   const title = input.title || `${input.entity} (${input.metric})`;
   const isForbidden = error instanceof ApiRequestError && error.status === 403;
-  const legend = data ? buildLegend(data, resolvedTheme === 'dark') : [];
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (!isEditMode) return;
@@ -252,17 +250,6 @@ export function DynamicChartCard({
           <MetricChart result={data} chartType={input.chartType} title={title} isDark={isDark} />
         )}
       </div>
-
-      {legend.length > 0 && (
-        <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
-          {legend.map((item) => (
-            <li key={item.label} className="flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
-              {item.label}
-            </li>
-          ))}
-        </ul>
-      )}
 
       {data?.summary && (
         <p
