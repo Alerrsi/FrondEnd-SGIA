@@ -42,8 +42,8 @@ Monitorear en tiempo real los niveles de existencias para anticipar quiebres de 
 
 ### Campana: sonido y quitar notificaciones (plan en `BackEnd-SGIA/docs/exportaciones-y-campana.md`)
 - [x] La campana consulta cada 60 s y suena un tono de prueba (Web Audio, `lib/notification-sound.ts`) cuando llega una alerta nueva (no al cargar ni al quitar) (`notification-bell.test.tsx`).
-- [x] Hover y foco: el ítem pasa a rojo de forma gradual (300 ms, sin movimiento con `prefers-reduced-motion`) y muestra un basurero.
-- [x] Clic o Enter: oculta la alerta solo para el usuario (`POST /api/alerts/{id}/dismiss`, optimista), sin cerrar el menú; la campana usa `exclude_dismissed=1`.
+- [x] ~~Hover rojo con basurero y clic para ocultar la alerta~~: el usuario aclaró que era para los avisos emergentes (`docs/avisos-emergentes.md`).
+- [ ] La campana vuelve a como estaba (clic lleva a `/alertas`, sin hover rojo) y conserva el sonido de alerta nueva.
 - [x] Recorrido contra la API real (14/14): transición medida (fondo y basurero a mitad de camino), quitar, oculta solo para el usuario, tono de dos notas al llegar una alerta nueva; claro y oscuro.
 
 ## 🧪 Pruebas Requeridas
