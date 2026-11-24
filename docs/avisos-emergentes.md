@@ -16,7 +16,7 @@
 |---|---|
 | 1 | **Componente propio** (`components/ui/toaster.tsx` + `lib/toast.ts`) en lugar de `sileo`. La API no cambia: `toast.success/error/warning/info(string \| { title, description, duration })`; se suma `toast.dismiss(id)`. Se quita la dependencia `sileo`. |
 | 2 | Estilo «Trazo»: superficie con línea de 1 px, radio 8 px, sombra suave (flota sobre el contenido, como el menú), ícono de estado con su tono (`ok`, `danger`, `warn`, `info`), título 14 px y descripción 13 px en tipo oración (sileo pasaba los títulos a «Tipo Título»). Arriba a la derecha; bajo 640 px a ancho completo. Máximo 4 a la vez. |
-| 3 | **Sonido** de prueba (`lib/notification-sound.ts`, el mismo de la campana) cada vez que aparece un aviso; si salen varios juntos suena una sola vez. |
+| 3 | **Sonido** (`lib/notification-sound.ts`, el mismo de la campana) cada vez que aparece un aviso; si salen varios juntos suena una sola vez. Desde el 2026-11-24 es el archivo `src/assets/sounds/notificacion.mp3` que eligió el usuario (antes, dos tonos generados con Web Audio). |
 | 4 | **Hover y foco**: el aviso pasa a rojo de forma gradual (fondo `danger-bg`, borde y texto `danger`, 300 ms) y aparece un basurero; el temporizador se pausa mientras el mouse está encima. **Clic, Enter o Espacio** lo quitan. Con `prefers-reduced-motion` sin transición. |
 | 5 | Duración: 4 s; los errores 6 s. |
 | 6 | Por encima de modales y hojas (`z-index` 100, como sileo). Hacer clic en un aviso con un modal abierto **no** cierra el modal: `Dialog` y `Sheet` ignoran la interacción si viene del contenedor de avisos (`[data-toaster]`). |
@@ -55,3 +55,10 @@ Verificación: capturas de los cuatro tipos con y sin descripción en claro y os
 
 - Avisos con botón de acción o de tipo «promesa» (nadie los usa).
 - Preferencia para silenciar el sonido.
+
+## Sonido elegido por el usuario (2026-11-24)
+
+- `lib/notification-sound.ts` reproduce `src/assets/sounds/notificacion.mp3` («New Notification 010» de Universfield, 1,3 s, 40 KB; licencia de Pixabay: uso libre, sin atribución obligatoria) en lugar de los dos tonos de Web Audio. Lo usan los avisos y las alertas nuevas de la campana.
+- Un solo `<audio>` reutilizado a volumen 0,6: si llegan notificaciones seguidas, el sonido vuelve a empezar en vez de apilarse. Si el navegador bloquea el sonido (sin interacción previa), `play()` se rechaza en silencio.
+- Vite lo empaqueta con hash (`assets/notificacion-*.mp3`). Prueba real: al marcar un cajón lleno sale el aviso y el audio queda sonando (sin errores); `notification-sound.test.ts` cubre el archivo, el volumen, el reinicio y el bloqueo.
+
