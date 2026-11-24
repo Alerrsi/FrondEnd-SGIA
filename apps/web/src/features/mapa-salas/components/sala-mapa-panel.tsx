@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Map as MapIcon, Pencil } from 'lucide-react';
 import { usePrefetchEstanteContenido, useSalaMapa } from '@sgia/api-client';
 import type { Estante } from '@sgia/types';
@@ -9,9 +9,11 @@ import { SectionTitle } from '@/components/ui/section-title';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
+import { useElementSize } from '../hooks/use-element-size';
 import { useMapScale } from '../hooks/use-map-scale';
 import { useMapViewport } from '../hooks/use-map-viewport';
 import { useSalaSearch } from '../hooks/use-sala-search';
+import { fitSize } from '../lib/fit-size';
 import { zonaLabelAtBottom } from '../lib/map-geometry';
 import { plural } from '../lib/map-labels';
 import { AsignarCajonesDialog } from './asignar-cajones-dialog';
@@ -39,13 +41,44 @@ export interface SalaMapaPanelProps {
   variant?: 'page' | 'embedded';
   /** Avisa cuál es la sala dibujada (para recordarla). */
   onLoaded?: (locationId: number) => void;
+  /**
+   * Plano a la medida de su caja (docs/ubicaciones-distribucion.md): `fill` ocupa el alto que le da el contenedor
+   * (columna de alto fijo); `aspect` usa la proporción de la sala con un máximo de 60 % del alto de la ventana.
+   */
+  fit?: 'fill' | 'aspect';
+  /** Botones extra junto a «Editar distribución» (variante `embedded`). */
+  toolbarActions?: ReactNode;
+  /** Reemplaza el pop-up al tocar un estante (Ubicaciones filtra su panel lateral). */
+  onEstanteClick?: (estante: Estante) => void;
+  /** Estantes resaltados desde fuera (filtro del panel, cajón bajo el puntero). */
+  highlightEstanteIds?: readonly number[];
+  /** Pop-up de contenido controlado desde fuera: id del estante abierto y cambio. */
+  contentEstanteId?: number | null;
+  onContentEstanteChange?: (id: number | null) => void;
+  /** Lista «Estantes de la sala» bajo el plano (por defecto, sí). */
+  showEstantesList?: boolean;
+  className?: string;
 }
 
 /**
  * Plano de una sala para mirar (REQ-22): zoom, «Buscar en la sala», pop-up de cada estante y lista alternativa.
  * La edición va en `SalaMapaEditorDialog`.
  */
-export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 'page', onLoaded }: SalaMapaPanelProps) {
+export function SalaMapaPanel({
+  locationId,
+  canEdit,
+  canSeeInventory,
+  variant = 'page',
+  onLoaded,
+  fit,
+  toolbarActions,
+  onEstanteClick,
+  highlightEstanteIds,
+  contentEstanteId,
+  onContentEstanteChange,
+  showEstantesList = true,
+  className,
+}: SalaMapaPanelProps) {
   const mapa = useSalaMapa(locationId > 0 ? locationId : undefined);
   const prefetch = usePrefetchEstanteContenido();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -53,19 +86,23 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
   const height = mapa.data?.location.map_height_cm ?? 600;
   const viewport = useMapViewport(svgRef, width, height);
   const pxPerCm = useMapScale(svgRef, viewport.view.w);
+  const fitBox = useElementSize<HTMLDivElement>();
+  const fitted = fit ? fitSize(fitBox, viewport.view.w / viewport.view.h) : null;
 
   const estantes = useMemo(() => mapa.data?.estantes ?? [], [mapa.data?.estantes]);
   const zonas = useMemo(() => mapa.data?.zonas ?? [], [mapa.data?.zonas]);
   const [searchTerm, setSearchTerm] = useState('');
   const search = useSalaSearch(locationId, estantes, searchTerm);
 
-  const [openId, setOpenId] = useState<number | null>(null);
+  const [ownOpenId, setOwnOpenId] = useState<number | null>(null);
+  const openId = contentEstanteId !== undefined ? contentEstanteId : ownOpenId;
+  const setOpenId = onContentEstanteChange ?? setOwnOpenId;
   const [editorOpen, setEditorOpen] = useState(false);
   const [editEstante, setEditEstante] = useState<Estante | null>(null);
   const [assignFor, setAssignFor] = useState<Estante | null>(null);
 
   useEffect(() => {
-    setOpenId(null);
+    setOwnOpenId(null);
     setEditorOpen(false);
     setSearchTerm('');
   }, [locationId]);
@@ -76,7 +113,9 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
   }, [loadedId, onLoaded]);
 
   const zonaNombre = useMemo(() => new Map(zonas.map((zona) => [zona.id, zona.nombre])), [zonas]);
-  const openEstante = useCallback((estante: Estante) => setOpenId(estante.id), []);
+  const openEstante = useCallback((estante: Estante) => setOpenId(estante.id), [setOpenId]);
+  const activateEstante = onEstanteClick ?? openEstante;
+  const highlighted = useMemo(() => new Set(highlightEstanteIds ?? []), [highlightEstanteIds]);
   const prefetchEstante = useCallback((id: number) => void prefetch(id), [prefetch]);
 
   const sala = mapa.data?.location;
@@ -91,17 +130,27 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
   ) : undefined;
 
   return (
-    <section aria-label={sala ? `Mapa de ${sala.nombre}` : 'Mapa de la sala'} className="flex min-w-0 flex-col gap-3">
+    <section
+      aria-label={sala ? `Mapa de ${sala.nombre}` : 'Mapa de la sala'}
+      className={cn('flex min-w-0 flex-col gap-3', fit === 'fill' && 'min-h-0', className)}
+    >
       {embedded && (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <SectionTitle as="h2" icon={MapIcon} className="min-w-0">
             <span className="truncate">{sala ? `Mapa de «${sala.nombre}»` : 'Mapa de la sala'}</span>
           </SectionTitle>
-          {editButton}
+          {(editButton || toolbarActions) && (
+            <div className="flex flex-wrap items-center gap-2">
+              {editButton}
+              {toolbarActions}
+            </div>
+          )}
         </div>
       )}
 
-      {mapa.isLoading && <Skeleton label="Cargando el plano de la sala" className="aspect-[5/3] w-full" />}
+      {mapa.isLoading && (
+        <Skeleton label="Cargando el plano de la sala" className={cn('aspect-[5/3] w-full', fit === 'fill' && 'min-h-0 flex-1')} />
+      )}
       {mapa.isError && (
         <ErrorState action={<Button size="sm" variant="secondary" onClick={() => void mapa.refetch()}>Reintentar</Button>}>
           {apiErrorToMessage(mapa.error)}
@@ -135,42 +184,57 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
             </MapNotice>
           )}
 
-          <div className="overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-950 sm:p-4">
-            <SalaSvg
-              ref={svgRef}
-              label={sala.nombre}
-              width={width}
-              height={height}
-              viewBox={viewport.view}
-              pxPerCm={pxPerCm}
-              onPointerDown={viewport.onPanStart}
-              className={cn(
-                'mx-auto block h-auto w-full touch-pan-y select-none',
-                embedded ? 'max-h-[55vh]' : 'max-h-[70vh]',
-                viewport.zoom > 1 && 'cursor-grab touch-none',
-              )}
-              background={zonas.map((zona) => (
-                <ZonaShape
-                  key={zona.id}
-                  zona={zona}
-                  fontSize={ZONE_LABEL_PX / pxPerCm}
-                  labelAtBottom={zonaLabelAtBottom(zona, estantes, ZONE_LABEL_PX / pxPerCm)}
-                />
-              ))}
+          <div
+            className={cn(
+              'overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-800 dark:bg-zinc-950 sm:p-4',
+              fit === 'fill' && 'flex min-h-0 flex-1 flex-col',
+            )}
+          >
+            {/* Con `fit`, esta caja define el espacio y el plano toma el mayor tamaño que cabe con su proporción. */}
+            <div
+              ref={fit ? fitBox.ref : undefined}
+              data-testid={fit ? 'mapa-fit-box' : undefined}
+              className={cn(fit && 'relative w-full', fit === 'fill' && 'min-h-0 flex-1')}
+              style={fit === 'aspect' ? { aspectRatio: `${viewport.view.w} / ${viewport.view.h}`, maxHeight: '60vh' } : undefined}
             >
-              {estantes.map((estante) => (
-                <EstanteShape
-                  key={estante.id}
-                  estante={estante}
-                  zonaNombre={estante.zona_id ? (zonaNombre.get(estante.zona_id) ?? null) : null}
-                  pxPerCm={pxPerCm}
-                  selected={estante.id === openId}
-                  marked={search.marked.has(estante.id)}
-                  onActivate={openEstante}
-                  onPrefetch={prefetchEstante}
-                />
-              ))}
-            </SalaSvg>
+              <SalaSvg
+                ref={svgRef}
+                label={sala.nombre}
+                width={width}
+                height={height}
+                viewBox={viewport.view}
+                pxPerCm={pxPerCm}
+                size={fitted}
+                onPointerDown={viewport.onPanStart}
+                className={cn(
+                  'block touch-pan-y select-none',
+                  fitted ? 'absolute inset-0 m-auto' : 'mx-auto h-auto w-full',
+                  !fit && (embedded ? 'max-h-[55vh]' : 'max-h-[70vh]'),
+                  viewport.zoom > 1 && 'cursor-grab touch-none',
+                )}
+                background={zonas.map((zona) => (
+                  <ZonaShape
+                    key={zona.id}
+                    zona={zona}
+                    fontSize={ZONE_LABEL_PX / pxPerCm}
+                    labelAtBottom={zonaLabelAtBottom(zona, estantes, ZONE_LABEL_PX / pxPerCm)}
+                  />
+                ))}
+              >
+                {estantes.map((estante) => (
+                  <EstanteShape
+                    key={estante.id}
+                    estante={estante}
+                    zonaNombre={estante.zona_id ? (zonaNombre.get(estante.zona_id) ?? null) : null}
+                    pxPerCm={pxPerCm}
+                    selected={estante.id === openId || highlighted.has(estante.id)}
+                    marked={search.marked.has(estante.id)}
+                    onActivate={activateEstante}
+                    onPrefetch={prefetchEstante}
+                  />
+                ))}
+              </SalaSvg>
+            </div>
           </div>
 
           {estantes.some((estante) => estante.cajones.some((cajon) => cajon.lleno)) && (
@@ -180,7 +244,7 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
             </p>
           )}
 
-          <EstantesList estantes={estantes} zonas={zonas} onOpen={openEstante} />
+          {showEstantesList && <EstantesList estantes={estantes} zonas={zonas} onOpen={openEstante} />}
 
           {canEdit && (
             <>

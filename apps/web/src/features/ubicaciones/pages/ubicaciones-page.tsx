@@ -1,50 +1,43 @@
-import { useState, useMemo } from 'react';
-import {
-  Layers,
-  Plus,
-  Building2,
-  FolderTree,
-  Trash2,
-  Edit2,
-  Loader2,
-  MapPin,
-  Printer,
-  RefreshCw,
-} from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FolderTree, Layers, PanelRightClose, PanelRightOpen, Plus, RefreshCw } from 'lucide-react';
 import {
   useLocations,
   useDeleteLocation,
   useCajones,
   useDeleteCajon,
   useDownloadCajonLabel,
+  useSalaMapa,
 } from '@sgia/api-client';
-import type { LocationEntity, CajonEntity } from '@sgia/types';
+import type { LocationEntity, CajonEntity, Estante } from '@sgia/types';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { toast } from '@/lib/toast';
 import { apiErrorToMessage } from '@/lib/api-error';
-import { Badge } from '@/components/ui/badge';
-import { Cell } from '@/components/ui/cell';
-import { CellGrid } from '@/components/ui/cell-grid';
 import { EmptyState } from '@/components/ui/empty-state';
-import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 import { PageHeader } from '@/components/ui/page-header';
-import { SectionTitle } from '@/components/ui/section-title';
-import { ICON_BUTTON_CLASS } from '@/components/ui/table-styles';
-import { TableSearch } from '@/components/ui/table-search';
-import { TableToolbar } from '@/components/ui/table-toolbar';
-import { CODE_CHIP_CLASS } from '@/components/ui/typography';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { cn } from '@/lib/cn';
 import { printBlob } from '@/features/equipos/utils/download';
 import { LocationFormDialog } from '@/features/ubicaciones/components/location-form-dialog';
 import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
-import { CajonLlenoButton } from '@/features/mapa-salas/components/cajon-lleno-button';
+import { SalasList } from '@/features/ubicaciones/components/salas-list';
+import { SalaSelect } from '@/features/ubicaciones/components/sala-select';
+import { UbicacionPanel, type PanelTab } from '@/features/ubicaciones/components/ubicacion-panel';
+import { usePanelPreference } from '@/features/ubicaciones/hooks/use-panel-preference';
 import { cajonFullCode } from '@/features/ubicaciones/lib/location-code';
-import { SkeletonList } from '@/components/ui/skeleton-list';
+import { useWorkspaceMode } from '@/features/ubicaciones/hooks/use-workspace-mode';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { canAccessRoute, canDo } from '@/features/auth/types/roles';
 import { SalaMapaPanel } from '@/features/mapa-salas/components/sala-mapa-panel';
+import { useElementSize } from '@/features/mapa-salas/hooks/use-element-size';
 
+const PANEL_ID = 'ubicaciones-panel';
+const FRAME_CLASS = 'rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900';
+
+/**
+ * Ubicaciones (REQ-05, REQ-22): salas, plano de la sala y panel lateral de cajones y estantes, todo de un vistazo
+ * (docs/ubicaciones-distribucion.md). La distribución depende del ancho del área de trabajo (`workspaceMode`).
+ */
 export default function UbicacionesPage() {
   const { user } = useAuth();
   const role = user?.role;
@@ -52,6 +45,22 @@ export default function UbicacionesPage() {
   const [search, setSearch] = useState('');
   const [tipoFilter, setTipoFilter] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<LocationEntity | null>(null);
+
+  // Distribución según el ancho del área (no de la ventana).
+  const workspace = useElementSize<HTMLDivElement>();
+  const mode = useWorkspaceMode(workspace.width);
+  const docked = mode === 'wide';
+  // Desde 1200 px de área las columnas laterales se ensanchan un poco; por debajo, el plano se queda con el resto.
+  const roomy = workspace.width >= 1200;
+
+  // Panel lateral: acoplado (recordado) en pantallas anchas; como hoja en las demás.
+  const [dockedOpen, setDockedOpen] = usePanelPreference();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const panelOpen = docked ? dockedOpen : sheetOpen;
+  const [panelTab, setPanelTab] = useState<PanelTab>('cajones');
+  const [estanteFilter, setEstanteFilter] = useState<number | null>(null);
+  const [hoverEstante, setHoverEstante] = useState<number | null>(null);
+  const [contentEstanteId, setContentEstanteId] = useState<number | null>(null);
 
   // Modales
   const [locationModalOpen, setLocationModalOpen] = useState(false);
@@ -67,7 +76,7 @@ export default function UbicacionesPage() {
     tipo: tipoFilter || undefined,
   });
 
-  const locations = locationsData?.data ?? [];
+  const locations = useMemo(() => locationsData?.data ?? [], [locationsData?.data]);
 
   // Active location for cajones view
   const activeLocation = useMemo(() => {
@@ -76,6 +85,7 @@ export default function UbicacionesPage() {
     }
     return locations[0] ?? null;
   }, [selectedLocation, locations]);
+  const activeId = activeLocation?.id ?? null;
 
   const { data: cajonesData, isLoading: isLoadingCajones } = useCajones(
     activeLocation ? { location_id: activeLocation.id } : undefined,
@@ -83,10 +93,58 @@ export default function UbicacionesPage() {
 
   const cajones: CajonEntity[] = cajonesData?.data ?? [];
 
+  // Estantes y zonas de la sala para la pestaña Estantes (misma consulta que el plano: ya en caché).
+  const mapa = useSalaMapa(activeId ?? undefined);
+  const estantes = useMemo(() => mapa.data?.estantes ?? [], [mapa.data?.estantes]);
+  const zonas = useMemo(() => mapa.data?.zonas ?? [], [mapa.data?.zonas]);
+
+  // Al cambiar de sala, el filtro y los resaltados son de la anterior.
+  useEffect(() => {
+    setEstanteFilter(null);
+    setHoverEstante(null);
+    setContentEstanteId(null);
+  }, [activeId]);
+
+  // Si la ventana se ensancha con la hoja abierta, el panel pasa a la columna y la hoja se cierra.
+  useEffect(() => {
+    if (docked) setSheetOpen(false);
+  }, [docked]);
+
+  const highlightEstanteIds = useMemo(
+    () => [estanteFilter, hoverEstante].filter((id): id is number => id !== null),
+    [estanteFilter, hoverEstante],
+  );
+
   // Mutations
   const deleteLocationMutation = useDeleteLocation();
   const deleteCajonMutation = useDeleteCajon();
   const labelMutation = useDownloadCajonLabel();
+
+  const openPanel = useCallback(() => {
+    if (docked) setDockedOpen(true);
+    else setSheetOpen(true);
+  }, [docked, setDockedOpen]);
+
+  const togglePanel = () => {
+    if (docked) setDockedOpen(!dockedOpen);
+    else setSheetOpen((open) => !open);
+  };
+
+  /** Tocar un estante del plano filtra el panel a sus cajones (y lo abre). */
+  const handleEstanteClick = useCallback(
+    (estante: Estante) => {
+      setEstanteFilter(estante.id);
+      setPanelTab('cajones');
+      openPanel();
+    },
+    [openPanel],
+  );
+
+  const handleShowContent = (id: number) => {
+    // Como hoja, el panel se cierra para que el pop-up no quede debajo de otra capa.
+    if (!docked) setSheetOpen(false);
+    setContentEstanteId(id);
+  };
 
   const handleOpenCreateLocation = () => {
     setEditingLocation(null);
@@ -117,12 +175,15 @@ export default function UbicacionesPage() {
 
   const handleOpenCreateCajon = () => {
     if (!activeLocation) return;
+    if (!docked) setSheetOpen(false);
     setCajonModalOpen(true);
   };
 
   /** Código completo del cajón; si la API aún no lo trae, se arma con el de la sala. */
-  const cajonCode = (cajon: CajonEntity) =>
-    cajon.barcode || cajonFullCode(cajon.location?.code ?? activeLocation?.code ?? '', cajon.codigo);
+  const cajonCode = useCallback(
+    (cajon: CajonEntity) => cajon.barcode || cajonFullCode(cajon.location?.code ?? activeLocation?.code ?? '', cajon.codigo),
+    [activeLocation?.code],
+  );
 
   const handlePrintLabel = async (cajon: CajonEntity) => {
     try {
@@ -146,8 +207,75 @@ export default function UbicacionesPage() {
     }
   };
 
+  const panel = activeLocation ? (
+    <UbicacionPanel
+      id={docked ? PANEL_ID : undefined}
+      cajones={cajones}
+      isLoadingCajones={isLoadingCajones}
+      estantes={estantes}
+      zonas={zonas}
+      tab={panelTab}
+      onTabChange={setPanelTab}
+      estanteFilter={estanteFilter}
+      onEstanteFilterChange={setEstanteFilter}
+      onShowContent={handleShowContent}
+      onCreateCajon={handleOpenCreateCajon}
+      canMarkFull={canMarkFull}
+      cajonCode={cajonCode}
+      printingId={labelMutation.isPending ? (labelMutation.variables ?? null) : null}
+      onPrint={(cajon) => void handlePrintLabel(cajon)}
+      onDeleteCajon={handleDeleteCajon}
+      onHighlight={setHoverEstante}
+      insetForClose={!docked}
+    />
+  ) : null;
+
+  const panelToggle = (
+    <Button
+      type="button"
+      variant="secondary"
+      size="sm"
+      onClick={togglePanel}
+      aria-expanded={panelOpen}
+      aria-controls={docked && panelOpen ? PANEL_ID : undefined}
+    >
+      {docked && panelOpen ? (
+        <PanelRightClose aria-hidden="true" className="h-4 w-4" />
+      ) : (
+        <PanelRightOpen aria-hidden="true" className="h-4 w-4" />
+      )}
+      Cajones <span className="font-mono">({cajones.length})</span>
+    </Button>
+  );
+
+  const map = activeLocation ? (
+    <SalaMapaPanel
+      locationId={activeLocation.id}
+      variant="embedded"
+      canEdit={canDo(role, 'editRoomMap')}
+      canSeeInventory={role ? canAccessRoute(role, '/inventario') : false}
+      fit={mode === 'stack' ? 'aspect' : 'fill'}
+      toolbarActions={panelToggle}
+      onEstanteClick={handleEstanteClick}
+      highlightEstanteIds={highlightEstanteIds}
+      contentEstanteId={contentEstanteId}
+      onContentEstanteChange={setContentEstanteId}
+      showEstantesList={false}
+      className={mode === 'stack' ? undefined : 'flex-1'}
+    />
+  ) : (
+    <EmptyState icon={FolderTree} title="Selecciona o crea una sala para gestionar sus cajones." />
+  );
+
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      className={cn(
+        'flex flex-col gap-4 sm:gap-6',
+        // Medio y ancho: la pantalla ocupa el alto de la ventana (barra de 56 px y margen del marco) y cada columna
+        // se desplaza por dentro. En ventanas muy bajas manda el mínimo y la página se desplaza.
+        mode !== 'stack' && 'h-[calc(100dvh-6.5rem)] min-h-[560px]',
+      )}
+    >
       <PageHeader
         icon={Layers}
         title="Gestión de ubicaciones físicas y cajones"
@@ -166,247 +294,80 @@ export default function UbicacionesPage() {
         }
       />
 
-      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
-        {/* Salas y recintos */}
-        <section
-          aria-label="Salas y recintos"
-          className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-5"
-        >
-          <div className="flex items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-            <SectionTitle as="h2" icon={Building2}>
-              Salas y recintos
-            </SectionTitle>
-            <span className="font-mono text-[13px] text-zinc-500 dark:text-zinc-400">{locations.length}</span>
-          </div>
-          <div className="border-b border-zinc-200 dark:border-zinc-800">
-            <TableToolbar>
-              <TableSearch
-                value={search}
-                onChange={setSearch}
-                placeholder="Buscar por nombre o descripción…"
+      <div
+        ref={workspace.ref}
+        data-mode={mode}
+        className={cn('min-w-0', mode === 'stack' ? 'flex flex-col gap-4' : cn('flex min-h-0 flex-1 overflow-hidden', FRAME_CLASS))}
+      >
+        {mode === 'stack' ? (
+          <>
+            {activeLocation && locations.length > 0 ? (
+              <SalaSelect
+                locations={locations}
+                active={activeLocation}
+                onSelect={setSelectedLocation}
+                onEdit={handleOpenEditLocation}
+                onDelete={handleDeleteLocation}
               />
-              <select
-                value={tipoFilter}
-                onChange={(e) => setTipoFilter(e.target.value)}
-                aria-label="Filtrar por tipo"
-                className={FILTER_CONTROL_CLASS}
-              >
-                <option value="">Todos los tipos</option>
-                <option value="sala">Salas</option>
-                <option value="panol">Pañoles</option>
-                <option value="taller">Talleres</option>
-                <option value="bodega">Bodegas</option>
-              </select>
-            </TableToolbar>
-          </div>
-
-          {isLoading ? (
-            <SkeletonList label="Cargando ubicaciones…" rows={5} columns={2} />
-          ) : locations.length === 0 ? (
-            <EmptyState
-              icon={Building2}
-              title="No se encontraron salas o ubicaciones registradas."
-              action={
-                <Button type="button" variant="secondary" size="sm" onClick={handleOpenCreateLocation}>
-                  <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                  Nueva sala / pañol
-                </Button>
-              }
-            />
-          ) : (
-            <ul className="max-h-[600px] overflow-y-auto">
-              {locations.map((loc) => {
-                const isSelected = activeLocation?.id === loc.id;
-                return (
-                  <li
-                    key={loc.id}
-                    onClick={() => setSelectedLocation(loc)}
-                    onKeyDown={(e) => {
-                      if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
-                        e.preventDefault();
-                        setSelectedLocation(loc);
-                      }
-                    }}
-                    tabIndex={0}
-                    aria-current={isSelected ? 'true' : undefined}
-                    className={cn(
-                      'relative flex cursor-pointer items-center justify-between gap-2 border-b border-zinc-200 px-4 py-2.5 transition-colors duration-150 last:border-b-0 dark:border-zinc-800',
-                      isSelected
-                        ? 'bg-accent-soft before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-accent'
-                        : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40',
-                    )}
-                  >
-                    <div className="flex min-w-0 items-start gap-2.5">
-                      <Building2
-                        aria-hidden="true"
-                        className={cn(
-                          'mt-0.5 h-4 w-4 shrink-0',
-                          isSelected ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-400',
-                        )}
-                      />
-                      <div className="flex min-w-0 flex-col gap-0.5">
-                        <div className="flex min-w-0 items-center gap-1.5">
-                          {loc.code && <span className={`${CODE_CHIP_CLASS} shrink-0`}>{loc.code}</span>}
-                          <span className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                            {loc.nombre}
-                          </span>
-                        </div>
-                        <div className="flex min-w-0 items-center gap-1.5 text-[13px] text-zinc-500 dark:text-zinc-400">
-                          <Badge>{loc.tipo}</Badge>
-                          {loc.descripcion && <span className="truncate">{loc.descripcion}</span>}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex shrink-0 items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenEditLocation(loc);
-                        }}
-                        className={ICON_BUTTON_CLASS}
-                        title="Editar ubicación"
-                        aria-label={`Editar ${loc.nombre}`}
-                      >
-                        <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteLocation(loc);
-                        }}
-                        className={ICON_BUTTON_CLASS}
-                        title="Eliminar ubicación"
-                        aria-label={`Eliminar ${loc.nombre}`}
-                      >
-                        <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
-
-        <div className="flex min-w-0 flex-col gap-6 lg:col-span-7">
-        {/* Mapa de la sala activa (REQ-22): se mira aquí; la edición abre un modal. */}
-        {activeLocation && (
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <SalaMapaPanel
-              locationId={activeLocation.id}
-              variant="embedded"
-              canEdit={canDo(role, 'editRoomMap')}
-              canSeeInventory={role ? canAccessRoute(role, '/inventario') : false}
-            />
-          </div>
-        )}
-
-        {/* Cajones de la sala activa */}
-        <section
-          aria-label="Cajones de la ubicación"
-          className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
-        >
-          {activeLocation ? (
-            <>
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-                <SectionTitle as="h2" icon={FolderTree} className="min-w-0">
-                  <span className="truncate">Cajones y gavetas en «{activeLocation.nombre}»</span>
-                  <span className="font-mono font-normal text-zinc-500 dark:text-zinc-400">({cajones.length})</span>
-                </SectionTitle>
-                <Button type="button" variant="secondary" size="sm" onClick={handleOpenCreateCajon}>
-                  <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                  Nuevo cajón
-                </Button>
-              </div>
-
-              {isLoadingCajones ? (
-                <SkeletonList label="Cargando compartimientos…" rows={4} columns={3} />
-              ) : cajones.length === 0 ? (
-                <EmptyState
-                  icon={MapPin}
-                  title="Esta ubicación no tiene cajones ni gavetas."
-                  description="Pulsa «Nuevo cajón» para agregar el primero."
+            ) : (
+              <div className={FRAME_CLASS}>
+                <SalasList
+                  locations={locations}
+                  isLoading={isLoading}
+                  activeId={activeId}
+                  onSelect={setSelectedLocation}
+                  onEdit={handleOpenEditLocation}
+                  onDelete={handleDeleteLocation}
+                  onCreate={handleOpenCreateLocation}
+                  search={search}
+                  onSearchChange={setSearch}
+                  tipo={tipoFilter}
+                  onTipoChange={setTipoFilter}
                 />
-              ) : (
-                <div className="max-h-[600px] overflow-y-auto p-4">
-                  <CellGrid columns={2} aria-label="Cajones">
-                    {cajones.map((cajon) => (
-                      <Cell key={cajon.id}>
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex min-w-0 items-start gap-2">
-                            <MapPin aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-400" />
-                            <div className="flex min-w-0 flex-col items-start gap-1">
-                              <span className="max-w-full truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                {cajon.codigo}
-                              </span>
-                              <span className="flex max-w-full flex-wrap items-center gap-1.5">
-                                <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
-                                {cajon.lleno && <Badge tone="loaned">Lleno</Badge>}
-                              </span>
-                              {cajon.descripcion && (
-                                <span className="max-w-full truncate text-[13px] text-zinc-500 dark:text-zinc-400">
-                                  {cajon.descripcion}
-                                </span>
-                              )}
-                              <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
-                                {cajon.estante ? (
-                                  <>
-                                    Estante <span className="font-code text-zinc-700 dark:text-zinc-200">{cajon.estante.codigo}</span>
-                                  </>
-                                ) : (
-                                  'Sin estante'
-                                )}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex shrink-0 items-center gap-1">
-                            {canMarkFull && (
-                              <CajonLlenoButton cajonId={cajon.id} codigo={cajonCode(cajon)} lleno={Boolean(cajon.lleno)} compact />
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => void handlePrintLabel(cajon)}
-                              disabled={labelMutation.isPending && labelMutation.variables === cajon.id}
-                              className={cn(ICON_BUTTON_CLASS, 'disabled:cursor-not-allowed disabled:opacity-50')}
-                              title="Imprimir etiqueta"
-                              aria-label={`Imprimir etiqueta de ${cajonCode(cajon)}`}
-                            >
-                              {labelMutation.isPending && labelMutation.variables === cajon.id ? (
-                                <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
-                              ) : (
-                                <Printer aria-hidden="true" className="h-3.5 w-3.5" />
-                              )}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteCajon(cajon)}
-                              className={ICON_BUTTON_CLASS}
-                              title="Eliminar cajón"
-                              aria-label={`Eliminar cajón ${cajon.codigo}`}
-                            >
-                              <Trash2 aria-hidden="true" className="h-3.5 w-3.5 text-danger" />
-                            </button>
-                          </div>
-                        </div>
-                      </Cell>
-                    ))}
-                  </CellGrid>
-                </div>
-              )}
-            </>
-          ) : (
-            <EmptyState
-              icon={FolderTree}
-              title="Selecciona o crea una sala para gestionar sus cajones."
-            />
-          )}
-        </section>
-        </div>
+              </div>
+            )}
+            {activeLocation && <div className={cn(FRAME_CLASS, 'p-3')}>{map}</div>}
+          </>
+        ) : (
+          <>
+            <div className={cn('flex shrink-0 flex-col border-r border-zinc-200 dark:border-zinc-800', roomy ? 'w-60' : 'w-52')}>
+              <SalasList
+                locations={locations}
+                isLoading={isLoading}
+                activeId={activeId}
+                onSelect={setSelectedLocation}
+                onEdit={handleOpenEditLocation}
+                onDelete={handleDeleteLocation}
+                onCreate={handleOpenCreateLocation}
+                search={search}
+                onSearchChange={setSearch}
+                tipo={tipoFilter}
+                onTipoChange={setTipoFilter}
+              />
+            </div>
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col p-3 sm:p-4">{map}</div>
+            {docked && panelOpen && panel && (
+              <aside
+                aria-label="Cajones y estantes de la sala"
+                className={cn('flex shrink-0 flex-col border-l border-zinc-200 dark:border-zinc-800', roomy ? 'w-80' : 'w-72')}
+              >
+                {panel}
+              </aside>
+            )}
+          </>
+        )}
       </div>
+
+      {!docked && (
+        <Sheet open={sheetOpen && panel !== null} onOpenChange={setSheetOpen}>
+          {sheetOpen && panel && (
+            <SheetContent side="right" className="gap-0 sm:max-w-sm!" aria-describedby={undefined}>
+              <SheetTitle className="sr-only">Cajones y estantes de «{activeLocation?.nombre}»</SheetTitle>
+              {panel}
+            </SheetContent>
+          )}
+        </Sheet>
+      )}
 
       <LocationFormDialog
         open={locationModalOpen}

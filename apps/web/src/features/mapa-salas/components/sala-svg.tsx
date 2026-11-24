@@ -23,10 +23,12 @@ export interface SalaSvgProps {
   className?: string;
   /** Desplazar la vista arrastrando el fondo (con zoom). */
   onPointerDown?: (event: PointerEvent<SVGSVGElement>) => void;
+  /** Tamaño en píxeles ya ajustado a la caja (`fitSize`); sin él, la proporción la da `aspect-ratio`. */
+  size?: { width: number; height: number } | null;
 }
 
 /** `<svg>` raíz del plano: el `viewBox` es la sala en cm; el zoom cambia el `viewBox`, no el CSS. */
-export function SalaSvg({ ref, label, width, height, viewBox, pxPerCm, background, children, className, onPointerDown }: SalaSvgProps) {
+export function SalaSvg({ ref, label, width, height, viewBox, pxPerCm, background, children, className, onPointerDown, size }: SalaSvgProps) {
   return (
     <svg
       ref={ref}
@@ -35,7 +37,7 @@ export function SalaSvg({ ref, label, width, height, viewBox, pxPerCm, backgroun
       viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`}
       preserveAspectRatio="xMidYMid meet"
       className={className}
-      style={{ aspectRatio: `${viewBox.w} / ${viewBox.h}` }}
+      style={size ? { width: size.width, height: size.height } : { aspectRatio: `${viewBox.w} / ${viewBox.h}` }}
       onPointerDown={onPointerDown}
     >
       <SalaWalls width={width} height={height} thickness={6 / pxPerCm} />

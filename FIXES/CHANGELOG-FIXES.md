@@ -1068,3 +1068,14 @@
   - Cola: el aviso «N por revisar» usa `usePendingLoans` (la misma consulta que la cola) y el detalle pasa a «Aprobadas, esperando retiro: N» (remotas en `en_proceso`).
   - Historial: el aviso dice «N vencidos sin devolver».
 - **Verificación:** números cruzados contra Postgres para el Pañol Central Temuco (4 sin devolver, 4 vencidos, 1 remota pendiente, 2 aprobadas por retirar) y vistos iguales en Chromium como PAN-01 contra la API de desarrollo, claro y oscuro; `prestamos-menu-page.test.tsx` (4 tests); typecheck; lint.
+
+## FIX-062: Ubicaciones de un vistazo (salas, plano a la medida y panel lateral de cajones)
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`features/ubicaciones/*`, `features/mapa-salas/components/sala-mapa-panel.tsx`, `sala-svg.tsx`, `estantes-list.tsx`, `hooks/use-element-size.ts`, `lib/fit-size.ts`) — plan en `docs/ubicaciones-distribucion.md` (REQ-05, REQ-22)
+- **Problema:** para ver la sala, su plano y sus cajones había que desplazar la página; el usuario achicaba el navegador al 60 %. El plano tenía un alto máximo fijo y en salas altas la escala de sus textos dejaba de ser exacta.
+- **Qué cambia:**
+  - Tres columnas sin desplazar la página: salas (una línea por sala, editar/eliminar al pasar el mouse), plano que toma el mayor tamaño que cabe con la proporción de la sala, y panel lateral «Cajones (N)» con pestañas Cajones y Estantes que se abre o cierra desde la barra del plano (recordado en `localStorage`).
+  - Distribución por el ancho del área de trabajo (no de la ventana): angosta < 640 px (selector de sala, plano con su proporción, panel como hoja), media 640–939 px (salas + plano, panel como hoja) y ancha ≥ 940 px (panel acoplado); 24 px de histéresis para no alternar en el umbral.
+  - Tocar un estante filtra el panel a sus cajones y lo resalta en el plano («Ver productos» abre el contenido de siempre, con editar y asignar); pasar por un cajón resalta su estante. `/mapa-salas` no cambia.
+- **Verificación:** vitest en verde (`ubicaciones-page.test.tsx` con distribución ancha y angosta, `workspace-mode.test.ts`, `fit-size.test.ts`, `sala-mapa-panel.test.tsx`); typecheck; lint. Recorrido en Chromium contra la API de desarrollo como PAN-01 en 12 combinaciones (1440 a 320 px, claro y oscuro, menú abierto y encogido, barra superior): plano siempre dentro de su caja, sin desplazamiento lateral y sin desplazar la página en las distribuciones media y ancha; 29/29 interacciones con mouse real.
