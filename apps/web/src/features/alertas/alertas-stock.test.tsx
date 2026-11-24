@@ -87,6 +87,7 @@ const mockResolveMutateAsync = vi.fn();
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
+  useDismissStockAlert: () => ({ mutate: vi.fn(), isPending: false }),
   useCriticalStockAlerts: (params?: { is_resolved?: boolean; alert_type?: string }) => {
     let data = [mockCriticalAlert, mockWarningAlert];
     if (params?.is_resolved === true) {

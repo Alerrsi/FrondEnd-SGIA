@@ -51,6 +51,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
   useProducts: ({ search }: { search?: string }) => ({
     data: { data: search ? [{ id: 1, nombre: 'Notebook Lenovo' }, { id: 2, nombre: 'Notebook HP' }] : [] },
   }),
+  useDismissStockAlert: () => ({ mutate: vi.fn(), isPending: false }),
   useCriticalStockAlerts: () => page(0),
   usePurchaseRequests: ({ status }: { status: string }) => page(status === 'borrador' ? 2 : 0),
   useAuditLogs: () => ({

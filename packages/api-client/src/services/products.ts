@@ -377,6 +377,7 @@ export async function fetchCriticalStockAlerts(
   if (params?.alert_type) query.set("alert_type", params.alert_type);
   if (params?.is_resolved !== undefined)
     query.set("is_resolved", String(params.is_resolved));
+  if (params?.exclude_dismissed) query.set("exclude_dismissed", "1");
   if (params?.per_page) query.set("per_page", String(params.per_page));
   if (params?.page) query.set("page", String(params.page));
 
@@ -384,6 +385,11 @@ export async function fetchCriticalStockAlerts(
   return get<CriticalStockAlertList>(
     `/alerts/critical-stock${qs ? `?${qs}` : ""}`,
   );
+}
+
+/** Quita la alerta solo de la campana del usuario, sin resolverla (`204`). */
+export async function dismissStockAlert(id: number): Promise<void> {
+  await post<void, void>(`/alerts/${id}/dismiss`);
 }
 
 export async function resolveStockAlert(

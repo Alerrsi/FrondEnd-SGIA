@@ -361,6 +361,8 @@ export interface CriticalStockAlert {
 export interface CriticalStockAlertQueryParams {
   alert_type?: "warning" | "critical";
   is_resolved?: boolean;
+  /** Campana: sin las alertas que el usuario quitó (lista y `counts`), docs/exportaciones-y-campana.md. */
+  exclude_dismissed?: boolean;
   per_page?: number;
   page?: number;
 }
