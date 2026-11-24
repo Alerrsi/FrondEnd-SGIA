@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import { Bell, AlertTriangle, AlertCircle, CheckCircle, ArrowRight, Trash2 } from 'lucide-react';
+import { Bell, AlertTriangle, AlertCircle, CheckCircle, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useCriticalStockAlerts, useDismissStockAlert } from '@sgia/api-client';
-import type { CriticalStockAlert } from '@sgia/types';
+import { useCriticalStockAlerts } from '@sgia/api-client';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,36 +13,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { STATE_TEXT_CLASS } from '@/components/ui/typography';
-import { apiErrorToMessage } from '@/lib/api-error';
-import { toast } from '@/lib/toast';
 import { useNewAlertSound } from '../hooks/use-new-alert-sound';
 
-/** La campana se actualiza sola cada minuto para avisar (con sonido) de alertas nuevas. */
+/** La campana se actualiza sola cada minuto y suena cuando llega una alerta nueva (docs/avisos-emergentes.md). */
 const BELL_REFETCH_MS = 60_000;
-
-/**
- * Hover y foco: el ítem pasa a rojo de forma gradual (300 ms) y aparece el basurero; clic o Enter lo quita de la
- * campana (docs/exportaciones-y-campana.md). Con movimiento reducido el cambio es inmediato. El `!` gana al
- * `hover:bg-zinc-100` de `DropdownMenuItem` (`cn` no fusiona clases).
- */
-const DISMISS_ITEM_CLASS =
-  'group relative flex flex-col items-start gap-1 p-3 pr-10 cursor-pointer transition-colors duration-300 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none hover:bg-danger-bg! focus:bg-danger-bg! dark:hover:bg-danger-bg! dark:focus:bg-danger-bg!';
 
 export function NotificationBell() {
   const navigate = useNavigate();
   const { data, isLoading } = useCriticalStockAlerts(
-    { is_resolved: false, per_page: 5, exclude_dismissed: true },
+    { is_resolved: false, per_page: 5 },
     { refetchInterval: BELL_REFETCH_MS },
   );
-  const dismiss = useDismissStockAlert();
 
   const alerts = useMemo(() => data?.data ?? [], [data]);
   const alertIds = useMemo(() => (data ? alerts.map((a) => a.id) : undefined), [data, alerts]);
   useNewAlertSound(alertIds);
-
-  const handleDismiss = (alert: CriticalStockAlert) => {
-    dismiss.mutate(alert, { onError: (error) => toast.error(apiErrorToMessage(error)) });
-  };
   // Totales del servidor (stock real del inventario); la lista solo trae las 5 más recientes.
   const totalUnresolved = data?.counts?.active ?? data?.meta?.total ?? alerts.length;
   const criticalCount =
@@ -132,39 +116,27 @@ export function NotificationBell() {
               return (
                 <DropdownMenuItem
                   key={alert.id}
-                  // El menú queda abierto para quitar varias seguidas.
-                  onSelect={(event) => {
-                    event.preventDefault();
-                    handleDismiss(alert);
-                  }}
-                  aria-label={`Quitar notificación: ${productName}, stock ${currentStock} (mínimo ${minStock})`}
-                  title="Quitar de mis notificaciones"
-                  data-alert-id={alert.id}
-                  className={DISMISS_ITEM_CLASS}
+                  onClick={() => navigate('/alertas')}
+                  className="flex flex-col items-start gap-1 p-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
                 >
                   <div className="flex w-full items-center justify-between gap-2">
-                    <span className="min-w-0 truncate text-[13px] font-medium text-zinc-900 transition-colors duration-300 motion-reduce:transition-none group-hover:text-danger group-focus:text-danger dark:text-zinc-100">
+                    <span className="min-w-0 truncate text-[13px] font-medium text-zinc-900 dark:text-zinc-100">
                       {productName}
                     </span>
                     <Badge tone={isCritical ? 'critical' : 'warning'}>
                       {isCritical ? 'Crítico' : 'Bajo'}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-zinc-500 transition-colors duration-300 motion-reduce:transition-none group-hover:text-danger group-focus:text-danger dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
                     {isCritical ? (
                       <AlertTriangle aria-hidden="true" className="h-3 w-3 shrink-0 text-danger" />
                     ) : (
                       <AlertCircle aria-hidden="true" className="h-3 w-3 shrink-0 text-warn" />
                     )}
                     <span>
-                      Stock: <span className="font-mono font-medium">{currentStock}</span> (mín <span className="font-mono">{minStock}</span>)
+                      Stock: <span className="font-mono font-medium text-zinc-800 dark:text-zinc-200">{currentStock}</span> (mín <span className="font-mono">{minStock}</span>)
                     </span>
                   </div>
-                  <Trash2
-                    aria-hidden="true"
-                    data-testid="notification-trash"
-                    className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-danger opacity-0 transition-opacity duration-300 motion-reduce:transition-none group-hover:opacity-100 group-focus:opacity-100"
-                  />
                 </DropdownMenuItem>
               );
             })

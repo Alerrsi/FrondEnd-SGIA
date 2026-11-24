@@ -1040,3 +1040,13 @@
   - Exportación: `getBlob`, `from`/`to`, `.xlsx` real generado por el backend, nombre con fecha local y errores con `apiErrorToMessage`. `downloadBlob` libera la URL un segundo después.
   - Campana: consulta cada 60 s; tono de prueba de dos notas (Web Audio) cuando llega una alerta nueva; al pasar el mouse (o con foco) el ítem se pone rojo en 300 ms y aparece un basurero; clic o Enter la quita solo para el usuario (`POST /api/alerts/{id}/dismiss`, optimista) sin cerrar el menú. La bandeja `/alertas` y los demás usuarios la siguen viendo.
 - **Verificación:** vitest en verde (servicio de exportación con un `Response` real, `download.test.ts`, `notification-bell.test.tsx` con el cliente real y `fetch` simulado, sonido solo con alertas nuevas); typecheck 5/5; lint. Recorrido contra la API de desarrollo: PDF y `.xlsx` como DIR-01 y PAN-01 y con rango de fechas (abiertos en LibreOffice); campana 14/14 con mouse real (transición medida, quitar, tono al llegar una alerta), claro y oscuro.
+
+## FIX-059: Avisos emergentes propios (sonido, hover rojo y clic para quitar) y campana como antes
+
+- **Fecha:** 2026-11-23
+- **Módulo:** `apps/web` (`lib/toast.ts`, `lib/is-toaster-event.ts`, `components/ui/toaster.tsx`, `toast-card.tsx`, `dialog.tsx`, `sheet.tsx`, `app.tsx`, `index.css`, `features/alertas/components/notification-bell.tsx`) — plan en `docs/avisos-emergentes.md`
+- **Qué cambia:**
+  - Los avisos dejan `sileo` por un componente propio con la misma API (`toast.success/error/warning/info`, 204 llamadas sin cambios): estilo «Trazo», tipo oración, ícono de estado, máximo 4, 4 s (errores 6 s) con pausa mientras el mouse está encima.
+  - Suenan al aparecer (tono de prueba de dos notas; varios juntos suenan una vez). Al pasar el mouse o con foco se ponen rojos en 300 ms con un basurero; clic, Enter o Espacio los quitan. Quitar un aviso con un modal u hoja abiertos no los cierra.
+  - La campana vuelve a como estaba (sin hover rojo; el clic lleva a `/alertas`) y conserva el sonido cuando llega una alerta de stock nueva. El hover y el clic para quitar del FIX-058 eran para los avisos, no para la campana.
+- **Verificación:** vitest en verde (`toaster.test.tsx`: sonido, rojo, clic/Enter, temporizador con pausa, máximo 4, aviso desprendido y modal que no se cierra; `notification-bell.test.tsx`); typecheck 5/5; lint. Recorrido en Chromium contra la API de desarrollo 12/12.
