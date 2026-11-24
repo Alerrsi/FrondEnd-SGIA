@@ -11,7 +11,7 @@ Objetivo: que todo se encuentre en pocos clics, se lea igual en cada pantalla y 
 
 ## 1. Stack
 
-React 19 + TypeScript estricto (sin `any`), Tailwind v4 con tema por clase (`dark:`), Radix (Dialog, DropdownMenu, Select, Tabs, Tooltip), Lucide, TanStack Table, React Hook Form + Zod, Sileo para avisos, Chart.js para gráficos. Sin librerías de animación.
+React 19 + TypeScript estricto (sin `any`), Tailwind v4 con tema por clase (`dark:`), Radix (Dialog, DropdownMenu, Select, Tabs, Tooltip), Lucide, TanStack Table, React Hook Form + Zod, Sileo para avisos, TanStack Charts (`@tanstack/charts`, SVG) para gráficos. Sin librerías de animación.
 
 ## 2. Tokens (`apps/web/src/index.css`, `packages/design-tokens/src/theme.css`)
 
@@ -86,7 +86,7 @@ Tokens `--m-in` 150 ms, `--m-out` 120, `--m-press` 90, `--m-panel` 200, `--m-clo
 
 ## 5. Gráficos (`apps/web/src/lib/chart-theme.ts`)
 
-Todo gráfico toma de ahí colores, fuente, ejes, leyenda, tooltip y animación. Serie única en el acento; segunda medida en neutro; estados con sus tonos. Paleta categórica de 6 (validada con el skill `dataviz`), en orden fijo, sin reciclar: desde la sexta porción, «Otros». Leyenda arriba a la izquierda en todo gráfico de categorías; rejilla solo en el eje de valores; un solo eje Y. Datos de analítica siempre por GraphQL (`POST /api/metrics`).
+Todo gráfico (TanStack Charts, `@tanstack/charts/react`) toma de ahí tema (`chartTheme`), ejes (`categoryAxis`, `valueAxis`, `integerTicks` para conteos), rejilla y animación; el tooltip se estila con las variables `--ts-chart-tooltip-*` de `index.css` y la leyenda es HTML (`ChartLegend`). Serie única en el acento; segunda medida en neutro; estados con sus tonos. Paleta categórica de 6 (validada con el skill `dataviz`), en orden fijo, sin reciclar: desde la sexta porción, «Otros». Leyenda arriba a la izquierda en todo gráfico de categorías; rejilla solo en el eje de valores; un solo eje Y. Datos de analítica siempre por GraphQL (`POST /api/metrics`).
 
 ## 6. Responsivo y accesibilidad
 

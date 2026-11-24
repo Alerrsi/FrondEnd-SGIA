@@ -5,14 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
 import { mockMetricsApi } from './metrics-api-mock';
 
-// Mock react-chartjs-2 to avoid canvas issues in happy-dom
-vi.mock('react-chartjs-2', () => ({
-  Bar: () => <div data-testid="chart-bar">Mock Bar Chart</div>,
-  Line: () => <div data-testid="chart-line">Mock Line Chart</div>,
-  Doughnut: () => <div data-testid="chart-doughnut">Mock Doughnut Chart</div>,
-  PolarArea: () => <div data-testid="chart-polar">Mock PolarArea Chart</div>,
-}));
-
 vi.mock('@/contexts/theme-context', () => ({
   useTheme: () => ({
     theme: 'dark',

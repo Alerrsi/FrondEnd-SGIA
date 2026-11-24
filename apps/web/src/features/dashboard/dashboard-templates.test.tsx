@@ -5,13 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DashboardPage from './pages/dashboard-page';
 import { mockMetricsApi } from './metrics-api-mock';
 
-vi.mock('react-chartjs-2', () => ({
-  Bar: () => <div data-testid="chart-bar" />,
-  Line: () => <div data-testid="chart-line" />,
-  Doughnut: () => <div data-testid="chart-doughnut" />,
-  PolarArea: () => <div data-testid="chart-polar" />,
-}));
-
 vi.mock('@/contexts/theme-context', () => ({
   useTheme: () => ({ theme: 'dark', resolvedTheme: 'dark' }),
 }));

@@ -1,43 +1,10 @@
 import { useMemo } from 'react';
-import {
-  ArcElement,
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  type ChartData,
-  type ChartOptions,
-  DoughnutController,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  PointElement,
-  PolarAreaController,
-  RadialLinearScale,
-  Tooltip,
-} from 'chart.js';
-import { Bar, Doughnut, Line, PolarArea } from 'react-chartjs-2';
-import { buildChartData, buildChartOptions } from '../lib/chart-format';
-import type { ChartType, MetricResult } from '../types/metrics';
+import { Chart } from '@tanstack/charts/react';
 
-ChartJS.register(
-  ArcElement,
-  BarController,
-  BarElement,
-  CategoryScale,
-  DoughnutController,
-  Filler,
-  Legend,
-  LineController,
-  LineElement,
-  LinearScale,
-  PointElement,
-  PolarAreaController,
-  RadialLinearScale,
-  Tooltip,
-);
+import { ChartLegend } from '@/components/ui/chart-legend';
+import { buildChartRows, buildLegend } from '../lib/chart-format';
+import { barDefinition, doughnutDefinition, lineDefinition, polarAreaDefinition } from '../lib/metric-chart-definition';
+import { CHART_TYPE_LABELS, type ChartType, type MetricResult } from '../types/metrics';
 
 interface MetricChartProps {
   result: MetricResult;
@@ -46,24 +13,34 @@ interface MetricChartProps {
   isDark: boolean;
 }
 
+/** Gráfico de una métrica (TanStack Charts, SVG): leyenda arriba y el gráfico ocupa el alto restante. */
 export function MetricChart({ result, chartType, title, isDark }: MetricChartProps) {
-  const data = useMemo(
-    () => buildChartData(result, chartType, title, isDark),
-    [result, chartType, title, isDark],
-  );
-  const options = useMemo(
-    () => buildChartOptions(result, chartType, isDark),
-    [result, chartType, isDark],
-  );
+  const isPercent = result.metric === 'RATE';
+  const rows = useMemo(() => buildChartRows(result, chartType, title, isDark), [result, chartType, title, isDark]);
+  const legend = useMemo(() => buildLegend(result, chartType, title, isDark), [result, chartType, title, isDark]);
+  const ariaLabel = `${title}: gráfico de ${CHART_TYPE_LABELS[chartType].toLowerCase()} con ${result.points.length} ${
+    result.points.length === 1 ? 'punto' : 'puntos'
+  }`;
 
-  switch (chartType) {
-    case 'LINE':
-      return <Line data={data as ChartData<'line'>} options={options as ChartOptions<'line'>} />;
-    case 'DOUGHNUT':
-      return <Doughnut data={data as ChartData<'doughnut'>} options={options as ChartOptions<'doughnut'>} />;
-    case 'POLAR_AREA':
-      return <PolarArea data={data as ChartData<'polarArea'>} options={options as ChartOptions<'polarArea'>} />;
-    default:
-      return <Bar data={data as ChartData<'bar'>} options={options as ChartOptions<'bar'>} />;
-  }
+  const chart = useMemo(() => {
+    const input = { rows, isPercent, isDark };
+    const common = { ariaLabel, style: { height: '100%' } } as const;
+    switch (chartType) {
+      case 'LINE':
+        return <Chart definition={lineDefinition(input)} {...common} />;
+      case 'DOUGHNUT':
+        return <Chart definition={doughnutDefinition(input)} {...common} />;
+      case 'POLAR_AREA':
+        return <Chart definition={polarAreaDefinition(input)} {...common} />;
+      default:
+        return <Chart definition={barDefinition(input)} {...common} />;
+    }
+  }, [rows, isPercent, isDark, chartType, ariaLabel]);
+
+  return (
+    <div className="flex h-full w-full flex-col gap-2" data-chart-type={chartType}>
+      <ChartLegend items={legend} />
+      <div className="min-h-0 flex-1">{chart}</div>
+    </div>
+  );
 }

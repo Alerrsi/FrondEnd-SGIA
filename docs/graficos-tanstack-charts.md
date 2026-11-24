@@ -1,6 +1,6 @@
 # Gráficos con TanStack Charts
 
-**Estado: plan, sin implementar (noviembre 2026).** Rama `feat/tanstack-charts`. Reemplaza Chart.js / react-chartjs-2 por `@tanstack/charts` 1.5 (entrada React `@tanstack/charts/react`).
+**Estado: implementado (noviembre 2026), fases 1 a 5.** Rama `feat/tanstack-charts`. Reemplaza Chart.js / react-chartjs-2 por `@tanstack/charts` 1.5 (entrada React `@tanstack/charts/react`).
 
 ## Problema
 
@@ -24,11 +24,19 @@
 
 ## Fases
 
-1. [ ] Plan y documentos (este archivo, `CLAUDE.md`, `TASKS/REQ-14`, `REQ-DISEÑO`, `AGENTS.md`).
-2. [ ] `lib/chart-theme.ts` sin Chart.js + `ChartLegend`; `chart-format.ts` produce filas tipadas en vez de `ChartData`.
-3. [ ] `MetricChart` (4 tipos), `BudgetMonthlyChart`, `LoginActivityChart` y el pop-up ampliado (`ChartExpandButton`).
-4. [ ] Tests sin mocks de `react-chartjs-2`; quitar `chart.js` y `react-chartjs-2` de `package.json`.
-5. [ ] Revisión visual en Chromium (claro y oscuro, 390 y 1440 px) contra la API real.
+1. [x] Plan y documentos (este archivo, `CLAUDE.md`, `TASKS/REQ-14`, `REQ-DISEÑO`, `AGENTS.md`).
+2. [x] `lib/chart-theme.ts` sin Chart.js + `ChartLegend`; `chart-format.ts` produce filas tipadas en vez de `ChartData`.
+3. [x] `MetricChart` (4 tipos), `BudgetMonthlyChart`, `LoginActivityChart` y el pop-up ampliado (`ChartExpandButton`).
+4. [x] Tests sin mocks de `react-chartjs-2`; quitar `chart.js` y `react-chartjs-2` de `package.json`.
+5. [x] Revisión visual en Chromium (claro y oscuro, 390 y 1440 px) contra la API real.
+
+## Notas de implementación
+
+- `lib/chart-theme.ts`: `chartTheme`, `categoryAxis`, `valueAxis`, `valueGrid`, `chartAnimation` e `integerTicks` (conteos sin cifras repetidas: con Chart.js era `precision: 0`). Los tokens y la paleta no cambiaron.
+- `features/dashboard/lib/metric-chart-definition.ts`: una definición por tipo; `chart-format.ts` entrega `MetricChartRow[]` (x = posición del punto, para que dos etiquetas iguales no se apilen).
+- Tooltip con `content` propio: título del punto, una fila por medida (sin repetir el punto que aportan área y línea) y la categoría.
+- La línea usa `curveMonotoneX` de `d3-shape` (dependencia directa, misma versión que trae TanStack Charts).
+- El gráfico sigue la altura del contenedor (`style={{ height: '100%' }}` sin `height`), así sirve igual en la tarjeta y en el pop-up ampliado.
 
 ## Fuera de alcance
 

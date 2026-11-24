@@ -28,7 +28,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 - `FIXES/CHANGELOG-FIXES.md` — historial de correcciones; registrar ahí los cambios importantes.
 - `.claude/skills/sgia-design/` — skill con la especificación de diseño de UI (se carga sola). Leer antes de crear o modificar componentes visuales.
 - `AGENTS.md` — contexto de negocio y arquitectura completo. Consultarlo para tareas de dominio.
-- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones. `docs/mapa-salas.md`: mapa SVG por sala con zonas y estantes arrastrables (rama `mapa-salas`, REQ-22, implementado). `docs/rediseno-movil.md`: sistema «Trazo» en la app móvil (rama `feat/rediseno-movil`, implementado). `docs/inicio-movil.md`: Inicio del profesor en la app móvil (rama `feat/inicio-movil`, implementado). `docs/graficos-tanstack-charts.md`: migración de Chart.js a TanStack Charts (rama `feat/tanstack-charts`, plan). Cajones llenos: plan y contrato en `BackEnd-SGIA/docs/cajones-llenos.md` (REQ-22).
+- `docs/` — planes de implementación del frontend. `docs/rediseno-interfaz.md`: rediseño «Trazo» (rama `feat/rediseno-zed`, implementado) con la historia de decisiones. `docs/mapa-salas.md`: mapa SVG por sala con zonas y estantes arrastrables (rama `mapa-salas`, REQ-22, implementado). `docs/rediseno-movil.md`: sistema «Trazo» en la app móvil (rama `feat/rediseno-movil`, implementado). `docs/inicio-movil.md`: Inicio del profesor en la app móvil (rama `feat/inicio-movil`, implementado). `docs/graficos-tanstack-charts.md`: migración de Chart.js a TanStack Charts (rama `feat/tanstack-charts`, implementado). Cajones llenos: plan y contrato en `BackEnd-SGIA/docs/cajones-llenos.md` (REQ-22).
 
 ## Reglas duras
 
@@ -44,7 +44,7 @@ Antes de dar una tarea por terminada: `pnpm typecheck` y `pnpm --filter @sgia/we
 ## Decisiones de diseño
 
 Sistema «Trazo» (rama `feat/rediseno-zed`; regla completa en `.claude/skills/sgia-design/SKILL.md`, historia en `docs/rediseno-interfaz.md`): neutros cálidos papel/grafito con la escala `zinc` redefinida en `apps/web/src/index.css` (se sigue escribiendo `zinc-*`), burdeo como único acento (rosa en oscuro), menú lateral neutro (`bg-zinc-100 dark:bg-zinc-900`, activo con barra burdeo), Geist en la interfaz y Geist Mono solo en `font-code` (SKU, RUT, seriales, códigos); `font-mono` es Geist con cifras tabulares, radios 4/6/8px, sin paletas alternativas, pesos 400/500 (nunca 700), nada bajo 12px y rótulos en tipo oración (sin `uppercase`). Chips de código como etiqueta crema (`CODE_CHIP_CLASS`); badges con el componente `Badge`.
-Componentes base en `apps/web/src/components/ui/` (`PageHeader`, `Metric`, `CellGrid`, `TableFrame`, `Dialog`/`Sheet`, `Badge`, `ErrorState`); el menú sale de `layouts/nav-config.ts` y los gráficos de `lib/chart-theme.ts`. Responsivo de 320 a 1440 px, controles de 44px con puntero táctil.
+Componentes base en `apps/web/src/components/ui/` (`PageHeader`, `Metric`, `CellGrid`, `TableFrame`, `Dialog`/`Sheet`, `Badge`, `ErrorState`); el menú sale de `layouts/nav-config.ts` y los gráficos (TanStack Charts) de `lib/chart-theme.ts`. Responsivo de 320 a 1440 px, controles de 44px con puntero táctil.
 
 ## Convenciones de trabajo
 

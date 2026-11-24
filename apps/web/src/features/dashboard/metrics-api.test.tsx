@@ -6,17 +6,10 @@ import { ApiRequestError, buildMetricInput, fetchCustomMetric, fetchExecutiveKpi
 import { DynamicChartCard } from './components/dynamic-chart-card';
 import { ChartConfigModal } from './components/chart-config-modal';
 import { isSameChart, sanitizeChart } from './lib/chart-config';
-import { buildChartData, formatValue, truncateLabel } from './lib/chart-format';
+import { buildChartRows, buildLegend, formatValue, truncateLabel } from './lib/chart-format';
 import { mockMetricsApi, type MetricsRequest } from './metrics-api-mock';
 import type { ChartTemplate } from '@sgia/types';
 import type { MetricQueryInput, MetricResult } from './types/metrics';
-
-vi.mock('react-chartjs-2', () => ({
-  Bar: () => <div data-testid="chart-bar" />,
-  Line: () => <div data-testid="chart-line" />,
-  Doughnut: () => <div data-testid="chart-doughnut" />,
-  PolarArea: () => <div data-testid="chart-polar" />,
-}));
 
 vi.mock('@/contexts/theme-context', () => ({
   useTheme: () => ({ theme: 'light', resolvedTheme: 'light' }),
@@ -89,7 +82,7 @@ describe('REQ-14: estados de la tarjeta de gráfico', () => {
   it('dibuja el gráfico con los puntos de la API y el summary como pie', async () => {
     mockMetricsApi();
     renderWithClient(<DynamicChartCard input={LOANS_INPUT} />);
-    expect(await screen.findByTestId('chart-bar')).toBeDefined();
+    expect(await screen.findByRole('img', { name: /gráfico de barras/ })).toBeDefined();
     expect(screen.getByText(/Resumen de prueba/)).toBeDefined();
   });
 
@@ -97,14 +90,14 @@ describe('REQ-14: estados de la tarjeta de gráfico', () => {
     mockMetricsApi({ points: [] });
     renderWithClient(<DynamicChartCard input={LOANS_INPUT} />);
     expect(await screen.findByText('Sin datos para el período')).toBeDefined();
-    expect(screen.queryByTestId('chart-bar')).toBeNull();
+    expect(screen.queryByRole('img', { name: /gráfico de/ })).toBeNull();
   });
 
   it('muestra el mensaje del error GraphQL, sin cifras inventadas', async () => {
     mockMetricsApi({ graphqlError: 'CUSTOM requiere dateFrom' });
     renderWithClient(<DynamicChartCard input={LOANS_INPUT} />);
     expect(await screen.findByText('CUSTOM requiere dateFrom')).toBeDefined();
-    expect(screen.queryByTestId('chart-bar')).toBeNull();
+    expect(screen.queryByRole('img', { name: /gráfico de/ })).toBeNull();
   });
 
   it('en 403 avisa de permisos', async () => {
@@ -247,10 +240,13 @@ describe('REQ-14: utilidades de gráficos', () => {
     ],
   };
 
-  it('agrega un segundo dataset cuando hay secondaryValue', () => {
-    const data = buildChartData(result, 'BAR', 'Insumos', false);
-    expect(data.datasets).toHaveLength(2);
-    expect(data.datasets[1]?.label).toBe('Stock restante');
+  it('agrega la segunda medida como otra serie cuando hay secondaryValue', () => {
+    const rows = buildChartRows(result, 'BAR', 'Insumos', false);
+    expect(rows.filter((r) => r.primary)).toHaveLength(2);
+    const secondary = rows.filter((r) => !r.primary);
+    expect(secondary).toHaveLength(1);
+    expect(secondary[0]).toMatchObject({ series: 'Stock restante', value: 10, label: 'Cable' });
+    expect(buildLegend(result, 'BAR', 'Insumos', false).map((i) => i.label)).toEqual(['Insumos', 'Stock restante']);
   });
 
   it('agrupa en «Otros» las porciones que no caben en la paleta (no recicla colores)', () => {
@@ -259,13 +255,12 @@ describe('REQ-14: utilidades de gráficos', () => {
       chartType: 'DOUGHNUT',
       points: Array.from({ length: 12 }, (_, i) => ({ label: `Cat ${i}`, value: i + 1 })),
     };
-    const data = buildChartData(many, 'DOUGHNUT', 't', false);
-    const colors = data.datasets[0]?.backgroundColor as string[];
-    expect(colors).toHaveLength(6);
-    expect(new Set(colors).size).toBe(6);
-    expect(data.labels?.at(-1)).toBe('Otros');
+    const rows = buildChartRows(many, 'DOUGHNUT', 't', false);
+    expect(rows).toHaveLength(6);
+    expect(new Set(rows.map((r) => r.color)).size).toBe(6);
+    expect(rows.at(-1)?.label).toBe('Otros');
     // Cat 5 a Cat 11 suman 6+7+…+12 = 63
-    expect(data.datasets[0]?.data.at(-1)).toBe(63);
+    expect(rows.at(-1)?.value).toBe(63);
   });
 
   it('formatea porcentajes y trunca etiquetas largas', () => {
