@@ -1090,3 +1090,10 @@
   - Los cajones de cada estante salen del plano (completo): antes la lista de cajones se cortaba en 15 porque la API pagina de a 15.
   - Modales y hojas abiertos desde código devuelven el foco a quien los abrió al cerrarse (antes quedaba en `<body>`), en toda la app.
 - **Verificación:** vitest en verde (630); typecheck; lint. Recorrido en Chromium contra la API de desarrollo como PAN-01: 26/26 (conteos iguales a Postgres en los cinco cajones con contenido de PCENTRAL, pop-up encima de la hoja a 390 y 1024 px, sin desplazamiento lateral) y teclado 5/5 (Enter/Espacio despliegan, Tab al cajón, Enter abre el pop-up y el foco vuelve al cerrar).
+
+## FIX-064: Sonido de notificación elegido por el usuario
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`lib/notification-sound.ts`, `assets/sounds/notificacion.mp3`) — `docs/avisos-emergentes.md`
+- **Qué cambia:** los avisos emergentes y las alertas nuevas de la campana suenan con el mp3 que envió el usuario («New Notification 010» de Universfield, licencia de Pixabay) en vez de los dos tonos generados con Web Audio. Un solo `<audio>` reutilizado a volumen 0,6 que vuelve a empezar si llegan varias seguidas; si el navegador bloquea el sonido, falla en silencio.
+- **Verificación:** `notification-sound.test.ts` (archivo, volumen, reinicio, bloqueo), `toaster.test.tsx` y `notification-bell.test.tsx`; typecheck; lint; build de producción con el mp3 empaquetado; prueba real en Chromium: al marcar un cajón lleno aparece el aviso y el mp3 suena sin errores (el cajón quedó como estaba).

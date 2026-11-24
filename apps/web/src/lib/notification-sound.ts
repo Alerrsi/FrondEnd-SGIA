@@ -1,39 +1,40 @@
-/**
- * Sonido de prueba para notificaciones nuevas (docs/exportaciones-y-campana.md): dos tonos cortos generados con
- * Web Audio, sin archivo. El navegador solo deja sonar después de alguna interacción con la página (el login
- * ya la cuenta); si no puede, falla en silencio.
- */
-let context: AudioContext | null = null;
+import notificationSoundUrl from '@/assets/sounds/notificacion.mp3';
 
-function audioContext(): AudioContext | null {
-  if (typeof window === 'undefined') return null;
-  const Ctor = window.AudioContext ?? (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-  if (!Ctor) return null;
-  context ??= new Ctor();
-  return context;
+/**
+ * Sonido de las notificaciones (avisos emergentes y alertas nuevas de la campana): `assets/sounds/notificacion.mp3`
+ * («New Notification 010» de Universfield, licencia de Pixabay: uso libre, sin atribución obligatoria). Un solo
+ * `<audio>` reutilizado: si llegan varias notificaciones seguidas, el sonido vuelve a empezar en vez de apilarse.
+ * El navegador solo deja sonar después de alguna interacción con la página (el login ya la cuenta); si no puede,
+ * falla en silencio.
+ */
+const VOLUME = 0.6;
+
+let audio: HTMLAudioElement | null = null;
+
+function notificationAudio(): HTMLAudioElement | null {
+  if (typeof Audio === 'undefined') return null;
+  if (!audio) {
+    audio = new Audio(notificationSoundUrl);
+    audio.preload = 'auto';
+    audio.volume = VOLUME;
+  }
+  return audio;
 }
 
 export function playNotificationSound(): void {
   try {
-    const ctx = audioContext();
-    if (!ctx) return;
-    if (ctx.state === 'suspended') void ctx.resume();
-    const start = ctx.currentTime;
-    // «Ding-dong» suave: 880 Hz y luego 1320 Hz, 160 ms cada uno, con entrada y salida para que no chasquee.
-    [880, 1320].forEach((frequency, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const t0 = start + i * 0.16;
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(frequency, t0);
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.18, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.17);
-    });
+    const player = notificationAudio();
+    if (!player) return;
+    player.currentTime = 0;
+    const playing = player.play();
+    // `play()` se rechaza si el navegador aún no permite sonido: la notificación igual se ve.
+    if (playing && typeof playing.catch === 'function') playing.catch(() => undefined);
   } catch {
-    // Sin audio disponible: la notificación igual se ve en la campana.
+    // Sin audio disponible: la notificación igual se ve en la campana o en el aviso.
   }
+}
+
+/** Solo para pruebas: olvida el `<audio>` creado. */
+export function resetNotificationSoundForTests(): void {
+  audio = null;
 }
