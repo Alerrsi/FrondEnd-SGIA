@@ -58,6 +58,7 @@ export function normalizeEstante(raw: Estante): Estante {
       barcode: cajon.barcode ?? null,
       products_count: cajon.products_count ?? 0,
       units_count: cajon.units_count ?? 0,
+      lleno: Boolean(cajon.lleno),
     })),
     items_count: raw.items_count ?? 0,
     has_critical_stock: Boolean(raw.has_critical_stock),
@@ -99,6 +100,7 @@ function normalizeContenidoCajon(raw: EstanteContenidoCajon): EstanteContenidoCa
     codigo: raw.codigo ?? '',
     barcode: raw.barcode ?? null,
     descripcion: raw.descripcion ?? null,
+    lleno: Boolean(raw.lleno),
     productos: (raw.productos ?? []).map((producto) => ({
       ...producto,
       barcode: producto.barcode ?? null,

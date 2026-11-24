@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   createLocation: vi.fn(),
   updateLocation: vi.fn(),
   createCajon: vi.fn(),
+  updateCajon: vi.fn(),
   downloadLabel: vi.fn(),
   printBlob: vi.fn(),
 }));
@@ -27,6 +28,16 @@ const CAJONES: CajonEntity[] = [
     descripcion: 'Cables',
     location_id: 1,
   },
+  {
+    id: 12,
+    codigo: 'Gaveta A-2',
+    barcode: 'PCENTRAL-GAVETA-A-2',
+    descripcion: null,
+    location_id: 1,
+    estante_id: 3,
+    estante: { id: 3, codigo: 'EST-A1' },
+    lleno: true,
+  },
 ];
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
@@ -40,6 +51,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
   useUpdateLocation: () => ({ mutateAsync: mocks.updateLocation, isPending: false }),
   useDeleteLocation: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCreateCajon: () => ({ mutateAsync: mocks.createCajon, isPending: false }),
+  useUpdateCajon: () => ({ mutateAsync: mocks.updateCajon, isPending: false }),
   useEstantes: () => ({ data: { data: [{ id: 3, codigo: 'EST-A1', nombre: 'Rack' }] }, isLoading: false }),
   useDeleteCajon: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useDownloadCajonLabel: () => ({
@@ -234,5 +246,28 @@ describe('UbicacionesPage · cajón en un estante del mapa (REQ-22)', () => {
     await user.click(screen.getByRole('button', { name: 'Guardar cajón' }));
 
     expect(mocks.createCajon.mock.calls[0]?.[0]).toEqual({ location_id: 1, codigo: 'R5', descripcion: undefined, estante_id: 3 });
+  });
+});
+
+describe('UbicacionesPage · cajones llenos (docs/cajones-llenos.md)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('marca el cajón lleno con un badge y permite marcar o quitar «lleno» desde la lista', async () => {
+    const user = userEvent.setup();
+    mocks.updateCajon.mockResolvedValue({});
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    // Solo el cajón lleno lleva el badge.
+    expect(screen.getAllByText('Lleno')).toHaveLength(1);
+
+    await user.click(screen.getByRole('button', { name: 'Marcar lleno el cajón PCENTRAL-GAVETA-A-1' }));
+    expect(mocks.updateCajon).toHaveBeenCalledWith({ id: 10, payload: { lleno: true } });
+
+    const quitar = screen.getByRole('button', { name: 'Quitar lleno del cajón PCENTRAL-GAVETA-A-2' });
+    expect(quitar.getAttribute('aria-pressed')).toBe('true');
+    await user.click(quitar);
+    expect(mocks.updateCajon).toHaveBeenLastCalledWith({ id: 12, payload: { lleno: false } });
   });
 });

@@ -44,6 +44,8 @@ export interface CajonEntity {
   /** Estante del mapa donde está el cajón (REQ-22), de la misma sala. */
   estante_id?: number | null;
   estante?: { id: number; codigo: string } | null;
+  /** Marcado como lleno a mano (docs/cajones-llenos.md); informativo, no bloquea asignar productos. */
+  lleno?: boolean;
   products_count?: number;
   created_by?: number | null;
   updated_by?: number | null;
@@ -98,6 +100,7 @@ export interface CreateCajonPayload {
   codigo: string;
   descripcion?: string;
   estante_id?: number | null;
+  lleno?: boolean;
 }
 
 export interface UpdateCajonPayload {
@@ -105,6 +108,8 @@ export interface UpdateCajonPayload {
   codigo?: string;
   descripcion?: string;
   estante_id?: number | null;
+  /** Marca o desmarca el cajón como lleno (`DIR-01`, `PAN-01`). */
+  lleno?: boolean;
 }
 
 export interface ProductLocationDetailResponse {

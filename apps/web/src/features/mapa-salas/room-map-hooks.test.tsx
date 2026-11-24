@@ -7,7 +7,9 @@ import {
   fetchCajones,
   fetchEstanteContenido,
   fetchSalaMapa,
+  estanteKeys,
   salaMapaKeys,
+  useUpdateCajon,
   useUpdateEstante,
 } from '@sgia/api-client';
 import type { SalaMapa } from '@sgia/types';
@@ -114,6 +116,37 @@ describe('Servicios y hooks del mapa de salas (REQ-22)', () => {
     expect(fetchMock).toHaveBeenNthCalledWith(1, '/api/cajones?location_id=7&sin_estante=1', expect.anything());
     expect(fetchMock).toHaveBeenNthCalledWith(2, '/api/cajones?estante_id=3', expect.anything());
     expect(page.data[0]?.estante).toEqual({ id: 3, codigo: 'EST-A1' });
+  });
+
+  it('conserva `lleno` del cajón en el listado y en el mapa (docs/cajones-llenos.md)', async () => {
+    vi.stubGlobal('fetch', respond(200, { data: [{ id: 1, codigo: 'R1', location_id: 7, lleno: true }, { id: 2, codigo: 'R2', location_id: 7 }] }));
+    const page = await fetchCajones({ location_id: 7 });
+    expect(page.data.map((c) => c.lleno)).toEqual([true, false]);
+
+    const raw = { ...MAP, estantes: [{ ...MAP.estantes[0]!, cajones: [{ id: 1, codigo: 'R1', barcode: null, products_count: 0, units_count: 0, lleno: true }] }] };
+    vi.stubGlobal('fetch', respond(200, { data: raw }));
+    expect((await fetchSalaMapa(7)).estantes[0]?.cajones[0]?.lleno).toBe(true);
+  });
+
+  it('useUpdateCajon envía `lleno` y refresca el mapa y el contenido de estantes', async () => {
+    const fetchMock = respond(200, { data: { id: 1, codigo: 'R1', location_id: 7, lleno: true } });
+    vi.stubGlobal('fetch', fetchMock);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+    queryClient.setQueryData(salaMapaKeys.detail(7), MAP);
+    queryClient.setQueryData(estanteKeys.contents(3), { cajones: [] });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+    const { result } = renderHook(() => useUpdateCajon(), { wrapper });
+
+    await act(async () => {
+      const cajon = await result.current.mutateAsync({ id: 1, payload: { lleno: true } });
+      expect(cajon.lleno).toBe(true);
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith('/api/cajones/1', expect.objectContaining({ method: 'PATCH', body: JSON.stringify({ lleno: true }) }));
+    expect(queryClient.getQueryState(salaMapaKeys.detail(7))?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryState(estanteKeys.contents(3))?.isInvalidated).toBe(true);
   });
 
   describe('useUpdateEstante', () => {

@@ -38,6 +38,7 @@ import { cn } from '@/lib/cn';
 import { printBlob } from '@/features/equipos/utils/download';
 import { LocationFormDialog } from '@/features/ubicaciones/components/location-form-dialog';
 import { CajonFormDialog } from '@/features/ubicaciones/components/cajon-form-dialog';
+import { CajonLlenoButton } from '@/features/mapa-salas/components/cajon-lleno-button';
 import { cajonFullCode } from '@/features/ubicaciones/lib/location-code';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 import { useAuth } from '@/features/auth/context/auth-context';
@@ -47,6 +48,7 @@ import { SalaMapaPanel } from '@/features/mapa-salas/components/sala-mapa-panel'
 export default function UbicacionesPage() {
   const { user } = useAuth();
   const role = user?.role;
+  const canMarkFull = canDo(role, 'markCajonFull');
   const [search, setSearch] = useState('');
   const [tipoFilter, setTipoFilter] = useState('');
   const [selectedLocation, setSelectedLocation] = useState<LocationEntity | null>(null);
@@ -340,7 +342,10 @@ export default function UbicacionesPage() {
                               <span className="max-w-full truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                 {cajon.codigo}
                               </span>
-                              <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
+                              <span className="flex max-w-full flex-wrap items-center gap-1.5">
+                                <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajonCode(cajon)}</span>
+                                {cajon.lleno && <Badge tone="loaned">Lleno</Badge>}
+                              </span>
                               {cajon.descripcion && (
                                 <span className="max-w-full truncate text-[13px] text-zinc-500 dark:text-zinc-400">
                                   {cajon.descripcion}
@@ -359,6 +364,9 @@ export default function UbicacionesPage() {
                           </div>
 
                           <div className="flex shrink-0 items-center gap-1">
+                            {canMarkFull && (
+                              <CajonLlenoButton cajonId={cajon.id} codigo={cajonCode(cajon)} lleno={Boolean(cajon.lleno)} compact />
+                            )}
                             <button
                               type="button"
                               onClick={() => void handlePrintLabel(cajon)}

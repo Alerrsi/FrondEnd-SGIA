@@ -173,6 +173,13 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
             </SalaSvg>
           </div>
 
+          {estantes.some((estante) => estante.cajones.some((cajon) => cajon.lleno)) && (
+            <p className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+              <span aria-hidden="true" className="h-2.5 w-3.5 rounded-sm border border-info bg-info-bg" />
+              Cajón lleno
+            </p>
+          )}
+
           <EstantesList estantes={estantes} zonas={zonas} onOpen={openEstante} />
 
           {canEdit && (
@@ -196,6 +203,7 @@ export function SalaMapaPanel({ locationId, canEdit, canSeeInventory, variant = 
         codigo={openEstanteData?.codigo}
         onClose={() => setOpenId(null)}
         canSeeInventory={canSeeInventory}
+        canMarkFull={canEdit}
         onEdit={
           canEdit && openEstanteData
             ? () => {

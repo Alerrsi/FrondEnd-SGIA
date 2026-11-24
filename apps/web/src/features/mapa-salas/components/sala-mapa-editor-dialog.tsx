@@ -290,6 +290,7 @@ export function SalaMapaEditorDialog({ open, onClose, mapa, canSeeInventory, ini
           codigo={openEstanteData?.codigo}
           onClose={() => setOpenId(null)}
           canSeeInventory={canSeeInventory}
+          canMarkFull
           onEdit={
             openEstanteData
               ? () => {

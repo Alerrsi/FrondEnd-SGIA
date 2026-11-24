@@ -11,7 +11,7 @@ export interface EstanteShapeProps {
   /** Píxeles de pantalla por cm: textos, radios y marcadores miden lo mismo a cualquier escala. */
   pxPerCm: number;
   selected?: boolean;
-  /** Contiene lo buscado en «Buscar en la sala»: fondo burdeo suave (el punto rojo queda para stock crítico). */
+  /** Contiene lo buscado en «Buscar en la sala»: fondo burdeo suave (el punto rojo queda para stock crítico). Los cajones llenos van en azul (`info`). */
   marked?: boolean;
   /** Modo edición: el puntero arrastra en vez de abrir. */
   editable?: boolean;
@@ -95,6 +95,21 @@ export const EstanteShape = memo(function EstanteShape({
         strokeWidth={selected ? 2 : 1}
         vectorEffect="non-scaling-stroke"
       />
+      {/* Cajones llenos: celda en azul suave (token `info`), por debajo de las divisiones. */}
+      {estante.cajones.map((cajon, i) =>
+        cajon.lleno ? (
+          <rect
+            key={`lleno-${cajon.id}`}
+            data-cajon-lleno={cajon.id}
+            {...(vertical
+              ? { x: 0, y: (h / cells) * i, width: w - band, height: h / cells }
+              : { x: (w / cells) * i, y: band, width: w / cells, height: h - band })}
+            className="pointer-events-none fill-info-bg stroke-info"
+            strokeWidth={1}
+            vectorEffect="non-scaling-stroke"
+          />
+        ) : null,
+      )}
       {vertical ? (
         <>
           <line x1={w - band} y1={0} x2={w - band} y2={h} className="stroke-zinc-300 dark:stroke-zinc-700" strokeWidth={1} vectorEffect="non-scaling-stroke" />

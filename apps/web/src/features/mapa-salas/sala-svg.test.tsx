@@ -42,7 +42,7 @@ describe('Dibujo SVG de la sala (REQ-22)', () => {
   it('cada estante es un botón con su descripción accesible', () => {
     renderMapa();
     expect(
-      screen.getByRole('button', { name: 'Estante EST-A2, Zona A, 2 cajones, 5 elementos, con stock crítico' }),
+      screen.getByRole('button', { name: 'Estante EST-A2, Zona A, 2 cajones, 5 elementos, 1 cajón lleno, con stock crítico' }),
     ).toBeDefined();
   });
 
@@ -56,6 +56,35 @@ describe('Dibujo SVG de la sala (REQ-22)', () => {
     expect(text.getAttribute('transform')).toContain('rotate(-90)');
     // Marco + línea de la franja + 1 separación entre dos cajones.
     expect(container.querySelectorAll('line')).toHaveLength(2);
+  });
+
+  it('pinta en azul solo la celda del cajón lleno, en su posición (docs/cajones-llenos.md)', () => {
+    // Horizontal (rotación 0): 300 × 60 cm, franja del código arriba; dos cajones, el segundo lleno.
+    const { container, rerender } = render(
+      <svg>
+        <EstanteShape estante={makeEstante({ rotation: 0 })} zonaNombre={null} pxPerCm={1} onActivate={vi.fn()} />
+      </svg>,
+    );
+    const llenas = container.querySelectorAll('rect[data-cajon-lleno]');
+    expect(llenas).toHaveLength(1);
+    const celda = llenas[0]!;
+    expect(celda.getAttribute('data-cajon-lleno')).toBe('12');
+    expect(celda.getAttribute('class')).toContain('fill-info-bg');
+    expect(celda.getAttribute('x')).toBe('150');
+    expect(celda.getAttribute('width')).toBe('150');
+
+    // Sin cajones llenos no hay celdas azules.
+    rerender(
+      <svg>
+        <EstanteShape
+          estante={makeEstante({ cajones: makeEstante().cajones.map((c) => ({ ...c, lleno: false })) })}
+          zonaNombre={null}
+          pxPerCm={1}
+          onActivate={vi.fn()}
+        />
+      </svg>,
+    );
+    expect(container.querySelectorAll('rect[data-cajon-lleno]')).toHaveLength(0);
   });
 
   it('oculta el código si no cabe a esa escala, pero lo deja en el nombre accesible', () => {
