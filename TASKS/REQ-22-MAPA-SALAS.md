@@ -114,9 +114,9 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 - [x] Ubicaciones: badge «Lleno» y botón de ícono para alternar en cada cajón de la lista (`ubicaciones-page.test.tsx`).
 - [x] Recorrido contra la API real (20/20): PAN-01 marca desde la lista y desde el mapa, DIR-01 desde `/mapa-salas`, AD-01 sin botones y `403`; 390 px sin scroll lateral.
 
-### Ubicaciones de un vistazo (plan en `docs/ubicaciones-distribucion.md`)
-- [ ] `SalaMapaPanel` con `fit` (plano a la medida de su caja con `use-fit-size`, escala de textos exacta), `toolbarActions`, `onEstanteClick`, `highlightEstanteIds`, pop-up de contenido controlado y `showEstantesList`; `/mapa-salas` sin cambios.
-- [ ] `EstantesList` con `collapsible` para usarse dentro del panel de Ubicaciones.
+### Ubicaciones de un vistazo (plan en `docs/ubicaciones-distribucion.md`, implementado)
+- [x] `SalaMapaPanel` con `fit` (plano a la medida de su caja con `fitSize`, escala de textos exacta), `toolbarActions`, `onEstanteClick`, `highlightEstanteIds`, pop-up de contenido controlado y `showEstantesList`; `/mapa-salas` sin cambios.
+- [x] `EstantesList` con `collapsible` para usarse dentro del panel de Ubicaciones.
 
 ## 🧪 Pruebas requeridas
 
