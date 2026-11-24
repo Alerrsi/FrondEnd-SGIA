@@ -55,3 +55,10 @@ Proveer una vista histórica completa y auditable de todos los préstamos cursad
 
 - [x] Unit test: hook `useLoans` con filtros de estado y rango temporal.
 - [x] Integration test: descarga de blob de exportación y verificación de generación de archivo.
+
+### Arreglo de la exportación (plan en `BackEnd-SGIA/docs/exportaciones-y-campana.md`)
+La auditoría del 2026-11-23 encontró que ambos botones fallaban («Error al exportar archivo») aunque los tests pasaban (mockeaban el hook): `exportLoans` leía el archivo como JSON, las fechas no llegaban (`from_date` en vez de `from`) y el «Excel» era un CSV guardado como `.xlsx`.
+- [ ] `exportLoans` con `getBlob` y `from`/`to`; test del servicio con `fetch` simulado (sin mockear el hook).
+- [ ] Excel real `.xlsx` desde el backend.
+- [ ] `downloadBlob` revoca la URL después de la descarga (Firefox/Safari).
+- [ ] Recorrido contra la API real: descargar PDF y Excel y abrir el `.xlsx`.

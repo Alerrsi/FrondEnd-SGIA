@@ -40,6 +40,12 @@ Monitorear en tiempo real los niveles de existencias para anticipar quiebres de 
 
 ---
 
+### Campana: sonido y quitar notificaciones (plan en `BackEnd-SGIA/docs/exportaciones-y-campana.md`)
+- [ ] La campana consulta cada 60 s y suena un tono de prueba (Web Audio) cuando llega una alerta nueva (no al cargar).
+- [ ] Hover: el ítem pasa a rojo de forma gradual (300 ms, sin movimiento con `prefers-reduced-motion`) y muestra un basurero.
+- [ ] Clic o Enter: oculta la alerta solo para el usuario (`POST /api/alerts/{id}/dismiss`), sin cerrar el menú; la campana usa `exclude_dismissed=1`.
+- [ ] Recorrido contra la API real.
+
 ## 🧪 Pruebas Requeridas
 
 - [x] Unit test: hooks `useCriticalStockAlerts` y mutación `useResolveStockAlert`.
