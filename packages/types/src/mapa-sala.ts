@@ -23,6 +23,8 @@ export interface EstanteCajonResumen {
   barcode: string | null;
   products_count: number;
   units_count: number;
+  /** Cajón marcado como lleno: celda azul en el plano. */
+  lleno: boolean;
 }
 
 export interface Estante {
@@ -84,6 +86,7 @@ export interface EstanteContenidoCajon {
   codigo: string;
   barcode: string | null;
   descripcion: string | null;
+  lleno: boolean;
   productos: EstanteContenidoProducto[];
   unidades: EstanteContenidoUnidades[];
 }

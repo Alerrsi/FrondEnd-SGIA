@@ -16,8 +16,8 @@ export function makeEstante(partial: Partial<Estante> = {}): Estante {
     depth: 60,
     rotation: 90,
     cajones: [
-      { id: 11, codigo: 'R1', barcode: 'L206-R1', products_count: 2, units_count: 0 },
-      { id: 12, codigo: 'R2', barcode: 'L206-R2', products_count: 0, units_count: 3 },
+      { id: 11, codigo: 'R1', barcode: 'L206-R1', products_count: 2, units_count: 0, lleno: false },
+      { id: 12, codigo: 'R2', barcode: 'L206-R2', products_count: 0, units_count: 3, lleno: true },
     ],
     items_count: 5,
     has_critical_stock: false,
@@ -60,6 +60,7 @@ export const CONTENIDO: EstanteContenido = {
       codigo: 'R1',
       barcode: 'L206-R1',
       descripcion: 'Cables',
+      lleno: false,
       productos: [
         { id: 40, name: 'Guantes de nitrilo', type: 'insumo', barcode: null, quantity: 3, stock_minimo: 5, is_critical: true },
         { id: 41, name: 'Alcohol isopropílico', type: 'insumo', barcode: null, quantity: 20, stock_minimo: 5, is_critical: false },
@@ -71,6 +72,7 @@ export const CONTENIDO: EstanteContenido = {
       codigo: 'R2',
       barcode: 'L206-R2',
       descripcion: null,
+      lleno: true,
       productos: [],
       unidades: [
         { product_id: 50, product_name: 'Multímetro', type: 'equipo', total: 3, by_status: { disponible: 2, prestado: 1, en_reparacion: 0 } },

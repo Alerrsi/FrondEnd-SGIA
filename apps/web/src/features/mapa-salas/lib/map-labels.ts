@@ -8,6 +8,8 @@ export function estanteAriaLabel(estante: Estante, zonaNombre: string | null): s
   const cajones = estante.cajones.length;
   parts.push(cajones === 1 ? '1 cajón' : `${cajones} cajones`);
   parts.push(estante.items_count === 1 ? '1 elemento' : `${estante.items_count} elementos`);
+  const llenos = estante.cajones.filter((cajon) => cajon.lleno).length;
+  if (llenos > 0) parts.push(llenos === 1 ? '1 cajón lleno' : `${llenos} cajones llenos`);
   if (estante.has_critical_stock) parts.push('con stock crítico');
   return parts.join(', ');
 }

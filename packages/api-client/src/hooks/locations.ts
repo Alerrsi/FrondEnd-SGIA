@@ -126,7 +126,10 @@ export function useUpdateCajon() {
     mutationFn: ({ id, payload }) => updateCajon(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cajonKeys.all });
+      // Bajo `['locations']` también se refresca el mapa (`salaMapaKeys`).
       queryClient.invalidateQueries({ queryKey: locationKeys.all });
+      // Contenido de estantes (`estanteKeys.all` de room-map.ts, que ya importa este archivo): el pop-up muestra `lleno`.
+      queryClient.invalidateQueries({ queryKey: ['estantes'] });
     },
   });
 }

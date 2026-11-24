@@ -9,6 +9,11 @@ export interface EstantesListProps {
   onOpen: (estante: Estante) => void;
 }
 
+function llenosLabel(estante: Estante): string | null {
+  const llenos = estante.cajones.filter((cajon) => cajon.lleno).length;
+  return llenos > 0 ? plural(llenos, 'lleno', 'llenos') : null;
+}
+
 /** Alternativa en texto del plano: misma información y el mismo pop-up, para lectores de pantalla y teléfonos. */
 export function EstantesList({ estantes, zonas, onOpen }: EstantesListProps) {
   const zonaNombre = new Map(zonas.map((zona) => [zona.id, zona.nombre]));
@@ -33,7 +38,7 @@ export function EstantesList({ estantes, zonas, onOpen }: EstantesListProps) {
                 <span className="font-code text-zinc-900 dark:text-zinc-100">{estante.codigo}</span>
                 {estante.nombre && <span className="text-zinc-600 dark:text-zinc-300">{estante.nombre}</span>}
                 <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
-                  {[estante.zona_id ? zonaNombre.get(estante.zona_id) : 'Sin zona', plural(estante.cajones.length, 'cajón', 'cajones'), plural(estante.items_count, 'elemento', 'elementos')]
+                  {[estante.zona_id ? zonaNombre.get(estante.zona_id) : 'Sin zona', plural(estante.cajones.length, 'cajón', 'cajones'), plural(estante.items_count, 'elemento', 'elementos'), llenosLabel(estante)]
                     .filter(Boolean)
                     .join(' · ')}
                 </span>

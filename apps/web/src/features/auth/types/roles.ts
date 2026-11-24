@@ -58,6 +58,8 @@ export const ACTION_ROLES = {
   deleteProduct: ['DIR-01'],
   /** Crear, mover y borrar estantes y zonas del mapa de salas; medidas de la sala (REQ-22). */
   editRoomMap: ['DIR-01', 'PAN-01'],
+  /** Marcar o desmarcar un cajón como lleno (`PATCH /api/cajones/{id}`, docs/cajones-llenos.md). */
+  markCajonFull: ['DIR-01', 'PAN-01'],
 } as const satisfies Record<string, readonly WebRoleCode[]>;
 
 export function canDo(role: string | undefined, action: keyof typeof ACTION_ROLES): boolean {

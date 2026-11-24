@@ -1018,3 +1018,15 @@
   - Mismo tema «Trazo»: tokens y paleta de `lib/chart-theme.ts`, con helpers nuevos (`chartTheme`, `categoryAxis`, `valueAxis`, `valueGrid`, `integerTicks`); tooltip con las variables `--ts-chart-tooltip-*`; leyenda HTML (`ChartLegend`) arriba a la izquierda, también en el pop-up ampliado.
   - Monitoreo: marcas del eje en enteros (antes `precision: 0`).
 - **Verificación:** vitest en verde con `metric-chart.test.tsx` (geometría real de los 4 tipos en happy-dom) y `chart-theme.test.ts`; typecheck 5/5; lint. Revisión en Chromium contra la API de desarrollo: analítica en claro, oscuro y 390 px, tooltip, pop-up ampliado, presupuesto mensual y monitoreo, sin errores de consola.
+
+## FIX-056: Cajones llenos en Ubicaciones y en el mapa de salas
+
+- **Fecha:** 2026-11-23
+- **Módulo:** `packages/types` (`producto.ts`, `mapa-sala.ts`), `packages/api-client` (`services/locations.ts`, `services/room-map.ts`, `hooks/locations.ts`), `apps/web` (`features/mapa-salas`, `features/ubicaciones`, `features/auth/types/roles.ts`) — contrato en `BackEnd-SGIA/docs/cajones-llenos.md`, [REQ-22](TASKS/REQ-22-MAPA-SALAS.md)
+- **Qué cambia:**
+  - Nuevo estado `lleno` del cajón (`PATCH /api/cajones/{id}`), marcado a mano por `DIR-01` y `PAN-01`; informativo, no bloquea asignar productos.
+  - Mapa: la celda del cajón lleno va en azul suave (`fill-info-bg`, borde `stroke-info`), el estante lo dice en su nombre accesible («1 cajón lleno»), la lista de estantes suma «N llenos» y bajo el plano aparece la leyenda «Cajón lleno».
+  - Pop-up del estante: badge «Lleno» por cajón y botón «Marcar lleno» / «Quitar lleno» para editores.
+  - Ubicaciones: badge «Lleno» y botón de ícono por cajón (`CajonLlenoButton compact`).
+  - `useUpdateCajon` también invalida el contenido de estantes; el normalizador de cajones conserva `lleno` (el recorrido real detectó que lo descartaba).
+- **Verificación:** vitest en verde (tests nuevos en `sala-svg`, `estante-contenido-dialog`, `room-map-hooks` y `ubicaciones-page`); typecheck 5/5; recorrido en Chromium contra la API de desarrollo 20/20 (PAN-01 lista y mapa, DIR-01 `/mapa-salas`, AD-01 solo lectura y `403`, 390 px). Datos de prueba restaurados (ningún cajón queda lleno).

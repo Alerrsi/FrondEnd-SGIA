@@ -108,11 +108,11 @@ Casillas detalladas en `BackEnd-SGIA/TASKS/Productos.md` (REQ-22).
 ---
 
 ### Cajones llenos (plan en `BackEnd-SGIA/docs/cajones-llenos.md`)
-- [ ] Tipos: `lleno` en `CajonEntity`, `EstanteCajonResumen`, `EstanteContenidoCajon` y payloads.
-- [ ] Celda del cajón lleno en azul (`fill-info-bg`, `stroke-info`) y «N cajones llenos» en el `aria-label` del estante.
-- [ ] Pop-up del estante: badge «Lleno» y botón «Marcar lleno»/«Quitar lleno» para editores (`DIR-01`, `PAN-01`).
-- [ ] Ubicaciones: badge «Lleno» y botón para alternar en cada cajón de la lista.
-- [ ] Recorrido contra la API real: marcar desde la lista y desde el mapa.
+- [x] Tipos: `lleno` en `CajonEntity`, `EstanteCajonResumen`, `EstanteContenidoCajon` y payloads; normalizadores del api-client (`room-map-hooks.test.tsx`).
+- [x] Celda del cajón lleno en azul (`fill-info-bg`, `stroke-info`), «N cajones llenos» en el `aria-label` del estante y leyenda bajo el plano (`sala-svg.test.tsx`).
+- [x] Pop-up del estante: badge «Lleno» y botón «Marcar lleno»/«Quitar lleno» para editores (`DIR-01`, `PAN-01`) (`estante-contenido-dialog.test.tsx`).
+- [x] Ubicaciones: badge «Lleno» y botón de ícono para alternar en cada cajón de la lista (`ubicaciones-page.test.tsx`).
+- [x] Recorrido contra la API real (20/20): PAN-01 marca desde la lista y desde el mapa, DIR-01 desde `/mapa-salas`, AD-01 sin botones y `403`; 390 px sin scroll lateral.
 
 ## 🧪 Pruebas requeridas
 

@@ -46,6 +46,7 @@ function normalizeCajon(raw: any): CajonEntity {
     location: raw.location ? normalizeLocation(raw.location) : undefined,
     estante_id: raw.estante_id ?? null,
     estante: raw.estante ? { id: raw.estante.id, codigo: raw.estante.codigo ?? '' } : null,
+    lleno: Boolean(raw.lleno),
     products_count: raw.products_count ?? 0,
     created_by: raw.created_by ?? null,
     updated_by: raw.updated_by ?? null,
