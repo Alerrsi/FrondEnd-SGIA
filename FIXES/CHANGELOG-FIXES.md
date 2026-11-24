@@ -1117,3 +1117,10 @@
 - **Problema:** el usuario no quedó conforme con FIX-065: las tarjetas por carrera ocupaban mucho y las barras y cifras en verde y amarillo desentonaban con el sitio.
 - **Qué cambia:** las carreras pasan a una columna de filas de dos líneas (código, nombre, total; barra delgada y «N en curso») junto a la bandeja desde 1024 px, con «Todas las carreras» arriba y la elegida marcada como en el menú; barras en burdeo (en curso) y grises (finalizadas, anuladas); cifras sin color en una franja de 4 (2 × 2 en el teléfono); aviso de vencidas en una franja neutra de una línea; la bandeja junta «Tipo y ejecución» y deja el selector de carrera a la lista.
 - **Verificación:** vitest en verde (637); typecheck; lint. Recorrido en Chromium contra la API (PAN-01 y DIR-01) 32/32: filas iguales a Postgres, filtro por carrera exacto, sin verde ni amarillo en lista y cifras, tabla sin desplazamiento lateral a 1280 × 720 con el menú abierto, 390 px en oscuro y teclado.
+
+## FIX-067: Saludo de Inicio con el nombre escrito a máquina
+
+- **Fecha:** 2026-11-24
+- **Módulo:** `apps/web` (`features/inicio/components/typewriter-name.tsx`, `hooks/use-typewriter.ts`, `home-hero.tsx`, `index.css` `ui-caret`), `apps/mobile` (`features/inicio/components/typewriter-name.tsx`, `hooks/use-typewriter.ts`, `home-hero.tsx`), `packages/design-tokens` (`typewriter.ts`) — `docs/saludo-animado.md`
+- **Qué cambia:** en «Hola, {nombre}» el nombre se escribe letra por letra, queda 2,8 s, se borra y vuelve a escribirse, con un guion bajo burdeo como cursor que parpadea mientras está completo. Sin saltos de diseño (el nombre reserva su lugar), el lector de pantalla oye «Hola, {nombre}» una sola vez y con movimiento reducido queda fijo y sin cursor. En la web se detiene con la pestaña oculta. Es la única animación continua permitida (regla de movimiento del skill `sgia-design`).
+- **Verificación:** vitest en verde (644); typecheck; lint (los 3 errores de `expo-notifications` del lint móvil ya existían). Recorrido en Chromium: web con PAN-01, DIR-01, AD-01 y PRO-01 (secuencia, tamaño fijo, cursor, árbol de accesibilidad, movimiento reducido, 390 px) y app móvil en Expo web 7/7.

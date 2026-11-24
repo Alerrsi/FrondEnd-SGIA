@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Kbd } from '@/components/ui/kbd';
 import type { QuickAction } from '@/layouts/nav-config';
+import { TypewriterName } from './typewriter-name';
 import { useHomeShortcut } from './use-home-shortcut';
 
 export interface HomeHeroProps {
@@ -18,7 +19,8 @@ export interface HomeHeroProps {
 
 /**
  * Banda de saludo de Inicio: quién eres, qué día es y la acción principal del rol con su tecla.
- * Entra una sola vez al cargar (260 ms); el resto de la página no se anima.
+ * Entra una sola vez al cargar (260 ms); el nombre se escribe a máquina (docs/saludo-animado.md); el resto de la
+ * página no se anima.
  */
 export function HomeHero({ firstName, context, primary, secondary, aside }: HomeHeroProps) {
   useHomeShortcut(primary?.key, primary?.to ?? '/');
@@ -31,7 +33,7 @@ export function HomeHero({ firstName, context, primary, secondary, aside }: Home
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-[26px] font-medium leading-8 tracking-[-0.035em] text-zinc-900 dark:text-zinc-100 sm:text-[32px] sm:leading-10">
-            Hola, {firstName}
+            Hola, <TypewriterName name={firstName} />
           </h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">{context}</p>
         </div>

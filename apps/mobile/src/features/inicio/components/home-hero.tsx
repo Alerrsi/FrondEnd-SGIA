@@ -6,8 +6,9 @@ import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/use-theme';
 import { spacing } from '@/theme';
+import { TypewriterName } from './typewriter-name';
 
-/** Saludo de Inicio: quién eres, qué día es y la acción principal del docente. */
+/** Saludo de Inicio: quién eres (el nombre se escribe a máquina, docs/saludo-animado.md), qué día es y la acción principal del docente. */
 export function HomeHero({ firstName, context }: { firstName: string; context: string }) {
   const router = useRouter();
   const theme = useTheme();
@@ -15,8 +16,8 @@ export function HomeHero({ firstName, context }: { firstName: string; context: s
   return (
     <View style={[styles.hero, { borderBottomColor: theme.line }]}>
       <View style={styles.text}>
-        <ThemedText variant="hero" accessibilityRole="header">
-          Hola, {firstName}
+        <ThemedText variant="hero" accessibilityRole="header" accessibilityLabel={`Hola, ${firstName}`}>
+          Hola, <TypewriterName name={firstName} />
         </ThemedText>
         <ThemedText variant="subtitle">{context}</ThemedText>
       </View>
