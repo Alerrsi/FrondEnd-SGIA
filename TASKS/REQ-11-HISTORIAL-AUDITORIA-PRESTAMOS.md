@@ -58,7 +58,7 @@ Proveer una vista histórica completa y auditable de todos los préstamos cursad
 
 ### Arreglo de la exportación (plan en `BackEnd-SGIA/docs/exportaciones-y-campana.md`)
 La auditoría del 2026-11-23 encontró que ambos botones fallaban («Error al exportar archivo») aunque los tests pasaban (mockeaban el hook): `exportLoans` leía el archivo como JSON, las fechas no llegaban (`from_date` en vez de `from`) y el «Excel» era un CSV guardado como `.xlsx`.
-- [ ] `exportLoans` con `getBlob` y `from`/`to`; test del servicio con `fetch` simulado (sin mockear el hook).
-- [ ] Excel real `.xlsx` desde el backend.
-- [ ] `downloadBlob` revoca la URL después de la descarga (Firefox/Safari).
-- [ ] Recorrido contra la API real: descargar PDF y Excel y abrir el `.xlsx`.
+- [x] `exportLoans` con `getBlob` y `from`/`to`; test del servicio con un `Response` real de PDF (`loans-api-filters.test.ts`).
+- [x] Excel real `.xlsx` desde el backend; el archivo se nombra con la fecha local.
+- [x] `downloadBlob` revoca la URL después de la descarga (Firefox/Safari) (`download.test.ts`).
+- [x] Recorrido contra la API real: PDF y Excel como DIR-01 (165 préstamos) y PAN-01 (83, su pañol), rango de marzo (19), `.xlsx` abierto en LibreOffice.

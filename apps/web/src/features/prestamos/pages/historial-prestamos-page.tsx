@@ -45,6 +45,8 @@ import {
   loanStoreroom,
   loanTeacher,
 } from '@/features/prestamos/lib/loan-display';
+import { downloadBlob } from '@/features/equipos/utils/download';
+import { apiErrorToMessage } from '@/lib/api-error';
 import { cn } from '@/lib/cn';
 import { toast } from '@/lib/toast';
 import { PageHeading } from '@/components/ui/page-heading';
@@ -141,21 +143,15 @@ export default function HistorialPrestamosPage() {
         format,
       });
 
-      // Crear URL de descarga del Blob
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
+      // El backend entrega un .xlsx real con `excel` (docs/exportaciones-y-campana.md).
       const extension = format === 'excel' ? 'xlsx' : 'pdf';
-      const dateStr = new Date().toISOString().slice(0, 10);
-      link.setAttribute('download', `SGIA_Auditoria_Prestamos_${dateStr}.${extension}`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      // Fecha local (toISOString daría la de UTC: el día siguiente pasadas las 21:00 en Chile).
+      const dateStr = new Date().toLocaleDateString('sv-SE');
+      downloadBlob(blob, `SGIA_Auditoria_Prestamos_${dateStr}.${extension}`);
 
       toast.success(`Reporte ${format.toUpperCase()} descargado exitosamente`);
-    } catch {
-      toast.error(`Error al exportar archivo ${format.toUpperCase()}`);
+    } catch (error) {
+      toast.error(`No se pudo exportar el ${format === 'excel' ? 'Excel' : 'PDF'}: ${apiErrorToMessage(error)}`);
     }
   };
 
