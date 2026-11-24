@@ -43,6 +43,12 @@ Centralizar la información técnica de los activos de mayor valor (servidores, 
 
 ---
 
+## Mantenciones por carrera (plan en `BackEnd-SGIA/docs/mantenciones-por-carrera.md`)
+
+- [ ] Tipos y cliente: `career_id` y `sin_carrera` en `MaintenanceRecordQueryParams`.
+- [ ] `/mantenciones`: cifras con `Metric`, una celda por carrera con barra apilada por estado, tocarla filtra la bandeja, aviso de vencidas con tokens `warn`, bandeja en `TableFrame` con filas para teléfono.
+- [ ] Tests y recorrido en Chromium contra la API (PAN-01 y DIR-01, 1440 y 390 px).
+
 ## 🧪 Pruebas Requeridas
 
 - [x] Unit test: hooks `useEquipmentSpecs` y `useUpdateEquipmentSpecs` (`apps/web/src/features/equipos/equipment-specs-hooks.test.tsx`).
