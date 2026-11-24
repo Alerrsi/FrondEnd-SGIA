@@ -169,4 +169,30 @@ describe('Dialog Unsaved Changes Confirmation (REQ-DISEÑO)', () => {
     expect(handleClose).not.toHaveBeenCalled();
     expect(screen.getByText('¿Descartar cambios?')).toBeDefined();
   });
+
+  it('al cerrarse devuelve el foco a quien lo abrió aunque no sea un Dialog.Trigger', async () => {
+    const user = userEvent.setup();
+    function Opener() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>Abrir cajón</button>
+          <Dialog open={open} onClose={() => setOpen(false)} title="Cajón">
+            <p>Contenido</p>
+          </Dialog>
+        </>
+      );
+    }
+    render(<Opener />);
+
+    const opener = screen.getByRole('button', { name: 'Abrir cajón' });
+    await user.click(opener);
+    expect(screen.getByRole('dialog')).toBeDefined();
+    expect(document.activeElement).not.toBe(opener);
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.activeElement).toBe(opener);
+  });
 });
+

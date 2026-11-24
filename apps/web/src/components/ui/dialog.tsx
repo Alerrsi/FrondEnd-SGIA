@@ -5,6 +5,7 @@ import { AlertTriangle, X } from 'lucide-react';
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { isToasterEvent } from '@/lib/is-toaster-event';
+import { useReturnFocus } from '@/lib/use-return-focus';
 
 interface DialogContextValue {
   attemptClose: () => void;
@@ -80,6 +81,7 @@ export function Dialog({
   onEscapeKeyDown,
 }: DialogProps) {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const returnFocus = useReturnFocus();
 
   useEffect(() => {
     if (!open) {
@@ -141,6 +143,8 @@ export function Dialog({
             onInteractOutside={(e) => {
               if (isToasterEvent(e)) e.preventDefault();
             }}
+            onOpenAutoFocus={returnFocus.onOpenAutoFocus}
+            onCloseAutoFocus={returnFocus.onCloseAutoFocus}
             onPointerDownOutside={(e) => {
               if (isToasterEvent(e)) return;
               if (checkHasChanges()) {
