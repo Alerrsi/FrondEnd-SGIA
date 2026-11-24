@@ -14,7 +14,7 @@ import type {
   RechazarPrestamoPayload,
   RemoteLoanRequestPayload,
 } from '@sgia/types';
-import { del, get, post } from '../http';
+import { del, get, getBlob, post } from '../http';
 
 export function normalizePrestamo(raw: any): Prestamo {
   if (!raw) return raw;
@@ -398,30 +398,16 @@ export async function checkinLoan(payload: LoanCheckinPayload): Promise<Prestamo
   return loanFromResponse(response);
 }
 
-export async function exportLoans(
-  params?:
-    | LoanExportParams
-    | {
-        start_date?: string;
-        end_date?: string;
-        from_date?: string;
-        to_date?: string;
-        status?: string;
-        fecha_desde?: string;
-        fecha_hasta?: string;
-        career_id?: number;
-        storeroom_id?: number;
-        location_id?: number;
-        loan_date?: string;
-        format?: 'pdf' | 'excel' | 'xlsx';
-      },
-): Promise<Blob> {
+/**
+ * Historial de préstamos como archivo (docs/exportaciones-y-campana.md): `pdf`, `excel` (`.xlsx` real) o CSV.
+ * Se lee como Blob (`getBlob`); las fechas viajan como `from`/`to`, que es lo que filtra el export.
+ */
+export async function exportLoans(params?: LoanExportParams): Promise<Blob> {
   const query = new URLSearchParams();
-  const startDate =
-    params?.start_date ?? (params as any)?.from_date ?? (params as any)?.fecha_desde;
-  const endDate = params?.end_date ?? (params as any)?.to_date ?? (params as any)?.fecha_hasta;
-  if (startDate) query.set('from_date', startDate);
-  if (endDate) query.set('to_date', endDate);
+  const startDate = params?.start_date ?? params?.from_date;
+  const endDate = params?.end_date ?? params?.to_date;
+  if (startDate) query.set('from', startDate);
+  if (endDate) query.set('to', endDate);
   setLoanStatusQuery(query, params?.status);
   if (params?.career_id) query.set('career_id', String(params.career_id));
   if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
@@ -430,5 +416,5 @@ export async function exportLoans(
   if (params?.format) query.set('format', params.format);
 
   const qs = query.toString();
-  return get<Blob>(`/loans/export${qs ? `?${qs}` : ''}`);
+  return getBlob(`/loans/export${qs ? `?${qs}` : ''}`);
 }

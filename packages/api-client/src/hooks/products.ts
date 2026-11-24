@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import type {
   CreateProductoPayload,
   CriticalStockAlert,
+  CriticalStockAlertList,
   CriticalStockAlertQueryParams,
   InvoiceScanResponse,
   ProductConditionPayload,
@@ -21,6 +22,7 @@ import {
   fetchProductLocation,
   fetchProducts,
   resolveStockAlert,
+  dismissStockAlert,
   setProductoActivo,
   updateProductCondition,
   updateProductLocation,
@@ -134,11 +136,60 @@ export const alertKeys = {
   criticalStock: (params?: CriticalStockAlertQueryParams) => ['alerts', 'critical-stock', params] as const,
 };
 
-export function useCriticalStockAlerts(params?: CriticalStockAlertQueryParams) {
+export function useCriticalStockAlerts(
+  params?: CriticalStockAlertQueryParams,
+  options?: { refetchInterval?: number },
+) {
   return useQuery({
     queryKey: alertKeys.criticalStock(params),
     queryFn: () => fetchCriticalStockAlerts(params),
     placeholderData: keepPreviousData,
+    refetchInterval: options?.refetchInterval,
+  });
+}
+
+type AlertListSnapshot = [readonly unknown[], CriticalStockAlertList | undefined][];
+
+/**
+ * Quita una alerta de la campana del usuario (docs/exportaciones-y-campana.md). Optimista: sale al instante de las
+ * listas con `exclude_dismissed` y sus totales bajan; si la API falla, vuelven.
+ */
+export function useDismissStockAlert() {
+  const queryClient = useQueryClient();
+  const isBell = (key: readonly unknown[]) =>
+    (key[2] as CriticalStockAlertQueryParams | undefined)?.exclude_dismissed === true;
+
+  return useMutation<void, Error, CriticalStockAlert, { snapshot: AlertListSnapshot }>({
+    mutationFn: (alert) => dismissStockAlert(alert.id),
+    onMutate: async (alert) => {
+      await queryClient.cancelQueries({ queryKey: alertKeys.all });
+      const snapshot = queryClient
+        .getQueriesData<CriticalStockAlertList>({ queryKey: alertKeys.all })
+        .filter(([key]) => isBell(key));
+      for (const [key, list] of snapshot) {
+        if (!list?.data.some((a) => a.id === alert.id)) continue;
+        const counts = list.counts
+          ? {
+              ...list.counts,
+              active: Math.max(0, list.counts.active - 1),
+              critical: Math.max(0, list.counts.critical - (alert.alert_type === 'critical' ? 1 : 0)),
+              warning: Math.max(0, list.counts.warning - (alert.alert_type === 'critical' ? 0 : 1)),
+            }
+          : undefined;
+        queryClient.setQueryData<CriticalStockAlertList>(key, {
+          ...list,
+          data: list.data.filter((a) => a.id !== alert.id),
+          ...(counts ? { counts } : {}),
+        });
+      }
+      return { snapshot };
+    },
+    onError: (_error, _alert, context) => {
+      for (const [key, list] of context?.snapshot ?? []) queryClient.setQueryData(key, list);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: alertKeys.all });
+    },
   });
 }
 

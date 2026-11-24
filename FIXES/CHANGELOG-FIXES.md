@@ -1030,3 +1030,13 @@
   - Ubicaciones: badge «Lleno» y botón de ícono por cajón (`CajonLlenoButton compact`).
   - `useUpdateCajon` también invalida el contenido de estantes; el normalizador de cajones conserva `lleno` (el recorrido real detectó que lo descartaba).
 - **Verificación:** vitest en verde (tests nuevos en `sala-svg`, `estante-contenido-dialog`, `room-map-hooks` y `ubicaciones-page`); typecheck 5/5; recorrido en Chromium contra la API de desarrollo 20/20 (PAN-01 lista y mapa, DIR-01 `/mapa-salas`, AD-01 solo lectura y `403`, 390 px). Datos de prueba restaurados (ningún cajón queda lleno).
+
+## FIX-058: Exportación de préstamos en PDF y Excel, y campana con sonido y notificaciones que se quitan
+
+- **Fecha:** 2026-11-23
+- **Módulo:** `packages/api-client` (`services/loans.ts`, `services/products.ts`, `hooks/products.ts`), `apps/web` (`historial-prestamos-page.tsx`, `features/equipos/utils/download.ts`, `features/alertas`, `lib/notification-sound.ts`) — plan y contrato en `BackEnd-SGIA/docs/exportaciones-y-campana.md`, [REQ-11](TASKS/REQ-11-HISTORIAL-AUDITORIA-PRESTAMOS.md), [REQ-06](TASKS/REQ-06-ALERTAS-STOCK-CRITICO.md)
+- **Problema:** auditoría de todos los archivos que genera el sistema (contra la API real y en Chromium): fichas técnicas, hojas de vida, informes de novedades y etiquetas funcionaban; **los dos botones de exportación del historial de préstamos fallaban** («Error al exportar archivo») porque `exportLoans` leía el archivo como JSON, las fechas no llegaban (`from_date` en vez de `from`) y el «Excel» era un CSV guardado como `.xlsx`. Los tests no lo detectaban porque mockeaban el hook. Además `downloadBlob` revocaba la URL en el mismo tick (Firefox y Safari pueden cancelar la descarga).
+- **Qué cambia:**
+  - Exportación: `getBlob`, `from`/`to`, `.xlsx` real generado por el backend, nombre con fecha local y errores con `apiErrorToMessage`. `downloadBlob` libera la URL un segundo después.
+  - Campana: consulta cada 60 s; tono de prueba de dos notas (Web Audio) cuando llega una alerta nueva; al pasar el mouse (o con foco) el ítem se pone rojo en 300 ms y aparece un basurero; clic o Enter la quita solo para el usuario (`POST /api/alerts/{id}/dismiss`, optimista) sin cerrar el menú. La bandeja `/alertas` y los demás usuarios la siguen viendo.
+- **Verificación:** vitest en verde (servicio de exportación con un `Response` real, `download.test.ts`, `notification-bell.test.tsx` con el cliente real y `fetch` simulado, sonido solo con alertas nuevas); typecheck 5/5; lint. Recorrido contra la API de desarrollo: PDF y `.xlsx` como DIR-01 y PAN-01 y con rango de fechas (abiertos en LibreOffice); campana 14/14 con mouse real (transición medida, quitar, tono al llegar una alerta), claro y oscuro.

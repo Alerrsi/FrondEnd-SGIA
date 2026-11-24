@@ -9,7 +9,8 @@ export function downloadBlob(blob: Blob, filename: string): void {
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
-  window.URL.revokeObjectURL(url);
+  // Revocar en el mismo tick puede cancelar la descarga en Firefox y Safari: se libera un poco después.
+  window.setTimeout(() => window.URL.revokeObjectURL(url), 1_000);
 }
 
 /** Imprime un PDF en un iframe oculto (el PDF ya trae su tamaño de página). */

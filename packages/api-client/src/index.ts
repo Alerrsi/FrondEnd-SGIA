@@ -48,6 +48,7 @@ export {
   extractFactura,
   fetchCriticalStockAlerts,
   resolveStockAlert,
+  dismissStockAlert,
   normalizeProducto,
   normalizeUbicacion,
 } from './services/products';
@@ -66,6 +67,7 @@ export {
   alertKeys,
   useCriticalStockAlerts,
   useResolveStockAlert,
+  useDismissStockAlert,
 } from './hooks/products';
 
 export {

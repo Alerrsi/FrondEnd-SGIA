@@ -28,6 +28,7 @@ vi.mock('@/features/auth/context/auth-context', async (importOriginal) => {
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
+  useDismissStockAlert: () => ({ mutate: vi.fn(), isPending: false }),
   useCriticalStockAlerts: () => ({
     data: {
       data: [alert(1, 'warning'), alert(2, 'warning')],

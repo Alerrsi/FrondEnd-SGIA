@@ -57,18 +57,39 @@ describe('Préstamos: filtros de pañol, laboratorio y fecha (cliente API)', () 
     expect(await params('todos')).toEqual({});
   });
 
-  it('la exportación lleva los mismos filtros', async () => {
-    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(jsonResponse({}));
-    await exportLoans({
+  it('la exportación lleva los mismos filtros y lee el archivo como Blob (docs/exportaciones-y-campana.md)', async () => {
+    const pdf = new Response(new Blob(['%PDF-1.7 prueba'], { type: 'application/pdf' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/pdf' },
+    });
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(pdf);
+    const blob = await exportLoans({
       format: 'pdf',
+      start_date: '2026-03-01',
+      end_date: '2026-03-31',
       storeroom_id: 1,
       location_id: 12,
       loan_date: '2026-11-12',
     });
+    expect(blob.type).toBe('application/pdf');
+    expect(await blob.text()).toBe('%PDF-1.7 prueba');
     const url = new URL(calledUrl(spy), 'http://x');
+    expect(url.pathname).toBe('/api/loans/export');
+    expect(url.searchParams.get('format')).toBe('pdf');
+    // El export filtra con `from`/`to` (antes se enviaba `from_date`/`to_date` y se ignoraba).
+    expect(url.searchParams.get('from')).toBe('2026-03-01');
+    expect(url.searchParams.get('to')).toBe('2026-03-31');
+    expect(url.searchParams.has('from_date')).toBe(false);
     expect(url.searchParams.get('storeroom_id')).toBe('1');
     expect(url.searchParams.get('location_id')).toBe('12');
     expect(url.searchParams.get('loan_date')).toBe('2026-11-12');
+  });
+
+  it('un error del export llega como ApiRequestError con su estado', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ message: 'El formato no es válido.' }), { status: 422 }),
+    );
+    await expect(exportLoans({ format: 'excel' })).rejects.toMatchObject({ status: 422 });
   });
 
   it('la solicitud envía due_date solo si se indica', async () => {
