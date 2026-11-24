@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 
 export interface ElementSize {
   width: number;
@@ -15,7 +15,8 @@ export function useElementSize<T extends HTMLElement>() {
   const [size, setSize] = useState<ElementSize>({ width: 0, height: 0 });
   const ref = useCallback((element: T | null) => setNode(element), []);
 
-  useEffect(() => {
+  // Antes de pintar: así la primera imagen ya usa la distribución correcta (sin saltos en el teléfono).
+  useLayoutEffect(() => {
     if (!node) return;
     const measure = () => {
       const width = node.clientWidth;

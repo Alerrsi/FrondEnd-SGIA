@@ -1,9 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { ApiRequestError } from '@sgia/api-client';
-import type { CajonEntity, LocationEntity } from '@sgia/types';
+import type { CajonEntity, Estante, LocationEntity } from '@sgia/types';
+import type { ReactNode } from 'react';
 import UbicacionesPage from './ubicaciones-page';
 
 const mocks = vi.hoisted(() => ({
@@ -40,6 +41,11 @@ const CAJONES: CajonEntity[] = [
   },
 ];
 
+const ESTANTES = [
+  { id: 3, codigo: 'EST-A1', nombre: 'Rack', zona_id: 1, cajones: [{ id: 12 }], items_count: 4 },
+  { id: 4, codigo: 'EST-B1', nombre: null, zona_id: null, cajones: [], items_count: 0 },
+] as unknown as Estante[];
+
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
   useLocations: () => ({ data: { data: LOCATIONS }, isLoading: false, refetch: vi.fn() }),
@@ -53,6 +59,10 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
   useCreateCajon: () => ({ mutateAsync: mocks.createCajon, isPending: false }),
   useUpdateCajon: () => ({ mutateAsync: mocks.updateCajon, isPending: false }),
   useEstantes: () => ({ data: { data: [{ id: 3, codigo: 'EST-A1', nombre: 'Rack' }] }, isLoading: false }),
+  useSalaMapa: (id?: number) => ({
+    data: id === 1 ? { estantes: ESTANTES, zonas: [{ id: 1, nombre: 'Zona A' }] } : undefined,
+    isLoading: false,
+  }),
   useDeleteCajon: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useDownloadCajonLabel: () => ({
     mutateAsync: mocks.downloadLabel,
@@ -70,11 +80,30 @@ vi.mock('@/features/auth/context/auth-context', () => ({
   useAuth: () => ({ user: { id: 2, name: 'Pañolero', role: 'PAN-01' } }),
 }));
 
-// El plano tiene sus propias pruebas (features/mapa-salas); aquí solo importa qué sala recibe y con qué permisos.
+// El plano tiene sus propias pruebas (features/mapa-salas); aquí importa qué sala recibe, con qué permisos, qué
+// estantes resalta y qué pasa al tocar uno.
+interface MapaMockProps {
+  locationId: number;
+  canEdit: boolean;
+  canSeeInventory: boolean;
+  variant?: string;
+  fit?: string;
+  toolbarActions?: ReactNode;
+  onEstanteClick?: (estante: Estante) => void;
+  highlightEstanteIds?: readonly number[];
+  contentEstanteId?: number | null;
+}
 vi.mock('@/features/mapa-salas/components/sala-mapa-panel', () => ({
-  SalaMapaPanel: (props: { locationId: number; canEdit: boolean; canSeeInventory: boolean; variant?: string }) => (
-    <div data-testid="sala-mapa-panel">
-      {`mapa sala=${props.locationId} editar=${props.canEdit} inventario=${props.canSeeInventory} variante=${props.variant}`}
+  SalaMapaPanel: (props: MapaMockProps) => (
+    <div>
+      <div data-testid="sala-mapa-panel">
+        {`mapa sala=${props.locationId} editar=${props.canEdit} inventario=${props.canSeeInventory} variante=${props.variant}`}
+      </div>
+      <div data-testid="mapa-estado">{`fit=${props.fit} resaltados=${(props.highlightEstanteIds ?? []).join(',')} contenido=${props.contentEstanteId ?? ''}`}</div>
+      {props.toolbarActions}
+      <button type="button" onClick={() => props.onEstanteClick?.(ESTANTES[0]!)}>
+        Tocar EST-A1 en el plano
+      </button>
     </div>
   ),
 }));
@@ -271,3 +300,138 @@ describe('UbicacionesPage · cajones llenos (docs/cajones-llenos.md)', () => {
     expect(mocks.updateCajon).toHaveBeenLastCalledWith({ id: 12, payload: { lleno: false } });
   });
 });
+
+describe('UbicacionesPage · todo de un vistazo (docs/ubicaciones-distribucion.md)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  });
+
+  it('en pantallas anchas muestra salas, plano y panel acoplado; el botón lo cierra y se recuerda', async () => {
+    const user = userEvent.setup();
+    const view = render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('fit=fill');
+    expect(screen.getByRole('complementary', { name: 'Cajones y estantes de la sala' })).toBeDefined();
+    const toggle = screen.getByRole('button', { name: /^Cajones \(2\)/ });
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(toggle.getAttribute('aria-controls')).toBe('ubicaciones-panel');
+
+    await user.click(toggle);
+    expect(screen.queryByRole('complementary', { name: 'Cajones y estantes de la sala' })).toBeNull();
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(localStorage.getItem('sgia-ubicaciones-panel')).toBe('closed');
+
+    view.unmount();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    expect(screen.queryByRole('complementary', { name: 'Cajones y estantes de la sala' })).toBeNull();
+  });
+
+  it('cada sala ocupa una línea y su tipo y descripción van en el title', () => {
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    const fila = screen.getByText('Laboratorio 201').closest('li')!;
+    expect(fila.getAttribute('title')).toBe('Sala · Piso 2');
+  });
+
+  it('tocar un estante filtra el panel a sus cajones y lo resalta; «Ver productos» abre su contenido', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    const panel = screen.getByRole('complementary', { name: 'Cajones y estantes de la sala' });
+    expect(within(panel).getByText('Gaveta A-1')).toBeDefined();
+
+    await user.click(screen.getByRole('button', { name: 'Tocar EST-A1 en el plano' }));
+    expect(within(panel).queryByText('Gaveta A-1')).toBeNull();
+    expect(within(panel).getByText('Gaveta A-2')).toBeDefined();
+    expect(within(panel).getByText('Zona A · 1 cajón · 4 elementos')).toBeDefined();
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('resaltados=3');
+
+    await user.click(within(panel).getByRole('button', { name: 'Ver productos' }));
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('contenido=3');
+
+    await user.click(within(panel).getByRole('button', { name: 'Quitar filtro de estante' }));
+    expect(within(panel).getByText('Gaveta A-1')).toBeDefined();
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('resaltados= ');
+  });
+
+  it('pasar por un cajón resalta su estante en el plano', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    const panel = screen.getByRole('complementary', { name: 'Cajones y estantes de la sala' });
+
+    await user.hover(within(panel).getByText('Gaveta A-2'));
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('resaltados=3');
+    await user.unhover(within(panel).getByText('Gaveta A-2'));
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('resaltados= ');
+  });
+
+  it('la pestaña Estantes lista los de la sala y elegir uno filtra los cajones', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    const panel = screen.getByRole('complementary', { name: 'Cajones y estantes de la sala' });
+
+    await user.click(within(panel).getByRole('tab', { name: /Estantes/ }));
+    await user.click(within(panel).getByRole('button', { name: /EST-B1/ }));
+
+    expect(within(panel).getByRole('tab', { name: /Cajones/ }).getAttribute('aria-selected')).toBe('true');
+    expect(within(panel).getByText('Este estante no tiene cajones.')).toBeDefined();
+  });
+
+  it('filtra los cajones por texto', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    const panel = screen.getByRole('complementary', { name: 'Cajones y estantes de la sala' });
+
+    await user.type(within(panel).getByLabelText('Filtrar cajones por código, estante o descripción'), 'cables');
+    expect(within(panel).getByText('Gaveta A-1')).toBeDefined();
+    expect(within(panel).queryByText('Gaveta A-2')).toBeNull();
+  });
+});
+
+describe('UbicacionesPage · pantallas angostas (docs/ubicaciones-distribucion.md)', () => {
+  const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 390 });
+  });
+
+  afterEach(() => {
+    if (original) Object.defineProperty(HTMLElement.prototype, 'clientWidth', original);
+  });
+
+  it('elige la sala en un selector, el plano usa su proporción y el panel se abre como hoja', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    expect(screen.queryByRole('region', { name: 'Salas y recintos' })).toBeNull();
+    expect(screen.getByTestId('mapa-estado').textContent).toContain('fit=aspect');
+    expect(screen.queryByRole('complementary', { name: 'Cajones y estantes de la sala' })).toBeNull();
+
+    await user.selectOptions(screen.getByLabelText('Sala o recinto'), '2');
+    expect(screen.getByTestId('sala-mapa-panel').textContent).toContain('mapa sala=2');
+    await user.selectOptions(screen.getByLabelText('Sala o recinto'), '1');
+
+    await user.click(screen.getByRole('button', { name: /^Cajones \(2\)/ }));
+    const hoja = await screen.findByRole('dialog', { name: 'Cajones y estantes de «Pañol Central»' });
+    expect(within(hoja).getByText('Gaveta A-1')).toBeDefined();
+  });
+
+  it('tocar un estante abre la hoja ya filtrada', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    await user.click(screen.getByRole('button', { name: 'Tocar EST-A1 en el plano' }));
+    const hoja = await screen.findByRole('dialog', { name: 'Cajones y estantes de «Pañol Central»' });
+    expect(within(hoja).getByText('Gaveta A-2')).toBeDefined();
+    expect(within(hoja).queryByText('Gaveta A-1')).toBeNull();
+  });
+
+  it('editar la sala sigue a mano junto al selector', async () => {
+    const user = userEvent.setup();
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+    await user.click(screen.getByRole('button', { name: 'Editar Pañol Central' }));
+    expect(codeInput().value).toBe('PCENTRAL');
+  });
+});
+
