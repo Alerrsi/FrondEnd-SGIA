@@ -1050,3 +1050,10 @@
   - Suenan al aparecer (tono de prueba de dos notas; varios juntos suenan una vez). Al pasar el mouse o con foco se ponen rojos en 300 ms con un basurero; clic, Enter o Espacio los quitan. Quitar un aviso con un modal u hoja abiertos no los cierra.
   - La campana vuelve a como estaba (sin hover rojo; el clic lleva a `/alertas`) y conserva el sonido cuando llega una alerta de stock nueva. El hover y el clic para quitar del FIX-058 eran para los avisos, no para la campana.
 - **Verificación:** vitest en verde (`toaster.test.tsx`: sonido, rojo, clic/Enter, temporizador con pausa, máximo 4, aviso desprendido y modal que no se cierra; `notification-bell.test.tsx`); typecheck 5/5; lint. Recorrido en Chromium contra la API de desarrollo 12/12.
+
+## FIX-060: Avisos con el aspecto de sileo
+
+- **Fecha:** 2026-11-23
+- **Módulo:** `apps/web` (`components/ui/toast-card.tsx`, `toaster.tsx`, `index.css`) — `docs/avisos-emergentes.md` §9–13
+- **Qué cambia:** los avisos propios (FIX-059) vuelven a verse como con sileo: píldora de 40 px oscura en claro (`#1a1a1a`) y clara en oscuro (`#f2f2f2`), ícono del estado en un círculo tintado y título en el color del estado (los `oklch` de sileo), tarjeta de radio 20 px cuando hay descripción, alineados a la derecha con 12 px entre avisos y entrada con su resorte y desenfoque. Se conservan el sonido, el rojo gradual al pasar el mouse (ahora toda la píldora, con el ícono convertido en basurero) y el clic para quitar sin cerrar modales. Títulos en tipo oración.
+- **Verificación:** `toaster.test.tsx` (píldora/tarjeta, color del estado, hover rojo, clic, temporizador, modal); recorrido en Chromium contra la API de desarrollo 12/12 y capturas en claro y oscuro.

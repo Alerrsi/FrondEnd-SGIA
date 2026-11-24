@@ -80,7 +80,7 @@ Tokens `--m-in` 150 ms, `--m-out` 120, `--m-press` 90, `--m-panel` 200, `--m-clo
 - **Tablas densas:** TanStack Table donde haya orden/paginación. Una acción directa por fila; el resto en `DropdownMenu` (`MoreHorizontal`). Densidad cómoda/compacta en Ajustes (`data-density`).
 - **Modales (`Dialog`, obligatorio):** prop `size` (`sm` 448, `md` 512, `lg` 672, `xl` 768, `2xl` 1024), sin `max-w`/`max-h`/`overflow` en `className`; raíz `flex flex-col gap-4`; `DialogFooter` último hijo con `DialogCloseButton` y la acción principal. Bajo 640 px el modal es una hoja inferior a ancho completo y los botones del pie se apilan. Si hay datos escritos, cerrar pide confirmación (`hasUnsavedChanges`). Nunca `window.confirm()`.
 - **Paneles laterales (`Sheet`):** para fichas y operaciones de mesón sin perder la tabla; pantalla completa bajo 640 px; ya hacen scroll.
-- **Avisos (`toast` de `@/lib/toast`):** escaneo, stock crítico, operación completada, error de red. Suenan al aparecer, se ponen rojos con un basurero al pasar el mouse y se quitan con clic; títulos en tipo oración (`docs/avisos-emergentes.md`).
+- **Avisos (`toast` de `@/lib/toast`):** escaneo, stock crítico, operación completada, error de red. Aspecto de sileo (píldora `#1a1a1a`/`#f2f2f2`, ícono en círculo y título en el color del estado; tarjeta si hay descripción). Suenan al aparecer, se ponen rojos con el ícono convertido en basurero al pasar el mouse y se quitan con clic; títulos en tipo oración (`docs/avisos-emergentes.md`).
 - **Escáner Code128:** listener de ráfagas que terminan en `Enter` en las vistas de mesón; el campo de escaneo usa `font-code`.
 - **Tema:** `Toggle` (CSS) en el sidebar expandido; botón sol/luna en el riel encogido.
 

@@ -35,8 +35,17 @@ describe('Avisos emergentes propios (docs/avisos-emergentes.md)', () => {
     expect(within(screen.getByRole('alert')).getByText('No se pudo guardar')).toBeDefined();
     expect(sound.play).toHaveBeenCalledOnce();
 
-    // Hover y foco: rojo gradual (300 ms) con basurero; sin movimiento si se pide.
-    expect(ok.className).toContain('hover:bg-danger-bg');
+    // Aspecto de sileo: con descripción es tarjeta; sin descripción, píldora. Color del estado en una variable.
+    expect(ok.className).toContain('rounded-[20px]');
+    expect(ok.style.getPropertyValue('--toast-tone')).toBe('oklch(0.723 0.219 142.136)');
+    act(() => {
+      toast.success('Solo título');
+    });
+    expect(screen.getByRole('button', { name: 'Quitar aviso: Solo título' }).className).toContain('rounded-full');
+
+    // Hover y foco: rojo gradual (300 ms) y el ícono pasa a basurero; sin movimiento si se pide.
+    expect(ok.className).toContain('hover:bg-[oklch(0.577_0.245_27.325)]');
+    expect(ok.className).not.toContain('group-hover:bg-');
     expect(ok.className).toContain('duration-300');
     expect(ok.className).toContain('motion-reduce:transition-none');
     expect(within(ok).getByTestId('toast-trash').getAttribute('class')).toContain('group-hover:opacity-100');
