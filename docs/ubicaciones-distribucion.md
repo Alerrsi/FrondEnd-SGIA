@@ -85,6 +85,24 @@ Angosto (< 640 px): [Sala ▾][✎][🗑] · plano · «◧ Cajones» abre una h
 
 Sin desplazamiento lateral en ningún caso. Interacciones con mouse real (29/29): filtro al tocar un estante y resaltado, «Ver productos» y `Escape`, quitar filtro, resaltado al pasar por un cajón, pestaña Estantes, acciones de sala al pasar el mouse, cambio de sala que limpia el filtro, cerrar el panel (el plano crece) y recordarlo al volver, hoja filtrada a 1024 px, hoja a pantalla completa a 390 px sin desplazamiento lateral y «Nuevo cajón» desde la hoja. Sin errores en la consola.
 
+## Cambio: panel solo de estantes desplegables (2026-11-24)
+
+**Estado: plan, sin implementar.** Rama `feat/ubicaciones-estantes-desplegables`. Lo pidió el usuario tras ver el panel con pestañas: «en vez de haber menú de cajones y de estantes, que salgan solo los estantes y al hacer clic en uno se desplieguen los cajones; los cajones sin hacer clic deben mostrar la cantidad de elementos y al hacer clic, un pop-up con la lista de elementos».
+
+| # | Decisión (reemplaza la 8 y ajusta la 7) |
+|---|---|
+| 11 | **Sin pestañas.** El panel lista solo los **estantes** de la sala (código, nombre, «Zona · N cajones · N elementos», «Stock crítico»). Cada estante es un botón desplegable (`aria-expanded` + `aria-controls`, patrón *disclosure*); se abre **uno a la vez**. Si la sala tiene cajones sin estante, van al final en un grupo «Sin estante». |
+| 12 | Al desplegar un estante se ven sus **cajones**: chip con el código completo, «Lleno» y **«N elementos»** (productos + unidades, la misma suma que `items_count` del estante en el backend) sin hacer clic. Las acciones de cada cajón (marcar lleno, imprimir etiqueta, eliminar) siguen en la fila. Al pie del estante, «Ver todo el estante» abre el pop-up de contenido de siempre (con editar y asignar cajones). |
+| 13 | **Clic en un cajón → pop-up con sus elementos** (`CajonContenidoDialog`): productos con su cantidad y equipos/maquetas con sus unidades por estado, igual que en el pop-up del estante, más «Ver en inventario». Con estante se arma desde `GET /api/estantes/{id}/contents` (ya precargado al pasar el mouse por el estante); sin estante, desde `GET /api/products?cajon_id=` (no hay endpoint de contenido por cajón y no se agrega). |
+| 14 | **Tocar un estante en el plano** despliega ese estante en el panel (y abre el panel o la hoja), lo lleva a la vista y lo resalta en el plano. Pasar el mouse por un estante o un cajón de la lista resalta su estante. |
+| 15 | El botón de la barra del plano pasa a **«Estantes (N)»**. El filtro de texto del panel busca en estantes y cajones; con texto, se despliegan todos los estantes con coincidencias. |
+
+Fases:
+1. [ ] Plan (esta sección) y `TASKS/REQ-05`.
+2. [ ] `CajonContenidoDialog` y la lista de elementos compartida con el pop-up del estante; tests.
+3. [ ] Panel de estantes desplegables, botón «Estantes (N)», tocar en el plano despliega; tests.
+4. [ ] Prueba en Chromium contra la API de desarrollo (ancho, medio y teléfono).
+
 ## Fuera de alcance
 
 - Cambios en `/mapa-salas` (pantalla propia del mapa) y en el editor de distribución.

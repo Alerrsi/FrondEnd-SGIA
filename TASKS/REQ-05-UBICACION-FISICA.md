@@ -72,6 +72,12 @@ Garantizar la trazabilidad y rápida localización física de cada activo o insu
 - [x] Tocar un estante filtra el panel a sus cajones («Ver productos» abre el contenido de siempre); pasar por un cajón resalta su estante.
 - [x] Tests de la página (`ubicaciones-page.test.tsx`, ancho y angosto) y del panel del mapa, y recorrido en Chromium a 1440, 1366, 1280, 1024, 768, 390 y 320 px, claro y oscuro, menú abierto y encogido y barra superior (29/29 interacciones).
 
+### 4. Panel solo de estantes desplegables (plan en `docs/ubicaciones-distribucion.md`, «Cambio: panel solo de estantes desplegables»)
+- [ ] Panel sin pestañas: estantes desplegables uno a la vez y grupo «Sin estante»; botón «Estantes (N)».
+- [ ] Cajones con «N elementos» sin hacer clic; clic abre el pop-up con sus elementos (`CajonContenidoDialog`).
+- [ ] Tocar un estante en el plano lo despliega en el panel y lo resalta.
+- [ ] Tests y recorrido en Chromium contra la API.
+
 ---
 
 ## 🧪 Pruebas Requeridas
