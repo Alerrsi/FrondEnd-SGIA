@@ -53,8 +53,9 @@ export default function UbicacionesPage() {
   const workspace = useElementSize<HTMLDivElement>();
   const mode = useWorkspaceMode(workspace.width);
   const docked = mode === 'wide';
-  // Desde 1200 px de área las columnas laterales se ensanchan un poco; por debajo, el plano se queda con el resto.
-  const roomy = workspace.width >= 1200;
+  // Desde 1100 px de área (1440 px con el menú abierto) las columnas laterales se ensanchan un poco, para que el
+  // código completo del cajón quepa en el panel; por debajo, el plano se queda con el resto.
+  const roomy = workspace.width >= 1100;
 
   // Panel lateral: acoplado (recordado) en pantallas anchas; como hoja en las demás.
   const [dockedOpen, setDockedOpen] = usePanelPreference();

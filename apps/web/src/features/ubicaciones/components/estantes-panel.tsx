@@ -169,7 +169,7 @@ export function EstantesPanel({
                   {expanded && (
                     <div id={regionId(group.key)} role="region" aria-label={`Cajones de ${codigo}`} className="border-t border-zinc-200 dark:border-zinc-800">
                       {group.cajones.length === 0 ? (
-                        <p className="py-2 pl-9 pr-3 text-[13px] text-zinc-500 dark:text-zinc-400">Este estante no tiene cajones.</p>
+                        <p className="py-2 pl-7 pr-3 text-[13px] text-zinc-500 dark:text-zinc-400">Este estante no tiene cajones.</p>
                       ) : (
                         <ul aria-label={`Cajones de ${codigo}`} className="divide-y divide-zinc-200 dark:divide-zinc-800">
                           {group.cajones.map((cajon) => (
@@ -186,7 +186,7 @@ export function EstantesPanel({
                         </ul>
                       )}
                       {estante && (
-                        <div className="border-t border-zinc-200 py-1.5 pl-7 pr-3 dark:border-zinc-800">
+                        <div className="border-t border-zinc-200 py-1.5 pl-5 pr-3 dark:border-zinc-800">
                           <Button type="button" variant="ghost" size="sm" onClick={() => onShowEstante(estante.id)}>
                             <Archive aria-hidden="true" className="h-3.5 w-3.5" />
                             Ver todo el estante

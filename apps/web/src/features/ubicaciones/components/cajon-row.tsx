@@ -42,25 +42,24 @@ export function CajonRow({ cajon, canMarkFull, printing, onOpen, onPrint, onDele
         type="button"
         onClick={() => onOpen(cajon)}
         aria-haspopup="dialog"
-        className="flex min-w-0 flex-1 flex-col items-start gap-1 py-2 pl-9 pr-1 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent pointer-coarse:py-2.5"
+        className="flex min-w-0 flex-1 flex-col items-start gap-0.5 py-2 pl-7 pr-1 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent pointer-coarse:py-2.5"
       >
         <span className="flex min-w-0 max-w-full flex-wrap items-center gap-1.5">
-          <span className={`${CODE_CHIP_CLASS} max-w-full truncate`}>{cajon.code}</span>
+          <span className={`${CODE_CHIP_CLASS} max-w-full truncate`} title={cajon.code}>
+            {cajon.code}
+          </span>
           {cajon.lleno && <Badge tone="loaned">Lleno</Badge>}
         </span>
-        <span className="flex min-w-0 max-w-full items-center gap-1.5 text-[13px] text-zinc-500 dark:text-zinc-400">
-          {cajon.elementos !== null && (
-            <span className={cn('shrink-0', cajon.elementos > 0 ? 'text-zinc-700 dark:text-zinc-200' : undefined)}>
-              <span className="font-mono">{cajon.elementos}</span> {cajon.elementos === 1 ? 'elemento' : 'elementos'}
-            </span>
-          )}
-          {cajon.descripcion && (
-            <>
-              {cajon.elementos !== null && <span aria-hidden="true">·</span>}
-              <span className="min-w-0 truncate">{cajon.descripcion}</span>
-            </>
-          )}
-        </span>
+        {cajon.elementos !== null && (
+          <span className={cn('text-[13px]', cajon.elementos > 0 ? 'text-zinc-700 dark:text-zinc-200' : 'text-zinc-500 dark:text-zinc-400')}>
+            <span className="font-mono">{cajon.elementos}</span> {cajon.elementos === 1 ? 'elemento' : 'elementos'}
+          </span>
+        )}
+        {cajon.descripcion && (
+          <span className="max-w-full truncate text-[13px] text-zinc-500 dark:text-zinc-400" title={cajon.descripcion}>
+            {cajon.descripcion}
+          </span>
+        )}
       </button>
 
       <div className="flex shrink-0 items-center">
