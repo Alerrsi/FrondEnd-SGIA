@@ -70,3 +70,5 @@ export type DesignTokens = {
 export const designTokens: DesignTokens = { palette, fonts, fontSizes, spacing, radii };
 
 export default designTokens;
+
+export * from './typewriter';

@@ -544,6 +544,9 @@
 /* Entrada única de la página de inicio (300 ms en total, una vez al cargar). */
 .ui-enter { animation: ui-enter 260ms var(--ease-enter) both; }
 .ui-enter-2 { animation: ui-enter 260ms var(--ease-enter) 40ms both; }
+/* Cursor del nombre del saludo de Inicio (docs/saludo-animado.md): parpadeo en pasos, sin fundido. Única animación continua. */
+@keyframes ui-caret { 50% { opacity: 0; } }
+.ui-caret { animation: ui-caret 1.06s steps(1, end) infinite; }
 
 /* Botón: con puntero fino sube 1px al pasar; al pulsar baja y se encoge un poco. */
 .ui-press { transition: background-color var(--m-in) var(--ease), border-color var(--m-in) var(--ease), color var(--m-in) var(--ease), transform var(--m-in) var(--ease); }
