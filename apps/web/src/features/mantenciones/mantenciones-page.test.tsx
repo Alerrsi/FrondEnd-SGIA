@@ -67,45 +67,60 @@ describe('MantencionesPage (docs/mantenciones-por-carrera.md)', () => {
     state.recordCalls = [];
   });
 
-  it('muestra las cifras, el aviso de vencidas y una celda por carrera con su desglose', () => {
+  it('muestra las cifras neutras, el aviso de vencidas y una fila por carrera con su barra', () => {
     renderPage();
 
     const resumen = screen.getByLabelText('Resumen de mantenciones');
-    expect(within(resumen).getByText('En curso').nextSibling?.textContent).toBe('2');
+    const enCurso = within(resumen).getByText('En curso').nextSibling as HTMLElement;
+    expect(enCurso.textContent).toBe('2');
+    // Sin color de estado (docs/mantenciones-por-carrera.md, decisión 8).
+    expect(enCurso.className).not.toMatch(/text-(warn|ok)/);
     expect(within(resumen).getByText('Vencidas sin enviar').nextSibling?.textContent).toBe('2');
-    expect(within(resumen).getByText('7 mantenciones en total')).toBeDefined();
 
     const aviso = screen.getByRole('region', { name: 'Unidades con mantención vencida' });
     expect(within(aviso).getByText('2 unidades con la mantención vencida')).toBeDefined();
     expect(within(aviso).getByText('MAQ-ISD-000004')).toBeDefined();
+    expect(aviso.className).not.toMatch(/warn/);
 
     const carreras = screen.getByRole('list', { name: 'Carreras' });
-    const ap = within(carreras).getByRole('button', { name: /Analista Programador/ });
-    expect(ap.textContent).toContain('4mantenciones');
-    expect(ap.textContent).toContain('1 en curso· 3 finalizadas· 4 unidades');
-    // La barra es proporcional a la carrera con más mantenciones (4).
-    expect((ap.querySelector('[data-segment="en_curso"]') as HTMLElement).style.width).toBe('25%');
-    expect((ap.querySelector('[data-segment="finalizada"]') as HTMLElement).style.width).toBe('75%');
-    const ic = within(carreras).getByRole('button', { name: /Ciberseguridad/ });
-    expect((ic.querySelector('[data-segment="anulada"]') as HTMLElement).style.width).toBe('25%');
-    expect(ic.querySelector('[data-segment="en_curso"]')).toBeNull();
-
-    // Las carreras sin mantenciones no ocupan celda.
-    expect(within(carreras).queryByRole('button', { name: /Informática/ })).toBeNull();
-    expect(screen.getByText('Sin mantenciones: II')).toBeDefined();
+    const filas = within(carreras).getAllByRole('button');
+    // «Todas», las que tienen mantenciones y al final las que no.
+    expect(filas.map((b) => b.title || b.textContent?.slice(0, 20))).toEqual([
+      'Todas las carreras7',
+      'Analista Programador',
+      'Ingeniería en Ciberseguridad',
+      'Sin carrera',
+      'Ingeniería en Informática',
+    ]);
+    const ap = filas[1]!;
+    expect(ap.textContent).toContain('1 en curso');
+    expect(ap.textContent).toContain('1 en curso, 3 finalizadas, 0 anuladas, 4 unidades');
+    // Barra proporcional a la carrera con más mantenciones (4), en burdeo y grises.
+    const enCursoBar = ap.querySelector('[data-segment="en_curso"]') as HTMLElement;
+    expect(enCursoBar.style.width).toBe('25%');
+    expect(enCursoBar.className).toContain('bg-accent');
+    const finBar = ap.querySelector('[data-segment="finalizada"]') as HTMLElement;
+    expect(finBar.style.width).toBe('75%');
+    expect(finBar.className).toContain('bg-zinc-400');
+    expect(carreras.innerHTML).not.toMatch(/bg-(warn|ok)\b/);
+    // Sin mantenciones en curso: «Al día»; sin ninguna: sin barra.
+    expect(filas[2]!.textContent).toContain('Al día');
+    expect(filas[4]!.querySelector('[data-segment]')).toBeNull();
   });
 
-  it('tocar una carrera filtra la bandeja; tocarla de nuevo o «Ver todas las carreras» lo quita', async () => {
+  it('elegir una carrera filtra la bandeja; volver a tocarla o «Todas las carreras» lo quita', async () => {
     const user = userEvent.setup();
     renderPage();
     expect(lastCall()).toEqual({ status: 'en_curso', maintenance_type: undefined, page: 1, per_page: 20 });
+    const todas = screen.getByRole('button', { name: /^Todas las carreras/ });
+    expect(todas.getAttribute('aria-pressed')).toBe('true');
 
     const ap = screen.getByRole('button', { name: /Analista Programador/ });
     await user.click(ap);
     expect(ap.getAttribute('aria-pressed')).toBe('true');
+    expect(todas.getAttribute('aria-pressed')).toBe('false');
     expect(lastCall()).toMatchObject({ career_id: 1, status: 'en_curso' });
     expect(screen.getByRole('heading', { name: 'Bandeja · AP · Analista Programador' })).toBeDefined();
-    expect((screen.getByLabelText('Filtrar por carrera') as HTMLSelectElement).value).toBe('1');
 
     await user.click(ap);
     expect(ap.getAttribute('aria-pressed')).toBe('false');
@@ -113,18 +128,13 @@ describe('MantencionesPage (docs/mantenciones-por-carrera.md)', () => {
 
     await user.click(screen.getByRole('button', { name: /Sin carrera/ }));
     expect(lastCall()).toMatchObject({ sin_carrera: true });
-    await user.click(screen.getByRole('button', { name: 'Ver todas las carreras' }));
+    await user.click(todas);
     expect(lastCall().sin_carrera).toBeUndefined();
     expect(screen.getByRole('heading', { name: 'Bandeja' })).toBeDefined();
-  });
 
-  it('el selector de carrera también filtra y marca la celda', async () => {
-    const user = userEvent.setup();
-    renderPage();
-
-    await user.selectOptions(screen.getByLabelText('Filtrar por carrera'), '2');
-    expect(lastCall()).toMatchObject({ career_id: 2 });
-    expect(screen.getByRole('button', { name: /Ciberseguridad/ }).getAttribute('aria-pressed')).toBe('true');
+    await user.click(screen.getByRole('button', { name: /Ciberseguridad/ }));
+    await user.click(screen.getByRole('button', { name: 'Ver todas las carreras' }));
+    expect(lastCall().career_id).toBeUndefined();
   });
 
   it('filtra por estado y abre el checklist de una fila', async () => {

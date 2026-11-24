@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/ui/error-state';
 import { PageHeader } from '@/components/ui/page-header';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MaintenanceCareerGrid } from '@/features/mantenciones/components/maintenance-career-grid';
+import { MaintenanceCareerList } from '@/features/mantenciones/components/maintenance-career-list';
 import { MaintenanceChecklistSheet } from '@/features/mantenciones/components/maintenance-checklist-sheet';
 import { MaintenanceDueNotice } from '@/features/mantenciones/components/maintenance-due-notice';
 import { MaintenanceInbox } from '@/features/mantenciones/components/maintenance-inbox';
@@ -15,8 +15,8 @@ import { MaintenanceMetrics } from '@/features/mantenciones/components/maintenan
 import type { CareerFilter } from '@/features/mantenciones/lib/career-filter';
 
 /**
- * Mantenciones (REQ-18, docs/mantenciones-por-carrera.md): cifras, unidades vencidas, una celda por carrera con su
- * desglose por estado (tocarla filtra la bandeja) y la bandeja por prioridad.
+ * Mantenciones (REQ-18, docs/mantenciones-por-carrera.md): franja de cifras, unidades vencidas y, debajo, la lista
+ * «Por carrera» (elegir una filtra la bandeja) junto a la bandeja por prioridad. Solo neutros y burdeo.
  */
 export default function MantencionesPage() {
   const [params] = useSearchParams();
@@ -28,16 +28,16 @@ export default function MantencionesPage() {
   const due = useEquipmentUnits({ maintenance_due: true, per_page: 10 });
   const dueTotal = due.data?.meta.total;
 
-  const toggleCareer = (filter: Exclude<CareerFilter, null>) => {
-    setCareer((current) => (current === filter ? null : filter));
-    // En pantallas angostas la bandeja queda abajo de las carreras: se lleva a la vista para que se note el filtro.
-    if (typeof window !== 'undefined' && window.matchMedia?.('(max-width: 1023px)').matches) {
+  const selectCareer = (filter: CareerFilter) => {
+    setCareer(filter);
+    // Bajo 1024 px la bandeja queda abajo de la lista: se lleva a la vista para que se note el filtro.
+    if (filter !== null && typeof window !== 'undefined' && window.matchMedia?.('(max-width: 1023px)').matches) {
       document.getElementById('bandeja')?.scrollIntoView({ block: 'start' });
     }
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 sm:gap-5">
       <PageHeader
         icon={Wrench}
         title="Mantenciones"
@@ -56,9 +56,18 @@ export default function MantencionesPage() {
 
       {(showDue || (dueTotal ?? 0) > 0) && <MaintenanceDueNotice total={dueTotal ?? 0} units={due.data?.data ?? []} />}
 
-      {summary.data && <MaintenanceCareerGrid careers={summary.data.careers} selected={career} onToggle={toggleCareer} />}
-
-      <MaintenanceInbox careers={summary.data?.careers ?? []} career={career} onCareerChange={setCareer} onOpen={setOpenId} />
+      <div className="grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
+        {summary.data && (
+          <MaintenanceCareerList
+            careers={summary.data.careers}
+            total={summary.data.total.total}
+            selected={career}
+            onSelect={selectCareer}
+            className="lg:sticky lg:top-4"
+          />
+        )}
+        <MaintenanceInbox careers={summary.data?.careers ?? []} career={career} onCareerChange={setCareer} onOpen={setOpenId} />
+      </div>
 
       <MaintenanceChecklistSheet recordId={openId} onClose={() => setOpenId(null)} />
     </div>

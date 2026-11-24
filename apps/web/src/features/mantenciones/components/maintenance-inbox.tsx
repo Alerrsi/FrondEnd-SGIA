@@ -16,14 +16,7 @@ import { TableToolbar } from '@/components/ui/table-toolbar';
 import { CODE_CHIP_CLASS, TABLE_HEAD_CLASS } from '@/components/ui/typography';
 import { cn } from '@/lib/cn';
 import { formatDate } from '@/features/compras/lib/format';
-import {
-  careerFilterFromValue,
-  careerFilterOf,
-  careerFilterParams,
-  careerFilterToValue,
-  careerLabel,
-  type CareerFilter,
-} from '../lib/career-filter';
+import { careerFilterOf, careerFilterParams, careerLabel, type CareerFilter } from '../lib/career-filter';
 import { EXECUTION_MODE_LABELS, MAINTENANCE_TYPE_LABELS, PRIORITY_TONE } from '../lib/maintenance-labels';
 import { MaintenanceStatusBadge } from './maintenance-status-badge';
 
@@ -49,8 +42,9 @@ function unitCode(r: MaintenanceRecord): string {
 }
 
 /**
- * Bandeja de mantenciones (docs/mantenciones-por-carrera.md, decisión 6): ordenada por prioridad (A primero),
- * filtrable por estado, tipo y carrera. En teléfonos, filas apiladas sin desplazamiento lateral.
+ * Bandeja de mantenciones (docs/mantenciones-por-carrera.md, decisiones 6 y 10): ordenada por prioridad (A primero),
+ * filtrable por estado y tipo; la carrera la elige la lista «Por carrera». En teléfonos, filas apiladas sin
+ * desplazamiento lateral.
  */
 export function MaintenanceInbox({ careers, career, onCareerChange, onOpen }: MaintenanceInboxProps) {
   const [status, setStatus] = useState<MaintenanceStatus | ''>('en_curso');
@@ -102,19 +96,6 @@ export function MaintenanceInbox({ careers, career, onCareerChange, onOpen }: Ma
         {Object.entries(MAINTENANCE_TYPE_LABELS).map(([v, l]) => (
           <option key={v} value={v}>
             {l}
-          </option>
-        ))}
-      </select>
-      <select
-        aria-label="Filtrar por carrera"
-        value={careerFilterToValue(career)}
-        onChange={(e) => onCareerChange(careerFilterFromValue(e.target.value))}
-        className={FILTER_CONTROL_CLASS}
-      >
-        <option value="">Todas las carreras</option>
-        {careers.map((c) => (
-          <option key={c.career_id ?? 'none'} value={careerFilterToValue(careerFilterOf(c))}>
-            {careerLabel(c)}
           </option>
         ))}
       </select>
@@ -211,7 +192,7 @@ export function MaintenanceInbox({ careers, career, onCareerChange, onOpen }: Ma
           <table className="w-full border-collapse text-left">
             <thead className={TABLE_HEAD_CLASS}>
               <tr>
-                {['Prioridad', 'Unidad', 'Tipo', 'Ejecución', 'Responsable', 'Inicio', 'Estado'].map((h) => (
+                {['Prioridad', 'Unidad', 'Tipo y ejecución', 'Inicio', 'Estado'].map((h) => (
                   <th key={h} className={TH_CLASS}>
                     {h}
                   </th>
@@ -238,12 +219,12 @@ export function MaintenanceInbox({ careers, career, onCareerChange, onOpen }: Ma
                     <span className={CODE_CHIP_CLASS}>{unitCode(r)}</span>
                     <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">{r.equipment_unit?.product?.name}</p>
                   </td>
-                  <td className={TD_CLASS}>{MAINTENANCE_TYPE_LABELS[r.maintenance_type]}</td>
                   <td className={TD_CLASS}>
-                    {EXECUTION_MODE_LABELS[r.execution_mode]}
-                    {r.external_supplier ? <span className="text-zinc-500 dark:text-zinc-400"> · {r.external_supplier.name}</span> : null}
+                    {MAINTENANCE_TYPE_LABELS[r.maintenance_type]}
+                    <p className="mt-0.5 text-[13px] text-zinc-500 dark:text-zinc-400">
+                      {EXECUTION_MODE_LABELS[r.execution_mode]} · {r.external_supplier?.name ?? r.responsible?.name ?? r.responsible?.nombre ?? '—'}
+                    </p>
                   </td>
-                  <td className={TD_CLASS}>{r.responsible?.name ?? r.responsible?.nombre ?? '—'}</td>
                   <td className={cn(TD_CLASS, 'font-mono whitespace-nowrap')}>{formatDate(r.started_at)}</td>
                   <td className={TD_CLASS}>
                     <MaintenanceStatusBadge status={r.status} />

@@ -13,18 +13,6 @@ export function careerFilterParams(filter: CareerFilter): Pick<MaintenanceRecord
   return filter === 'none' ? { sin_carrera: true } : { career_id: filter };
 }
 
-/** Valor del `<select>` de carrera y vuelta. */
-export function careerFilterToValue(filter: CareerFilter): string {
-  return filter === null ? '' : String(filter);
-}
-
-export function careerFilterFromValue(value: string): CareerFilter {
-  if (value === '') return null;
-  if (value === 'none') return 'none';
-  const id = Number(value);
-  return Number.isInteger(id) && id > 0 ? id : null;
-}
-
 /** «AP · Analista Programador» o el nombre solo. */
 export function careerLabel(career: Pick<MaintenanceCareerSummary, 'code' | 'name'>): string {
   return career.code ? `${career.code} · ${career.name}` : career.name;

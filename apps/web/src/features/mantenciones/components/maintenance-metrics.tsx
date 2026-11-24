@@ -12,27 +12,21 @@ export interface MaintenanceMetricsProps {
   due: number | undefined;
 }
 
-/** Cifras de mantenciones (docs/mantenciones-por-carrera.md, decisión 2). */
+/** Franja de cifras (docs/mantenciones-por-carrera.md, decisión 11): neutras, sin pistas; 2 × 2 en el teléfono. */
 export function MaintenanceMetrics({ total, due }: MaintenanceMetricsProps) {
-  const enCurso = total.by_status.en_curso;
   return (
     <CellGrid columns={4} aria-label="Resumen de mantenciones" className="max-sm:grid-cols-2">
-      <Cell>
-        <Metric label="En curso" value={nf.format(enCurso)} tone={enCurso > 0 ? 'warning' : 'neutral'} hint="Equipos en revisión ahora" />
+      <Cell className="py-3">
+        <Metric label="En curso" value={nf.format(total.by_status.en_curso)} />
       </Cell>
-      <Cell>
-        <Metric
-          label="Vencidas sin enviar"
-          value={due === undefined ? '—' : nf.format(due)}
-          tone={due ? 'warning' : 'neutral'}
-          hint={due ? 'Unidades con la mantención atrasada' : 'Ninguna atrasada'}
-        />
+      <Cell className="py-3">
+        <Metric label="Vencidas sin enviar" value={due === undefined ? '—' : nf.format(due)} />
       </Cell>
-      <Cell>
-        <Metric label="Finalizadas" value={nf.format(total.by_status.finalizada)} tone="success" hint={`${nf.format(total.total)} mantenciones en total`} />
+      <Cell className="py-3">
+        <Metric label="Finalizadas" value={nf.format(total.by_status.finalizada)} />
       </Cell>
-      <Cell>
-        <Metric label="Unidades atendidas" value={nf.format(total.units)} hint="Equipos distintos con alguna mantención" />
+      <Cell className="py-3">
+        <Metric label="Unidades atendidas" value={nf.format(total.units)} />
       </Cell>
     </CellGrid>
   );
