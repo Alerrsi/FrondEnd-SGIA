@@ -100,6 +100,10 @@ export interface MaintenanceRecord {
 export interface MaintenanceRecordQueryParams {
   equipment_unit_id?: number;
   product_id?: number;
+  /** Carrera del producto de la unidad (docs/mantenciones-por-carrera.md). */
+  career_id?: number;
+  /** Solo mantenciones de productos sin carrera. */
+  sin_carrera?: boolean;
   status?: MaintenanceStatus;
   maintenance_type?: MaintenanceType;
   execution_mode?: MaintenanceExecutionMode;
