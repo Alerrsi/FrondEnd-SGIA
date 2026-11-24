@@ -38,3 +38,9 @@ Plan completo: `docs/rediseno-movil.md` (estado: implementado). Solo `apps/mobil
 - [x] Fase 4 — Pantallas: login, Solicitar, Mis préstamos, Novedades
 - [x] Fase 5 — Limpieza de plantilla, auditoría y capturas claro/oscuro a 375 px
 - [x] Fase 6 — Cierre: `sgia-design`, `CLAUDE.md`, changelog
+
+## Saludo de Inicio escrito a máquina (plan en `docs/saludo-animado.md`)
+
+- [ ] Web: el nombre de «Hola, {nombre}» se escribe, se borra y se vuelve a escribir con cursor burdeo; sin saltos de diseño; lector de pantalla lee el nombre una vez; quieto con movimiento reducido.
+- [ ] Móvil: lo mismo en el `HomeHero` del docente.
+- [ ] Tests (web) y recorrido en Chromium (web y Expo web).

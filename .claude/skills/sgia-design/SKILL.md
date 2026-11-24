@@ -49,7 +49,7 @@ Geist (interfaz) y Geist Mono, alojadas con `@fontsource-variable`. `font-mono` 
 Pesos 400 y 500; 600 solo en cifras destacadas; **nunca 700**. Nada bajo 12 px (`text-xs` es el mínimo). Tipo oración siempre: sin `uppercase` ni `tracking-wider`.
 
 ### Movimiento
-Tokens `--m-in` 150 ms, `--m-out` 120, `--m-press` 90, `--m-panel` 200, `--m-close` 120, `--m-slide` 240; curva `--ease` `cubic-bezier(.2,.8,.2,1)`, sin rebote. Solo `transform`, `opacity` y colores; nunca ancho, alto ni márgenes. Clases: `ui-press` (botón sube 1px y se hunde al pulsar), `ui-overlay`, `ui-dialog`, `ui-sheet-*`, `ui-menu`, `ui-tip`, `ui-enter` (solo la bienvenida de Inicio, una vez). Nada se anima al hacer scroll; sin `animate-pulse`/`ping`/`bounce` (solo `Loader2 animate-spin` mientras algo carga). Esqueletos sin brillo. Con `prefers-reduced-motion` todo queda quieto.
+Tokens `--m-in` 150 ms, `--m-out` 120, `--m-press` 90, `--m-panel` 200, `--m-close` 120, `--m-slide` 240; curva `--ease` `cubic-bezier(.2,.8,.2,1)`, sin rebote. Solo `transform`, `opacity` y colores; nunca ancho, alto ni márgenes. Clases: `ui-press` (botón sube 1px y se hunde al pulsar), `ui-overlay`, `ui-dialog`, `ui-sheet-*`, `ui-menu`, `ui-tip`, `ui-enter` (solo la bienvenida de Inicio, una vez). Nada se anima al hacer scroll; sin `animate-pulse`/`ping`/`bounce` (solo `Loader2 animate-spin` mientras algo carga). Única animación continua permitida: el nombre del saludo de Inicio, que se escribe, se borra y se vuelve a escribir con un guion bajo burdeo como cursor (`ui-caret`, `docs/saludo-animado.md`); con movimiento reducido queda fijo. Esqueletos sin brillo. Con `prefers-reduced-motion` todo queda quieto.
 
 ## 3. Layout y navegación (`apps/web/src/layouts/`)
 
