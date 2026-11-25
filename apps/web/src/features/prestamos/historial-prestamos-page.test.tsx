@@ -113,6 +113,7 @@ const mockHistoricalLoans: Prestamo[] = [
 ];
 
 const mockExportMutateAsync = vi.fn();
+const mockExportReportMutateAsync = vi.fn();
 const mockRefetchLoans = vi.fn();
 const mockUseLoans = vi.fn();
 
@@ -134,60 +135,66 @@ mockHistoricalLoans.push({
   items: [],
 });
 
-vi.mock('@sgia/api-client', () => ({
-  useStorerooms: () => ({
-    data: { data: [{ id: 1, name: 'Pañol Temuco', code: 'PAN-TEMUCO' }] },
-    isLoading: false,
-  }),
-  useLocations: () => ({
-    data: {
-      data: [
-        {
-          id: 12,
-          nombre: 'Laboratorio de Redes',
-          tipo: 'sala',
-          storeroom_id: 1,
-        },
-        { id: 13, nombre: 'Bodega Norte', tipo: 'bodega', storeroom_id: 1 },
-      ],
-    },
-    isLoading: false,
-  }),
-  useLoans: (params: unknown) => {
-    mockUseLoans(params);
-    return {
+vi.mock('@sgia/api-client', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@sgia/api-client')>();
+  return {
+    loanExportFilters: actual.loanExportFilters,
+    hasReportFilters: actual.hasReportFilters,
+    useExportReport: () => ({ mutateAsync: mockExportReportMutateAsync, isPending: false }),
+    useStorerooms: () => ({
+      data: { data: [{ id: 1, name: 'Pañol Temuco', code: 'PAN-TEMUCO' }] },
+      isLoading: false,
+    }),
+    useLocations: () => ({
       data: {
-        data: mockHistoricalLoans,
-        meta: {
-          total: mockHistoricalLoans.length,
-          currentPage: 1,
-          lastPage: 1,
-          perPage: 10,
-        },
+        data: [
+          {
+            id: 12,
+            nombre: 'Laboratorio de Redes',
+            tipo: 'sala',
+            storeroom_id: 1,
+          },
+          { id: 13, nombre: 'Bodega Norte', tipo: 'bodega', storeroom_id: 1 },
+        ],
       },
       isLoading: false,
-      isFetching: false,
-      refetch: mockRefetchLoans,
-    };
-  },
-  useCareers: () => ({
-    data: {
-      data: [
-        {
-          id: 5,
-          name: 'Ingeniería en Informática',
-          code: 'II',
-          level: 'profesional',
+    }),
+    useLoans: (params: unknown) => {
+      mockUseLoans(params);
+      return {
+        data: {
+          data: mockHistoricalLoans,
+          meta: {
+            total: mockHistoricalLoans.length,
+            currentPage: 1,
+            lastPage: 1,
+            perPage: 10,
+          },
         },
-      ],
+        isLoading: false,
+        isFetching: false,
+        refetch: mockRefetchLoans,
+      };
     },
-    isLoading: false,
-  }),
-  useExportLoans: () => ({
-    mutateAsync: mockExportMutateAsync,
-    isPending: false,
-  }),
-}));
+    useCareers: () => ({
+      data: {
+        data: [
+          {
+            id: 5,
+            name: 'Ingeniería en Informática',
+            code: 'II',
+            level: 'profesional',
+          },
+        ],
+      },
+      isLoading: false,
+    }),
+    useExportLoans: () => ({
+      mutateAsync: mockExportMutateAsync,
+      isPending: false,
+    }),
+  };
+});
 
 const mockAuth = vi.hoisted(() => ({ rol: 'AD-01' }));
 
@@ -200,6 +207,7 @@ vi.mock('@/lib/toast', () => ({
     success: vi.fn(),
     error: vi.fn(),
     info: vi.fn(),
+    warning: vi.fn(),
   },
 }));
 
@@ -360,6 +368,58 @@ describe('REQ-11: Historial, Auditoría y Exportación de Préstamos (HistorialP
           location_id: 12,
           loan_date: '2026-11-12',
         }),
+      );
+    });
+  });
+  it('el Excel va por el botón compartido con el estado traducido y los demás filtros (docs/reportes-excel.md)', async () => {
+    mockExportReportMutateAsync.mockResolvedValueOnce({
+      blob: new Blob(['PK']),
+      filename: 'prestamos-20261125-101500.xlsx',
+      truncated: false,
+    });
+    window.URL.createObjectURL = vi.fn().mockReturnValue('blob:http://localhost/dummy');
+    window.URL.revokeObjectURL = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <HistorialPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    await user.selectOptions(screen.getByLabelText('Filtro de estado'), 'activo');
+    await user.selectOptions(screen.getByLabelText('Filtro de pañol'), '1');
+    await user.click(screen.getByRole('button', { name: 'Exportar Excel' }));
+
+    await waitFor(() => {
+      expect(mockExportReportMutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({
+          path: '/loans/export?format=excel',
+          params: { status: 'procesado', devuelto: '0', storeroom_id: '1' },
+        }),
+      );
+    });
+    expect(mockExportMutateAsync).not.toHaveBeenCalled();
+  });
+
+  it('el PDF también lleva el estado elegido', async () => {
+    mockExportMutateAsync.mockResolvedValueOnce(new Blob(['%PDF']));
+    window.URL.createObjectURL = vi.fn().mockReturnValue('blob:http://localhost/dummy');
+    window.URL.revokeObjectURL = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <HistorialPrestamosPage />
+      </MemoryRouter>,
+    );
+
+    await user.selectOptions(screen.getByLabelText('Filtro de estado'), 'atrasado');
+    await user.click(screen.getByRole('button', { name: /Exportar PDF/i }));
+
+    await waitFor(() => {
+      expect(mockExportMutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({ format: 'pdf', status: 'atrasado' }),
       );
     });
   });

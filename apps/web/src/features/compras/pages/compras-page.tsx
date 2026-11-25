@@ -13,6 +13,7 @@ import { TableSearch } from '@/components/ui/table-search';
 import { ROW_CLASS, STICKY_COL_CLASS, TD_CLASS, TH_CLASS } from '@/components/ui/table-styles';
 import { TableToolbar } from '@/components/ui/table-toolbar';
 import { ButtonLink } from '@/components/shared/button-link';
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { SegmentedFilter } from '@/components/shared/segmented-filter';
 import { canDo } from '@/features/auth/types/roles';
 import { useAuth } from '@/features/auth/context/auth-context';
@@ -87,12 +88,19 @@ export default function ComprasPage() {
         title="Órdenes de compra"
         description="Órdenes emitidas a proveedores, su estado de envío y la recepción de la mercancía."
         actions={
-          canRequest && (
-            <ButtonLink to="/compras/solicitudes">
-              Nueva compra desde una solicitud
-              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-            </ButtonLink>
-          )
+          <>
+            <ExportExcelButton
+              path="/purchases/export"
+              params={{ status: status || undefined, search: search.trim() || undefined }}
+              filenamePrefix="ordenes-compra"
+            />
+            {canRequest && (
+              <ButtonLink to="/compras/solicitudes">
+                Nueva compra desde una solicitud
+                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+              </ButtonLink>
+            )}
+          </>
         }
       />
 

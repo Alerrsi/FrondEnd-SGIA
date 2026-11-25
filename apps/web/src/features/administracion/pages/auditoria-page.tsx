@@ -3,6 +3,7 @@ import { useAuditLogs, useUsers } from '@sgia/api-client';
 import { AUDIT_ACTIONS, AUDITABLE_TYPES, type AuditableType } from '@sgia/types';
 import { ChevronLeft, ChevronRight, ScrollText } from 'lucide-react';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -123,6 +124,19 @@ export default function AuditoriaPage() {
         icon={ScrollText}
         title="Auditoría"
         description="Registro de eventos críticos del sistema, solo lectura. Horas en America/Santiago."
+        actions={
+          <ExportExcelButton
+            path="/audit-logs/export"
+            params={{
+              action: action || undefined,
+              auditable_type: type || undefined,
+              user_id: userId === '' ? undefined : userId,
+              from: from || undefined,
+              to: to || undefined,
+            }}
+            filenamePrefix="auditoria"
+          />
+        }
       />
 
       <TableFrame toolbar={toolbar} footer={footer}>

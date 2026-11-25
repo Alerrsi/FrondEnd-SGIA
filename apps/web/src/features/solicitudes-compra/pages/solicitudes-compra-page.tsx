@@ -4,6 +4,7 @@ import { PurchaseRequestStatus } from '@sgia/types';
 import { ClipboardCheck, Plus } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { canDo } from '@/features/auth/types/roles';
@@ -164,12 +165,24 @@ export default function SolicitudesCompraPage() {
         title="Solicitudes de compra"
         description="Solicitud → aprobación → envío por áreas → cotizaciones (mín. 3) → OC → factura."
         actions={
-          canManage && (
-            <Button onClick={() => setFormOpen(true)}>
-              <Plus aria-hidden="true" className="h-4 w-4" />
-              Nueva solicitud
-            </Button>
-          )
+          <>
+            <ExportExcelButton
+              path="/purchase-requests/export"
+              params={{
+                status: status || undefined,
+                code: debouncedCode || undefined,
+                from: from || undefined,
+                to: to || undefined,
+              }}
+              filenamePrefix="solicitudes-compra"
+            />
+            {canManage && (
+              <Button onClick={() => setFormOpen(true)}>
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Nueva solicitud
+              </Button>
+            )}
+          </>
         }
       />
 

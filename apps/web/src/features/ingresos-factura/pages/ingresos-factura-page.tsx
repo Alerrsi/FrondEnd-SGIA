@@ -4,6 +4,7 @@ import { InvoiceIntakeStatus } from '@sgia/types';
 import { ChevronLeft, ChevronRight, ReceiptText, Upload } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { InvoiceIntakeReviewSheet } from '@/features/ingresos-factura/components/invoice-intake-review-sheet';
 import { InvoiceIntakesTable } from '@/features/ingresos-factura/components/invoice-intakes-table';
@@ -160,10 +161,22 @@ export default function IngresosFacturaPage() {
         title="Ingresos de factura"
         description="Sube la factura, revisa el borrador del OCR y confírmalo para descontar presupuesto e ingresar stock."
         actions={
-          <Button onClick={() => setUploadOpen(true)}>
-            <Upload aria-hidden="true" className="h-4 w-4" />
-            Subir factura
-          </Button>
+          <>
+            <ExportExcelButton
+              path="/invoice-intakes/export"
+              params={{
+                status: status || undefined,
+                annual_budget_id: budgetId,
+                from: from || undefined,
+                to: to || undefined,
+              }}
+              filenamePrefix="facturas"
+            />
+            <Button onClick={() => setUploadOpen(true)}>
+              <Upload aria-hidden="true" className="h-4 w-4" />
+              Subir factura
+            </Button>
+          </>
         }
       />
 

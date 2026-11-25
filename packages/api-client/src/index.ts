@@ -6,11 +6,28 @@ export {
   del,
   get,
   getBlob,
+  getBlobResponse,
   patch,
   post,
   put,
 } from './http';
-export type { ApiClientOptions, TokenStorage } from './http';
+export type { ApiClientOptions, BlobResponse, TokenStorage } from './http';
+
+// Reportes Excel por módulo (BackEnd-SGIA/docs/reportes-excel.md)
+export {
+  exportReport,
+  filenameFromDisposition,
+  fallbackReportFilename,
+  hasReportFilters,
+} from './services/reports';
+export type {
+  ExportedReport,
+  ExportReportOptions,
+  ReportParams,
+  ReportParamValue,
+} from './services/reports';
+export { useExportReport } from './hooks/reports';
+export type { ExportReportVariables } from './hooks/reports';
 
 export {
   login,
@@ -150,6 +167,7 @@ export {
   deliverLoan,
   checkinLoan,
   exportLoans,
+  loanExportFilters,
   normalizePrestamo,
 } from './services/loans';
 export { loanDisplayState, summarizeTeacherLoans } from './services/loan-state';

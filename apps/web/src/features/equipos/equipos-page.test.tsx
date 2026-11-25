@@ -80,6 +80,9 @@ const mockMutateUpdateSpecs = vi.fn();
 const mockRefetch = vi.fn();
 
 vi.mock('@sgia/api-client', () => ({
+  // Botón «Exportar Excel» (docs/reportes-excel.md).
+  hasReportFilters: () => false,
+  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useEquipos: () => ({
     data: mockEquiposList,
     isLoading: false,

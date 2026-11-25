@@ -12,6 +12,7 @@ const state = vi.hoisted(() => ({
   summary: {} as Record<string, unknown>,
   dueTotal: 2,
   recordCalls: [] as MaintenanceRecordQueryParams[],
+  exportReport: (() => undefined) as (...args: unknown[]) => unknown,
 }));
 
 const SUMMARY = {
@@ -36,6 +37,9 @@ const RECORD = {
 };
 
 vi.mock('@sgia/api-client', () => ({
+  // Botón «Exportar Excel» (docs/reportes-excel.md).
+  hasReportFilters: () => false,
+  useExportReport: () => ({ mutateAsync: state.exportReport, isPending: false }),
   useMaintenanceSummary: () => state.summary,
   useEquipmentUnits: () => ({
     data: { data: [{ id: 1, code: 'EQP-AP-000007' }, { id: 2, code: 'MAQ-ISD-000004' }].slice(0, state.dueTotal), meta: { total: state.dueTotal } },
@@ -45,6 +49,9 @@ vi.mock('@sgia/api-client', () => ({
     return { data: { data: [RECORD], meta: { currentPage: 1, lastPage: 1, total: 1 } }, isLoading: false, isError: false, refetch: vi.fn() };
   },
 }));
+
+vi.mock('@/features/equipos/utils/download', () => ({ downloadBlob: vi.fn() }));
+vi.mock('@/lib/toast', () => ({ toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn(), info: vi.fn() } }));
 
 vi.mock('@/features/mantenciones/components/maintenance-checklist-sheet', () => ({
   MaintenanceChecklistSheet: ({ recordId }: { recordId: number | null }) => <div data-testid="checklist">{recordId ?? ''}</div>,
@@ -65,6 +72,7 @@ describe('MantencionesPage (docs/mantenciones-por-carrera.md)', () => {
     state.summary = { data: SUMMARY, isLoading: false, isError: false, refetch: vi.fn() };
     state.dueTotal = 2;
     state.recordCalls = [];
+    state.exportReport = vi.fn().mockResolvedValue({ blob: new Blob(['PK']), filename: 'm.xlsx', truncated: false });
   });
 
   it('muestra las cifras neutras, el aviso de vencidas y una fila por carrera con su barra', () => {
@@ -148,6 +156,22 @@ describe('MantencionesPage (docs/mantenciones-por-carrera.md)', () => {
 
     await user.click(screen.getByRole('row', { name: 'Abrir mantención de EQP-AP-000014' }));
     expect(screen.getByTestId('checklist').textContent).toBe('50');
+  });
+
+  it('«Exportar Excel» envía el estado, el tipo y la carrera de la bandeja (docs/reportes-excel.md)', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Finalizadas' }));
+    await user.click(screen.getByRole('button', { name: /Analista Programador/ }));
+    await user.click(screen.getByRole('button', { name: 'Exportar Excel' }));
+
+    expect(state.exportReport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/maintenance-records/export',
+        params: { status: 'finalizada', maintenance_type: undefined, career_id: 1 },
+      }),
+    );
   });
 
   it('sin unidades vencidas no muestra el aviso; con el resumen caído muestra error', () => {

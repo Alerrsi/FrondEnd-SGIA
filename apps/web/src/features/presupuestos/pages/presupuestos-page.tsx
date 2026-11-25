@@ -20,6 +20,7 @@ import { CellGrid } from '@/components/ui/cell-grid';
 import { ErrorState } from '@/components/ui/error-state';
 import { Metric } from '@/components/ui/metric';
 import { PageHeader } from '@/components/ui/page-header';
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { SegmentedFilter } from '@/components/shared/segmented-filter';
 import { SkeletonList } from '@/components/ui/skeleton-list';
 
@@ -82,12 +83,15 @@ export default function PresupuestosPage() {
         title="Presupuestos anuales"
         description="Ejecución por carrera: las compras reservan y las facturas confirmadas consumen."
         actions={
-          canManage && (
-            <Button onClick={() => setCreateOpen(true)}>
-              <Plus aria-hidden="true" className="h-4 w-4" />
-              Nuevo presupuesto
-            </Button>
-          )
+          <>
+            <ExportExcelButton path="/budgets/export" params={{ year }} filenamePrefix="presupuestos" />
+            {canManage && (
+              <Button onClick={() => setCreateOpen(true)}>
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Nuevo presupuesto
+              </Button>
+            )}
+          </>
         }
       />
 

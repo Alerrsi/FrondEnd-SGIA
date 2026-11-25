@@ -323,6 +323,8 @@ export interface LoanExportParams {
   from_date?: string;
   to_date?: string;
   status?: string;
+  /** Código o asignatura, como el `search` del listado. */
+  search?: string;
   career_id?: number;
   storeroom_id?: number;
   location_id?: number;

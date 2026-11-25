@@ -14,6 +14,7 @@ import type {
 } from '@sgia/types';
 import { Plus, Users } from 'lucide-react';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuth } from '@/features/auth/context/auth-context';
@@ -167,10 +168,23 @@ export default function UsuariosPage() {
         title="Directorio de usuarios"
         description="Cuentas de acceso al panel y a la app móvil: rol, pañol, carreras y estado."
         actions={
-          <Button variant="primary" onClick={handleOpenCreate}>
-            <Plus aria-hidden="true" className="h-4 w-4" />
-            Nuevo usuario
-          </Button>
+          <>
+            <ExportExcelButton
+              path="/users/export"
+              params={{
+                search: queryParams.search,
+                role: queryParams.role,
+                is_active: queryParams.is_active,
+                storeroom_id: queryParams.storeroom_id,
+                career_id: queryParams.career_id,
+              }}
+              filenamePrefix="usuarios"
+            />
+            <Button variant="primary" onClick={handleOpenCreate}>
+              <Plus aria-hidden="true" className="h-4 w-4" />
+              Nuevo usuario
+            </Button>
+          </>
         }
       />
 

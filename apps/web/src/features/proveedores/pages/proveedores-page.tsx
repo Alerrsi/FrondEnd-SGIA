@@ -6,6 +6,7 @@ import {
 import type { Supplier, SupplierArea } from '@sgia/types';
 import { Building2, Plus } from 'lucide-react';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { apiErrorToMessage } from '@/lib/api-error';
@@ -128,10 +129,18 @@ export default function ProveedoresPage() {
         title="Proveedores"
         description="Empresas a las que se envían solicitudes de cotización, con sus áreas y contacto."
         actions={
-          <Button variant="primary" onClick={handleOpenCreate}>
-            <Plus aria-hidden="true" className="h-4 w-4" />
-            Nuevo proveedor
-          </Button>
+          <>
+            {/* La búsqueda filtra solo la página cargada (en el navegador): no va al export. */}
+            <ExportExcelButton
+              path="/suppliers/export"
+              params={{ category: queryParams.category, area: queryParams.area }}
+              filenamePrefix="proveedores"
+            />
+            <Button variant="primary" onClick={handleOpenCreate}>
+              <Plus aria-hidden="true" className="h-4 w-4" />
+              Nuevo proveedor
+            </Button>
+          </>
         }
       />
 

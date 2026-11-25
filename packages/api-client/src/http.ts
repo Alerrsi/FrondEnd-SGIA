@@ -163,10 +163,16 @@ export function labelQuery(): string {
   return typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent ?? '') ? '?orientation=portrait' : '';
 }
 
-export async function getBlob(
+export interface BlobResponse {
+  blob: Blob;
+  headers: Headers;
+}
+
+/** Como `getBlob`, pero entrega también las cabeceras (nombre del archivo, avisos del reporte). */
+export async function getBlobResponse(
   path: string,
   options?: RequestInit,
-): Promise<Blob> {
+): Promise<BlobResponse> {
   const token = await resolveToken();
   const headers: Record<string, string> = {
     Accept: 'application/pdf, application/octet-stream, */*',
@@ -194,7 +200,14 @@ export async function getBlob(
     throw new ApiRequestError(response.status, body);
   }
 
-  return response.blob();
+  return { blob: await response.blob(), headers: response.headers ?? new Headers() };
+}
+
+export async function getBlob(
+  path: string,
+  options?: RequestInit,
+): Promise<Blob> {
+  return (await getBlobResponse(path, options)).blob;
 }
 
 export const get = <T>(path: string, options?: RequestInit) =>

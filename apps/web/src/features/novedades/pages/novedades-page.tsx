@@ -3,6 +3,7 @@ import { useIncidentReports } from '@sgia/api-client';
 import type { IncidentReport, IncidentStatus } from '@sgia/types';
 import { AlertCircle, ChevronLeft, ChevronRight, ClipboardCheck, Plus, Search } from 'lucide-react';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useOptionalAuth } from '@/features/auth/context/auth-context';
@@ -50,12 +51,19 @@ export default function NovedadesPage() {
           Fallas y faltantes reportados por docentes y pañol. Abre un informe para revisarlo y
           cambiar su estado.
         </PageHeading>
-        {canCreate && (
-          <Button onClick={() => setFormOpen(true)}>
-            <Plus aria-hidden="true" className="h-4 w-4" />
-            Nuevo informe
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportExcelButton
+            path="/incident-reports/export"
+            params={{ status: status || undefined, search: search.trim() || undefined }}
+            filenamePrefix="novedades"
+          />
+          {canCreate && (
+            <Button onClick={() => setFormOpen(true)}>
+              <Plus aria-hidden="true" className="h-4 w-4" />
+              Nuevo informe
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">

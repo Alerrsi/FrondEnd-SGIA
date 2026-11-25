@@ -13,18 +13,18 @@ import {
   ChevronRight,
   Clock,
   Eye,
-  FileSpreadsheet,
   FileText,
   History,
   RefreshCw,
   Search,
   X,
 } from 'lucide-react';
-import { useExportLoans, useLoans } from '@sgia/api-client';
+import { loanExportFilters, useExportLoans, useLoans } from '@sgia/api-client';
 import { LoanStatus, type Prestamo } from '@sgia/types';
 
 import { LoanStatusBadge } from '@/components/ui/badge';
 import { CareerSelect } from '@/components/shared/career-select';
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { LaboratorySelect } from '@/components/shared/laboratory-select';
 import { StoreroomSelect } from '@/components/shared/storeroom-select';
 import { Button } from '@/components/ui/button';
@@ -130,28 +130,34 @@ export default function HistorialPrestamosPage() {
   const returnedCount = allReturnedData?.meta?.total ?? 0;
 
   // Export handlers
-  const handleExport = async (format: 'pdf' | 'excel') => {
-    try {
-      toast.info(`Generando archivo de reporte ${format.toUpperCase()}…`);
-      const blob = await exportMutation.mutateAsync({
-        start_date: startDate || undefined,
-        end_date: endDate || undefined,
-        career_id: careerFilter,
-        storeroom_id: storeroomFilter,
-        location_id: locationFilter,
-        loan_date: loanDateFilter || undefined,
-        format,
-      });
+  // Filtros del export con los nombres del backend (`from`/`to` y el estado traducido como en el listado).
+  const exportFilters = useMemo(
+    () => ({
+      start_date: startDate || undefined,
+      end_date: endDate || undefined,
+      status: estadoFilter === 'todos' ? undefined : estadoFilter,
+      search: search.trim() || undefined,
+      career_id: careerFilter,
+      storeroom_id: storeroomFilter,
+      location_id: locationFilter,
+      loan_date: loanDateFilter || undefined,
+    }),
+    [startDate, endDate, estadoFilter, search, careerFilter, storeroomFilter, locationFilter, loanDateFilter],
+  );
+  const excelParams = useMemo(() => loanExportFilters(exportFilters), [exportFilters]);
 
-      // El backend entrega un .xlsx real con `excel` (docs/exportaciones-y-campana.md).
-      const extension = format === 'excel' ? 'xlsx' : 'pdf';
+  // El Excel va por `ExportExcelButton` (docs/reportes-excel.md); aquí queda el PDF.
+  const handleExportPdf = async () => {
+    try {
+      toast.info('Generando archivo de reporte PDF…');
+      const blob = await exportMutation.mutateAsync({ ...exportFilters, format: 'pdf' });
       // Fecha local (toISOString daría la de UTC: el día siguiente pasadas las 21:00 en Chile).
       const dateStr = new Date().toLocaleDateString('sv-SE');
-      downloadBlob(blob, `SGIA_Auditoria_Prestamos_${dateStr}.${extension}`);
+      downloadBlob(blob, `SGIA_Auditoria_Prestamos_${dateStr}.pdf`);
 
-      toast.success(`Reporte ${format.toUpperCase()} descargado exitosamente`);
+      toast.success('Reporte PDF descargado exitosamente');
     } catch (error) {
-      toast.error(`No se pudo exportar el ${format === 'excel' ? 'Excel' : 'PDF'}: ${apiErrorToMessage(error)}`);
+      toast.error(`No se pudo exportar el PDF: ${apiErrorToMessage(error)}`);
     }
   };
 
@@ -326,22 +332,16 @@ export default function HistorialPrestamosPage() {
           </PageHeading>
 
           <div className="flex items-center gap-2">
+            <ExportExcelButton
+              path="/loans/export?format=excel"
+              params={excelParams}
+              filenamePrefix="prestamos"
+            />
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => handleExport('excel')}
-              disabled={exportMutation.isPending}
-              className="text-xs gap-1.5"
-            >
-              <FileSpreadsheet aria-hidden="true" className="h-3.5 w-3.5 text-ok" />
-              <span>Exportar Excel</span>
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => handleExport('pdf')}
+              onClick={handleExportPdf}
               disabled={exportMutation.isPending}
               className="text-xs gap-1.5"
             >

@@ -33,6 +33,8 @@ vi.mock('@/features/auth/context/auth-context', async (importOriginal) => {
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
+  // Botón «Exportar Excel» (docs/reportes-excel.md): sin QueryClient en estas pruebas.
+  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useDismissStockAlert: () => ({ mutate: vi.fn(), isPending: false }),
   useCriticalStockAlerts: () => ({
     data: { data: alerts, meta: { currentPage: 1, lastPage: 1, perPage: 10, total: alerts.length } },

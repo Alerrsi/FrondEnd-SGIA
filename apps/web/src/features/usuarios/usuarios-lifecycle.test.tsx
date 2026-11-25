@@ -56,6 +56,9 @@ vi.mock('@/features/auth/context/auth-context', () => ({
 }));
 
 vi.mock('@sgia/api-client', () => ({
+  // Botón «Exportar Excel» (docs/reportes-excel.md).
+  hasReportFilters: () => false,
+  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useRoles: () => ({
     data: [
       { id: 1, code: 'AD-01', name: 'Administrador' },

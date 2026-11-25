@@ -9,6 +9,7 @@ import {
 import type { Producto, ProductoParams } from '@sgia/types';
 import { Boxes, FileUp, Plus, X } from 'lucide-react';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { canDo } from '@/features/auth/types/roles';
@@ -140,6 +141,17 @@ export default function ProductosListPage() {
   const { data, isLoading, isError, isFetching } =
     useProducts(queryParams);
 
+  // Mismos filtros que el listado, sin paginación (docs/reportes-excel.md).
+  const exportParams = {
+    search: queryParams.search,
+    area: queryParams.area,
+    sala: queryParams.sala,
+    cajon: queryParams.cajon,
+    cajon_id: queryParams.cajon_id,
+    is_active: queryParams.is_active,
+    critical_only: queryParams.critical_only,
+  };
+
   // Contadores rápidos para métricas
   const totalItems = data?.meta?.total ?? 0;
   const productosList = Array.isArray(data?.data)
@@ -198,6 +210,7 @@ export default function ProductosListPage() {
         description="Productos, insumos y equipos del pañol con su stock, ubicación y estado."
         actions={
           <>
+            <ExportExcelButton path="/products/export" params={exportParams} filenamePrefix="inventario" />
             {canScanInvoice && (
               <Button variant="secondary" size="sm" onClick={() => setInvoiceUploadOpen(true)}>
                 <FileUp aria-hidden="true" className="h-3.5 w-3.5" />

@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useEquipmentUnits, useMaintenanceSummary } from '@sgia/api-client';
 import { Wrench } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import type { MaintenanceStatus, MaintenanceType } from '@sgia/types';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/ui/error-state';
 import { PageHeader } from '@/components/ui/page-header';
@@ -12,7 +14,7 @@ import { MaintenanceChecklistSheet } from '@/features/mantenciones/components/ma
 import { MaintenanceDueNotice } from '@/features/mantenciones/components/maintenance-due-notice';
 import { MaintenanceInbox } from '@/features/mantenciones/components/maintenance-inbox';
 import { MaintenanceMetrics } from '@/features/mantenciones/components/maintenance-metrics';
-import type { CareerFilter } from '@/features/mantenciones/lib/career-filter';
+import { careerFilterParams, type CareerFilter } from '@/features/mantenciones/lib/career-filter';
 
 /**
  * Mantenciones (REQ-18, docs/mantenciones-por-carrera.md): franja de cifras, unidades vencidas y, debajo, la lista
@@ -21,6 +23,8 @@ import type { CareerFilter } from '@/features/mantenciones/lib/career-filter';
 export default function MantencionesPage() {
   const [params] = useSearchParams();
   const [career, setCareer] = useState<CareerFilter>(null);
+  const [status, setStatus] = useState<MaintenanceStatus | ''>('en_curso');
+  const [type, setType] = useState<MaintenanceType | ''>('');
   const [openId, setOpenId] = useState<number | null>(null);
   const showDue = params.get('vencidas') === '1';
 
@@ -42,6 +46,13 @@ export default function MantencionesPage() {
         icon={Wrench}
         title="Mantenciones"
         description="Equipos en revisión por carrera y bandeja por prioridad."
+        actions={
+          <ExportExcelButton
+            path="/maintenance-records/export"
+            params={{ status: status || undefined, maintenance_type: type || undefined, ...careerFilterParams(career) }}
+            filenamePrefix="mantenciones"
+          />
+        }
       />
 
       {summary.isLoading ? (
@@ -66,7 +77,16 @@ export default function MantencionesPage() {
             className="lg:sticky lg:top-4"
           />
         )}
-        <MaintenanceInbox careers={summary.data?.careers ?? []} career={career} onCareerChange={setCareer} onOpen={setOpenId} />
+        <MaintenanceInbox
+          careers={summary.data?.careers ?? []}
+          career={career}
+          onCareerChange={setCareer}
+          status={status}
+          onStatusChange={setStatus}
+          type={type}
+          onTypeChange={setType}
+          onOpen={setOpenId}
+        />
       </div>
 
       <MaintenanceChecklistSheet recordId={openId} onClose={() => setOpenId(null)} />

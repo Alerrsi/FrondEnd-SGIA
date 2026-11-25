@@ -43,6 +43,7 @@ import { ErrorState } from '@/components/ui/error-state';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 import { MobileRow } from '@/components/ui/mobile-row';
 import { PageHeader } from '@/components/ui/page-header';
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { SkeletonRows } from '@/components/ui/skeleton-rows';
 import { TableFrame } from '@/components/ui/table-frame';
 import { TableSearch } from '@/components/ui/table-search';
@@ -441,16 +442,21 @@ export default function EquiposPage() {
         title="Fichas técnicas de equipos"
         description="Especificaciones, ciclo de vida útil y manuales de los equipos del pañol."
         actions={
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => refetch()}
-            aria-label="Actualizar catálogo de equipos"
-          >
-            <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
-            Actualizar
-          </Button>
+          <>
+            {/* Los filtros de esta pantalla (búsqueda, categoría, estado del producto) se aplican en el
+                navegador y no existen en `/equipment-units`: el Excel sale completo (docs/reportes-excel.md). */}
+            <ExportExcelButton path="/equipment-units/export" filenamePrefix="equipos" />
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => refetch()}
+              aria-label="Actualizar catálogo de equipos"
+            >
+              <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+              Actualizar
+            </Button>
+          </>
         }
       />
 

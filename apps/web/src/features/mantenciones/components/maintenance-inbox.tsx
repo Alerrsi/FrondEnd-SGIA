@@ -34,6 +34,11 @@ export interface MaintenanceInboxProps {
   careers: MaintenanceCareerSummary[];
   career: CareerFilter;
   onCareerChange: (filter: CareerFilter) => void;
+  /** Estado y tipo los guarda la página: el botón «Exportar Excel» los envía (docs/reportes-excel.md). */
+  status: MaintenanceStatus | '';
+  onStatusChange: (status: MaintenanceStatus | '') => void;
+  type: MaintenanceType | '';
+  onTypeChange: (type: MaintenanceType | '') => void;
   onOpen: (recordId: number) => void;
 }
 
@@ -46,9 +51,16 @@ function unitCode(r: MaintenanceRecord): string {
  * filtrable por estado y tipo; la carrera la elige la lista «Por carrera». En teléfonos, filas apiladas sin
  * desplazamiento lateral.
  */
-export function MaintenanceInbox({ careers, career, onCareerChange, onOpen }: MaintenanceInboxProps) {
-  const [status, setStatus] = useState<MaintenanceStatus | ''>('en_curso');
-  const [type, setType] = useState<MaintenanceType | ''>('');
+export function MaintenanceInbox({
+  careers,
+  career,
+  onCareerChange,
+  status,
+  onStatusChange: setStatus,
+  type,
+  onTypeChange: setType,
+  onOpen,
+}: MaintenanceInboxProps) {
   const [page, setPage] = useState(1);
 
   // Al cambiar de carrera (desde la grilla o el selector) se vuelve a la primera página.

@@ -22,6 +22,7 @@ import { Cell } from '@/components/ui/cell';
 import { CellGrid } from '@/components/ui/cell-grid';
 import { Metric } from '@/components/ui/metric';
 import { PageHeader } from '@/components/ui/page-header';
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 
 type RequestItems = PurchaseRequestFormValues['items'];
 
@@ -142,6 +143,12 @@ export default function AlertasStockPage() {
         description="Productos bajo su stock mínimo o cerca de él, para reponer antes de que falten."
         actions={
           <>
+            {/* La búsqueda filtra solo la página cargada (en el navegador): no va al export. */}
+            <ExportExcelButton
+              path="/alerts/export"
+              params={{ alert_type: queryParams.alert_type, is_resolved: queryParams.is_resolved }}
+              filenamePrefix="alertas"
+            />
             <Button type="button" variant="secondary" size="sm" onClick={() => navigate('/inventario')}>
               <Layers aria-hidden="true" className="h-3.5 w-3.5" />
               Ver inventario

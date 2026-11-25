@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useLoginActivity } from '@sgia/api-client';
 import { KeyRound } from 'lucide-react';
 
@@ -16,9 +15,14 @@ const WINDOWS = [
   { hours: 168, label: '7 días' },
 ] as const;
 
+export interface LoginActivityPanelProps {
+  /** Ventana en horas; la guarda la página para que el Excel exporte el mismo periodo. */
+  hours: number;
+  onHoursChange: (hours: number) => void;
+}
+
 /** Intentos de conexión: correctos y rechazados por hora, cuentas atacadas e IP con más fallos. */
-export function LoginActivityPanel() {
-  const [hours, setHours] = useState<number>(24);
+export function LoginActivityPanel({ hours, onHoursChange: setHours }: LoginActivityPanelProps) {
   const { data, isLoading, isError, error } = useLoginActivity(hours);
 
   return (

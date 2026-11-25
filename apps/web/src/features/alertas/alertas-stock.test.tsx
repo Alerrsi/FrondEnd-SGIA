@@ -87,6 +87,8 @@ const mockResolveMutateAsync = vi.fn();
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
+  // Botón «Exportar Excel» (docs/reportes-excel.md): sin QueryClient en estas pruebas.
+  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useDismissStockAlert: () => ({ mutate: vi.fn(), isPending: false }),
   useCriticalStockAlerts: (params?: { is_resolved?: boolean; alert_type?: string }) => {
     let data = [mockCriticalAlert, mockWarningAlert];

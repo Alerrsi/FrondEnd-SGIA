@@ -3,6 +3,7 @@ import { useCareers, useStudents, useUpdateStudentStatus } from '@sgia/api-clien
 import type { Student } from '@sgia/types';
 import { AlertCircle, ChevronLeft, ChevronRight, GraduationCap, Plus, Search } from 'lucide-react';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { StudentDetailSheet } from '@/features/estudiantes/components/student-detail-sheet';
@@ -81,15 +82,26 @@ export default function EstudiantesPage() {
         <PageHeading icon={GraduationCap} title="Estudiantes">
           Registro de estudiantes que retiran préstamos presenciales.
         </PageHeading>
-        <Button
-          onClick={() => {
-            setEditing(null);
-            setFormOpen(true);
-          }}
-        >
-          <Plus aria-hidden="true" className="h-4 w-4" />
-          Nuevo estudiante
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportExcelButton
+            path="/students/export"
+            params={{
+              search: debounced || undefined,
+              career_id: careerId,
+              is_active: status === 'todos' ? undefined : status === 'activos',
+            }}
+            filenamePrefix="estudiantes"
+          />
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+          >
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            Nuevo estudiante
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">

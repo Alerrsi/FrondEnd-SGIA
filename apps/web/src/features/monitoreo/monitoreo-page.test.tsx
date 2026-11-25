@@ -18,6 +18,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => {
   const done = <T,>(data: T) => ({ data: loading ? undefined : data, isLoading: loading, isError: false, error: null });
   return {
     ...actual,
+    useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
     useSystemHealth: () =>
       done({
         status: 'degraded',

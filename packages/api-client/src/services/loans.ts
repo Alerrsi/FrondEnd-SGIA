@@ -402,17 +402,27 @@ export async function checkinLoan(payload: LoanCheckinPayload): Promise<Prestamo
  * Historial de préstamos como archivo (docs/exportaciones-y-campana.md): `pdf`, `excel` (`.xlsx` real) o CSV.
  * Se lee como Blob (`getBlob`); las fechas viajan como `from`/`to`, que es lo que filtra el export.
  */
-export async function exportLoans(params?: LoanExportParams): Promise<Blob> {
+/**
+ * Filtros del export de préstamos con los nombres del backend: fechas como `from`/`to` y el estado
+ * de la pantalla traducido igual que en `fetchLoans` (activo → `status=procesado&devuelto=0`, etc.).
+ */
+export function loanExportFilters(params?: Omit<LoanExportParams, 'format'>): Record<string, string> {
   const query = new URLSearchParams();
   const startDate = params?.start_date ?? params?.from_date;
   const endDate = params?.end_date ?? params?.to_date;
   if (startDate) query.set('from', startDate);
   if (endDate) query.set('to', endDate);
   setLoanStatusQuery(query, params?.status);
+  if (params?.search) query.set('search', params.search);
   if (params?.career_id) query.set('career_id', String(params.career_id));
   if (params?.storeroom_id) query.set('storeroom_id', String(params.storeroom_id));
   if (params?.location_id) query.set('location_id', String(params.location_id));
   if (params?.loan_date) query.set('loan_date', params.loan_date);
+  return Object.fromEntries(query);
+}
+
+export async function exportLoans(params?: LoanExportParams): Promise<Blob> {
+  const query = new URLSearchParams(loanExportFilters(params));
   if (params?.format) query.set('format', params.format);
 
   const qs = query.toString();

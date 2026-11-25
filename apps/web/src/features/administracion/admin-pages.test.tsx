@@ -13,6 +13,8 @@ const auditSpy = vi.fn();
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
+  // Botón «Exportar Excel» (docs/reportes-excel.md): sin QueryClient en estas pruebas.
+  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCreateStoreroom: () => ({ mutateAsync: mockCreate, isPending: false }),
   useUpdateStoreroom: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useUsers: () => ({ data: { data: [{ id: 1, nombre: 'Admin' }] } }),
