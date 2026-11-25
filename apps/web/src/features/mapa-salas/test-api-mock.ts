@@ -37,6 +37,8 @@ const mutation = (fn: ReturnType<typeof vi.fn>) => ({ mutate: fn, mutateAsync: f
 export function buildApiMock() {
   return {
     useLocations: () => ({ data: { data: SALAS }, isLoading: false }),
+    // Botón «Exportar Excel» del encabezado (docs/reportes-excel.md): sin QueryClient en estos tests.
+    useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
     useSalaMapa: (id?: number) => ({
       data: id === 7 ? apiState.mapa : undefined,
       isLoading: false,

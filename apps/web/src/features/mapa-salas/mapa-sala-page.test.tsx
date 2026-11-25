@@ -7,12 +7,18 @@ import MapaSalaPage from './pages/mapa-sala-page';
 import { apiState, resetApiState } from './test-api-mock';
 import { makeMapa } from './test-fixtures';
 
-const state = vi.hoisted(() => ({ role: 'AD-01' }));
+const state = vi.hoisted(() => ({ role: 'AD-01', exportReport: vi.fn() }));
 
 vi.mock('@sgia/api-client', async (importOriginal) => {
   const { buildApiMock } = await import('./test-api-mock');
-  return { ...(await importOriginal<typeof import('@sgia/api-client')>()), ...buildApiMock() };
+  return {
+    ...(await importOriginal<typeof import('@sgia/api-client')>()),
+    ...buildApiMock(),
+    useExportReport: () => ({ mutateAsync: state.exportReport, isPending: false }),
+  };
 });
+
+vi.mock('@/features/equipos/utils/download', () => ({ downloadBlob: vi.fn(), printBlob: vi.fn() }));
 
 vi.mock('@/lib/toast', () => ({
   toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn(), info: vi.fn() },
@@ -52,6 +58,15 @@ describe('MapaSalaPage · modo vista (REQ-22)', () => {
     expect(screen.getByRole('group', { name: 'Plano de Laboratorio 206' })).toBeDefined();
     expect(screen.getAllByRole('button', { name: /^Estante EST-/ })).toHaveLength(3);
     expect(window.localStorage.getItem('sgia-mapa-sala')).toBe('7');
+  });
+
+  it('exporta a Excel dónde está cada cosa de la sala abierta', async () => {
+    state.exportReport.mockResolvedValue({ blob: new Blob(['x']), filename: 'ubicaciones.xlsx', truncated: false });
+    renderPage();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Exportar Excel' }));
+
+    expect(state.exportReport).toHaveBeenCalledWith(expect.objectContaining({ path: '/locations/export', params: { location_id: 7 } }));
   });
 
   it('AD-01 abre el pop-up al pulsar un estante', async () => {

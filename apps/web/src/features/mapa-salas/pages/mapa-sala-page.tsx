@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Map as MapIcon } from 'lucide-react';
 import { useLocations } from '@sgia/api-client';
 
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { PageHeader } from '@/components/ui/page-header';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { canAccessRoute, canDo } from '@/features/auth/types/roles';
@@ -31,7 +32,11 @@ export default function MapaSalaPage() {
         description={sala ? `${sala.code} · ${sala.nombre}: pulsa un estante para ver lo que guarda.` : 'Distribución de zonas y estantes de cada sala.'}
         actions={
           salas.data && salas.data.data.length > 0 ? (
-            <SalaSelector salas={salas.data.data} value={salaId} onChange={(id) => navigate(`/mapa-salas/${id}`)} />
+            <>
+              {/* Dónde está cada cosa en la sala abierta (docs/reportes-excel.md, ampliación A1). */}
+              {salaId > 0 && <ExportExcelButton path="/locations/export" params={{ location_id: salaId }} filenamePrefix="ubicaciones" />}
+              <SalaSelector salas={salas.data.data} value={salaId} onChange={(id) => navigate(`/mapa-salas/${id}`)} />
+            </>
           ) : undefined
         }
       />

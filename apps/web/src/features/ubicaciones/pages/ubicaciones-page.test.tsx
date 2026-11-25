@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   updateCajon: vi.fn(),
   downloadLabel: vi.fn(),
   printBlob: vi.fn(),
+  exportReport: vi.fn(),
 }));
 
 const LOCATIONS: LocationEntity[] = [
@@ -101,6 +102,7 @@ vi.mock('@sgia/api-client', async (importOriginal) => ({
     isLoading: false,
   }),
   useDeleteCajon: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useExportReport: () => ({ mutateAsync: mocks.exportReport, isPending: false }),
   useDownloadCajonLabel: () => ({
     mutateAsync: mocks.downloadLabel,
     isPending: false,
@@ -173,6 +175,18 @@ describe('UbicacionesPage (REQ-05)', () => {
     expect(screen.getByText('PCENTRAL')).toBeDefined();
     expect(screen.getByText('L201')).toBeDefined();
     expect(screen.getByText('PCENTRAL-GAVETA-A-1').className).toContain('font-code');
+  });
+
+  it('exporta las ubicaciones a Excel con los filtros de la lista', async () => {
+    const user = userEvent.setup();
+    mocks.exportReport.mockResolvedValue({ blob: new Blob(['x']), filename: 'ubicaciones.xlsx', truncated: false });
+    render(<UbicacionesPage />, { wrapper: MemoryRouter });
+
+    await user.click(screen.getByRole('button', { name: 'Exportar Excel' }));
+
+    expect(mocks.exportReport).toHaveBeenCalledWith(
+      expect.objectContaining({ path: '/locations/export', params: { search: undefined, tipo: undefined } }),
+    );
   });
 
   it('sugiere el código de sala desde el nombre hasta que se edita a mano', async () => {

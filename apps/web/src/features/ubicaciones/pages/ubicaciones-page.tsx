@@ -9,6 +9,7 @@ import {
   useSalaMapa,
 } from '@sgia/api-client';
 import type { LocationEntity, CajonEntity, Estante } from '@sgia/types';
+import { ExportExcelButton } from '@/components/shared/export-excel-button';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { toast } from '@/lib/toast';
@@ -295,6 +296,12 @@ export default function UbicacionesPage() {
         description="Salas, talleres y bodegas del pañol con los cajones donde se guarda cada producto."
         actions={
           <>
+            {/* Dónde está cada cosa, cajones y salas con los filtros de la lista (docs/reportes-excel.md, ampliación A1). */}
+            <ExportExcelButton
+              path="/locations/export"
+              params={{ search: search.trim() || undefined, tipo: tipoFilter || undefined }}
+              filenamePrefix="ubicaciones"
+            />
             <Button type="button" variant="secondary" size="sm" onClick={() => refetch()}>
               <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
               Actualizar
