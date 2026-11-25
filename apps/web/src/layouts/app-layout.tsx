@@ -7,6 +7,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { useLayoutPreference } from '@/contexts/layout-context';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { ChangePasswordDialog } from '@/features/auth/components/change-password-dialog';
+import { DemoRoleSwitcher } from '@/features/auth/components/demo-role-switcher';
 import { SessionsDialog } from '@/features/auth/components/sessions-dialog';
 import { canAccessRoute, type WebRoleCode } from '@/features/auth/types/roles';
 import { toast } from '@/lib/toast';
@@ -85,6 +86,7 @@ export default function AppLayout() {
       />
       <ChangePasswordDialog open={passwordOpen} onClose={() => setPasswordOpen(false)} />
       <SessionsDialog open={sessionsOpen} onClose={() => setSessionsOpen(false)} />
+      <DemoRoleSwitcher />
     </TooltipProvider>
   );
 }

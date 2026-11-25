@@ -17,6 +17,8 @@ import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { useAuth } from '@/features/auth/context/auth-context';
 import { apiErrorToMessage } from '@/lib/api-error';
 import { toast } from '@/lib/toast';
+import { useDemoLogin } from '../hooks/use-demo-login';
+import { DEMO_ACCOUNTS } from '../lib/demo-accounts';
 import { getRoleDefaultPath } from '../types/roles';
 import { SectionTitle } from '@/components/ui/section-title';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
@@ -40,7 +42,6 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
@@ -68,15 +69,8 @@ export default function LoginPage() {
     }
   });
 
-  // Solo en desarrollo: fuera de él, Vite elimina esta lectura y la contraseña no llega al bundle.
-  const quickLoginPassword = import.meta.env.DEV
-    ? import.meta.env.VITE_DEV_QUICK_LOGIN_PASSWORD
-    : undefined;
-
-  const handleQuickFill = (email: string) => {
-    setValue('email', email, { shouldValidate: true });
-    setValue('password', quickLoginPassword ?? '', { shouldValidate: true });
-  };
+  // Accesos de demostración (docs/accesos-demo.md): solo en `vite dev` o en un build de presentación.
+  const demo = useDemoLogin();
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-950 px-4 py-8 text-zinc-900 dark:text-zinc-100">
@@ -219,42 +213,30 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Quick fill test accounts */}
-          {quickLoginPassword && (
+          {/* Accesos de demostración: entran directo con un clic */}
+          {demo.enabled && (
             <div className="mt-5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 text-xs text-zinc-500 dark:text-zinc-400">
               <div className="flex items-center gap-1.5 mb-2 font-medium text-zinc-700 dark:text-zinc-300">
                 <KeyRound aria-hidden="true" className="h-3.5 w-3.5 text-zinc-400" />
-                <span>Accesos rápidos de prueba:</span>
+                <span>Entrar como (demostración)</span>
               </div>
-              <div className="flex flex-wrap gap-1.5 font-mono">
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill('admin@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-                >
-                  AD-01 (admin)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill('director@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-                >
-                  DIR-01 (director)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill('panol@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-                >
-                  PAN-01 (pañol)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill('docente@sgia.cl')}
-                  className="rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 transition-colors"
-                >
-                  PRO-01 (profesor)
-                </button>
+              <div className="grid grid-cols-2 gap-1.5">
+                {DEMO_ACCOUNTS.map((account) => (
+                  <button
+                    key={account.email}
+                    type="button"
+                    disabled={demo.pendingEmail !== null || isSubmitting}
+                    onClick={() => void demo.enterAs(account)}
+                    className="flex min-h-9 items-center justify-between gap-1.5 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 py-1 text-left text-xs text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors disabled:opacity-60 cursor-pointer pointer-coarse:min-h-11"
+                  >
+                    <span className="truncate">{account.label}</span>
+                    {demo.pendingEmail === account.email ? (
+                      <Loader2 aria-hidden="true" className="h-3.5 w-3.5 shrink-0 animate-spin" />
+                    ) : (
+                      <span className="shrink-0 font-mono text-zinc-400">{account.role}</span>
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
           )}

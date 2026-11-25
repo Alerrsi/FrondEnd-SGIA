@@ -1,6 +1,6 @@
 # Accesos de demostración por rol
 
-**Estado: plan, sin implementar (noviembre 2026).** Rama `feat/accesos-demo`. Solo frontend web. Lo pidió el usuario para la presentación: «añade un botón para acceder fácilmente a cada rol con fines de presentar más ágilmente».
+**Estado: implementado (noviembre 2026).** Rama `feat/accesos-demo`. Solo frontend web. Lo pidió el usuario para la presentación: «añade un botón para acceder fácilmente a cada rol con fines de presentar más ágilmente».
 
 ## Problema
 
@@ -10,7 +10,7 @@ En la presentación se recorren los cuatro roles (AD-01, DIR-01, PAN-01, PRO-01)
 
 | # | Decisión |
 |---|---|
-| 1 | **Login:** los botones de cuenta de prueba **entran directo** con un clic (ya no solo rellenan el formulario). Rótulo «Entrar como (demostración)», un botón por rol con su nombre. |
+| 1 | **Login:** los botones de cuenta de prueba **entran directo** con un clic (ya no solo rellenan el formulario). Rótulo «Entrar como (demostración)», un botón por rol con su nombre corto (Administrador, Director, Pañolero, Docente) y su código. |
 | 2 | **Dentro de la app:** botón flotante «Cambiar rol» (esquina inferior izquierda, discreto, neutro) con un menú de los otros tres roles. Va en `AppLayout`, así sirve igual con el layout de sidebar y el de header. Al elegir, entra con esa cuenta y lleva a Inicio. |
 | 3 | **Cuándo se activa:** en `vite dev` con `VITE_DEV_QUICK_LOGIN_PASSWORD` (como hoy) o en un build compilado con `VITE_DEMO_LOGIN_PASSWORD`. Sin ninguna de las dos no se muestra nada y la contraseña no llega al bundle (Vite elimina la rama de `import.meta.env.DEV`). |
 | 4 | **Riesgo aceptado:** con `VITE_DEMO_LOGIN_PASSWORD` la contraseña de las cuentas sembradas queda en el JavaScript público. Solo para despliegues de presentación con datos de demostración, nunca en producción real. Lo activa `deploy-aws/sgia-aws.sh` con `SGIA_DEMO=1`. |
@@ -28,9 +28,13 @@ En la presentación se recorren los cuatro roles (AD-01, DIR-01, PAN-01, PRO-01)
 
 ## Fases
 
-1. [ ] Plan y documentos (este archivo, `CLAUDE.md`, `FIXES/CHANGELOG-FIXES.md`).
-2. [ ] Implementación con tests (login entra directo, el selector cambia de cuenta, nada visible sin contraseña de demo).
-3. [ ] Despliegue en AWS con `SGIA_DEMO=1` y prueba real de los cuatro roles.
+1. [x] Plan y documentos (este archivo, `CLAUDE.md`, `FIXES/CHANGELOG-FIXES.md`).
+2. [x] Implementación con tests (login entra directo, el selector cambia de cuenta, nada visible sin contraseña de demo).
+3. [x] Despliegue en AWS con `SGIA_DEMO=1` y prueba real de los cuatro roles.
+
+## Prueba real (2026-11-25)
+
+Chromium headless por CDP contra el despliegue de AWS (`SGIA_DEMO=1`, datos de `RealisticDemoSeeder`), 9/9: el login muestra los cuatro botones; un clic en «Pañolero» entra como PAN-01; el botón flotante muestra el rol actual; los cambios a Director, Administrador, Docente y Pañolero devuelven el rol correcto en `/api/me`, muestran el menú de ese rol, dejan el token anterior en 401 y no pasan por `/login`. «Director de carrera» se cortaba en la grilla del login: se usa «Director».
 
 ## Fuera de alcance
 

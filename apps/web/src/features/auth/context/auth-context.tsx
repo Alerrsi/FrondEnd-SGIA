@@ -28,6 +28,11 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<Usuario>;
   logout: () => Promise<void>;
+  /**
+   * Cambia a otra cuenta sin pasar por «sin sesión» (accesos de demostración): revoca el token actual,
+   * entra con la nueva y vacía la caché. Si el login falla, la sesión queda cerrada.
+   */
+  switchAccount: (payload: LoginPayload) => Promise<Usuario>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -102,6 +107,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [qc]);
 
+  const switchAccount = useCallback(
+    async (payload: LoginPayload): Promise<Usuario> => {
+      try {
+        await apiLogout(tokenStorage);
+      } catch {
+        // El token anterior pudo vencer: igual se entra con la cuenta nueva.
+      }
+      try {
+        const usuario = await apiLogin(payload, tokenStorage);
+        if (!isWebRole(usuario.rol)) {
+          throw new Error(`Acceso restringido: el rol ${usuario.rol} no puede usar la web.`);
+        }
+        const storedToken = tokenStorage.getToken();
+        qc.clear();
+        qc.setQueryData(authKeys.currentUser, usuario);
+        setToken(typeof storedToken === 'string' ? storedToken : null);
+        return usuario;
+      } catch (error) {
+        handleUnauthorized();
+        throw error;
+      }
+    },
+    [qc, handleUnauthorized],
+  );
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -110,8 +140,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       logout,
+      switchAccount,
     }),
-    [user, token, isAuthenticated, isLoading, login, logout],
+    [user, token, isAuthenticated, isLoading, login, logout, switchAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -37,7 +37,7 @@ describe('LoginPage', () => {
     expect(screen.getByRole('button', { name: /acceder/i })).toBeDefined();
   });
 
-  describe('accesos rápidos de prueba', () => {
+  describe('accesos de demostración (docs/accesos-demo.md)', () => {
     function renderLogin() {
       const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
       render(
@@ -48,6 +48,7 @@ describe('LoginPage', () => {
                 <MemoryRouter initialEntries={['/login']}>
                   <Routes>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/" element={<div>Pantalla inicio</div>} />
                   </Routes>
                 </MemoryRouter>
               </TooltipProvider>
@@ -59,28 +60,57 @@ describe('LoginPage', () => {
 
     afterEach(() => {
       vi.unstubAllEnvs();
+      vi.unstubAllGlobals();
+      localStorage.clear();
     });
 
-    it('no se muestran sin la variable de entorno', () => {
+    it('no se muestran sin contraseña de demostración', () => {
       vi.stubEnv('VITE_DEV_QUICK_LOGIN_PASSWORD', '');
+      vi.stubEnv('VITE_DEMO_LOGIN_PASSWORD', '');
       renderLogin();
-      expect(screen.queryByText(/accesos rápidos de prueba/i)).toBeNull();
+      expect(screen.queryByText(/entrar como/i)).toBeNull();
     });
 
-    it('no se muestran fuera de desarrollo aunque la variable exista', () => {
+    it('no se muestran fuera de desarrollo solo con la variable de desarrollo', () => {
       vi.stubEnv('DEV', false);
       vi.stubEnv('VITE_DEV_QUICK_LOGIN_PASSWORD', 'clave-de-prueba');
+      vi.stubEnv('VITE_DEMO_LOGIN_PASSWORD', '');
       renderLogin();
-      expect(screen.queryByText(/accesos rápidos de prueba/i)).toBeNull();
+      expect(screen.queryByText(/entrar como/i)).toBeNull();
     });
 
-    it('en desarrollo completan correo y contraseña desde la variable', async () => {
+    it('un build de presentación los muestra con VITE_DEMO_LOGIN_PASSWORD', () => {
+      vi.stubEnv('DEV', false);
+      vi.stubEnv('VITE_DEMO_LOGIN_PASSWORD', 'clave-demo');
+      renderLogin();
+      expect(screen.getByText(/entrar como/i)).toBeDefined();
+      for (const label of ['Administrador', 'Director', 'Pañolero', 'Docente']) {
+        expect(screen.getByRole('button', { name: new RegExp(label) })).toBeDefined();
+      }
+    });
+
+    it('un clic entra con la cuenta del rol y lleva al inicio', async () => {
       vi.stubEnv('DEV', true);
       vi.stubEnv('VITE_DEV_QUICK_LOGIN_PASSWORD', 'clave-de-prueba');
+      const fetchMock = vi.fn(async (url: string) => {
+        const body = String(url).endsWith('/login')
+          ? { token: 'tok-dir', user: { id: 2, name: 'Director', email: 'director@sgia.cl', role: 'DIR-01', is_active: true } }
+          : { data: { id: 2, name: 'Director', email: 'director@sgia.cl', role: 'DIR-01', is_active: true } };
+        return new Response(JSON.stringify(body), { status: 200 });
+      });
+      vi.stubGlobal('fetch', fetchMock);
       renderLogin();
-      await userEvent.click(screen.getByRole('button', { name: /AD-01/ }));
-      expect((screen.getByLabelText(/correo institucional/i) as HTMLInputElement).value).toBe('admin@sgia.cl');
-      expect((screen.getByPlaceholderText('••••••••') as HTMLInputElement).value).toBe('clave-de-prueba');
+
+      await userEvent.click(screen.getByRole('button', { name: /Director/ }));
+
+      expect(await screen.findByText('Pantalla inicio')).toBeDefined();
+      const [, init] = fetchMock.mock.calls.find(([u]) => String(u).endsWith('/login')) as unknown as [string, RequestInit];
+      expect(JSON.parse(String(init.body))).toMatchObject({
+        email: 'director@sgia.cl',
+        password: 'clave-de-prueba',
+        device_name: 'web',
+      });
+      expect(localStorage.getItem('sgia_token')).toBe('tok-dir');
     });
   });
 
