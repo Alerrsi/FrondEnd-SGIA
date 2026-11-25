@@ -57,3 +57,7 @@ Proveer al rol Administrador (`AD-01`) una interfaz completa para dar de alta, c
 - [x] Unit test: algoritmo de validación de RUN chileno (`validateRun`, `normalizeStoredRun`, `formatRun`).
 - [x] Integration test: render de tabla y filtrado de usuarios (`usuarios-table.test.tsx`).
 - [x] E2E: ciclo de alta de usuario, edición y cambio de estado activo/inactivo (`usuarios-lifecycle.test.tsx`).
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/usuarios`, `/auditoria` y `/monitoreo`.

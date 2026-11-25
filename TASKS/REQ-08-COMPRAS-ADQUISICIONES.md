@@ -53,3 +53,7 @@ Gestionar el ciclo de vida de las compras y adquisiciones derivadas de cotizacio
 - [x] Unit test: hooks `usePurchases` y `useUpdatePurchaseStatus` (`features/compras/purchase-hooks.test.tsx`).
 - [x] Integration test: transición de orden de compra `en_camino` a `completa`.
 - [x] Unit test: `useCancelPurchase` y schema Zod del formulario (`purchase-form-schema.test.ts`).
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/compras/solicitudes`, `/compras/ordenes` y `/compras/proveedores`.

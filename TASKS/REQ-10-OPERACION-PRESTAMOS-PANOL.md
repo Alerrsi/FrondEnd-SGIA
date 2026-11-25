@@ -79,3 +79,7 @@ Optimizar el flujo de mesón del pañol. Permitir el despacho de solicitudes rem
 - [x] Component test: revisión en la cola, cambio por código, restablecer, faltante y reintento tras `422` (`cola-prestamos-page.test.tsx`).
 - [x] Unit test: hooks `useAprobarPrestamo`, `useRechazarPrestamo` y validación de `rejection_reason`.
 - [x] Component test: captura secuencial de código de barras desde input de teclado con pistola, checkout y devolución.
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/estudiantes` (`/students/export`).

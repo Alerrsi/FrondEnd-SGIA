@@ -53,3 +53,7 @@ Centralizar la información técnica de los activos de mayor valor (servidores, 
 
 - [x] Unit test: hooks `useEquipmentSpecs` y `useUpdateEquipmentSpecs` (`apps/web/src/features/equipos/equipment-specs-hooks.test.tsx`).
 - [x] Integration test: descarga de PDF de ficha técnica como blob con nombre de archivo dinámico (`apps/web/src/features/equipos/equipos-page.test.tsx`).
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/equipos` (`/equipment-units/export`) y `/mantenciones` (`/maintenance-records/export`).

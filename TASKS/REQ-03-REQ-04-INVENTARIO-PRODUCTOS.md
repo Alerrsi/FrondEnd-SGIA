@@ -62,3 +62,7 @@ Digitalizar la incorporación y mantenimiento del catálogo de productos y activ
 - [x] Unit test: normalización de respuesta de producto (`normalizeProducto`).
 - [x] Integration test: subida de factura y render de borradores extraídos.
 - [x] Visual regression test: renderizado de código de barras SVG en modo oscuro.
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/inventario` con los filtros activos (`/products/export`).

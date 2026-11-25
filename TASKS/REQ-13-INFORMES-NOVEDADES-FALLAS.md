@@ -71,3 +71,7 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 
 - [x] Unit test: hook `useCreateNovedad` con envío de `FormData`. _(Cubierto a nivel de servicio en `incident-reports-api.test.ts`.)_
 - [x] Integration test: actualización de estado de incidencia `PATCH /api/incident-reports/:id/status`. _(`incident-reports-api.test.ts`.)_
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/novedades` (`/incident-reports/export`).

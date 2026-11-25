@@ -50,3 +50,7 @@ Monitorear en tiempo real los niveles de existencias para anticipar quiebres de 
 
 - [x] Unit test: hooks `useCriticalStockAlerts` y mutación `useResolveStockAlert`.
 - [x] Integration test: cálculo visual del badge de alerta según stock y stock_minimo, renderizado de campana, filtrado y resolución de alertas.
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/alertas` (`/alerts/export`).

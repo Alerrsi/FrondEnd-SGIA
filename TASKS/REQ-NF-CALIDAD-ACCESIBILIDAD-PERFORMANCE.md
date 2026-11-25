@@ -56,3 +56,7 @@ Garantizar que tanto el panel web como la aplicación móvil cumplan con los est
 
 - [ ] Auditoría automatizada de accesibilidad con Lighthouse (Score >= 95 en accesibilidad).
 - [ ] Bundle analyzer de Vite para asegurar chunks individuales menores a 200 kB.
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] `exportReport(path, params)` en `api-client` y `ExportExcelButton` compartido (carga, error, aviso de corte, «con filtros»/«completo»), con tests.

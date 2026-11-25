@@ -62,3 +62,7 @@ La auditoría del 2026-11-23 encontró que ambos botones fallaban («Error al ex
 - [x] Excel real `.xlsx` desde el backend; el archivo se nombra con la fecha local.
 - [x] `downloadBlob` revoca la URL después de la descarga (Firefox/Safari) (`download.test.ts`).
 - [x] Recorrido contra la API real: PDF y Excel como DIR-01 (165 préstamos) y PAN-01 (83, su pañol), rango de marzo (19), `.xlsx` abierto en LibreOffice.
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] El historial usa el botón compartido y envía también el estado al exportar.

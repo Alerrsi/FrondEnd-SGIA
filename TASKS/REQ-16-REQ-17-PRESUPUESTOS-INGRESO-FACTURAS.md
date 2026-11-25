@@ -184,3 +184,7 @@ InvoiceIntakeItem {
 - [x] Integration: cancelar una compra `pendiente` y ver que el disponible se actualiza. _(Cubierto a nivel de hook: `/cancel` + invalidación de `budgets`.)_
 - [ ] Acceso: DIR-01 no ve carreras ajenas (lo filtra el backend, sin test en el front).
 - [x] Acceso: PAN-01 no ve el módulo (`app-layout.test.tsx`).
+
+
+### Exportar Excel (`docs/reportes-excel.md`)
+- [ ] Botón «Exportar Excel» en `/compras/presupuestos` (`/budgets/export`) y `/compras/facturas` (`/invoice-intakes/export`).
