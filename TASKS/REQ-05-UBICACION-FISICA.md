@@ -87,4 +87,4 @@ Garantizar la trazabilidad y rápida localización física de cada activo o insu
 - [x] Integration test tabla: `inventario-table.test.tsx` verificando renderizado de ubicaciones, botón de reubicación y filtrado por sala/cajón.
 
 ### Exportar Excel: ubicaciones y año (`docs/reportes-excel.md`, ampliación)
-- [ ] Botón «Exportar Excel» en `/ubicaciones` (búsqueda y tipo) y en `/mapa-salas/:id` (la sala abierta) → `/locations/export`.
+- [x] Botón «Exportar Excel» en `/ubicaciones` (búsqueda y tipo) y en `/mapa-salas/:id` (la sala abierta) → `/locations/export`.
