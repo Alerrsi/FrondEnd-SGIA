@@ -26,5 +26,6 @@ Este directorio contiene las especificaciones detalladas para cada módulo funci
 | [REQ-22](./REQ-22-MAPA-SALAS.md) | `REQ-22` | Mapa de Salas (zonas y estantes en SVG) | Web | PAN-01 (Ubicaciones), DIR-01 (edición), AD-01 (lectura) | 🟢 Completado — fases 1 a 6 (mapa en Ubicaciones, edición en modal, datos de prueba en todas las ubicaciones): `/mapa-salas/:id` con plano SVG, pop-up, arrastre, teclado, zonas, zoom y búsqueda; tests en `features/mapa-salas/` y recorrido de punta a punta contra la API real (PAN-01, DIR-01, AD-01). Plan en `docs/mapa-salas.md`; contrato en `BackEnd-SGIA/docs/mapa-salas.md` |
 | [REQ-CONFIG](./REQ-CONFIG.md) | `REQ-CONFIG` | Configuración de Sistema y Paletas de Color | Web | Todos | 🟢 Completado (8/8) |
 | [REQ-NF](./REQ-NF-CALIDAD-ACCESIBILIDAD-PERFORMANCE.md) | `REQ-NF` | Accesibilidad AA, Performance y Offline | Web + Mobile | Todos | 🟡 En Progreso (17%) — 5/29 tareas |
+| [REPORTES](./REQ-REPORTES-CENTRO.md) | — | Centro de reportes con vista previa | Web | DIR-01, PAN-01, AD-01 | 🟡 Plan (0/8) — `BackEnd-SGIA/docs/centro-reportes.md` |
 
 > REQ-08, REQ-09, REQ-13 y REQ-21 revisados el 2026-11-09 contra el código; el resto se calculó el 2026-10-27 con las casillas `[x]`/`[ ]` de cada archivo y la presencia de código en `apps/` y `packages/`. `REQ-DISEÑO` (14/14) no figura en la tabla.
