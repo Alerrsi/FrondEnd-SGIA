@@ -56,4 +56,4 @@ Gestionar el ciclo de vida de las compras y adquisiciones derivadas de cotizacio
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/compras/solicitudes`, `/compras/ordenes` y `/compras/proveedores`.
+- [x] Botón «Exportar Excel» en `/compras/solicitudes`, `/compras/ordenes` y `/compras/proveedores`.

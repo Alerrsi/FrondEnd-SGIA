@@ -65,4 +65,4 @@ La auditoría del 2026-11-23 encontró que ambos botones fallaban («Error al ex
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] El historial usa el botón compartido y envía también el estado al exportar.
+- [x] El historial usa el botón compartido y envía también el estado al exportar.

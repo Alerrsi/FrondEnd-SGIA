@@ -53,4 +53,4 @@ Monitorear en tiempo real los niveles de existencias para anticipar quiebres de 
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/alertas` (`/alerts/export`).
+- [x] Botón «Exportar Excel» en `/alertas` (`/alerts/export`).

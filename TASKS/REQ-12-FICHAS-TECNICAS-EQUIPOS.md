@@ -56,4 +56,4 @@ Centralizar la información técnica de los activos de mayor valor (servidores, 
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/equipos` (`/equipment-units/export`) y `/mantenciones` (`/maintenance-records/export`).
+- [x] Botón «Exportar Excel» en `/equipos` (`/equipment-units/export`) y `/mantenciones` (`/maintenance-records/export`).

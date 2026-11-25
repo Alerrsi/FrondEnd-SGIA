@@ -74,4 +74,4 @@ Canalizar de forma estructurada los reportes de incidentes durante clases o devo
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/novedades` (`/incident-reports/export`).
+- [x] Botón «Exportar Excel» en `/novedades` (`/incident-reports/export`).

@@ -82,4 +82,4 @@ Optimizar el flujo de mesón del pañol. Permitir el despacho de solicitudes rem
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/estudiantes` (`/students/export`).
+- [x] Botón «Exportar Excel» en `/estudiantes` (`/students/export`).

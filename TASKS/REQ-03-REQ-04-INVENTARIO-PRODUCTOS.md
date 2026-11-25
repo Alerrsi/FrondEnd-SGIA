@@ -65,4 +65,4 @@ Digitalizar la incorporación y mantenimiento del catálogo de productos y activ
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/inventario` con los filtros activos (`/products/export`).
+- [x] Botón «Exportar Excel» en `/inventario` con los filtros activos (`/products/export`).

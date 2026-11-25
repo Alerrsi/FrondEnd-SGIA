@@ -59,4 +59,4 @@ Garantizar que tanto el panel web como la aplicación móvil cumplan con los est
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] `exportReport(path, params)` en `api-client` y `ExportExcelButton` compartido (carga, error, aviso de corte, «con filtros»/«completo»), con tests.
+- [x] `exportReport(path, params)` en `api-client` y `ExportExcelButton` compartido (carga, error, aviso de corte, «con filtros»/«completo»), con tests.

@@ -187,4 +187,4 @@ InvoiceIntakeItem {
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/compras/presupuestos` (`/budgets/export`) y `/compras/facturas` (`/invoice-intakes/export`).
+- [x] Botón «Exportar Excel» en `/compras/presupuestos` (`/budgets/export`) y `/compras/facturas` (`/invoice-intakes/export`).

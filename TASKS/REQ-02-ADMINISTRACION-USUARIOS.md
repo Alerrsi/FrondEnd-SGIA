@@ -60,4 +60,4 @@ Proveer al rol Administrador (`AD-01`) una interfaz completa para dar de alta, c
 
 
 ### Exportar Excel (`docs/reportes-excel.md`)
-- [ ] Botón «Exportar Excel» en `/usuarios`, `/auditoria` y `/monitoreo`.
+- [x] Botón «Exportar Excel» en `/usuarios`, `/auditoria` y `/monitoreo`.
