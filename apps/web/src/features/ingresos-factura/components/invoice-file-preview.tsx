@@ -4,7 +4,10 @@ import { ExternalLink, FileX, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
-/** Vista del archivo de la factura (descarga autenticada; nunca una URL directa del backend). */
+/**
+ * Vista del archivo de la factura (descarga autenticada; nunca una URL directa del backend). Con el modal en una
+ * columna (bajo 1280px) mide media pantalla para que los ítems queden cerca; desde 1280px ocupa su columna.
+ */
 export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; hasFile: boolean }) {
   const { data: blob, isLoading, isError } = useInvoiceIntakeFile(intakeId, hasFile);
   const [url, setUrl] = useState<string | null>(null);
@@ -38,11 +41,11 @@ export function InvoiceFilePreview({ intakeId, hasFile }: { intakeId: number; ha
 
   return (
     <div className="flex h-full flex-col gap-2">
-      <div className="min-h-[55vh] flex-1 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+      <div className="h-[50vh] overflow-hidden rounded-lg xl:h-auto xl:min-h-[55vh] xl:flex-1 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
         {isImage ? (
           <img src={url} alt="Factura escaneada" width={800} height={1100} className="h-full w-full object-contain" />
         ) : (
-          <iframe src={url} title="Factura en PDF" className="h-full min-h-[55vh] w-full" />
+          <iframe src={url} title="Factura en PDF" className="h-full w-full xl:min-h-[55vh]" />
         )}
       </div>
       <Button

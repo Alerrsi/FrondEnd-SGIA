@@ -35,6 +35,8 @@ type ProductType = NonNullable<Producto['type']>;
 const inputClasses =
   FORM_CONTROL_CLASS;
 const errorClasses = 'mt-0.5 text-xs text-danger';
+/** Rótulo de cada cifra cuando el ítem se ve como tarjeta (modal angosto); en la tabla lo da la cabecera. */
+const STACKED_LABEL_CLASS = 'mb-1 block text-xs text-zinc-500 dark:text-zinc-400 @3xl:hidden';
 
 const toNumber = (v: unknown) =>
   v === '' || v === null || v === undefined ? Number.NaN : Number(v);
@@ -297,19 +299,21 @@ export function InvoiceReviewForm({
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-          <table className="w-full border-collapse text-left text-sm">
-            <thead className={TABLE_HEAD_CLASS}>
+        {/* Bajo 48rem de ancho disponible cada ítem es una tarjeta (producto, cajón y cifras apiladas, con su
+            rótulo); desde ahí, tabla. Container query: depende del ancho del modal, no de la ventana. */}
+        <div className="@container rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <table className="block w-full border-collapse text-left text-sm @3xl:table">
+            <thead className={cn(TABLE_HEAD_CLASS, 'hidden @3xl:table-header-group')}>
               <tr>
                 <th className="min-w-56 p-2 font-medium">Producto</th>
                 <th className="w-36 p-2 font-medium">Cajón</th>
-                <th className="w-20 p-2 font-medium">Cant.</th>
-                <th className="w-28 p-2 font-medium">P. unit.</th>
+                <th className="w-24 p-2 font-medium">Cant.</th>
+                <th className="w-32 p-2 font-medium">P. unit.</th>
                 <th className="w-28 p-2 text-right font-medium">Subtotal</th>
                 <th className="w-8 p-2" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tbody className="block divide-y divide-zinc-200 dark:divide-zinc-800 @3xl:table-row-group">
               {fields.map((field, index) => {
                 const item = items?.[index];
                 const type = item ? productTypes.get(item.product_id) : undefined;
@@ -317,8 +321,11 @@ export function InvoiceReviewForm({
                 const rowErrors = errors.items?.[index];
                 const subtotal = item ? reviewTotal([item]) : 0;
                 return (
-                  <tr key={field.id} className="align-top">
-                    <td className="p-2">
+                  <tr
+                    key={field.id}
+                    className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-x-2 gap-y-2 p-3 align-top @3xl:table-row @3xl:p-0"
+                  >
+                    <td className="col-span-2 min-w-0 @3xl:p-2">
                       {item?.detected_name && (
                         <div
                           className="mb-1 truncate text-xs text-zinc-500 dark:text-zinc-400"
@@ -431,7 +438,8 @@ export function InvoiceReviewForm({
                         <p className={errorClasses}>{rowErrors.product_id.message}</p>
                       )}
                     </td>
-                    <td className="p-2">
+                    <td className="col-span-3 @3xl:p-2">
+                      <span className={STACKED_LABEL_CLASS}>Cajón</span>
                       {needsCajon ? (
                         <>
                           <select
@@ -461,7 +469,8 @@ export function InvoiceReviewForm({
                         </span>
                       )}
                     </td>
-                    <td className="p-2">
+                    <td className="@3xl:p-2">
+                      <span className={STACKED_LABEL_CLASS}>Cant.</span>
                       <input
                         aria-label={`Cantidad del ítem ${index + 1}`}
                         type="number"
@@ -477,7 +486,8 @@ export function InvoiceReviewForm({
                         <p className={errorClasses}>{rowErrors.quantity.message}</p>
                       )}
                     </td>
-                    <td className="p-2">
+                    <td className="@3xl:p-2">
+                      <span className={STACKED_LABEL_CLASS}>P. unit.</span>
                       <input
                         aria-label={`Precio unitario del ítem ${index + 1}`}
                         type="number"
@@ -493,10 +503,11 @@ export function InvoiceReviewForm({
                         <p className={errorClasses}>{rowErrors.unit_price.message}</p>
                       )}
                     </td>
-                    <td className="whitespace-nowrap p-2 pt-4 text-right font-mono">
+                    <td className="self-end whitespace-nowrap pb-2 text-right font-mono @3xl:p-2 @3xl:pt-4">
+                      <span className={STACKED_LABEL_CLASS}>Subtotal</span>
                       {formatCLP(subtotal)}
                     </td>
-                    <td className="p-2 pt-3">
+                    <td className="col-start-3 row-start-1 justify-self-end @3xl:p-2 @3xl:pt-3">
                       <button
                         type="button"
                         onClick={() => remove(index)}
@@ -511,8 +522,8 @@ export function InvoiceReviewForm({
                 );
               })}
               {fields.length === 0 && (
-                <tr>
-                  <td colSpan={6} className={`p-6 ${STATE_TEXT_CLASS}`}>
+                <tr className="block @3xl:table-row">
+                  <td colSpan={6} className={`block p-6 @3xl:table-cell ${STATE_TEXT_CLASS}`}>
                     Sin ítems. Agrega los productos de la factura.
                   </td>
                 </tr>

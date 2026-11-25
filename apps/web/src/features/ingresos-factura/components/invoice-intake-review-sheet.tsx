@@ -43,7 +43,9 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
   return (
     <>
       <Sheet open={intakeId !== null} onOpenChange={(isOpen) => !isOpen && onClose()}>
-        <SheetContent side="center" className="inset-y-auto top-1/2 h-[85dvh] -translate-y-1/2 rounded-lg border-y">
+        {/* Bajo 640px, pantalla completa; desde 640px, centrado en ambos ejes con márgenes automáticos (el
+            Sheet ya fija top/bottom en 0, por eso `top-1/2` + translate lo dejaba con la mitad fuera). */}
+        <SheetContent side="center" className="sm:my-auto sm:h-[90dvh] sm:max-w-7xl sm:rounded-lg sm:border-y">
           {isLoading || !intake ? (
             <div role="status" className="grid h-full grid-cols-1 gap-4 p-1 lg:grid-cols-2">
               <span className="sr-only">Cargando ingreso…</span>
@@ -74,7 +76,8 @@ export function InvoiceIntakeReviewSheet({ intakeId, onClose }: InvoiceIntakeRev
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="mt-2 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+              {/* Desde 1280px, factura (1/3) y revisión (2/3) lado a lado: la tabla de ítems necesita ~48rem. */}
+              <div className="mt-2 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
                 <InvoiceFilePreview intakeId={intake.id} hasFile={intake.has_file} />
 
                 <div className="flex flex-col gap-3">
