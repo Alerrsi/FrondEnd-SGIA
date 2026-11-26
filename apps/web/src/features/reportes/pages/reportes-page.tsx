@@ -104,7 +104,9 @@ export default function ReportesPage() {
     preview.data?.info.find(([label]) => label === 'Alcance')?.[1] ?? (report ? reportScope(report, role) : '');
 
   return (
-    <div className="flex flex-col gap-6">
+    // Desde 1024 px la página ocupa el alto de la ventana (barra de 56 px y margen del marco, como /ubicaciones):
+    // el catálogo y la tabla se desplazan por dentro. En ventanas muy bajas manda el mínimo y se desplaza la página.
+    <div className="flex flex-col gap-4 lg:h-[calc(100dvh-6.5rem)] lg:min-h-[520px]">
       <PageHeader
         icon={FileSpreadsheet}
         title="Reportes"
@@ -120,22 +122,34 @@ export default function ReportesPage() {
       {!report ? (
         <EmptyState icon={FileSpreadsheet} title="Sin reportes para tu rol" description="Tu rol no tiene reportes Excel disponibles." />
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6">
           <ReportCatalog reports={reports} selectedId={report.id} onSelect={selectReport} />
 
-          <section aria-labelledby="reporte-titulo" className="flex min-w-0 flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 id="reporte-titulo" className={SECTION_TITLE_CLASS}>
-                  {report.title}
-                </h2>
-                <Badge tone="neutral">{REPORT_KIND_LABEL[report.kind]}</Badge>
+          <section aria-labelledby="reporte-titulo" className="flex min-w-0 flex-col gap-3 lg:min-h-0">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+              <div className="flex min-w-0 flex-col gap-0.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 id="reporte-titulo" className={SECTION_TITLE_CLASS}>
+                    {report.title}
+                  </h2>
+                  <Badge tone="neutral">{REPORT_KIND_LABEL[report.kind]}</Badge>
+                </div>
+                <p className="text-[13px] text-zinc-500 dark:text-zinc-400">{report.description}</p>
+                <p className="text-[13px] text-zinc-600 dark:text-zinc-300">
+                  <span className="font-medium text-zinc-900 dark:text-zinc-100">Alcance:</span> {scopeText}
+                </p>
               </div>
-              <p className="text-[13px] text-zinc-500 dark:text-zinc-400">{report.description}</p>
-              <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
-                <span className="font-medium text-zinc-700 dark:text-zinc-300">Hojas:</span>{' '}
-                {[...report.sheets, 'Info'].join(' · ')}
-              </p>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => void handleDownload()}
+                disabled={Boolean(blocked) || !settled || exportMutation.isPending}
+                aria-busy={exportMutation.isPending || undefined}
+                className="w-full shrink-0 sm:w-auto"
+              >
+                <Download aria-hidden="true" className="h-3.5 w-3.5" />
+                {exportMutation.isPending ? 'Generando…' : 'Descargar Excel'}
+              </Button>
             </div>
 
             <ReportFilters
@@ -147,23 +161,6 @@ export default function ReportesPage() {
               today={today}
             />
 
-            <div className="flex flex-col gap-3 border-t border-zinc-200 pt-3 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
-              <p className="text-[13px] text-zinc-600 dark:text-zinc-300">
-                <span className="font-medium text-zinc-900 dark:text-zinc-100">Alcance:</span> {scopeText}
-              </p>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => void handleDownload()}
-                disabled={Boolean(blocked) || !settled || exportMutation.isPending}
-                aria-busy={exportMutation.isPending || undefined}
-                className="w-full sm:w-auto"
-              >
-                <Download aria-hidden="true" className="h-3.5 w-3.5" />
-                {exportMutation.isPending ? 'Generando…' : 'Descargar Excel'}
-              </Button>
-            </div>
-
             <ReportPreview
               data={preview.data}
               isLoading={preview.isLoading}
@@ -171,6 +168,7 @@ export default function ReportesPage() {
               error={preview.error}
               onRetry={() => void preview.refetch()}
               blocked={blocked}
+              className="lg:min-h-0 lg:flex-1"
             />
           </section>
         </div>

@@ -47,9 +47,9 @@ export function ReportCatalog({ reports, selectedId, onSelect }: ReportCatalogPr
   }
 
   return (
-    <nav aria-label="Catálogo de reportes" className="flex flex-col gap-4">
+    <nav aria-label="Catálogo de reportes" className="-mr-2 flex min-h-0 flex-col gap-3 overflow-y-auto pr-2">
       {groups.map(({ group, items }) => (
-        <div key={group} className="flex flex-col gap-1">
+        <div key={group} className="flex flex-col gap-0.5">
           <SectionLabel as="h2" className="px-2">
             {group}
           </SectionLabel>
@@ -63,7 +63,7 @@ export function ReportCatalog({ reports, selectedId, onSelect }: ReportCatalogPr
                     onClick={() => onSelect(r.id)}
                     aria-current={active ? 'true' : undefined}
                     className={cn(
-                      'relative flex h-8 w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 text-left text-[13px] transition-colors duration-150 pointer-coarse:h-11',
+                      'relative flex h-7 w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 text-left text-[13px] transition-colors duration-150 pointer-coarse:h-11',
                       active
                         ? 'bg-white font-medium text-accent ring-1 ring-zinc-200 before:absolute before:top-1.5 before:bottom-1.5 before:left-0 before:w-0.5 before:rounded-r before:bg-accent dark:bg-zinc-800 dark:ring-zinc-700'
                         : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100',

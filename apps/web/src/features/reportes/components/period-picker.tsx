@@ -1,6 +1,5 @@
 import { useId } from 'react';
 
-import { SegmentedFilter } from '@/components/shared/segmented-filter';
 import { FILTER_CONTROL_CLASS } from '@/components/ui/form-control';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { cn } from '@/lib/cn';
@@ -41,7 +40,7 @@ export interface PeriodPickerProps {
 
 /**
  * Selector de período (docs/centro-reportes.md, decisión 7): año, semestre, mes, rango o últimos 30 días.
- * Muestra las fechas exactas que se envían como `from`/`to`.
+ * Muestra las fechas exactas que se envían como `from`/`to`. Todo en selectores, del alto de los demás filtros.
  */
 export function PeriodPicker({ value, onChange, today = new Date(), label = 'Período', className }: PeriodPickerProps) {
   const id = useId();
@@ -60,18 +59,43 @@ export function PeriodPicker({ value, onChange, today = new Date(), label = 'Per
   };
 
   const showYear = value.mode === 'year' || value.mode === 'semester' || value.mode === 'month';
+  const control = cn(FILTER_CONTROL_CLASS, 'min-w-0');
 
+  // Un bloque del mismo alto que los demás filtros: etiqueta con las fechas exactas a la derecha y, debajo,
+  // los selectores en una sola línea (tipo de período, año y semestre o mes; o las dos fechas del rango).
   return (
-    <fieldset className={cn('flex min-w-0 flex-col gap-2', className)}>
-      <legend className={cn(FIELD_LABEL_CLASS, 'mb-1.5')}>{label}</legend>
-      <SegmentedFilter options={MODES} value={value.mode} onChange={changeMode} label="Tipo de período" />
-      <div className="flex flex-wrap items-center gap-2">
+    <div role="group" aria-labelledby={`${id}-label`} className={cn('flex min-w-0 flex-col gap-1.5', className)}>
+      <div className="flex min-w-0 items-baseline justify-between gap-2">
+        <span id={`${id}-label`} className={FIELD_LABEL_CLASS}>
+          {label}
+        </span>
+        <span
+          aria-live="polite"
+          className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-400"
+          data-testid="period-range"
+        >
+          {range ? formatPeriodRange(range) : <span className="text-danger">Rango incompleto</span>}
+        </span>
+      </div>
+      <div className="flex min-w-0 items-center gap-2">
+        <select
+          aria-label="Tipo de período"
+          value={value.mode}
+          onChange={(e) => changeMode(e.target.value as PeriodMode)}
+          className={cn(control, 'flex-1')}
+        >
+          {MODES.map((m) => (
+            <option key={m.value} value={m.value}>
+              {m.label}
+            </option>
+          ))}
+        </select>
         {showYear && (
           <select
             aria-label="Año"
             value={value.year}
             onChange={(e) => onChange({ ...value, year: Number(e.target.value) })}
-            className={FILTER_CONTROL_CLASS}
+            className={cn(control, 'w-[76px] shrink-0')}
           >
             {years.map((y) => (
               <option key={y} value={y}>
@@ -85,10 +109,10 @@ export function PeriodPicker({ value, onChange, today = new Date(), label = 'Per
             aria-label="Semestre"
             value={value.semester}
             onChange={(e) => onChange({ ...value, semester: e.target.value === '2' ? 2 : 1 })}
-            className={FILTER_CONTROL_CLASS}
+            className={cn(control, 'flex-[1.3]')}
           >
-            <option value={1}>1.er semestre (ene–jun)</option>
-            <option value={2}>2.º semestre (jul–dic)</option>
+            <option value={1}>1.er semestre</option>
+            <option value={2}>2.º semestre</option>
           </select>
         )}
         {value.mode === 'month' && (
@@ -96,7 +120,7 @@ export function PeriodPicker({ value, onChange, today = new Date(), label = 'Per
             aria-label="Mes"
             value={value.month}
             onChange={(e) => onChange({ ...value, month: Number(e.target.value) })}
-            className={FILTER_CONTROL_CLASS}
+            className={cn(control, 'flex-[1.3]')}
           >
             {MONTH_NAMES.map((name, i) => (
               <option key={name} value={i + 1}>
@@ -116,9 +140,8 @@ export function PeriodPicker({ value, onChange, today = new Date(), label = 'Per
               value={value.from}
               max={value.to || undefined}
               onChange={(e) => onChange({ ...value, from: e.target.value })}
-              className={FILTER_CONTROL_CLASS}
+              className={cn(control, 'flex-1')}
             />
-            <span className="text-[13px] text-zinc-500 dark:text-zinc-400">a</span>
             <label htmlFor={`${id}-to`} className="sr-only">
               Hasta
             </label>
@@ -128,14 +151,11 @@ export function PeriodPicker({ value, onChange, today = new Date(), label = 'Per
               value={value.to}
               min={value.from || undefined}
               onChange={(e) => onChange({ ...value, to: e.target.value })}
-              className={FILTER_CONTROL_CLASS}
+              className={cn(control, 'flex-1')}
             />
           </>
         )}
       </div>
-      <p aria-live="polite" className="font-mono text-[13px] text-zinc-700 dark:text-zinc-300" data-testid="period-range">
-        {range ? formatPeriodRange(range) : <span className="text-danger">Rango incompleto</span>}
-      </p>
-    </fieldset>
+    </div>
   );
 }

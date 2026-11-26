@@ -432,8 +432,7 @@ export const REPORTS: ReportDefinition[] = [
   {
     id: 'informe-periodo',
     title: 'Informe del período',
-    description:
-      'Un libro con el resumen general (préstamos, atrasos, mantenciones y su costo, novedades, alertas críticas) y el detalle de cada uno.',
+    description: 'Resumen general del período y el detalle de préstamos, mantenciones, novedades y alertas.',
     group: 'Paquetes',
     kind: 'period',
     path: '/reports/period',

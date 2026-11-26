@@ -110,21 +110,20 @@ export function ReportFilters({ report, values, onChange, period, onPeriodChange
     );
   };
 
+  // Una sola grilla con columnas del mismo ancho para todos los reportes (mín. 150 px, máx. 5 por fila, así en
+  // pantallas anchas se ensanchan en vez de dejar un hueco); el período ocupa dos columnas.
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(max(150px,calc((100%_-_48px)/5)),1fr))]">
       {periodFilter && (
         <PeriodPicker
           value={period}
           onChange={onPeriodChange}
           today={today}
           label={periodFilter.type === 'period' && periodFilter.required ? 'Período (obligatorio)' : 'Período'}
+          className="sm:col-span-2"
         />
       )}
-      {others.length > 0 && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {others.map((f) => control(f))}
-        </div>
-      )}
+      {others.map((f) => control(f))}
     </div>
   );
 }

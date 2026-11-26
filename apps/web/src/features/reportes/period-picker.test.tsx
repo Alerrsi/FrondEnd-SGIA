@@ -28,7 +28,7 @@ describe('PeriodPicker (docs/centro-reportes.md, decisión 7)', () => {
   it('parte en el semestre en curso y muestra sus fechas exactas', async () => {
     const onRange = vi.fn();
     render(<Harness onRange={onRange} />);
-    expect(screen.getByRole('button', { name: 'Semestre' }).getAttribute('aria-pressed')).toBe('true');
+    expect((screen.getByLabelText('Tipo de período') as HTMLSelectElement).value).toBe('semester');
     expect(shown()).toBe('01-07-2026 a 31-12-2026');
 
     await userEvent.selectOptions(screen.getByLabelText('Semestre'), '1');
@@ -41,12 +41,12 @@ describe('PeriodPicker (docs/centro-reportes.md, decisión 7)', () => {
     const onRange = vi.fn();
     render(<Harness onRange={onRange} />);
 
-    await user.click(screen.getByRole('button', { name: 'Año' }));
+    await user.selectOptions(screen.getByLabelText('Tipo de período'), 'year');
     await user.selectOptions(screen.getByLabelText('Año'), '2025');
     expect(shown()).toBe('01-01-2025 a 31-12-2025');
     expect(onRange).toHaveBeenLastCalledWith({ from: '2025-01-01', to: '2025-12-31' });
 
-    await user.click(screen.getByRole('button', { name: 'Mes' }));
+    await user.selectOptions(screen.getByLabelText('Tipo de período'), 'month');
     await user.selectOptions(screen.getByLabelText('Mes'), 'Febrero');
     expect(shown()).toBe('01-02-2025 a 28-02-2025');
     expect(onRange).toHaveBeenLastCalledWith({ from: '2025-02-01', to: '2025-02-28' });
@@ -57,11 +57,11 @@ describe('PeriodPicker (docs/centro-reportes.md, decisión 7)', () => {
     const onRange = vi.fn();
     render(<Harness onRange={onRange} />);
 
-    await user.click(screen.getByRole('button', { name: 'Rango' }));
+    await user.selectOptions(screen.getByLabelText('Tipo de período'), 'range');
     expect((screen.getByLabelText('Desde') as HTMLInputElement).value).toBe('2026-07-01');
     expect((screen.getByLabelText('Hasta') as HTMLInputElement).value).toBe('2026-12-31');
 
-    await user.click(screen.getByRole('button', { name: 'Últimos 30 días' }));
+    await user.selectOptions(screen.getByLabelText('Tipo de período'), 'last30');
     expect(shown()).toBe('27-10-2026 a 25-11-2026');
   });
 });

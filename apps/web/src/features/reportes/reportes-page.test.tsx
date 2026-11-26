@@ -192,7 +192,7 @@ describe('ReportesPage (BackEnd-SGIA/docs/centro-reportes.md)', () => {
     renderPage('/reportes?reporte=informe-periodo');
     await waitFor(() => expect(previewCalls().at(-1)?.pathname).toBe('/api/reports/period'));
 
-    await user.click(screen.getByRole('button', { name: 'Rango' }));
+    await user.selectOptions(screen.getByLabelText('Tipo de período'), 'range');
     await user.clear(screen.getByLabelText('Desde'));
     expect(await screen.findByText('Falta el período')).toBeDefined();
     expect((screen.getByRole('button', { name: 'Descargar Excel' }) as HTMLButtonElement).disabled).toBe(true);

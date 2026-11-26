@@ -10,6 +10,7 @@ Plan y contrato: `BackEnd-SGIA/docs/centro-reportes.md`. Roles: `DIR-01`, `PAN-0
 - [x] «Descargar Excel» con los mismos parámetros de la vista previa.
 - [x] «Mis descargas» con «Repetir».
 - [x] Filtros del servidor en `/equipos` (`/products/export?type=equipo` con búsqueda, categoría y estado), `/alertas` (`search`) y `/compras/proveedores` (`search`).
+- [x] Página al alto de la ventana desde 1024 px (como `/ubicaciones`): sin desplazar la página en 1280×632 a 1920×961 con los tres roles; el catálogo y la tabla se desplazan por dentro. Filtros y período en una sola grilla de columnas iguales (mín. 150 px, máx. 5 por fila), período en selectores con sus fechas junto a la etiqueta, «Descargar Excel» junto al título y el conteo de filas en la barra de hojas.
 - [x] Tests: catálogo por rol, período → fechas, vista previa con filtros, descarga, repetir.
 - [x] Prueba contra la API real con los tres roles (2026-11-26): 26 reportes con vista previa = archivo, `403`/`422`, «Mis descargas» y «Repetir»; detalle en el plan.
 
