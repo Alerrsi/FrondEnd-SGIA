@@ -11,6 +11,6 @@ Plan y contrato: `BackEnd-SGIA/docs/centro-reportes.md`. Roles: `DIR-01`, `PAN-0
 - [x] «Mis descargas» con «Repetir».
 - [x] Filtros del servidor en `/equipos` (`/products/export?type=equipo` con búsqueda, categoría y estado), `/alertas` (`search`) y `/compras/proveedores` (`search`).
 - [x] Tests: catálogo por rol, período → fechas, vista previa con filtros, descarga, repetir.
-- [ ] Prueba contra la API real con los tres roles (cuando el backend responda `preview=1`, `/reports/period` y `/me/report-downloads`).
+- [x] Prueba contra la API real con los tres roles (2026-11-26): 26 reportes con vista previa = archivo, `403`/`422`, «Mis descargas» y «Repetir»; detalle en el plan.
 
-Frontend implementado contra el contrato con mocks (FIX-071); falta el backend de las fases 2–5 del plan.
+Implementado en frontend y backend. La prueba real corrigió las hojas declaradas de «Presupuestos» (`Presupuestos · Movimientos · Resumen`) y del «Informe del período» (`Resumen general · Préstamos · Detalle · Mantenciones · Informes · Alertas · Resumen`).
