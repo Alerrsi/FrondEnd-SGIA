@@ -49,6 +49,7 @@ const MisSolicitudesPage = lazy(() => import('@/features/profesor/pages/mis-soli
 const NovedadesPage = lazy(() => import('@/features/novedades/pages/novedades-page'));
 const MisNovedadesPage = lazy(() => import('@/features/profesor/pages/mis-novedades-page'));
 const InicioPage = lazy(() => import('@/features/inicio/pages/inicio-page'));
+const ReportesPage = lazy(() => import('@/features/reportes/pages/reportes-page'));
 
 /** URLs anteriores al módulo Compras (nov 2026) → nuevas; conserva el resto de la ruta y la query. */
 const LEGACY_PURCHASE_PATHS: Array<[string, string]> = [
@@ -386,6 +387,16 @@ function AppContent() {
               element={
                 <RequireRole allowedRoles={rolesForRoute('/monitoreo') ?? []}>
                   <MonitoreoPage />
+                </RequireRole>
+              }
+            />
+
+            {/* Centro de reportes con vista previa (BackEnd-SGIA/docs/centro-reportes.md). */}
+            <Route
+              path="/reportes"
+              element={
+                <RequireRole allowedRoles={rolesForRoute('/reportes') ?? []}>
+                  <ReportesPage />
                 </RequireRole>
               }
             />

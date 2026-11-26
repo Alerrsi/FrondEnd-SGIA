@@ -31,7 +31,7 @@ export default function ProveedoresPage() {
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search);
+      setDebouncedSearch(search.trim());
       setPage(1);
     }, 300);
     return () => clearTimeout(timer);
@@ -45,22 +45,14 @@ export default function ProveedoresPage() {
   const queryParams = {
     page,
     per_page: 20,
+    // Búsqueda en el servidor (`GET /api/suppliers?search=`, docs/centro-reportes.md decisión 14).
+    search: debouncedSearch || undefined,
     category: categoryFilter || undefined,
     area: areaFilter || undefined,
   };
 
   const { data, isLoading, isError, isFetching } = useSuppliers(queryParams);
-
-  // Client-side search filtering (until backend supports search param)
-  const filteredSuppliers = (data?.data ?? []).filter((s) => {
-    if (!debouncedSearch) return true;
-    const q = debouncedSearch.toLowerCase();
-    return (
-      s.name.toLowerCase().includes(q) ||
-      (s.contact_name?.toLowerCase().includes(q) ?? false) ||
-      s.email.toLowerCase().includes(q)
-    );
-  });
+  const suppliers = data?.data ?? [];
 
   const handleOpenCreate = () => {
     setEditing(null);
@@ -105,7 +97,8 @@ export default function ProveedoresPage() {
     }
   };
 
-  if (isLoading) {
+  // Solo la primera carga muestra el esqueleto: al buscar se conserva la lista (y el foco del buscador).
+  if (isLoading && !data) {
     return (
       <div className="flex flex-col gap-6">
         <Skeleton className="h-8 w-56" />
@@ -130,10 +123,9 @@ export default function ProveedoresPage() {
         description="Empresas a las que se envían solicitudes de cotización, con sus áreas y contacto."
         actions={
           <>
-            {/* La búsqueda filtra solo la página cargada (en el navegador): no va al export. */}
             <ExportExcelButton
               path="/suppliers/export"
-              params={{ category: queryParams.category, area: queryParams.area }}
+              params={{ search: queryParams.search, category: queryParams.category, area: queryParams.area }}
               filenamePrefix="proveedores"
             />
             <Button variant="primary" onClick={handleOpenCreate}>
@@ -145,7 +137,7 @@ export default function ProveedoresPage() {
       />
 
       <ProveedoresTable
-        suppliers={filteredSuppliers}
+        suppliers={suppliers}
         search={search}
         onSearchChange={setSearch}
         categoryFilter={categoryFilter}

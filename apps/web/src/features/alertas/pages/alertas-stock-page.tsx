@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Layers, ShoppingCart } from 'lucide-react';
 import { useCriticalStockAlerts, useResolveStockAlert } from '@sgia/api-client';
@@ -47,6 +47,15 @@ export default function AlertasStockPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState('');
+  // La búsqueda va al servidor (nombre o código del producto, docs/centro-reportes.md decisión 14).
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
   const [typeFilter, setTypeFilter] = useState<AlertTypeFilter>('all');
   const [statusFilter, setStatusFilter] = useState<AlertStatusFilter>('active');
 
@@ -84,10 +93,11 @@ export default function AlertasStockPage() {
     () => ({
       alert_type: typeFilter === 'all' ? undefined : typeFilter,
       is_resolved: statusFilter === 'all' ? undefined : statusFilter === 'resolved',
+      search: debouncedSearch || undefined,
       per_page: pageSize,
       page,
     }),
-    [typeFilter, statusFilter, pageSize, page],
+    [typeFilter, statusFilter, debouncedSearch, pageSize, page],
   );
 
   const { data, isLoading, isFetching } = useCriticalStockAlerts(queryParams);
@@ -105,18 +115,7 @@ export default function AlertasStockPage() {
     counts?.warning ?? pageAlerts.filter((a) => !a.is_resolved && a.alert_type === 'warning').length;
   const totalResolved = counts?.resolved ?? pageAlerts.filter((a) => a.is_resolved).length;
 
-  const rawAlerts = data?.data ?? [];
-
-  // Filtrado local por búsqueda en memoria si aplica
-  const filteredAlerts = useMemo(() => {
-    if (!search.trim()) return rawAlerts;
-    const term = search.toLowerCase().trim();
-    return rawAlerts.filter((a) => {
-      const name = (a.product?.nombre || a.producto?.nombre || a.product_name || '').toLowerCase();
-      const sku = (a.product?.codigoBarras || a.product?.barcode || '').toLowerCase();
-      return name.includes(term) || sku.includes(term);
-    });
-  }, [rawAlerts, search]);
+  const alerts = data?.data ?? [];
 
   const handleConfirmResolve = async () => {
     if (!resolvingAlert) return;
@@ -143,10 +142,13 @@ export default function AlertasStockPage() {
         description="Productos bajo su stock mínimo o cerca de él, para reponer antes de que falten."
         actions={
           <>
-            {/* La búsqueda filtra solo la página cargada (en el navegador): no va al export. */}
             <ExportExcelButton
               path="/alerts/export"
-              params={{ alert_type: queryParams.alert_type, is_resolved: queryParams.is_resolved }}
+              params={{
+                alert_type: queryParams.alert_type,
+                is_resolved: queryParams.is_resolved,
+                search: queryParams.search,
+              }}
               filenamePrefix="alertas"
             />
             <Button type="button" variant="secondary" size="sm" onClick={() => navigate('/inventario')}>
@@ -191,7 +193,7 @@ export default function AlertasStockPage() {
 
       {/* Tabla de Alertas */}
       <AlertasTable
-        alerts={filteredAlerts}
+        alerts={alerts}
         isLoading={isLoading}
         isFetching={isFetching}
         search={search}

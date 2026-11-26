@@ -363,6 +363,8 @@ export interface CriticalStockAlertQueryParams {
   is_resolved?: boolean;
   /** Campana: sin las alertas que el usuario quitó (lista y `counts`), docs/exportaciones-y-campana.md. */
   exclude_dismissed?: boolean;
+  /** Nombre o código del producto (docs/centro-reportes.md, decisión 14). */
+  search?: string;
   per_page?: number;
   page?: number;
 }

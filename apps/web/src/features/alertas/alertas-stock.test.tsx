@@ -84,13 +84,16 @@ const mockResolvedAlert: CriticalStockAlert = {
 };
 
 const mockResolveMutateAsync = vi.fn();
+const mockAlertsParams = vi.fn();
+const mockExportMutateAsync = vi.fn();
 
 vi.mock('@sgia/api-client', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@sgia/api-client')>()),
   // Botón «Exportar Excel» (docs/reportes-excel.md): sin QueryClient en estas pruebas.
-  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useExportReport: () => ({ mutateAsync: mockExportMutateAsync, isPending: false }),
   useDismissStockAlert: () => ({ mutate: vi.fn(), isPending: false }),
-  useCriticalStockAlerts: (params?: { is_resolved?: boolean; alert_type?: string }) => {
+  useCriticalStockAlerts: (params?: { is_resolved?: boolean; alert_type?: string; search?: string }) => {
+    mockAlertsParams(params);
     let data = [mockCriticalAlert, mockWarningAlert];
     if (params?.is_resolved === true) {
       data = [mockResolvedAlert];
@@ -284,6 +287,34 @@ describe('REQ-06: Alertas de stock Crítico y Preventivo', () => {
       await waitFor(() => {
         expect(mockResolveMutateAsync).toHaveBeenCalledWith(101);
       });
+    });
+
+    it('envía la búsqueda al servidor (listado y Excel), no filtra la página cargada', async () => {
+      const user = userEvent.setup();
+      mockExportMutateAsync.mockRejectedValue(new Error('sin red'));
+
+      render(
+        <MemoryRouter initialEntries={['/alertas']}>
+          <AlertasStockPage />
+        </MemoryRouter>,
+      );
+
+      await user.type(screen.getByLabelText('Buscar alertas'), 'fluke');
+      await waitFor(() =>
+        expect(mockAlertsParams).toHaveBeenLastCalledWith(expect.objectContaining({ search: 'fluke', page: 1 })),
+      );
+      // El mock del servidor no filtra: las dos filas siguen (antes se filtraba en el navegador).
+      expect(screen.getByText('Bobina Cable UTP Cat6 305m')).toBeDefined();
+
+      await user.click(screen.getByRole('button', { name: 'Exportar Excel' }));
+      await waitFor(() =>
+        expect(mockExportMutateAsync).toHaveBeenCalledWith(
+          expect.objectContaining({
+            path: '/alerts/export',
+            params: { alert_type: undefined, is_resolved: false, search: 'fluke' },
+          }),
+        ),
+      );
     });
 
     it('permite filtrar por severidad y por estado', async () => {

@@ -378,6 +378,7 @@ export async function fetchCriticalStockAlerts(
   if (params?.is_resolved !== undefined)
     query.set("is_resolved", String(params.is_resolved));
   if (params?.exclude_dismissed) query.set("exclude_dismissed", "1");
+  if (params?.search) query.set("search", params.search);
   if (params?.per_page) query.set("per_page", String(params.per_page));
   if (params?.page) query.set("page", String(params.page));
 

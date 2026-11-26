@@ -20,7 +20,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import type { Equipo } from '@sgia/types';
-import { useDownloadTechnicalSheet, useEquipos } from '@sgia/api-client';
+import { productEstadoForEquipmentStatus, useDownloadTechnicalSheet, useEquipos, type ReportParams } from '@sgia/api-client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -131,6 +131,19 @@ export default function EquiposPage() {
       return true;
     });
   }, [equipos, statusFilter, categoryFilter, globalFilter]);
+
+  // Filtros de la pantalla con los nombres de `/products/export` (docs/centro-reportes.md, decisión 14). La
+  // categoría se elige por nombre: se envía el `oracle_category_id` de un equipo de esa categoría. «Falla
+  // crítica» no tiene equivalente en el servidor y no filtra el Excel.
+  const exportParams = useMemo<ReportParams>(() => {
+    const categoryId =
+      categoryFilter === 'todos' ? undefined : equipos.find((e) => e.categoria === categoryFilter)?.categoriaId;
+    return {
+      search: globalFilter.trim() || undefined,
+      oracle_category_id: categoryId,
+      estado: statusFilter === 'todos' ? undefined : productEstadoForEquipmentStatus(statusFilter),
+    };
+  }, [equipos, categoryFilter, globalFilter, statusFilter]);
 
   const handleOpenSheet = (equipo: Equipo) => {
     setSelectedEquipo(equipo);
@@ -443,9 +456,8 @@ export default function EquiposPage() {
         description="Especificaciones, ciclo de vida útil y manuales de los equipos del pañol."
         actions={
           <>
-            {/* Los filtros de esta pantalla (búsqueda, categoría, estado del producto) se aplican en el
-                navegador y no existen en `/equipment-units`: el Excel sale completo (docs/reportes-excel.md). */}
-            <ExportExcelButton path="/equipment-units/export" filenamePrefix="equipos" />
+            {/* Productos `equipo` con sus hojas «Productos» y «Unidades», con los filtros de la pantalla. */}
+            <ExportExcelButton path="/products/export?type=equipo" params={exportParams} filenamePrefix="equipos" />
             <Button
               type="button"
               variant="secondary"

@@ -47,6 +47,8 @@ export interface Equipo {
   modelo?: string;
   model?: string;
   categoria?: string;
+  /** `oracle_category_id` del producto: filtro del servidor en el Excel de `/equipos`. */
+  categoriaId?: number;
   category?: string;
   ubicacion?: string;
   location?: string;

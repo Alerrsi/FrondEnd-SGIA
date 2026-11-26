@@ -6,6 +6,7 @@ import {
   ClipboardCheck,
   ClipboardPlus,
   Cpu,
+  FileSpreadsheet,
   FileWarning,
   GraduationCap,
   History,
@@ -70,6 +71,8 @@ const NAV_ENTRIES: NavEntry[] = [
   { to: '/panoles', label: 'Pañoles', description: 'Sedes y bodegas', icon: Warehouse },
   { to: '/auditoria', label: 'Auditoría', description: 'Registro de cambios', icon: ScrollText },
   { to: '/monitoreo', label: 'Monitoreo', description: 'Accesos y estado del sistema', icon: ShieldCheck },
+  // Al final para los tres roles: después de las pantallas de las que salen sus reportes.
+  { to: '/reportes', label: 'Reportes', description: 'Excel con vista previa', icon: FileSpreadsheet },
 ];
 
 /** Menú del rol, en orden. Compras lleva sus páginas como `children`. */

@@ -31,6 +31,13 @@ describe('Role and Route Permissions', () => {
       expect(canAccessRoute('DIR-01', '/monitoreo')).toBe(false);
     });
 
+    it('opens /reportes to DIR-01, PAN-01 and AD-01, never to PRO-01', () => {
+      for (const role of ['DIR-01', 'PAN-01', 'AD-01'] as const) {
+        expect(canAccessRoute(role, '/reportes')).toBe(true);
+      }
+      expect(canAccessRoute('PRO-01', '/reportes')).toBe(false);
+    });
+
     it('allows DIR-01 to access dashboard, quotations, and inventory', () => {
       expect(canAccessRoute('DIR-01', '/analitica')).toBe(true);
       expect(canAccessRoute('DIR-01', '/compras/cotizaciones')).toBe(true);

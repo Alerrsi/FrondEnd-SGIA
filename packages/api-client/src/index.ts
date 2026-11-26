@@ -16,17 +16,27 @@ export type { ApiClientOptions, BlobResponse, TokenStorage } from './http';
 // Reportes Excel por módulo (BackEnd-SGIA/docs/reportes-excel.md)
 export {
   exportReport,
+  fetchMyReportDownloads,
+  fetchReportPreview,
   filenameFromDisposition,
   fallbackReportFilename,
   hasReportFilters,
+  reportDownloadRequest,
+  reportUrl,
 } from './services/reports';
 export type {
   ExportedReport,
   ExportReportOptions,
+  ReportCell,
+  ReportColumnType,
+  ReportDownload,
   ReportParams,
   ReportParamValue,
+  ReportPreview,
+  ReportPreviewSheet,
 } from './services/reports';
-export { useExportReport } from './hooks/reports';
+// Centro de reportes con vista previa (BackEnd-SGIA/docs/centro-reportes.md)
+export { reportKeys, useExportReport, useMyReportDownloads, useReportPreview } from './hooks/reports';
 export type { ExportReportVariables } from './hooks/reports';
 
 export {
@@ -353,6 +363,7 @@ export {
   downloadEquipmentReports,
   fetchEquipos,
   fetchEquipo,
+  productEstadoForEquipmentStatus,
 } from './services/equipments';
 export {
   equipmentKeys,

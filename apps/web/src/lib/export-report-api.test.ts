@@ -3,6 +3,9 @@ import {
   ApiRequestError,
   exportReport,
   fallbackReportFilename,
+  fetchMyReportDownloads,
+  fetchReportPreview,
+  reportDownloadRequest,
   filenameFromDisposition,
   hasReportFilters,
   loanExportFilters,
@@ -105,5 +108,82 @@ describe('exportReport (BackEnd-SGIA/docs/reportes-excel.md)', () => {
       search: 'PRE',
     });
     expect(loanExportFilters({ status: 'todos' })).toEqual({});
+  });
+});
+
+describe('centro de reportes: vista previa y mis descargas (BackEnd-SGIA/docs/centro-reportes.md)', () => {
+  beforeEach(() => vi.restoreAllMocks());
+
+  function jsonResponse(body: unknown) {
+    return new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  }
+
+  it('fetchReportPreview agrega preview=1 tras los parámetros fijos y los filtros, y completa campos ausentes', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      jsonResponse({
+        title: 'Historial de préstamos',
+        filename: 'prestamos.xlsx',
+        sheets: [{ name: 'Préstamos', headers: ['Código'], types: ['text'], rows: [['REM-1']], total_rows: 165 }],
+        info: [['Alcance', 'Todo lo visible para el rol']],
+      }),
+    );
+    const preview = await fetchReportPreview('/loans/export?format=excel', { from: '2026-01-01', to: '', career_id: 3 });
+
+    const url = calledUrl(spy);
+    expect(url.pathname).toBe('/api/loans/export');
+    expect(url.search).toBe('?format=excel&from=2026-01-01&career_id=3&preview=1');
+    expect((spy.mock.calls[0]?.[1] as RequestInit).headers).toMatchObject({ Accept: 'application/json' });
+    expect(preview.truncated).toBe(false);
+    expect(preview.sheets[0]).toMatchObject({ name: 'Préstamos', total_rows: 165, totals: null, truncated: false });
+    expect(preview.info).toEqual([['Alcance', 'Todo lo visible para el rol']]);
+  });
+
+  it('fetchReportPreview sin filtros pide solo preview=1; un 422 llega como ApiRequestError', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(jsonResponse({ sheets: [] }));
+    await fetchReportPreview('/products/export');
+    expect(calledUrl(spy).search).toBe('?preview=1');
+
+    spy.mockResolvedValue(new Response(JSON.stringify({ message: 'Falta from.' }), { status: 422 }));
+    await expect(fetchReportPreview('/reports/period')).rejects.toMatchObject({ status: 422 });
+  });
+
+  it('fetchMyReportDownloads lee `{ data }` de /me/report-downloads', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      jsonResponse({
+        data: [
+          {
+            id: 1,
+            report: 'loans',
+            title: 'Historial de préstamos',
+            filters: [],
+            path: '/api/loans/export',
+            query: { format: 'excel' },
+            rows: 83,
+            created_at: '2026-11-20T10:15:00-03:00',
+          },
+        ],
+      }),
+    );
+    const downloads = await fetchMyReportDownloads();
+    expect(calledUrl(spy).pathname).toBe('/api/me/report-downloads');
+    // Laravel serializa un arreglo vacío como `[]`: se lleva a objeto.
+    expect(downloads[0]).toMatchObject({ id: 1, filters: {}, rows: 83 });
+  });
+
+  it('reportDownloadRequest quita /api, preview y los parámetros que ya trae la ruta', () => {
+    expect(
+      reportDownloadRequest({
+        path: '/api/loans/export?format=excel',
+        query: { format: 'excel', preview: 1, from: '2026-01-01', career_id: 3 },
+      }),
+    ).toEqual({ path: '/loans/export?format=excel', params: { from: '2026-01-01', career_id: 3 } });
+    expect(reportDownloadRequest({ path: 'api/products/export', query: {} })).toEqual({
+      path: '/products/export',
+      params: {},
+    });
+    expect(reportDownloadRequest({ path: '/suppliers/export', query: { search: 'tech' } })).toEqual({
+      path: '/suppliers/export',
+      params: { search: 'tech' },
+    });
   });
 });

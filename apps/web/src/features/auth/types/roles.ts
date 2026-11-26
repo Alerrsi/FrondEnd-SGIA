@@ -45,6 +45,8 @@ export const ROUTE_PERMISSIONS: Record<string, WebRoleCode[]> = {
   '/panoles': ['AD-01'],
   '/auditoria': ['AD-01'],
   '/monitoreo': ['AD-01'],
+  // Centro de reportes (BackEnd-SGIA/docs/centro-reportes.md): cada rol ve solo los reportes de sus pantallas.
+  '/reportes': ['DIR-01', 'PAN-01', 'AD-01'],
 };
 
 /** Acciones (botones) por rol; espejo de `routes/api.php` y las policies del backend. */

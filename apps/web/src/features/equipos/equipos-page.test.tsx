@@ -54,6 +54,7 @@ const mockEquiposList: Equipo[] = [
     marca: 'Tektronix',
     modelo: 'TBS1052B-EDU',
     categoria: 'Instrumentación',
+    categoriaId: 7,
     ubicacion: 'Laboratorio L2 · Estante 3',
     estado: 'en_mantencion',
     purchase_date: '2020-01-10',
@@ -78,11 +79,13 @@ const mockMutateDownloadSheet = vi.fn();
 const mockMutateDownloadReports = vi.fn();
 const mockMutateUpdateSpecs = vi.fn();
 const mockRefetch = vi.fn();
+const mockExportReport = vi.fn();
 
-vi.mock('@sgia/api-client', () => ({
+vi.mock('@sgia/api-client', async (importOriginal) => ({
+  // `hasReportFilters` y `productEstadoForEquipmentStatus` reales.
+  ...(await importOriginal<typeof import('@sgia/api-client')>()),
   // Botón «Exportar Excel» (docs/reportes-excel.md).
-  hasReportFilters: () => false,
-  useExportReport: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useExportReport: () => ({ mutateAsync: mockExportReport, isPending: false }),
   useEquipos: () => ({
     data: mockEquiposList,
     isLoading: false,
@@ -166,6 +169,29 @@ describe('Integration Test: Módulo de Fichas técnicas de Equipos (/equipos)', 
     // Debe mostrar solo el osciloscopio
     expect(screen.getByText('Osciloscopio Digital Tektronix')).toBeDefined();
     expect(screen.queryByText('Switch Cisco Catalyst 2960-X')).toBeNull();
+  });
+
+  it('exporta /products/export?type=equipo con búsqueda, id de categoría y estado del servidor (decisión 14)', async () => {
+    const user = userEvent.setup();
+    mockExportReport.mockResolvedValue({ blob: new Blob(['PK']), filename: 'equipos.xlsx', truncated: false });
+    vi.spyOn(downloadModule, 'downloadBlob').mockImplementation(() => undefined);
+    render(
+      <MemoryRouter initialEntries={['/equipos']}>
+        <EquiposPage />
+      </MemoryRouter>,
+    );
+
+    await user.type(screen.getByLabelText('Buscar equipos'), 'osc');
+    await user.selectOptions(screen.getByLabelText('Filtrar por categoría'), 'Instrumentación');
+    await user.selectOptions(screen.getByLabelText('Filtrar por estado operativo'), 'en_mantencion');
+    await user.click(screen.getByRole('button', { name: 'Exportar Excel' }));
+
+    await waitFor(() => expect(mockExportReport).toHaveBeenCalledOnce());
+    expect(mockExportReport).toHaveBeenCalledWith({
+      path: '/products/export?type=equipo',
+      params: { search: 'osc', oracle_category_id: 7, estado: 'en_reparacion' },
+      options: { fallbackName: 'equipos' },
+    });
   });
 
   it('abre el drawer lateral (Sheet) para inspeccionar especificaciones, ciclo de vida y manual S3', async () => {

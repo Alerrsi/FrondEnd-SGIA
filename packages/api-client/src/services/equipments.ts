@@ -61,7 +61,8 @@ interface RawEquipmentProduct {
   barcode: string | null;
   master_code: string | null;
   estado: string;
-  oracle_category?: { name: string } | null;
+  oracle_category_id?: number | null;
+  oracle_category?: { id?: number; name: string } | null;
   location?: { sala?: string; nombre?: string } | null;
   cajon?: { codigo?: string } | null;
   created_at: string;
@@ -76,6 +77,15 @@ const EQUIPMENT_STATUS: Record<string, EquipmentStatus> = {
   sin_stock: 'en_prestamo', // equipo sin unidades disponibles ni en taller: todas prestadas
 };
 
+/**
+ * Estado de la ficha → filtro `estado` de `GET /api/products` y `/products/export` (el inverso de
+ * `EQUIPMENT_STATUS`, docs/centro-reportes.md decisión 14). `critico` no tiene equivalente en el servidor.
+ */
+export function productEstadoForEquipmentStatus(status: string | undefined): string | undefined {
+  if (!status) return undefined;
+  return Object.entries(EQUIPMENT_STATUS).find(([, value]) => value === status)?.[0];
+}
+
 function toEquipo(raw: RawEquipmentProduct): Equipo {
   const ubicacion = [raw.location?.sala ?? raw.location?.nombre, raw.cajon?.codigo]
     .filter(Boolean)
@@ -85,6 +95,7 @@ function toEquipo(raw: RawEquipmentProduct): Equipo {
     nombre: raw.name,
     codigo: raw.master_code ?? raw.barcode ?? undefined,
     categoria: raw.oracle_category?.name ?? undefined,
+    categoriaId: raw.oracle_category_id ?? raw.oracle_category?.id ?? undefined,
     ubicacion: ubicacion || undefined,
     estado: EQUIPMENT_STATUS[raw.estado] ?? 'operativo',
     createdAt: raw.created_at,

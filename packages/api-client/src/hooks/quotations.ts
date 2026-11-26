@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CotizacionParams,
   CreateSupplierPayload,
@@ -63,6 +63,8 @@ export function useSuppliers(params?: SupplierQueryParams) {
   return useQuery({
     queryKey: supplierKeys.list(params),
     queryFn: () => fetchSuppliers(params),
+    // La búsqueda va al servidor: conservar la lista mientras llega la nueva (no desmonta el buscador).
+    placeholderData: keepPreviousData,
   });
 }
 

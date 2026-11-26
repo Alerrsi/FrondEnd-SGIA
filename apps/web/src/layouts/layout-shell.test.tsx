@@ -53,7 +53,12 @@ describe('nav-config: fuente única del menú', () => {
     expect(dir.find((e) => e.to === '/compras')?.children?.map((c) => c.to)).toContain('/compras/facturas');
     expect(navForRole('PRO-01').map((e) => e.to)).toEqual(['/', '/profesor/catalogo', '/profesor/solicitudes', '/profesor/novedades']);
     // AD-01 solo ve (no edita) el mapa de salas (REQ-22).
-    expect(screensForRole('AD-01').map((s) => s.to)).toEqual(['/mapa-salas', '/usuarios', '/panoles', '/auditoria', '/monitoreo']);
+    expect(screensForRole('AD-01').map((s) => s.to)).toEqual(['/mapa-salas', '/usuarios', '/panoles', '/auditoria', '/monitoreo', '/reportes']);
+    // Centro de reportes (docs/centro-reportes.md): al final del menú de los tres roles con reportes, no del profesor.
+    for (const role of ['DIR-01', 'PAN-01', 'AD-01']) {
+      expect(navForRole(role).at(-1)?.to).toBe('/reportes');
+    }
+    expect(findScreen('/reportes')?.entry.label).toBe('Reportes');
     // El pañolero ve el mapa dentro de Ubicaciones, no como pantalla aparte.
     expect(screensForRole('PAN-01').map((s) => s.to)).not.toContain('/mapa-salas');
     expect(screensForRole('DIR-01').map((s) => s.to)).toContain('/mapa-salas');
