@@ -13,7 +13,7 @@ export interface ReportCatalogProps {
 
 /**
  * Catálogo de reportes del rol (docs/centro-reportes.md, decisión 2): agrupado, una línea por reporte con
- * su etiqueta «foto» o «período», el seleccionado con la barra burdeo del menú. Bajo 1024 px es un selector.
+ * su etiqueta «foto» o «período», dentro de un recuadro como la vista previa, el seleccionado con la barra burdeo del menú. Bajo 1024 px es un selector.
  */
 export function ReportCatalog({ reports, selectedId, onSelect }: ReportCatalogProps) {
   const compact = useMediaQuery('(max-width: 1023px)');
@@ -47,10 +47,10 @@ export function ReportCatalog({ reports, selectedId, onSelect }: ReportCatalogPr
   }
 
   return (
-    <nav aria-label="Catálogo de reportes" className="-mr-2 flex min-h-0 flex-col gap-3 overflow-y-auto pr-2">
+    <nav aria-label="Catálogo de reportes" className="flex min-h-0 flex-col gap-3 overflow-y-auto rounded-lg border border-zinc-200 bg-white p-2 [scrollbar-width:thin] dark:border-zinc-800 dark:bg-zinc-900">
       {groups.map(({ group, items }) => (
         <div key={group} className="flex flex-col gap-0.5">
-          <SectionLabel as="h2" className="px-2">
+          <SectionLabel as="h2" className="px-2 pt-1">
             {group}
           </SectionLabel>
           <ul className="flex flex-col">
@@ -65,8 +65,8 @@ export function ReportCatalog({ reports, selectedId, onSelect }: ReportCatalogPr
                     className={cn(
                       'relative flex h-7 w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 text-left text-[13px] transition-colors duration-150 pointer-coarse:h-11',
                       active
-                        ? 'bg-white font-medium text-accent ring-1 ring-zinc-200 before:absolute before:top-1.5 before:bottom-1.5 before:left-0 before:w-0.5 before:rounded-r before:bg-accent dark:bg-zinc-800 dark:ring-zinc-700'
-                        : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100',
+                        ? 'bg-zinc-100 font-medium text-accent before:absolute before:top-1.5 before:bottom-1.5 before:left-0 before:w-0.5 before:rounded-r before:bg-accent dark:bg-zinc-800'
+                        : 'text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-100',
                     )}
                   >
                     <span className="min-w-0 truncate">{r.title}</span>

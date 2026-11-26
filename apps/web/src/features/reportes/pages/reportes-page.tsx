@@ -122,7 +122,7 @@ export default function ReportesPage() {
       {!report ? (
         <EmptyState icon={FileSpreadsheet} title="Sin reportes para tu rol" description="Tu rol no tiene reportes Excel disponibles." />
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[236px_minmax(0,1fr)] lg:gap-6">
           <ReportCatalog reports={reports} selectedId={report.id} onSelect={selectReport} />
 
           <section aria-labelledby="reporte-titulo" className="flex min-w-0 flex-col gap-3 lg:min-h-0">
