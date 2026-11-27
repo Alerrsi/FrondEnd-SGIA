@@ -116,30 +116,31 @@ export default function ReportesPage() {
   return (
     // Desde 1024 px la página ocupa el alto de la ventana (barra de 56 px y margen del marco, como /ubicaciones):
     // el catálogo y la tabla se desplazan por dentro. En ventanas muy bajas manda el mínimo y se desplaza la página.
-    <div className="flex flex-col gap-4 lg:h-[calc(100dvh-6.5rem)] lg:min-h-[520px]">
+    <div className="flex flex-col gap-4 lg:h-[calc(100dvh-6.5rem)] lg:min-h-[440px]">
       <PageHeader
         icon={FileSpreadsheet}
         title="Reportes"
         description="Elige un reporte y su período, revisa la vista previa y descarga el Excel."
-        actions={
-          <div className="flex flex-wrap gap-2">
-            <Button variant="secondary" size="sm" onClick={() => setSubscriptionsOpen(true)}>
-              <Mail aria-hidden="true" className="h-3.5 w-3.5" />
-              Mis suscripciones
-            </Button>
-            <Button variant="secondary" size="sm" onClick={() => setDownloadsOpen(true)}>
-              <History aria-hidden="true" className="h-3.5 w-3.5" />
-              Mis descargas
-            </Button>
-          </div>
-        }
       />
 
       {!report ? (
         <EmptyState icon={FileSpreadsheet} title="Sin reportes para tu rol" description="Tu rol no tiene reportes Excel disponibles." />
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[236px_minmax(0,1fr)] lg:gap-6">
-          <ReportCatalog reports={reports} selectedId={report.id} onSelect={selectReport} />
+          <ReportCatalog
+            reports={reports}
+            selectedId={report.id}
+            onSelect={selectReport}
+            shortcuts={[
+              {
+                label: 'Mis suscripciones',
+                icon: Mail,
+                onClick: () => setSubscriptionsOpen(true),
+                count: subscriptions.data?.data.length,
+              },
+              { label: 'Mis descargas', icon: History, onClick: () => setDownloadsOpen(true) },
+            ]}
+          />
 
           <section aria-labelledby="reporte-titulo" className="flex min-w-0 flex-col gap-3 lg:min-h-0">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
