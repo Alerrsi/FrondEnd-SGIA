@@ -21,6 +21,8 @@ export const AUDIT_ACTIONS = [
   'purchase_request.created',
   'purchase_request.status_changed',
   'purchase_request.quotation_selected',
+  'report.export',
+  'report.email',
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

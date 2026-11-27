@@ -21,9 +21,9 @@ Implementado en frontend y backend. La prueba real corrigió las hojas declarada
 - [x] Tests del catálogo por rol.
 - [x] Prueba contra la API real (2026-11-26): vista previa y descarga con DIR-01 y PAN-01, `403` a PAN-01 en proveedores y a AD-01 en profesores, sin desplazar la página en 1280×632 a 1440×789.
 
-## Suscripción por correo (`BackEnd-SGIA/docs/suscripcion-reportes.md`, plan)
-- [ ] Tipos `ReportSubscription` en `packages/types` y servicio/hooks en `packages/api-client`.
-- [ ] Botón «Recibir por correo» junto a «Descargar Excel»: diálogo con frecuencia (semanal, mensual, semestral), filtros que se guardan y aviso de datos personales; «Suscrito · mensual» si ya existe.
-- [ ] Panel «Mis suscripciones» junto a «Mis descargas»: próximo/último envío, motivo de pausa, pausar/reanudar, «Enviar ahora», quitar; aviso si el servidor no tiene correo configurado.
-- [ ] Tests del diálogo, del panel y de los parámetros guardados (sin `from`/`to`).
-- [ ] Prueba contra la API real con Mailpit.
+## Suscripción por correo (`BackEnd-SGIA/docs/suscripcion-reportes.md`, implementado)
+- [x] Tipos `ReportSubscription` en `packages/types` y servicio/hooks en `packages/api-client`.
+- [x] Botón «Recibir por correo» junto a «Descargar Excel»: diálogo con frecuencia (semanal, mensual, semestral), filtros que se guardan y aviso de datos personales; «Suscrito · mensual» si ya existe.
+- [x] Panel «Mis suscripciones» junto a «Mis descargas»: próximo/último envío, motivo de pausa, pausar/reanudar, «Enviar ahora», quitar; aviso si el servidor no tiene correo configurado.
+- [x] Tests del diálogo, del panel y de los parámetros guardados (sin `from`/`to`).
+- [x] Prueba contra la API real con Mailpit.

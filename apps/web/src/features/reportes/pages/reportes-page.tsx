@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Download, FileSpreadsheet, History } from 'lucide-react';
+import { Download, FileSpreadsheet, History, Mail } from 'lucide-react';
 import {
   hasReportFilters,
   useExportReport,
   useReportPreview,
+  useReportSubscriptions,
   type ReportParams,
 } from '@sgia/api-client';
 
@@ -20,12 +21,15 @@ import { toast } from '@/lib/toast';
 
 import { REPORT_KIND_LABEL, reportScope, reportsForRole, type ReportDefinition } from '../catalog';
 import { MyDownloads } from '../components/my-downloads';
+import { MySubscriptions } from '../components/my-subscriptions';
 import { ReportCatalog } from '../components/report-catalog';
 import { ReportFilters } from '../components/report-filters';
 import { ReportPreview } from '../components/report-preview';
+import { SubscribeDialog } from '../components/subscribe-dialog';
 import { useDebouncedValue } from '../hooks/use-debounced-value';
 import { defaultPeriod, type PeriodValue } from '../lib/period';
 import { buildReportRequest, defaultFilterValues, type ReportFilterValues } from '../lib/report-params';
+import { FREQUENCY_LABEL, matchingSubscriptions, subscriptionParams } from '../lib/subscription';
 
 /** Espera tras el último cambio de filtros antes de pedir la vista previa (decisión 5). */
 export const PREVIEW_DEBOUNCE_MS = 400;
@@ -68,6 +72,12 @@ export default function ReportesPage() {
     enabled: Boolean(report) && !blocked && previewKey.path !== '',
   });
   const exportMutation = useExportReport();
+
+  const [subscriptionsOpen, setSubscriptionsOpen] = useState(false);
+  const [subscribeOpen, setSubscribeOpen] = useState(false);
+  const subscriptions = useReportSubscriptions({ enabled: reports.length > 0 });
+  const savedParams = report ? subscriptionParams(report, request?.params ?? {}) : {};
+  const existing = report ? matchingSubscriptions(subscriptions.data?.data ?? [], report.id, savedParams) : [];
 
   const selectReport = (id: string) => {
     setSearchParams(
@@ -112,10 +122,16 @@ export default function ReportesPage() {
         title="Reportes"
         description="Elige un reporte y su período, revisa la vista previa y descarga el Excel."
         actions={
-          <Button variant="secondary" size="sm" onClick={() => setDownloadsOpen(true)}>
-            <History aria-hidden="true" className="h-3.5 w-3.5" />
-            Mis descargas
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setSubscriptionsOpen(true)}>
+              <Mail aria-hidden="true" className="h-3.5 w-3.5" />
+              Mis suscripciones
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setDownloadsOpen(true)}>
+              <History aria-hidden="true" className="h-3.5 w-3.5" />
+              Mis descargas
+            </Button>
+          </div>
         }
       />
 
@@ -139,17 +155,30 @@ export default function ReportesPage() {
                   <span className="font-medium text-zinc-900 dark:text-zinc-100">Alcance:</span> {scopeText}
                 </p>
               </div>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => void handleDownload()}
-                disabled={Boolean(blocked) || !settled || exportMutation.isPending}
-                aria-busy={exportMutation.isPending || undefined}
-                className="w-full shrink-0 sm:w-auto"
-              >
-                <Download aria-hidden="true" className="h-3.5 w-3.5" />
-                {exportMutation.isPending ? 'Generando…' : 'Descargar Excel'}
-              </Button>
+              <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => (existing.length > 0 ? setSubscriptionsOpen(true) : setSubscribeOpen(true))}
+                  disabled={Boolean(blocked)}
+                >
+                  <Mail aria-hidden="true" className="h-3.5 w-3.5" />
+                  {existing.length > 0
+                    ? `Suscrito · ${existing.map((s) => FREQUENCY_LABEL[s.frequency]).join(', ')}`
+                    : 'Recibir por correo'}
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => void handleDownload()}
+                  disabled={Boolean(blocked) || !settled || exportMutation.isPending}
+                  aria-busy={exportMutation.isPending || undefined}
+                  className="w-full shrink-0 sm:w-auto"
+                >
+                  <Download aria-hidden="true" className="h-3.5 w-3.5" />
+                  {exportMutation.isPending ? 'Generando…' : 'Descargar Excel'}
+                </Button>
+              </div>
             </div>
 
             <ReportFilters
@@ -175,6 +204,17 @@ export default function ReportesPage() {
       )}
 
       <MyDownloads open={downloadsOpen} onOpenChange={setDownloadsOpen} />
+      <MySubscriptions open={subscriptionsOpen} onOpenChange={setSubscriptionsOpen} />
+      {report && (
+        <SubscribeDialog
+          open={subscribeOpen}
+          onClose={() => setSubscribeOpen(false)}
+          report={report}
+          values={values}
+          params={savedParams}
+          mailEnabled={subscriptions.data?.mail_enabled ?? true}
+        />
+      )}
     </div>
   );
 }

@@ -53,6 +53,8 @@ export interface ReportDefinition {
   filters: ReportFilter[];
   /** Prefijo del archivo si el backend no envía `Content-Disposition`. */
   filenamePrefix: string;
+  /** Con datos personales (RUN, correo o IP): por correo llega solo el resumen y un enlace. */
+  personal?: boolean;
   /** Texto de «Alcance» por rol cuando no es «todo lo visible para el rol» (decisión 11). */
   scope?: Partial<Record<WebRoleCode, string>>;
 }
@@ -260,6 +262,7 @@ export const REPORTS: ReportDefinition[] = [
     path: '/students/export',
     roles: ['PAN-01'],
     sheets: ['Estudiantes'],
+    personal: true,
     filenamePrefix: 'estudiantes',
     filters: [search('Nombre, RUT o correo'), CAREER, select('is_active', 'Estado', 'Activos e inactivos', ACTIVE_OPTIONS)],
   },
@@ -427,6 +430,7 @@ export const REPORTS: ReportDefinition[] = [
     path: '/audit-logs/export',
     roles: ADMIN,
     sheets: ['Eventos', 'Resumen'],
+    personal: true,
     filenamePrefix: 'auditoria',
     filters: [
       PERIOD,
@@ -450,6 +454,7 @@ export const REPORTS: ReportDefinition[] = [
     path: '/users/export',
     roles: ADMIN,
     sheets: ['Usuarios'],
+    personal: true,
     filenamePrefix: 'usuarios',
     filters: [
       search('Nombre o correo'),
@@ -473,6 +478,7 @@ export const REPORTS: ReportDefinition[] = [
     path: '/monitoring/export',
     roles: ADMIN,
     sheets: ['Inicios de sesión', 'Fallidos', 'Sesiones activas', 'Resumen'],
+    personal: true,
     filenamePrefix: 'monitoreo',
     filters: [PERIOD, search('Correo', 'email')],
   },

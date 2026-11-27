@@ -38,6 +38,22 @@ export type {
 // Centro de reportes con vista previa (BackEnd-SGIA/docs/centro-reportes.md)
 export { reportKeys, useExportReport, useMyReportDownloads, useReportPreview } from './hooks/reports';
 export type { ExportReportVariables } from './hooks/reports';
+// Suscripción de reportes por correo (BackEnd-SGIA/docs/suscripcion-reportes.md)
+export {
+  createReportSubscription,
+  deleteReportSubscription,
+  fetchReportSubscriptions,
+  sendReportSubscription,
+  updateReportSubscription,
+} from './services/report-subscriptions';
+export {
+  reportSubscriptionKeys,
+  useCreateReportSubscription,
+  useDeleteReportSubscription,
+  useReportSubscriptions,
+  useSendReportSubscription,
+  useUpdateReportSubscription,
+} from './hooks/report-subscriptions';
 
 export {
   login,

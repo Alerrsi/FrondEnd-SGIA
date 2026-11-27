@@ -252,6 +252,15 @@ export type {
 export { AUDIT_ACTIONS, AUDITABLE_TYPES } from './auditoria';
 export type { AuditAction, AuditableType, AuditLog, AuditLogQueryParams } from './auditoria';
 
+export type {
+  CreateReportSubscriptionPayload,
+  ReportSubscription,
+  ReportSubscriptionFrequency,
+  ReportSubscriptionList,
+  ReportSubscriptionStatus,
+  UpdateReportSubscriptionPayload,
+} from './reporte';
+
 export { MAX_USER_CHARTS } from './dashboard-personal';
 export type {
   ChartTemplate,
