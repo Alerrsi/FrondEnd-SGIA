@@ -16,7 +16,7 @@ Plan y contrato: `BackEnd-SGIA/docs/centro-reportes.md`. Roles: `DIR-01`, `PAN-0
 
 Implementado en frontend y backend. La prueba real corrigió las hojas declaradas de «Presupuestos» (`Presupuestos · Movimientos · Resumen`) y del «Informe del período» (`Resumen general · Préstamos · Detalle · Mantenciones · Informes · Alertas · Resumen`).
 
-## Rankings (`BackEnd-SGIA/docs/reportes-rankings.md`, plan)
-- [ ] Grupo «Rankings» en el catálogo: «Proveedores con más compras» (DIR-01) y «Profesores con más préstamos» (DIR-01, PAN-01), período obligatorio y filtro «Mostrar» (Top 10, 20, 50, Todos).
-- [ ] Tests del catálogo por rol.
-- [ ] Prueba contra la API real.
+## Rankings (`BackEnd-SGIA/docs/reportes-rankings.md`, implementado)
+- [x] Grupo «Rankings» en el catálogo: «Top proveedores» (proveedores con más compras, DIR-01) y «Top profesores» (profesores con más préstamos, DIR-01, PAN-01), período obligatorio y filtro «Mostrar» (Top 10 por defecto, 20, 50, Todos).
+- [x] Tests del catálogo por rol.
+- [x] Prueba contra la API real (2026-11-26): vista previa y descarga con DIR-01 y PAN-01, `403` a PAN-01 en proveedores y a AD-01 en profesores, sin desplazar la página en 1280×632 a 1440×789.

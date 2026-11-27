@@ -49,6 +49,29 @@ describe('catálogo de reportes por rol (docs/centro-reportes.md, decisiones 1 y
     }
   });
 
+  it('rankings con período obligatorio y Top 10 por defecto: proveedores solo DIR-01, profesores DIR-01 y PAN-01', () => {
+    const suppliers = findReport('proveedores-mas-compras')!;
+    const teachers = findReport('profesores-mas-prestamos')!;
+    expect(suppliers).toMatchObject({ group: 'Rankings', path: '/reports/top-suppliers', roles: ['DIR-01'] });
+    expect(teachers).toMatchObject({ group: 'Rankings', path: '/reports/top-teachers', roles: ['DIR-01', 'PAN-01'] });
+    expect(reportsForRole('PAN-01').map((r) => r.id)).toContain('profesores-mas-prestamos');
+    expect(reportsForRole('PAN-01').map((r) => r.id)).not.toContain('proveedores-mas-compras');
+    expect(reportsForRole('AD-01').some((r) => r.group === 'Rankings')).toBe(false);
+
+    const values = defaultFilterValues(teachers, TODAY);
+    expect(values).toEqual({ top: '10' });
+    expect(buildReportRequest(teachers, { ...values, tipo: 'remoto' }, period({ semester: 1 }), TODAY).params).toEqual({
+      from: '2026-01-01',
+      to: '2026-06-30',
+      top: '10',
+      tipo: 'remoto',
+    });
+    expect(buildReportRequest(suppliers, { top: '' }, period({ mode: 'range', from: '', to: '' }), TODAY).blocked).toMatch(
+      /necesita un período/,
+    );
+    expect(reportScope(teachers, 'PAN-01')).toMatch(/tu pañol/);
+  });
+
   it('el alcance de PAN-01 en préstamos dice que se limita a su pañol', () => {
     expect(reportScope(findReport('prestamos')!, 'PAN-01')).toMatch(/tu pañol/);
     expect(reportScope(findReport('prestamos')!, 'DIR-01')).toBe('Todo lo visible para tu rol.');

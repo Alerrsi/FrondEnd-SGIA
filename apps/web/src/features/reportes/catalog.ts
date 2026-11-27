@@ -8,9 +8,9 @@ import type { WebRoleCode } from '@/features/auth/types/roles';
  * vuelve a aplicar), sus hojas y sus filtros con los nombres de parámetro reales del backend.
  */
 
-export type ReportGroup = 'Operación' | 'Compras' | 'Administración' | 'Paquetes';
+export type ReportGroup = 'Operación' | 'Compras' | 'Rankings' | 'Administración' | 'Paquetes';
 
-export const REPORT_GROUPS: readonly ReportGroup[] = ['Operación', 'Compras', 'Administración', 'Paquetes'];
+export const REPORT_GROUPS: readonly ReportGroup[] = ['Operación', 'Compras', 'Rankings', 'Administración', 'Paquetes'];
 
 /** `snapshot`: estado actual («foto»). `period`: operaciones de un período («período»). */
 export type ReportKind = 'snapshot' | 'period';
@@ -85,6 +85,19 @@ const ACTIVE_OPTIONS: ReportFilterOption[] = [
 ];
 
 const LOANS_SCOPE_PAN = 'Los préstamos se limitan a tu pañol.';
+
+/** Cuántos del ranking mostrar (`top`); vacío = todos. */
+const TOP = select(
+  'top',
+  'Mostrar',
+  'Todos',
+  [
+    { value: '10', label: 'Top 10' },
+    { value: '20', label: 'Top 20' },
+    { value: '50', label: 'Top 50' },
+  ],
+  '10',
+);
 
 export const REPORTS: ReportDefinition[] = [
   // ── Operación ──────────────────────────────────────────────────────────────────────────────────
@@ -367,6 +380,41 @@ export const REPORTS: ReportDefinition[] = [
         { value: 'ciberseguridad', label: 'Ciberseguridad' },
       ]),
       select('is_active', 'Estado', 'Activos e inactivos', ACTIVE_OPTIONS),
+    ],
+  },
+  // ── Rankings (BackEnd-SGIA/docs/reportes-rankings.md) ──────────────────────────────────────────
+  {
+    id: 'proveedores-mas-compras',
+    title: 'Top proveedores',
+    description: 'Proveedores ordenados por el monto comprado en el período (sin órdenes canceladas).',
+    group: 'Rankings',
+    kind: 'period',
+    path: '/reports/top-suppliers',
+    roles: DIR,
+    sheets: ['Ranking', 'Órdenes'],
+    filenamePrefix: 'proveedores-mas-compras',
+    filters: [{ ...PERIOD, required: true }, TOP, CAREER],
+  },
+  {
+    id: 'profesores-mas-prestamos',
+    title: 'Top profesores',
+    description: 'Profesores ordenados por préstamos del período, con unidades, atrasos y rechazados aparte.',
+    group: 'Rankings',
+    kind: 'period',
+    path: '/reports/top-teachers',
+    roles: OPS,
+    sheets: ['Ranking', 'Préstamos'],
+    filenamePrefix: 'profesores-mas-prestamos',
+    scope: { 'PAN-01': LOANS_SCOPE_PAN },
+    filters: [
+      { ...PERIOD, required: true },
+      TOP,
+      select('tipo', 'Tipo', 'Todos los tipos', [
+        { value: 'presencial', label: 'Presencial' },
+        { value: 'remoto', label: 'Remoto' },
+      ]),
+      CAREER,
+      STOREROOM,
     ],
   },
   // ── Administración ─────────────────────────────────────────────────────────────────────────────
